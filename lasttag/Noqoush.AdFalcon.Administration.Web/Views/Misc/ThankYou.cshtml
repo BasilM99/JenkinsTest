@@ -1,0 +1,48 @@
+﻿@{
+
+    ViewBag.keep = true;
+
+    if (ViewBag.title != null)
+    {
+        ViewBag.Title = ViewBag.title;
+    }
+    else
+    {
+        ViewBag.Title = Html.GetResource("ThankYou", "Titles");
+    }
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+    string textForMessage = ViewBag.Mess;
+    textForMessage = textForMessage.Replace("<br/>", "");
+    textForMessage = textForMessage.Replace("</b>", "");
+    textForMessage = textForMessage.Replace("<b>", "");
+}
+@using Noqoush.AdFalcon.Web.Controllers.Utilities;
+<script language="javascript" type="text/javascript">
+    var keepSuccessMessages = true;
+    var message = `@textForMessage`
+    showSuccessfullyMessage(message);
+</script>
+@{
+    if (!string.IsNullOrWhiteSpace(ViewBag.view))
+    {
+        <br />
+        <div class="data-row button-container">
+            @Html.Partial(ViewData["view"].ToString())
+        </div>
+    }
+    if (!string.IsNullOrWhiteSpace(ViewBag.url))
+    {
+        <br />
+        <div class="data-row button-container">
+            <input type="button" value='@Html.GetResource("Close", "Commands")' class="btn" onclick="redirect('@ViewBag.url')" />
+            <br />
+            <br />
+        </div>
+    }
+    <h2 style="height: 100%;">
+        @Html.Raw(textForMessage)
+    </h2>
+}
+
+
+

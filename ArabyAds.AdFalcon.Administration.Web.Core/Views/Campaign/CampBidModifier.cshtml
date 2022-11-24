@@ -1,0 +1,188 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("BidModifiers", "Global");
+}
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.BidModifierModel
+
+
+@*<style type="text/css">
+    
+    div[id$="Div"] {
+        float: left;
+    }
+
+    div .select2-selection__rendered {
+        float: left;
+    }
+</style>*@
+
+@using (Html.BeginForm("CampBidModifier"))
+{
+
+
+
+    @Html.Hidden("returnUrl", Context.Request.Query["returnUrl"])
+
+    <div class="data-row section-container">
+        <div class="data-row section-container">
+            @{
+                var tabs = new List<ArabyAds.AdFalcon.Web.Controllers.Model.Tab>
+                               {
+                                   new ArabyAds.AdFalcon.Web.Controllers.Model.Tab
+                                       {
+                                           IsSelected = false,
+                                           Action = new ArabyAds.AdFalcon.Web.Controllers.Model.Action()
+                                                        {
+                                                            DisplayText = Html.GetResource("Campaigninfo", "Titles"),
+                                                            ActionName = "Create",
+                                                            ExtraPrams = ViewData["AdvertiserAccountIdForTab"]+"/"+ViewContext.RouteData.Values["id"],
+                                                            IsSelected = true
+                                                        }
+                                       },
+                                   new ArabyAds.AdFalcon.Web.Controllers.Model.Tab
+                                       {
+                                           IsSelected = false,
+                                           Action = new ArabyAds.AdFalcon.Web.Controllers.Model.Action()
+                                                        {
+                                                            DisplayText = Html.GetResource("Settings", "Commands"),
+                                                            ActionName = "Settings",
+                                                                       ExtraPrams = ViewContext.RouteData.Values["id"],
+                                                            IsSelected = false
+                                                        }
+                                       },
+                                      new ArabyAds.AdFalcon.Web.Controllers.Model.Tab
+                                       {
+                                           IsSelected = true,
+                                           Action = new ArabyAds.AdFalcon.Web.Controllers.Model.Action()
+                                                        {
+                                                            DisplayText = Html.GetResource("BidModifiers", "Global"),
+                                                            ActionName = "CampBidModifier",
+                                                            IsSelected = true
+                                                        }
+                                       },
+
+                                        new ArabyAds.AdFalcon.Web.Controllers.Model.Tab
+                                       {
+                                           IsSelected = false,
+                                           Action = new ArabyAds.AdFalcon.Web.Controllers.Model.Action()
+                                                        {
+                                                            DisplayText = Html.GetResource("AdvancedSettings", "Commands"),
+                                                            ActionName = "ServerSetting",
+                                                            ExtraPrams = ViewContext.RouteData.Values["id"],
+                                                            IsSelected = true
+                                                        }
+                                       }
+                                          ,
+                                          new ArabyAds.AdFalcon.Web.Controllers.Model.Tab
+                                                       {
+                                                           IsSelected = false,
+                                                           Action = new ArabyAds.AdFalcon.Web.Controllers.Model.Action()
+                                                                        {
+                                                          DisplayText =Html.GetResource("CampaignAssignAppsites", "Commands"),
+                                                            ActionName = "CampaignAssignAppsites",
+                                                            ExtraPrams = ViewContext.RouteData.Values["id"],
+                                                            IsSelected = true,
+                                                                        }
+                                                       }
+
+                                                       };
+                var costModels = ViewBag.CostModels as List<SelectListItem>;
+            }
+            @await Html.PartialAsync("Tabs", tabs)
+
+
+            <div class="ad-filter-data" id="Global" style="padding-top:7px;">
+
+
+                <div class="data-row data-container">
+                    <div class="label-container" style="min-height:1px;width: 57px;">
+
+
+
+
+
+                    </div>
+
+                    <div class="field-container">
+
+
+                        <span class="field-title required-field">@Html.GetResource("DimensionType", "Global")</span>
+
+
+                    </div>
+
+
+
+                    <div class="label-container label-container-sm" style="min-height:1px;width:242px;">
+
+
+
+
+
+                    </div>
+
+
+
+
+                    <div class="field-container">
+
+
+                        <span class="field-title required-field">@Html.GetResource("DimensionValue", "Global")</span>
+
+                    </div>
+
+
+
+                    <div class="label-container" style="min-height:1px;width:420px;">
+
+
+
+
+
+                    </div>
+
+
+
+                    <div class="field-container">
+
+
+                        <span class="field-title required-field ">@Html.GetResource("Multiplier", "Global") </span>
+
+
+                    </div>
+
+
+                    <div class="label-container label-container-sm" style="min-height:1px; width:55px;">
+
+
+
+                    </div>
+
+                </div>
+
+
+
+
+            </div>
+
+            <div class="col-sm-12 col-md-12" style="padding-top: 2px;">
+
+            </div>
+
+
+
+            <input id="ID" name="ID" value="@Model.ID" type="hidden" />
+            @await Html.PartialAsync("BidModifierShared", Model)
+            <div class="section-footer">
+            </div>
+        </div>
+        <div class="data-row button-container">
+            <input type="submit" name="Settings" value='@Html.GetResource("Save", "Commands")' onclick="return CheckBidModifierDuplication();" class="primary-btn" />
+            <input type="button" value='@Html.GetResource("Close", "Commands")' class="btn" onclick="redirect('@(string.IsNullOrWhiteSpace(Context.Request.Query["returnUrl"]) ? Url.Action("Index", "Campaign") : Context.Request.Query["returnUrl"].ToString())')" />
+        </div>
+    </div>
+    <div id="ConfirmationDialog" style="display: none;">
+
+
+
+    </div>
+}

@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <IncludeSymbols>true</IncludeSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="WatchingUtil.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ArabyAds.Framework.DistributedEventBroker.PubSub" Version="1.0.0" />
+    <PackageReference Include="WebHDFS.Client" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ArabyAds.AdFalcon.Domain.Common\ArabyAds.AdFalcon.Domain.Common.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostPackNugetDeploy" AfterTargets="Pack">
+    <Message Importance="High" Text=" deleting %userprofile%\.nuget\packages\$(PackageId)\$(PackageVersion)" />
+    <Exec Command="rmdir /S /Q %userprofile%\.nuget\packages\$(PackageId)\$(PackageVersion)" />
+    <Exec Command="dotnet nuget locals http-cache -c" />
+    <Exec Command="dotnet nuget push &quot;$(OutputPath)..\$(PackageId).$(PackageVersion).symbols.nupkg&quot; -s &quot;Local NuGet Server&quot;" />
+  </Target>
+
+</Project>

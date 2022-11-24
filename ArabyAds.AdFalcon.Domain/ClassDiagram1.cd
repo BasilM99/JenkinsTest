@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ArabyAds.AdFalcon.Domain.Model.Core.LookupBase&lt;TEntity, TId&gt;" Collapsed="true">
+    <Position X="1.75" Y="1" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAIAAAAAQAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Model\Core\LookupBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ArabyAds.AdFalcon.Domain.Model.Core.Party" Collapsed="true">
+    <Position X="5.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAEIAAAAAQAAAAAAAAAAQAAAQAAAAA=</HashCode>
+      <FileName>Model\Core\Party.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ArabyAds.AdFalcon.Domain.Model.Core.CostElement.CostElement">
+    <Position X="2" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAAACAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Model\Core\CostElement\CostElement.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Type" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ArabyAds.AdFalcon.Domain.Model.Core.CostElement.AdGroupCostElement">
+    <Position X="4.75" Y="2.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAIAAAAAAAAAAAAAAAAAAgBQABAIA=</HashCode>
+      <FileName>Model\Core\CostElement\AdGroupCostElement.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Beneficiary" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ArabyAds.AdFalcon.Domain.Model.Campaign.AdGroup" Collapsed="true">
+    <Position X="8" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQIgAQBGAACAAABEDAggAAEAAAEAAAECAAAAAAgCABA=</HashCode>
+      <FileName>Model\Campaign\AdGroup.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="CostElements" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="ArabyAds.AdFalcon.Domain.Model.Campaign.Targeting.IPTargeting">
+    <Position X="2" Y="6.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAIAAAEAAAA=</HashCode>
+      <FileName>Model\Campaign\Targeting\IPTargeting.cs</FileName>
+      <NewMemberFileName>Model\Campaign\Targeting\KeywordTargeting.cs</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="ArabyAds.AdFalcon.Domain.Model.Core.CostElement.CostElementType">
+    <Position X="0.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Model\Core\CostElement\CostElement.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

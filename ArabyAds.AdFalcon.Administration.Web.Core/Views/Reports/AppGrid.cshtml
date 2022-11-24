@@ -1,0 +1,131 @@
+﻿@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Reports
+
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Report.GridReportModel
+@{
+
+
+    var columnsList = new List<GridColumnSettings>()
+{
+    new GridColumnSettings
+    {
+        Member = "DateRange",
+       Title = Html.GetResource("DateRange", "Report"),
+    },
+    new GridColumnSettings
+    {
+            Member = "Name",
+            Title = Html.GetResource("Name", "AppReport")
+
+    },
+    new GridColumnSettings
+          {
+              Title = Html.GetResource("AppSite", "AppChart"),
+              Member  = "SubName"
+          },
+   new GridColumnSettings
+    {
+        Member = "AdRequests",
+        Title = Html.GetResource("AdRequests", "AppChart"),
+    },
+     new GridColumnSettings
+    {
+        Member = "AdImpress",
+        Title = Html.GetResource("AdImpress", "AppChart"),
+    },
+     new GridColumnSettings
+    {
+        Member = "Clicks",
+        Title = Html.GetResource("AdClicks", "AppChart"),
+    },
+       new GridColumnSettings
+    {
+        Member = "FillRateText",
+        Title = Html.GetResource("FillRate", "AppChart"),
+    },
+        new GridColumnSettings
+    {
+        Member = "CtrText",
+        Title = Html.GetResource("CTR", "AppChart"),
+    },
+        new GridColumnSettings
+    {
+        Member = "eCPMText",
+        Title = Html.GetResource("eCPM", "AppChart"),
+    }
+    ,
+        new GridColumnSettings
+    {
+        Member = "RevenueText",
+        Title = Html.GetResource("Revenue", "AppChart"),
+    }
+    };
+
+
+}
+@{
+    string CustomWidth = string.Empty;
+    if (Model.GridColumnSettings.Count > 10)
+    {
+        CustomWidth = ";width:1700px";
+    }
+    else
+    {
+        CustomWidth = ";width:auto";
+    }
+
+}
+    <div class="grid-container" id="gridSection" style="overflow:visible   ;@CustomWidth">
+
+        @(Html.Kendo().Grid(Model.AppData)
+                    .Name("ReportGrid")
+            .Columns(columns =>
+            {
+                columns.LoadSettings(Model.GridColumnSettings);
+            })
+            .DataSource(dataBinding =>
+            {
+
+                // dataBinding.Ajax().Read("AdGeoLocation", "dashboard").da;
+                dataBinding.Ajax().Read(read => read.Action("AppReports", "reports").Data("reportDataBindingData")).Events(e => e.Error("gridReportError")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+            })
+            .Events(clientEvents => clientEvents.DataBinding("gridReportSuccess").DataBound("reportDataBinding"))
+            .Scrollable(scrolling => scrolling.Enabled(false))
+            .Selectable().Pageable(paging => paging
+
+
+            .Input(false)
+            .Numeric(true)
+            .Info(true)
+            .PreviousNext(true)
+            .Refresh(true).ButtonCount(10)
+            .Position(GridPagerPosition.Bottom))
+            .Filterable(filtering => filtering.Enabled(false))
+            .Groupable(grouping => grouping.Enabled(false)))
+        @*@(Html.Telerik().Grid(Model.AppData)
+            .Name("ReportGrid")
+        .Columns(columns =>
+                     {
+                         columns.LoadSettings(Model.GridColumnSettings);
+                     })
+        .DataBinding(dataBinding =>
+        {
+            dataBinding.Ajax().Select("AppReports", "reports");
+
+        })
+            .Scrollable(scrolling => scrolling.Enabled(false))
+            .EnableCustomBinding(true)
+                  .Pageable(paging => paging.PageSize(10).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+                                  .Groupable(grouping => grouping.Enabled(false)).Footer(true).ClientEvents(p => p.OnDataBound("gridReportSuccess").OnDataBinding("reportDataBinding").OnError("gridReportError")))*@
+
+
+
+    </div>
+<br />
+<div class="data-row">
+    <a href="javascript:void(0)" onclick='reportExport("excel")' class="export-icon-excel floating-left">
+    </a><a href="javascript:void(0)" onclick='reportExport("csv")' class="export-icon-cvs floating-left">
+    </a><a href="javascript:void(0)" onclick='reportExport("pdf")' class="export-icon-pdf floating-left">
+    </a>
+</div>
+@Html.RegisterScriptBlock(string.Format("var reportExportUrl = '{0}';", Url.Action("AppReportExport", "reports"))+ string.Format("var reportRefrshGridURL = '{0}';", Url.Action("AppGrid", "Reports")))

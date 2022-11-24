@@ -1,0 +1,85 @@
+body.appBooster {
+	background: #16284E url('../images/appBoosterPageBg.png') top center no-repeat;
+	color: #fff;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: "Ubuntu", sans-serif;
+	color: #fff;
+	line-height: 1.3em;
+	font-weight: 400;
+}
+
+#inner_banner2 {
+	display: none;
+}
+
+#AppBoosterTracking {
+	background: rgba(0, 0, 0, 0.3);
+	padding: 25px 0;
+}
+
+#footer a {
+	color: #fff;
+}
+
+.widget_text {
+	color: #fff;
+}
+
+#rocket {
+	position: absolute;
+	max-width: 650px;
+	right: -140px;
+	bottom: 0;
+}
+
+#appBoosterDetails ul {
+	margin-left: 20px;
+	list-style-type:circle;
+}
+#appBoosterDetails ul li {
+	margin: 10px 0;
+	font-size: 15px;
+}
+
+#appBoosterDetails {
+	width: 480px;
+}
+#AppBoosterTracking h3 {
+	text-align: center;
+	line-height: 40px;
+	font-size: 22px;
+}
+
+#appBoosterHead h1 {
+	margin: 10px 0 0 0;
+	font-size: 72px;
+}
+#appBoosterHead h3 {
+	font-size: 25px;
+}
+
+#appBoosterHead {
+	text-align: left;
+	margin-bottom: 20px;
+}
+
+#AppBoosterTracking ul li {
+	width: 200px;
+	height: 80px;
+	background-color: #fff;
+	padding: 10px;
+	float: left;
+	margin: 10px;
+	border-radius: 8px;
+}
+
+#AppBoosterTracking ul {
+	margin-left: 120px;
+}

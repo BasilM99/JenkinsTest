@@ -1,0 +1,41 @@
+﻿@using ArabyAds.AdFalcon.Web.Controllers.Model.Tree
+<h2>
+    @Html.GetResource("Advanced", "Report")</h2>
+<div>
+<div class="section-form-container">
+    <div class="section-form-inner-container">
+        <div class="data-row data-container">
+            <div class="label-container ">
+                <span class="field-title required-field">&nbsp;</span>
+            </div>
+            @{TreeViewModel treeView = new TreeViewModel();
+              treeView.Name = "advancedCriteria";}
+            <div class="field-container">
+                <div class="data-row space-bottom-blue-filter" id="deviceTabs" style="display: none">
+                    <div class="blue-filter-container">
+                        <a href="javascript:void(0)" id="deviceTabPlatform" class="selected"
+                                        onclick="changeDeviceTab(this,'@Url.Action("GetTreeData", "Platform")','platform');">
+                            @Html.GetResource("PlatformOS", "Campaign")</a> <a href="javascript:void(0)"  id="deviceTabManuFactor"
+                                            onclick="changeDeviceTab(this,'@Url.Action("GetTreeData", "Manufacturer")','manufactor');">
+                                @Html.GetResource("Manufacturer", "Campaign") </a>
+                    </div>
+                    <div class="tail">
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+        <div    class="data-row data-container">
+            <div class="label-container ">
+                <span class="field-title required-field">&nbsp;</span>
+            </div>
+            <div class="field-container">
+                @await Html.PartialAsync("Tree", treeView)
+
+            </div>
+
+
+    </div>
+</div>
+</div>
+    </div>

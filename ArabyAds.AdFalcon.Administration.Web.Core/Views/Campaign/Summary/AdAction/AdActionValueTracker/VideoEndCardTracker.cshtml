@@ -1,0 +1,25 @@
+﻿@model  ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeSummaryDto
+@{
+    Layout = null;
+}
+
+@{
+    int i = 0;
+    var list = Model.AdActionValueVideoEndCard;
+    foreach (var item in list.Trackers)
+    {
+        <div class="data-row info-container last-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                 
+                </div>
+                <div class="field-container">
+                    <a class="side-text" href="@item.URL" target="_tab">@item.URL</a>
+                </div>
+            </div>
+        </div>
+        {
+            i++;
+        }
+    }
+}

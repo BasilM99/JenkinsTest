@@ -1,0 +1,12 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Tree.TreeViewModel   
+ <div id="bidDialog-form" title="@Html.GetResource("CopyAppsitesToAds", "Ad")" style="display: none; ">
+        <div class="go-left data-row">
+            @Html.GetResource("CopyAppsitesToAdsDesc", "Ad")
+            <p>
+                <b>@Html.GetResource("AdFromSameAdGroupNote","Ad")</b>
+            </p>
+            <div class="data-row data-container">
+                @Html.Partial("Tree", Model)
+            </div>
+        </div>
+    </div>

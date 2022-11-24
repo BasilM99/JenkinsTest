@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mvcSiteMap xmlns="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-3.0" enableLocalization="true">
+  <mvcSiteMapNode title="$resources:SiteMapLocalizations,Home" controller="campaign" action="Index" changeFrequency="Always" updatePriority="Normal" >
+    <mvcSiteMapNode title="$resources:SiteMapLocalizations,Register" controller="user" action="register" changeFrequency="Always" updatePriority="Normal">
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="$resources:SiteMapLocalizations,ForgetPassword" controller="user" action="forgetpassword" changeFrequency="Always" updatePriority="Normal">
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="$resources:SiteMapLocalizations,Login" controller="user" action="login" changeFrequency="Always" updatePriority="Normal">
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="$resources:SiteMapLocalizations,Edit" controller="user" action="Edit" changeFrequency="Always" updatePriority="Normal">
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="$resources:SiteMapLocalizations,ChangePassword" controller="user" action="changepassword" changeFrequency="Always" updatePriority="Normal">
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="$resources:SiteMapLocalizations,BankAccount" controller="user" action="bankaccount" changeFrequency="Always" updatePriority="Normal">
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="$resources:SiteMapLocalizations,ResendEmailActivation" controller="user" action="resend" changeFrequency="Always" updatePriority="Normal">
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="$resources:SiteMapLocalizations,AppSite"   controller="appsite" action="create" changeFrequency="Always" updatePriority="Normal">
+      <mvcSiteMapNode title="$resources:SiteMapLocalizations,AppSiteFilter" controller="appsite" action="filters" changeFrequency="Always" updatePriority="Normal">
+      </mvcSiteMapNode>
+    </mvcSiteMapNode>
+  </mvcSiteMapNode>
+</mvcSiteMap>
+ 

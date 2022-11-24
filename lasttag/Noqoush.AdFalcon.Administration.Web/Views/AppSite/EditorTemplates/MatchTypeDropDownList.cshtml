@@ -1,0 +1,13 @@
+﻿<div class="small-select">
+@model string
+@{
+                 
+    Noqoush.AdFalcon.Services.Interfaces.Services.Core.IMatchTypeService matchTypeService = Noqoush.Framework.IoC.Instance.Resolve<Noqoush.AdFalcon.Services.Interfaces.Services.Core.IMatchTypeService>();
+    SelectList selecList = new SelectList(matchTypeService.GetAll(), "Id", "Name");
+}
+
+@(Html.AdFalconDropDownList("", selecList)
+
+
+) 
+</div>

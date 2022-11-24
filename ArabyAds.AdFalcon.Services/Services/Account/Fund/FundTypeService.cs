@@ -1,0 +1,25 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using ArabyAds.AdFalcon.Domain.Repositories;
+using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Account.Fund;
+using ArabyAds.AdFalcon.Services.Interfaces.Services.Account.Fund;
+using ArabyAds.AdFalcon.Services.Mapping;
+
+namespace ArabyAds.AdFalcon.Services.Services.Account.Fund
+{
+    public class FundTypeService : IFundTypeService
+    {
+        private readonly IAccountFundTypeRepository _accountFundTypeRepository = null;
+        public FundTypeService(IAccountFundTypeRepository accountFundTypeRepository)
+        {
+            this._accountFundTypeRepository = accountFundTypeRepository;
+        }
+
+        public IEnumerable<AccountFundTypeDto> GetAll()
+        {
+            var paymentTypList = _accountFundTypeRepository.GetAll();
+            var items = paymentTypList.Select(paymentTypeDto => MapperHelper.Map<AccountFundTypeDto>(paymentTypeDto)).ToList();
+            return items;
+        }
+    }
+}

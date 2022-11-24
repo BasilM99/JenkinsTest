@@ -1,0 +1,60 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Core.Party.PartyViewModel
+@{
+    if (ViewContext.FormContext == null)
+    {
+        ViewContext.FormContext = new FormContext();
+    }
+}
+
+
+@Html.HiddenFor(m => m.PartyDto.ID)
+
+
+@*<div class="data-row section-container">
+    <div class="section-form-container">*@
+<div class="section-form-inner-container">
+    <div class="data-row data-container">
+        <div class="label-container3">
+            <span class="field-title required-field">@Html.GetResource("Name", "Party")</span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+            @Html.AdFalconTextBoxFor(p => p.PartyDto.Name, new { maskType = "String" })
+            @Html.AdFalconValidationMessageFor(p => p.PartyDto.Name)
+        </div>
+    </div>
+
+    <div class="data-row data-container">
+        <div class="label-container3">
+            <span class="field-title required-field">@Html.GetResource("Account", "AddFund")</span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+            <div style="line-height: 24px;width:330px;">
+                @Html.HiddenFor(m => m.PartyDto.AccountId)
+                @Html.HiddenFor(m => m.PartyDto.AccountName)
+                <img class="find-icon" onclick="showAccountSearchDialog();" src='@Url.GetImagePath("find-icon.png")' />
+
+                <span class="side-text" id="accountName" style="float: none;">@(Model != null && Model.PartyDto != null ? Model.PartyDto.AccountName : string.Empty)</span>
+                @*<img class="find-icon" id="deleteAccount" src='@Url.GetImagePath("delete_1.png")' onclick="ResetAccountData();" style="float: right;display:none;" />*@
+
+
+            </div>
+            <div style="float:right">
+                @Html.AdFalconValidationMessageFor(m => m.PartyDto.AccountName)
+
+            </div>
+
+
+
+        </div>
+    </div>
+    @await Html.PartialAsync(Model.ViewName)
+</div>
+@* </div>
+       <div class="section-footer">
+        </div>
+    </div>*@
+<div class="data-row button-container">
+    <input type="button" value="@Html.GetResource("Save", "Commands")" class="primary-btn" onclick="callSave();" />
+</div>
+
+

@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <!--<TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>-->
+		<!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
+    <IncludeSymbols>true</IncludeSymbols>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Authors>ArabyAds Mobile Media Group FZ-LLC</Authors>
+    <Company>ArabyAds Mobile Media Group FZ-LLC</Company>
+    <Platforms>AnyCPU;x64</Platforms>
+    <PackageId>ArabyAds.AdFalcon.Server.Integration.Services</PackageId>
+
+  </PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<PlatformTarget>x64</PlatformTarget>
+		<OutputPath>..\..\..\..\bin</OutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+	  <PlatformTarget>x64</PlatformTarget>
+	  <OutputPath>..\..\..\..\bin</OutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<OutputPath>..\..\..\..\bin</OutputPath>
+		<PlatformTarget>x64</PlatformTarget>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+	  <OutputPath>..\..\..\bin</OutputPath>
+	  <PlatformTarget>x64</PlatformTarget>
+	</PropertyGroup>
+
+	<ItemGroup>
+    <!--<PackageReference Include="Newtonsoft.Json" Version="10.0.1" Condition="'$(TargetFramework)' == 'netstandard2.0'" />-->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	</ItemGroup>
+
+	<Target Name="PostPackNugetDeploy" AfterTargets="Pack">
+		<Message Importance="High" Text=" deleting %userprofile%\.nuget\packages\$(PackageId)\$(PackageVersion)" />
+		<!--<Exec Command="rmdir /S /Q %userprofile%\.nuget\packages\$(PackageId)\$(PackageVersion)" />
+    <Exec Command="dotnet nuget locals http-cache -c" />-->
+		<!--<Exec Command="dotnet nuget push &quot;$(OutputPath)..\$(PackageId).$(PackageVersion).symbols.nupkg&quot; -s &quot;Local NuGet Server&quot;" />-->
+	</Target>
+	<Target Name="UpdateNugetCache" AfterTargets="Build">
+		<Message Importance="High" Text="Updating nuget cache %userprofile%\.nuget\packages\$(PackageId)\$(PackageVersion)\lib\$(TargetFramework)\$(TargetFileName)" />
+		<!--<Exec Command="xcopy /Y $(TargetPath)  %userprofile%\.nuget\packages\$(PackageId)\$(PackageVersion)\lib\$(TargetFramework)\" />-->
+		<Exec Command="dotnet nuget locals http-cache -c" />
+		<Exec Command="dotnet pack --no-build -o &quot;$(OutputPath)..\&quot;" />
+		<Exec Command="rmdir /S /Q %userprofile%\.nuget\packages\$(PackageId)\$(PackageVersion)" />
+		<Exec Command="dotnet nuget push &quot;$(OutputPath)..\$(PackageId).$(PackageVersion).symbols.nupkg&quot; -s %userprofile%\.nuget\packages\" />
+	</Target>
+
+	<!--<Target Name="_ResolveCopyLocalNuGetPackagePdbsAndXml" Condition="$(CopyLocalLockFileAssemblies) == true" AfterTargets="ResolveReferences">
+		<ItemGroup>
+			<ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths->'%(RootDir)%(Directory)%(Filename).pdb')" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' != ''&#xD;&#xA;                    and Exists('%(RootDir)%(Directory)%(Filename).pdb')" />
+			<ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths->'%(RootDir)%(Directory)%(Filename).xml')" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' != ''&#xD;&#xA;                    and Exists('%(RootDir)%(Directory)%(Filename).xml')" />
+		</ItemGroup>
+	</Target>-->
+
+</Project>
+

@@ -1,0 +1,18 @@
+﻿@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core
+@model ArabyAds.AdFalcon.Administration.Web.Controllers.Model.Lookup.ManufacturerViewModel
+@{
+    if (ViewContext.FormContext == null)
+    {
+        ViewContext.FormContext = new FormContext();
+    }
+    ViewData.TemplateInfo.HtmlFieldPrefix = "LookupDto";
+}
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("Order", "Lookup")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconTextBox("Order", (Model.LookupDto as ManufacturerDto).Order, new { maskType = "Int" })
+        @Html.ValidationMessageFor(p => (p.LookupDto as ManufacturerDto).Order)
+    </div>
+</div>

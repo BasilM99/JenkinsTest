@@ -1,0 +1,20 @@
+﻿@using Noqoush.AdFalcon.Services.Interfaces.DTOs.Core
+
+@model Noqoush.AdFalcon.Administration.Web.Controllers.Model.Lookup.KeywordViewModel
+@{
+    if (ViewContext.FormContext == null)
+    {
+        ViewContext.FormContext = new FormContext();
+    }
+    ViewData.TemplateInfo.HtmlFieldPrefix = "LookupDto";
+}
+
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("Code")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconTextBoxFor(p => (p.LookupDto as KeywordSaveDto).Code)
+        @Html.ValidationMessageFor(p => (p.LookupDto as KeywordSaveDto).Code)
+    </div>
+</div>

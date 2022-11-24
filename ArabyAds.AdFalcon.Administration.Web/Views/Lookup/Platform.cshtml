@@ -1,0 +1,11 @@
+﻿@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core
+@model ArabyAds.AdFalcon.Administration.Web.Controllers.Model.Lookup.PlatformViewModel
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">&nbsp;</span>
+    </div>
+    <div class="field-container">
+        @Html.GetCheckBox("LookupDto.IsVisible", @Html.GetResource("IsVisible", "Lookup"), (Model.LookupDto as PlatformDto).IsVisible)
+        @Html.ValidationMessageFor(p => (p.LookupDto as PlatformDto).IsVisible)
+    </div>
+</div>

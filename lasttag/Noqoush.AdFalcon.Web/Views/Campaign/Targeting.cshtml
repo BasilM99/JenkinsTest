@@ -1,0 +1,420 @@
+﻿@{
+	ViewBag.Title = Html.GetResource("Targeting", "Titles");
+}
+@using System.Globalization
+@using Noqoush.AdFalcon.Domain.Common.Model.Core
+@using Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.Targeting
+@model Noqoush.AdFalcon.Web.Controllers.Model.Campaign.TargetingViewModel
+
+<script src="~/ScriptsNg/Contr/SSPGrid.js"></script>
+<script type="text/javascript">
+    var targetingContinueFlag = false;
+
+    var targetingContinueFlagUpper = false;
+
+    var isNew = false;
+    var treeFalgs = new Array();
+    var firstbid=true;
+    var minBid = null;
+    var ad_action_type_id = @Model.AdActionTypeId;
+	var has_device_targeting = @(Model.DeviceTargetingView.Devices != null ? "true" : "false");
+	var minBidMsg = '@Html.GetResource("MinBidMsg", "ResourceSet")';
+		var UpdateFeesErrorMsg = '@Html.GetResource("UpdateFeesError", "Global")';
+    var minBidErrMsg = '@Html.GetResource("MinBidErrMsg")';
+    @*var bid_value_string = @(Model.Bid.ToString("F2"));*@
+    @if (Model.Bid > 0)
+    {
+        <text>
+            var bid_value_string = @Model.Bid.ToString("F2")
+        </text>
+    }
+    else
+    {
+        <text>
+            var bid_value_string = null;
+        </text>
+    }
+    var noDeviceErrMsg = '@Html.GetResource("NoDeviceErrMsg")';
+    var wifiOperatorId =@Noqoush.AdFalcon.Web.Controllers.Utilities.Config.WIFIOperaterId ;
+    var discountedBidDesc = '@Html.GetResource("DiscountedBidDesc", "Campaign")';
+    var has_discount = @((Model.DiscountDto != null).ToString().ToLower());
+    var discount_value = @(Model.DiscountDto != null ? Model.DiscountDto.Value : 0);
+    var discount_value_string = @(Model.DiscountedBid.Value.ToString("F2"));
+    GlobalAdvertiserId = '@Model.AdvertiserId';
+	GlobalAdvertiserAccountId = '@Model.AdvertiserAccountId';
+    var discount_type = @(Model.DiscountDto != null ? Model.DiscountDto.TypeId : 0);
+    var change_cost_model_warning = '@(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsShowAdminSection ? Html.GetResource("AdminChangeCostModelWarning", "Campaign") : Html.GetResource("ChangeCostModelWarning", "Campaign"))';
+    var locked_warning = '@Html.GetResource("LockedWarning", "Campaign")';
+	var is_client_locked = @((!Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsAdOpsAdminInAdminApp && Model.IsClientLocked).ToString().ToLower());
+
+		 var readOnly_warning = '@Html.GetResource("LockedCampWarning", "Campaign")';
+	var is_client_readOnly = @((!Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsAdOpsAdminInAdminApp && Model.IsClientReadOnly).ToString().ToLower());
+
+    var campaign_id =@(Model.CampaignId);
+    var ad_group_id = @(Model.AdGroupId);
+    var ad_less_url = '@Url.Action("AdsLessBid")';
+        var ad_more_url = '@Url.Action("AdsMoreBid")';
+    var set_ads_bid_url = '@Url.Action("SetAdsBid")';
+    var search_device_url = '@Url.Action("SearchTree", "Device")/?query=';
+    var operater_tree_url = '@Html.Raw(Model.OperaterTargetingView.Operaters.Url)';
+    var get_bid_url = '@Url.Action("GetBid")';
+    var AlreadyAddedMsg = '@Html.GetResource("AlreadyAdded")';
+    var device_tree_name= '@(Model.DeviceTargetingView.DevicesTree.Name)';
+    var geographics_tree_name= '@(Model.Geographics.GeographicalAreas.Name)';
+    var operater_tree_name= '@(Model.OperaterTargetingView.Operaters.Name)';
+	   var costModelArapperValue = @Model.CostModelWrapperId;
+    var geographics_type_id = @Model.Geographics.GeographicalAreas.IsAll;
+    var operater_type_id=@Model.OperaterTargetingView.Operaters.IsAll;
+    var device_type_id = @Model.DeviceTargetingView.Type;
+    var resource_campaign = '@Html.GetResource("Campaign")';
+
+
+    var resource_Ads = '@Html.GetResource("Ads","SiteMapLocalizations")';
+
+    var resource_minBidDesc1 = '@Html.GetResource("minBidDesc1","Campaign")';
+    var resource_minBidDesc2 = '@Html.GetResource("minBidDescMore1","Campaign")';
+
+    var resource_old_bid= '@Html.GetResource("OldBid", "Campaign")';
+    var resource_select_command= '@Html.GetResource("SelectComman")';
+    var resource_cancel_command = '@Html.GetResource("Cancel")';
+    var resource_yes_command = '@Html.GetResource("Yes")';
+    var resource_no_command = '@Html.GetResource("No")';
+    var ConfirmationPMP  = "@Html.GetResource("Delete", "Confirmation")";
+    var disableSaveButtonForAjax = false;
+    var SSPCheckedIDs = "";
+	 var updateFeesValues = '@Html.GetResource("UpdateFees")';
+
+    @{ if (Model.Bid == 0)
+        {
+         <text>  isNew = true;</text>
+        } }
+
+    @if (Model.AdTypeId.HasValue)
+    {
+        <text>
+    var adtypeId = @Model.AdTypeId.Value;
+    </text>
+    }
+    else
+    {
+        <text>
+    var adtypeId = null;
+    </text>
+    }
+    $(document).ready(function (){
+
+        @{
+
+
+        if (!ViewBag.InventorySourcesAllowed)
+        {      <text>
+
+        $("#keywordSection").show();
+        </text>
+        }
+    }
+
+
+        if (AccountRole == "DSP") {
+            SetSelectedTap("ListMenuCampains");
+        } else {
+            SetSelectedTap("ListMenuAdvertiser");
+
+        }
+
+    });
+</script>
+
+<style>
+	.fields-nextto-cloud {
+		width: 500px;
+	}
+
+
+		.fields-nextto-cloud .label-container {
+			width: 150px;
+		}
+
+	.ad-filter-text {
+		width: 100%;
+		padding: 0 10px
+	}
+
+		.ad-filter-text h3 {
+			font-size: 17.5px;
+		}
+
+	h3 {
+		font-size: 18px;
+	}
+</style>
+@using (Html.BeginForm("Targeting", "Campaign", null, FormMethod.Post, new { enctype = "multipart/form-data", name = "targetingForm", id = "targetingForm" }))
+{
+	@Html.Hidden("AdGroupId", Model.AdGroupId)
+	@Html.Hidden("CampaignId", Model.CampaignId)
+	@Html.Hidden("DeviceTargetingTypeId", Model.DeviceTargetingView.Type)
+	@Html.Hidden("GeographicTargetingIsAll", Model.Geographics.GeographicalAreas.IsAll)
+	@Html.Hidden("OperatorTargetingIsAll", Model.OperaterTargetingView.Operaters.IsAll)
+	@Html.Hidden("LoadDefaultsTrackingEvents", Model.LoadDetaultTrackingEvents)
+	@Html.Hidden("Models", "")
+	@Html.Hidden("DeviceCapabilities", "")
+	@Html.Hidden("ExcludeDeviceCapability", "")
+	@Html.Hidden("DeletedIPRanges", "")
+	@Html.Hidden("InsertedIPRanges", "")
+	@Html.Hidden("DeletedURLTargeting", "")
+	@Html.Hidden("InsertedURLTargeting", "")
+	@Html.Hidden("platfromTree", "")
+	@Html.Hidden("IsContinue")
+
+	@Html.Hidden("DeletedGeoFencing", "")
+	@Html.Hidden("InsertedGeoFencing", "")
+
+	@Html.HiddenFor(p => p.TrackInstalls)
+	@Html.HiddenFor(p => p.OpenInExternalBrowser)
+	@Html.HiddenFor(p => p.AllowOpenAuction)
+		@Html.HiddenFor(p => p.ViewabilityVendorId)
+	@Html.HiddenFor(p => p.groupAudianceString)
+	@Html.HiddenFor(p => p.AudianceDiscountPrice)
+	@Html.Hidden("returnUrl", Request.QueryString["returnUrl"])
+	<div class="data-row section-container" ng-app="app">
+		<div class="data-row section-container">
+			<div class="ie-margin">
+			</div>
+			@Html.Partial("Targeting/Slider")
+			<div class=" data-row " id="ContentOfTabTargeting">
+				@Html.Partial("CampaignInfo")
+				<br />
+				<div id="targetingArea" class="tab-content " style="width:100%;margin-bottom:0px; border:0px;position:relative;border:solid 1px #d1d1d3">
+
+					@Html.Partial("Targeting/SubTab")
+					<div class="section-form-container targeting-section-form-container CustomOffsetTargeting" style="padding:2px;border:none">
+						<br />
+						<div class="section-form-inner-container info-container tab-pane fade in" tabsection="0" id="keywordSection" style="display:none;">
+							<div class="data-row section-container">
+
+								<div class="container">
+									<div class="row">
+
+
+
+										<div class="videoTargeting" style="width:100%">
+											<div class="header open" id="GeoghraphicTargetingDescDiv" onclick="collapse(this, 'GeoghraphicTargetingDesc')">
+												<h4>@Html.GetResource("LocationAndGeofence", "Global")</h4>
+											</div>
+
+
+											<div id="GeoghraphicTargetingDesc" class="container" style="display: none;">
+
+												@Html.Partial("Targeting/Geographic", Model.Geographics)
+
+											</div>
+
+
+										</div>
+									</div>
+								</div>
+								<div class="container">
+									<div class="row">
+
+
+
+
+
+										<div class="videoTargeting" style="width:100%">
+											<div class="header open" id="OperatorTargetingDescDiv" onclick="collapse(this, 'OperatorTargetingDesc')">
+												<h4>@Html.GetResource("NetworkAndOperators", "Campaign")</h4>
+											</div>
+
+
+											<div id="OperatorTargetingDesc" class="container" style="display: none;">
+
+												@Html.Partial("Targeting/Operator", Model.OperaterTargetingView)
+
+											</div>
+
+
+										</div>
+									</div>
+								</div>
+								<div class="container">
+									<div class="row">
+
+
+
+										<div class="videoTargeting" style="width:100%">
+											<div class="header open" id="KeywordDivdsdDiv" onclick="collapse(this, 'KeywordDivdsd')">
+												<h4>@Html.GetResource("ContentCategories", "Global")</h4>
+											</div>
+
+
+											<div id="KeywordDivdsd" class="container" style="display: none;">
+
+												@Html.Partial("Targeting/KeyWord", Model.KeywordTargetingViewModel.KeywordViewModel)
+
+											</div>
+
+
+										</div>
+
+
+									</div>
+								</div>
+								<div class="container">
+									<div class="row">
+
+
+
+										<div class="videoTargeting" style="width:100%">
+											<div class="header open" id="DemograhicTargetingDescDiv" onclick="collapse(this, 'DemograhicTargetingDesc')">
+												<h4>@Html.GetResource("Demographics", "Campaign")</h4>
+											</div>
+
+
+											<div id="DemograhicTargetingDesc" class="container" style="display: none;">
+
+												@Html.Partial("Targeting/Demographic", Model.DemographicTargetingView)
+
+											</div>
+
+
+										</div>
+									</div>
+								</div>
+
+								<div class="container">
+									<div class="row">
+
+
+
+										<div class="videoTargeting" style="width:100%">
+											<div class="header open" id="MasterListsTargetingDesc" onclick="collapse(this, 'MasterListsTargetingDescall')">
+												<h4>@Html.GetResource("ContentLists", "Global")</h4>
+											</div>
+
+
+											<div id="MasterListsTargetingDescall" class="container" style="display: none;">
+
+												@Html.Partial("Targeting/MasterList", Model)
+
+											</div>
+
+
+										</div>
+									</div>
+								</div>
+
+								@if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsAdOpsAdmin || ViewBag.PMPDealAllowed)
+
+								{
+									<div class="container">
+										<div class="row">
+
+
+
+											<div class="videoTargeting" style="width:100%">
+												<div class="header open" id="AdvanceTargetingDesc" onclick="collapse(this, 'AdvanceTargetingDescall')">
+													<h4>@Html.GetResource("AdvancedSettings", "Commands")</h4>
+												</div>
+
+
+												<div id="AdvanceTargetingDescall" class="container" style="display: none;">
+
+													@Html.Partial("Targeting/AdvanceTargeting", Model)
+
+												</div>
+
+
+											</div>
+										</div>
+									</div>
+								}
+							</div>
+						</div>
+
+
+
+
+
+
+
+
+						@Html.Partial("Targeting/Device", Model.DeviceTargetingView)
+
+
+						@Html.Partial("Targeting/BidConfig", Model)
+
+
+						@if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsShowAdminSection)
+						{
+							<div class="section-form-inner-container info-container tab-pane fade" tabsection="7" id="costElemtnsSection"
+								 style="display: none;">
+								@Html.Action("CostElements")
+							</div>
+						}
+
+						<div class="section-form-inner-container info-container tab-pane fade" tabsection="14" id="ImpressionMetricsSection"
+							 style="display:none;">
+
+							@if ((Noqoush.Framework.OperationContext.Current.UserInfo
+							<Noqoush.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+								().AccountRole == (int)Noqoush.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP) || Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsAdOpsAdmin)
+							{
+								@Html.Action("ImpressionMetrics", new { adGroupId = Model.AdGroupId })
+							}
+						</div>
+						@{
+
+							if (ViewBag.AudienceAllowed)
+							{
+								@Html.Partial("Targeting/AudienceSegment", Model)
+
+							}
+							if (ViewBag.PMPDealAllowed)
+							{
+								@Html.Partial("Targeting/PMPDeal", Model)
+
+							}
+							@Html.Partial("Targeting/VideoTargeting")
+							if (ViewBag.InventorySourcesAllowed)
+							{
+								@Html.Partial("Targeting/InventorySource", Model.InventorySourceModel)
+
+							}
+						}
+						@Html.Partial("Targeting/Conversions")
+						<br />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="">
+		<br />
+	</div>
+	<div class="data-row button-container">
+		@{
+			if (!(Model.IsClientLocked || Model.IsClientReadOnly))
+			{
+				if (Model.Bid == 0)
+				{
+					@Html.SubmitButton(@Html.GetResource("Continue", "Commands"), "Continue", new { @class = "continue-button", onclick = "checkStatus(true)", id = "Continue" })
+				}
+
+				@Html.SubmitButton(@Html.GetResource("Save", "Commands"), "Create", new { @class = "primary-btn", onclick = "checkStatus(false);", id = "Save" })
+
+			}
+
+		}
+
+		<input type="button" value='@Html.GetResource("Close", "Commands")' class="btn" onclick="redirect('@(string.IsNullOrWhiteSpace(Request.QueryString["returnUrl"]) ? Url.Action("Groups", "Campaign", new { id = Model.CampaignId }) : Request.QueryString["returnUrl"])    ')" />
+
+	</div>
+	@Html.Partial("Targeting/BidConflictDialog")
+
+
+	<div id="ConfirmationDialog" style="display: none;">
+
+
+
+	</div>
+}

@@ -1,0 +1,60 @@
+﻿@using ArabyAds.AdFalcon.Domain.Common.Model.Campaign
+@model  ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.CreativeUnitLisViewModel
+@{
+   
+}
+
+
+<div class="section-form-inner-container info-container">
+    <div class="ad-banner-container-right floating-right">
+    </div>
+    <div class="ad-banner-container-left floating-left">
+        <br />
+        @{
+            foreach (var creativeUnit in Model.CreativeUnits)
+            {
+                switch (Model.TypeId)
+                {
+                    case AdTypeIds.Banner:
+                        {
+                            @await Html.PartialAsync("Creative/CreativeUnit/BannerCreativeUnit", creativeUnit)
+                            ;
+                            break;
+                        }
+                    case AdTypeIds.PlainHTML:
+                        {
+                            @await Html.PartialAsync("Creative/CreativeUnit/HTMLCreativeUnit", creativeUnit)
+                            break;
+                        }
+                    case AdTypeIds.RichMedia:
+                        {
+                            switch (Model.AdSubType)
+                            {
+                                case AdSubTypes.ExpandableRichMedia:
+                                    {
+                                        @await Html.PartialAsync("Creative/CreativeUnit/ExpandableCreativeUnit", creativeUnit)
+                                        break;
+                                    }
+                                case AdSubTypes.JavaScriptRichMedia:
+                                    {
+                                        @await Html.PartialAsync("Creative/CreativeUnit/JavaScriptCreativeUnit", creativeUnit)
+                                        break;
+                                    }
+                                case AdSubTypes.JavaScriptInterstitial:
+                                    {
+                                        @await Html.PartialAsync("Creative/CreativeUnit/JavaScriptCreativeUnit", creativeUnit)
+                                        break;
+                                    }
+                                case AdSubTypes.ExternalUrlInterstitial:
+                                    {
+                                        @await Html.PartialAsync("Creative/CreativeUnit/ExternalUrlCreativeUnit", creativeUnit)
+                                        break;
+                                    }
+                            }
+                            break;
+                        }
+                }
+            }
+        }
+    </div>
+</div>

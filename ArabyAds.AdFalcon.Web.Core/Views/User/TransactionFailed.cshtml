@@ -1,0 +1,16 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("UnsuccessfulTransactionTitle", "PGW");
+    Layout = "~/Views/Shared/MasterLayouts/InnerReact.cshtml";
+}
+<script>
+    window.TransactionIsCompleted = '@ViewData["TransactionIsCompleted"]';
+
+    window.TransactionFailedMessage = '@ViewData["TransactionFailedMessage"]';
+</script>
+
+<div id="APP-Root">
+</div>
+
+<script src="~/ClientReactJs/Dashboard.js.gz" asp-append-version="true"></script>
+
+

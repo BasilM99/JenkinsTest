@@ -1,0 +1,23 @@
+.theme-default #slider {
+	width:960px; /* Make sure your images are the same size */
+	height:304px; /* Make sure your images are the same size */
+}
+.theme-pascal.slider-wrapper,
+.theme-orman.slider-wrapper {
+    margin-top:150px;
+}
+
+/*====================*/
+/*=== Other Styles ===*/
+/*====================*/
+.clear {
+	clear:both;
+}
+#clientlogos {
+	width: 923px;
+	margin-right: auto;
+	margin-left: auto;
+	border: 1px solid #AEAEAE;
+	padding: 15px;
+	margin-top: 30px;
+}

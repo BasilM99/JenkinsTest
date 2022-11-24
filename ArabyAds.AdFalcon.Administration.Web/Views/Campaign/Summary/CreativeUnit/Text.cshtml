@@ -1,0 +1,17 @@
+﻿@model IList<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeUnitDto>
+@foreach (var adCreativeUnitDto in Model)
+{
+    @Html.Partial("Summary/CreativeUnit/Units/TextUnit", adCreativeUnitDto)
+    if (!string.IsNullOrEmpty(adCreativeUnitDto.ImpressionTrackerRedirect))
+    {
+    <div class="impression-tracker-high">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("ImpressionTrackerRedirect", "CreativesSettings"):
+            </span>
+        </div>
+        <div class="field-container">
+            <span class="side-text">@adCreativeUnitDto.ImpressionTrackerRedirect</span>
+        </div>
+    </div>
+    }
+}

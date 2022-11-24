@@ -1,0 +1,77 @@
+﻿
+@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Account.UserDto
+
+<script language="javascript" type="text/javascript">
+    function clickImageDiv(modelId) {
+        var element = $("#checkbox" + modelId);
+        executeFunctionByName("checkBox", window, element);
+    }
+
+</script>
+<div class="col-sm-3" style="width: 130px;padding-bottom: 3px;padding-top: 3px;" onclick="clickImageDiv(@Model.Id,event)">
+    <div class="col-sm-12 border-box-unSelected" id="DivSSPID@(Model.Id)" style="">
+        <div class="row">
+
+            @{
+
+                if (Model.ImageId > 0)
+                {
+                    <div class="col">
+
+                        <img src='@(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + Model.ImageId.ToString())' id="fileImage" class="img-responsive img-radio IMG-Icon" style="margin: auto;  padding-top: 6px;">
+                    </div>
+                }
+                else
+                {
+                    <div class="col">
+
+                        <img src='' id="fileImage" class="img-responsive img-radio noIMG IMG-Icon" style="margin: auto; padding-top: 6px;">
+                    </div>
+
+
+                }
+
+
+                <div class="w-100"></div>
+
+                if (Model.AccountName.Length > 10)
+                {
+                    <div class="col" style="text-align: center;padding-bottom: 3px;">
+
+                        <div class="btm-space-10" title="@Model.AccountName">
+
+                            @Html.GetCheckBox(Model.Id.ToString(), Model.AccountName.Substring(0, 5) + "..", isChecked: Model.ExchangeChecked, customValue: @Model.AccountId.ToString(), onChange: "refreshGrid", style: "style='display:none'", divid: "checkbox" + Model.Id)
+                            <span>
+                                @Model.AccountName.Substring(0, 10)..
+
+                            </span>
+
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col" style="text-align: center;padding-bottom: 3px;">
+
+                        <div class="btm-space-10" title="@Model.AccountName">
+
+                            @Html.GetCheckBox(Model.Id.ToString(), Model.AccountName, isChecked: Model.ExchangeChecked, customValue: @Model.AccountId.ToString(), onChange: "refreshGrid", style: "style='display:none'", divid: "checkbox" + Model.Id)
+                            <span>
+
+                                @Model.AccountName
+                            </span>
+                        </div>
+                    </div>
+                }
+
+                <input type="hidden" name="SSPID@(Model.AccountId)" value="@Model.Id" id="SSPID@(Model.AccountId)">
+
+
+
+
+            }
+        </div>
+    </div>
+
+</div>
+

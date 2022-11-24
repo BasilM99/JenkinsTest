@@ -1,0 +1,337 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("IndexAppSite", "Titles");
+}
+@model  ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.AdGroupDynamicBiddingListViewModel
+<script language="javascript" type="text/javascript">
+    
+    var DynamicBiddingURL = '@Url.Action("AdGroupDynamicBiddingConfig", new { id = ViewContext.RouteData.Values["id"], adGroupId = ViewContext.RouteData.Values["adGroupId"] })'; //'/Campaign/CostElement';
+	var SaveAdGroupDynamicBiddingConfigURL = '@Url.Action("SaveAdGroupDynamicBiddingConfig", new { id = ViewContext.RouteData.Values["id"], adGroupId = ViewContext.RouteData.Values["adGroupId"] })';
+    var campaignId=@(ViewContext.RouteData.Values["id"]);
+    var adGroupId=@(ViewContext.RouteData.Values["adGroupId"]);
+
+
+
+	 var EditDynamicBiddingstr = "@Html.GetResource("EditDynamicBidding", "DynamicBidding")";
+   	 var AddDynamicBiddingstr = "@Html.GetResource("AddDynamicBidding", "DynamicBidding")";
+    var close = "@Html.GetResource("Close","Commands")";
+    var yesbtn = "@Html.GetResource("Yes", "Global")";
+    var nobtn = "@Html.GetResource("No", "Global")";
+	var DynamicBiddingConfriamtion  = "@Html.GetResource("DynamicBiddingConfriamtion", "DynamicBidding")";
+
+    var ConfriamtionBoxTitle = "@Html.GetResource("Confirm")";
+    var DynamicgroupName;
+    @{ long numberOfRecordes = Model.Elements.TotalCount;}
+
+    var date = '@ArabyAds.Framework.Utilities.Environment.GetServerTime()';
+    $(document).ready(function () {
+
+       
+		colorTheGridDynamicAdGroup();
+		localInitilize_DynamicBiddings();
+    });
+
+
+ 
+	function EditDynamicBidding(element)
+    {
+	
+
+        var tr = $(element).parents('tr');
+       
+		reset_dynamic_element();
+
+
+		$("#DynamicBiddingfrom").show();
+		$("#AdGruopDynamicBiddingID").val($(tr).find("#IdDynamicBiddingLable").text());
+
+		if ($("#AdGruopDynamicBiddingID").val()!='')
+			$("#DynamicBidding-Form").attr("title", EditDynamicBiddingstr);
+		else
+			$("#DynamicBidding-Form").attr("title", AddDynamicBiddingstr);
+		selectDropDownListItem($(tr).find("#TypeLable").text());
+		if ($(tr).find("#ValueStrLable").text().includes("$"))
+			$("#DynamicBidding-Form #BidOptimizationValue").val($(tr).find("#ValueStrLable").text().substring(1, $(tr).find("#ValueStrLable").text().length));
+		else
+			$("#DynamicBidding-Form #BidOptimizationValue").val($(tr).find("#ValueStrLable").text().substring(0, $(tr).find("#ValueStrLable").text().length - 1));
+
+		$("#DynamicBidding-Form #DefaultBidPrice").text($(tr).find("#DefaultBidPriceLable").text());
+		$("#DynamicBidding-Form #MaxBidPrice").val($(tr).find("#MaxBidPriceLable").text());
+		$("#DynamicBidding-Form #MinBidPrice").val($(tr).find('#MinBidPriceLable').text());
+
+		$("#DynamicBidding-Form #BidStep").val($(tr).find("#BidStepLable").text());
+		$("#DynamicBidding-Form #KeepBiddingAtMinimum").val($(tr).find("#KeepBiddingAtMinimumLable").text());
+
+		if ($(tr).find("#KeepBiddingAtMinimumLable").text()=='true')
+			check("KeepBiddingAtMinimum");
+		else
+			uncheck("KeepBiddingAtMinimum");
+
+
+
+
+
+        //$("#Stop").attr('checked', false);
+		showDialog('DynamicBidding-Form');
+    }
+    function selectDropDownListItem(text)
+    {
+
+		var dropdownlist = $("#DynamicBidding-Form #BidOptimizationTypeList");
+        var dropdownlistItems = $(dropdownlist).find("option");
+        for(var i=0 ;i < dropdownlistItems.length; i++)
+        {
+            if(dropdownlistItems.eq(i).text()==text)
+            {
+                // $(dropdownlist).attr('selectedIndex', i);
+                // dropdownlistItems.eq(i).attr('selected',"true");
+                $(dropdownlist).val(dropdownlistItems.eq(i).val());
+				DynamicChanged(dropdownlist);
+                break;
+            }
+        }
+    }
+	function StopDynamicBidding(element)
+    {
+        var tr = $(element).parents('tr');
+		DynamicgroupName = $(tr).find("#TypeLable").text();
+       
+		confirmationDynamicFunc($(tr).find("#IdDynamicBiddingLable").text());
+    }
+
+    // add-stop-edit
+    function saveDynamicBidding(stop,id)
+    {
+
+
+		var data = getDynamicData(stop,id);
+
+        jQuery.ajax({
+            type: 'POST',
+			url: SaveAdGroupDynamicBiddingConfigURL + "?stop="+stop,
+            data: data,
+            success: function (responce) {
+                if (responce.Success) {
+                    // change the value to stop submit without checking the costmodel and ask user to update
+                    // cost elements values if necesary
+                 
+					generateDynamicAdGroupsGrid();
+                    showSuccessfullyMessage(responce.Message);
+
+                } else {
+                    showErrorMessage(responce.ErrorMessage, false);
+                    $(this).dialog('close');
+                }
+            },
+            error: function (s, e, f) {
+
+                alert(e);
+            }
+
+        });
+    }
+
+
+    function confirmationDynamicFunc(id) {
+        //confirmation
+        $('<div id ="confirmation" title="' + ConfriamtionBoxTitle + '"></div>').dialog({
+            open: function() {
+				$(this).html(DynamicBiddingConfriamtion.format('"'+DynamicgroupName+'"'));
+            },
+            close: function() {
+                $(this).remove();
+            },
+            resizable: false,
+            draggable:false,
+            modal: true,
+        });
+        //CostElementConfriamtion
+        $("#confirmation").dialog({
+            buttons: [{
+                text: yesbtn,
+                click: function() {
+					saveDynamicBidding(true,id);
+
+                    $(this).dialog('close');
+                },
+                "class": 'primary-btn',
+
+            }, {
+                text: nobtn,
+                click: function() {
+                    $(this).remove();
+                },
+                "class": 'delete-button',
+
+            }]
+        });
+
+    }
+
+    function getDynamicData(stop,id)
+    {
+
+        var data = new Object();
+        data.ID = stop ? id :$("#AdGruopDynamicBiddingID").val();
+        data.CampaignId = campaign_id;
+        data.AdGroupId = ad_group_id;
+	
+		data.BidOptimizationValue = $("#BidOptimizationValue").val();
+		data.DefaultBidPrice = $("#DefaultBidPrice").val();
+		data.MaxBidPrice = $("#MaxBidPrice").val();
+		data.MinBidPrice = $("#MinBidPrice").val();
+		data.BidStep = $("#BidStep").val();
+		data.Type = $("#BidOptimizationTypeList").val();
+		//data.KeepBiddingAtMinimum = $("#KeepBiddingAtMinimum").val();
+		if (Radio_IsChecked("#KeepBiddingAtMinimum")) 
+			data.KeepBiddingAtMinimum = true;
+        return data;
+    }
+
+ 
+	function generateDynamicAdGroupsGrid() {
+		var grid = $("#AdGroupDynamicBiddingsGrid").data("tGrid");
+        grid.rebind();
+    };
+    function colorTheGridDynamicAdGroup()
+    {
+		var grid = $("#AdGroupDynamicBiddingsGrid").data("tGrid");
+		var htmlgrid = $("#AdGroupDynamicBiddingsGrid tbody tr");
+        //for(var i =0 ; i <htmlgrid.length; i++ )
+        //{
+        //    var row = $(htmlgrid).eq(i);
+        //    if($(row).find("#isStoped input").is(":checked") ||$(row).find("#isStoped").text()=='true')
+        //    {
+        //        $(row).attr("style","color:silver;!important");
+        //    }
+        //}
+    }
+
+	function AdGroupDynamicBiddingsGridDataBound(e) {
+
+		var grid = $("#AdGroupDynamicBiddingsGrid").data("tGrid");
+		colorTheGridDynamicAdGroup();
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(currentPage);
+        }
+        $(".t-no-data").addClass("go-center");
+
+    }
+
+ 
+
+	function showNewDynamicBidDialog() {
+		
+		if (hasValue(reset_dynamic_element))
+			reset_dynamic_element();
+		showDialog('DynamicBidding-Form');
+	
+	}
+	  function localInitilize_DynamicBiddings() {
+
+   
+		  jQuery("#DynamicBidding-Form").dialog({
+            autoOpen: false,
+            //height: 230,
+            width: 480,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            buttons: [{
+                text: '@Html.GetResource("Save", "Commands")',
+                click: function () {
+              
+					if (!validationDynamic())
+                    {
+                        return;
+                    }
+                    else
+                    {
+						saveDynamicBidding();
+                    }
+                    jQuery(this).dialog("close");
+                },
+                "class": 'primary-btn',
+
+            }],
+        });
+    }
+
+</script>
+<div>
+    @Html.Partial("GridToolTop", Model.ToolTips)
+    <div class="section-form-inner-container">
+       
+        <div class="data-row data-container">
+            <div class="go-left floating-left">
+
+                <a class="primary-btn" href="javascript:void(0)" onclick="showNewDynamicBidDialog()">@Html.GetResource("AddDynamicBidding", "DynamicBidding")</a>
+            </div>
+            <div>
+                <div class="grid-container">
+                    &nbsp;
+                  
+                    @(Html.Telerik().Grid(Model.Elements.Items)
+						  .DataKeys(p => p.Add(o => o.ID))
+						  .ToolBar(commands => commands.Insert().ButtonType(GridButtonType.BareImage))
+						  .Name("AdGroupDynamicBiddingsGrid").Columns(columns =>
+						  {
+
+						  columns.Bound(o => o.ID).Hidden().Title(Html.GetResource("Type", "Global")).HtmlAttributes(new { @class = "go-center",  @id = "IdDynamicBiddingLable" });
+						  columns.Bound(o => o.KeepBiddingAtMinimumStr).Title(Html.GetResource("Type", "Global")).Hidden().HtmlAttributes(new { @class = "go-center",  @id = "KeepBiddingAtMinimumLable" });
+						  columns.Bound(o => o.BidOptimizationValue).Title(Html.GetResource("Type", "Global")).Hidden().HtmlAttributes(new { @class = "go-center", @id = "BidOptimizationValueLabel" });
+
+						  columns.Bound(o => o.Type).Title(Html.GetResource("Type", "Global")).Hidden().HtmlAttributes(new { @class = "go-center", @id = "DynamicBiddingType" });
+
+						  columns.Bound(o => o.TypeStr).Title(Html.GetResource("Type", "Global")).Width("100px").ReadOnly().HtmlAttributes(new { @class = "go-center", @id = "TypeLable" });
+						  columns.Bound(o => o.ValueStr).Title(Html.GetResource("BidOptimizationValue", "DynamicBidding")).HtmlAttributes(new { @class = "go-center", @id = "ValueStrLable" }).ReadOnly();
+
+						  columns.Bound(o => o.MinBidPrice).Format("${0:0.00}").Title(Html.GetResource("MinBidPrice", "DynamicBidding")).HtmlAttributes(new { @class = "go-center", @id = "MinBidPriceLable" }).ReadOnly();
+						  columns.Bound(o => o.MaxBidPrice).Format("${0:0.00}").Title(Html.GetResource("MaxBidPrice", "DynamicBidding")).HtmlAttributes(new { @class = "go-center", @id = "MaxBidPriceLable" }).ReadOnly();
+						  columns.Bound(o => o.DefaultBidPrice).Format("{0:0.00}").Title(Html.GetResource("DefaultBidPrice", "DynamicBidding")).HtmlAttributes(new { @class = "go-center", @id = "DefaultBidPriceLable" }).ReadOnly();
+
+
+
+
+
+
+						  columns.Bound(o => o.BidStep).Format("{0:0.00}").Title(Html.GetResource("BidStep", "DynamicBidding")).HtmlAttributes(new { @class = "go-center", @id = "BidStepLable" }).ReadOnly();
+
+						  //columns.Bound(o => o.ValueStr).Title(Html.GetResource("Value", "CostElements")).Width("70px").HtmlAttributes(new { @class = "go-center", @id = "ValueStrLable" }).ReadOnly();
+						  //columns.Bound(o => o.Type).Title(Html.GetResource("FromDate", "CostElements")).Format("{0:" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(120).ReadOnly().HtmlAttributes(new { @id = "FromDateLable", @class = "go-center" });
+
+						  columns.Template(@<text>
+                        <div><a class='t-button t-button-icon t-button-bare t-grid-edit' onclick="EditDynamicBidding(this)"><span class='t-icon t-edit t-ip-Range-Section-edit-button'></span></a></div></text>)
+                                 .ClientTemplate("<div><a class='t-button t-button-icon t-button-bare' type='button' onclick='EditDynamicBidding(this)'><span class='t-icon t-edit t-ip-Range-Section-edit-button'></span></button></div>").Title(Html.GetResource("Edit", "Commands")).Width(45).HtmlAttributes(new { @class = "go-center" });
+                          columns.Template(@<text>
+                        <div><a class='t-button t-button-icon t-button-bare t-grid-edit' onclick="StopDynamicBidding(this,true)"><span class='t-icon t-delete t-ip-Range-Section-edit-button'></span></a></div></text>)
+                                 .ClientTemplate("<div><a class='t-button t-button-icon t-button-bare' type='button' onclick='StopDynamicBidding(this,true)'><span class='t-icon t-delete t-ip-Range-Section-edit-button'></span></button></div>").Title(Html.GetResource("Delete", "Commands")).Width(45).HtmlAttributes(new { @class = "go-center" });
+                          })
+
+
+                                                                                                                                                                                                                                  .DataBinding(dataBinding =>
+                                                                                                                                                                                                                                  {
+                                                                                                                                                                                                                                      dataBinding.Ajax().Select("_AdGroupDynamicBiddingConfigs", "Campaign");
+                                                                                                                                                                                                                                      dataBinding.Ajax().Insert("_AdGroupDynamicBiddingConfigs", "Campaign");
+
+                                                                                                                                                                                                                                  }).EnableCustomBinding(true)
+                                                                                                                                                                                                                                    .ClientEvents(clientEvents => clientEvents.OnDataBound("AdGroupDynamicBiddingsGridDataBound"))
+
+
+                                                                                                                                                                                                                                    .Scrollable(scrolling => scrolling.Enabled(false))
+                                                                                                                                                                                                                                                    .Pageable(paging => paging.PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total((int)numberOfRecordes).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+                                                                                                                                                                                                                                    .Footer(true))
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="DynamicBidding-Form" class="adfalcon-dialog" title="@Html.GetResource("AddDynamicBidding", "DynamicBidding")" style="display: none; ">
+    <div id="entityDetails" class="data-row data-container">
+        @Html.Action("AdGroupDynamicBiddingConfig", new { id = ViewContext.RouteData.Values["id"], adGroupId = ViewContext.RouteData.Values["adGroupId"] })
+    </div>
+</div>
+
+@*@Html.Partial("CostElement/CostElementConflictDialog")*@

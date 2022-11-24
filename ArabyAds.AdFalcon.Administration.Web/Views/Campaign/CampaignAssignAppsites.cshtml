@@ -1,0 +1,684 @@
+﻿@{
+//ViewBag.Title = Html.GetResource("AppOps", "Titles");
+//    string toolTipContainer = string.Format(@"<div id=""tooltipContainer<#= Id#>"" style=""display:none"">
+//                                    <table>
+//                                        <tr>
+//                                            <td><b>{0}:<b></td>
+//                                            <td><a href=""<#= URL#>""  target=""_blank"" ><#= URL#></a></td>
+//                                        </tr>
+//                                        <tr>
+//                                            <td><b>{1}:</b></td>
+//                                            <td><#= AccountName #></td>
+//                                        </tr>
+//                                        <tr>
+//                                            <td><b>{2}:</b></td>
+//                                            <td><a href='mailto:<#= EmailAddress #>'><#= EmailAddress #></a></td>
+//                                        </tr>
+//                                    </table>
+//                                </div>", Html.GetResource("URL", "AppSite"), Html.GetResource("AccountName", "Global"), Html.GetResource("email", "Global"));
+}
+@model ArabyAds.AdFalcon.Administration.Web.Controllers.Model.Campaign.CampaignAssignAppsitesModel
+@{
+    ViewBag.Title = Html.GetResource("CampaignAssignAppsites", "Titles");
+}
+@using (Html.BeginForm("CampaignAssignAppsites"))
+{
+    @Html.Hidden("CampaignId", Model.CampaignId)
+    @Html.Hidden("DeletedAssignedAppsites", "")
+    @Html.Hidden("InsertedAssignedAppsites", "")
+    @Html.Hidden("UpdatedAssignedAppsites", "")
+
+    <script language="javascript" type="text/javascript">
+        var Spinner;
+        var OkButton = '@Html.GetResource("Ok", "Commands")';
+        var CheckAppSiteCompatibleWithCampaignUrl = '@Url.Action("CheckAssignedAppSiteCompatibleWithCampaign", "Campaign")';
+        var AllText = '@Html.GetResource("All", "CampaignAssignAppsites").ToString()';
+        $(document).ready(function () {
+
+            $('#AppSites_Items').removeAttr('multiple');
+
+                SetSelectedTap("ListMenuAdvertiser");
+            SetGridHieght();
+        });
+        function localInitilize() {
+            jQuery('input[data-date="true"]')
+                .daterangepicker({ dateFormat: '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat', posX: 295, posY: 295 });
+        }
+        var getAppsUrl = '@Url.Action("SearchAppSites", "Campaign")';
+        function rebindList(pageNum, pageSize) {
+
+            Spinner = getSpinnerType("form");
+            Spinner.showSpinner();
+
+            var appSiteSearchModel = new Object();
+            appSiteSearchModel.DateFrom = $('#DateFrom').val();
+            appSiteSearchModel.DateTo = $('#DateTo').val();
+            appSiteSearchModel.IgnoreIsPrimaryUser = true;
+            appSiteSearchModel.TypeId = $('#TypeId').val();
+            appSiteSearchModel.AppSiteName = $('#AppSiteName').val();
+            appSiteSearchModel.Name = $('#Name').val();
+            appSiteSearchModel.Email = $('#Email').val();
+            appSiteSearchModel.AccountId = $('#AccountId').val();
+            appSiteSearchModel.SubPublisher = $("#SubPublisher").val();
+            appSiteSearchModel.Page = pageNum;
+            appSiteSearchModel.Size = pageSize;
+
+            $('#AppSites_Items').empty();
+            $.ajax({
+                type: 'POST',
+                data: appSiteSearchModel,
+                url: getAppsUrl,
+                success: function (data) {
+                    Spinner.hideSpinner();
+                    rebindAppsites(data.Items);
+                    getNumberOfRows(data.TotalCount, "AppSites_Items")
+
+                }
+            });
+        }
+        var getAppSubPublishersUrl = '@Url.Action("SearchSubAppsites", "Campaign")';
+        function OnSelectAppSite(sender) {
+            selected = $('#AppSites_Items :selected')[0];
+            appsiteId = selected.value;
+            appsiteText = selected.text;
+            $('#subPublishers').empty();
+            subPublisherId = $("#SubPublisher").val();
+            resetPageination('subPublishers');
+            $.ajax({
+                type: 'POST',
+                data: {
+                    AppSiteId: appsiteId,
+                    SubPublisher: subPublisherId,
+                    Page: 1,
+                    Size: 10
+
+                },
+                url: getAppSubPublishersUrl,
+                success: function (data) {
+                    //rebindSubPublishers(0,10);
+                    rebindSubSites(data.Items);
+                    getNumberOfRows(data.TotalCount + 1, "subPublishers")
+                }
+            });
+
+        }
+        function selectSubPublishers() {
+            SetGridHieght();
+            var selectedSubpublisher = jQuery("#subPublishers :selected");
+            selectedAppsite = jQuery('#AppSites_Items :selected');
+            var list = [];
+            var grid = $("#AssignedAppsitesIncludeGrid").data("tGrid");
+
+            selectedSubpublisher.each(function (i, selected) {
+                subPiblisherId = $(selected).val();
+                if (subPiblisherId == '')
+                    subPiblisherId = null;
+                if (!IsAdded(subPiblisherId, selectedAppsite.val())) {
+                    
+                    dataItem = { "SubPublisherId": subPiblisherId, "SubPublisher": $(selected).text(), "Include": false, "SubAppsiteId": typeof ($(selected).attr("subsiteid")) != "undefined" ? $(selected).attr("subsiteid") : "" };
+                    dataItem.Appsite = { "ID": selectedAppsite.val(), "Name": selectedAppsite.text() };
+                    grid.insertRow(dataItem);
+                    initilizeFormValidationForDynamicContent('AssignedAppsitesIncludeGridform');
+                    list[i] = dataItem;
+                }
+            });
+            if (list.length > 0) {
+                $("#AssignedAppsitesIncludeGrid .t-no-data").hide();
+            }
+            getAssignedAppsites();
+
+        }
+        //function rebindSubPublishers(subPublishers, appsiteId, appsiteText) {
+        //    var container = jQuery("#subPublishers");
+        //    container.empty();
+
+        //    container.append($('<option>').text(AllText).val(""));
+        //    $.each(subPublishers, function (index, value) {
+        //        container.append($('<option>').text(value).val(value));
+        //    });
+        //}
+        function rebindSubPublishers(pageNum, pageSize) {
+
+
+
+            var appSiteSearchModel = new Object();
+
+
+            selected = $('#AppSites_Items :selected')[0];
+            appsiteId = selected.value;
+            appsiteText = selected.text;
+            var subPublisherId = $("#SubPublisher").val();
+
+            $('#subPublishers').empty();
+
+            appSiteSearchModel.AppSiteId = appsiteId;
+            appSiteSearchModel.SubPublisher = subPublisherId;
+            appSiteSearchModel.Page = pageNum;
+            appSiteSearchModel.Size = pageSize;
+
+
+            $.ajax({
+                type: 'POST',
+                data: appSiteSearchModel,
+                url: getAppSubPublishersUrl,
+                success: function (data) {
+
+                    rebindSubSites(data.Items);
+                    getNumberOfRows(data.TotalCount + 1, "subPublishers")
+
+                }
+            });
+        }
+        function rebindSubSites(apps) {
+            $('#subPublishers').empty();
+            $('#subPublishers').append($('<option>').text(AllText).val(""));
+            SubAppSitesIds = [];
+            $.each(apps, function (index, value) {
+
+                $('#subPublishers').append($('<option SubSiteId=\'' +value.Id +'\'>').text(value.SubPublisherId).val(value.SubPublisherId));
+            });
+        }
+
+        function SetGridHieght() {
+            if ($("#AssignedAppsitesIncludeGrid tbody tr").length > 8) {
+
+                $("#gridDivCampAss").attr("style", "margin-bottom: 10px;margin-top : 10px;margin-left:85px;margin-right:90px;width:600px;height:250px;overflow:scroll;");
+            }
+        }
+        function rebindAppsites(apps) {
+            $('#AppSites_Items').empty();
+            $('#subPublishers').empty();
+            $.each(apps, function (index, value) {
+                $('#AppSites_Items').append($('<option>').text(value.Name).val(value.Id));
+
+            });
+        }
+
+        var updatedArrary = new Array();
+        function getUpdated(rowUpdated, block) {
+
+            var grid = $("#AssignedAppsitesIncludeGrid").data("tGrid");
+            updatedData = grid.dataItem(rowUpdated);
+            if (updatedData == undefined) {//incase modify new item
+                // grid.insertedDataItems(rowUpdated)[0].Include = include;
+                //rowUpdated.find("td").find("#Include").val(include);
+
+                for (var i = 0; i < grid.insertedDataItems().length; i++) {
+                    dataItem = grid.insertedDataItems()[i];
+                    subPiblisherId = rowUpdated.find("td")[3].innerText;
+                    if (subPiblisherId == '')
+                        subPiblisherId = null;
+                    if (dataItem.SubPublisherId == subPiblisherId && dataItem.Appsite.ID == rowUpdated.find("td")[0].innerText) {
+                        dataItem.Include = block;
+                    }
+                }
+                getAssignedAppsites();
+                return;
+            }
+            updatedData.Include = block;
+            var isExist = false;
+            for (var i = 0; i < updatedArrary.length; i++) {
+                if (rowUpdated.ID == updatedArrary[i].ID) {
+                    updatedArrary[i] = updatedData;
+                    isExist = true;
+                }
+            }
+            if (!isExist) {
+                updatedArrary[updatedArrary.length] = updatedData;
+            }
+            $('#UpdatedAssignedAppsites').val(jQuery.toJSON(updatedArrary));
+        }
+
+        function getAssignedAppsites() {
+
+            if ($("#AssignedAppsitesIncludeGrid tbody tr").length > 9) {
+
+                $("#gridDivCampAss").attr("style", "width:600px;margin-bottom: 10px;margin-top : 10px;margin-left:85px;margin-right:90px;height:250px;overflow:scroll;");
+
+            }
+            var grid = $('#AssignedAppsitesIncludeGrid').data("tGrid");
+            if (grid == null)
+                return;
+            if (grid.changeLog.dirty()) {
+                var inserted = new Array();
+                var deletedIPRangeIds = '';
+                for (var i = 0; i < grid.changeLog.inserted.length; i++) {
+                    inserted[inserted.length] = grid.changeLog.inserted[i];
+                }
+
+                for (x = 0; x < grid.changeLog.deleted.length; x++) {
+                    if (typeof (grid.changeLog.deleted[x]) != "undefined") {
+                        deletedIPRangeIds += '&' + grid.changeLog.deleted[x].ID;// grid.changeLog.deleted[x].Appsite.ID + "," + grid.changeLog.deleted[x].SubPublisherId;
+                    }
+                }
+                $('#InsertedAssignedAppsites').val(jQuery.toJSON(inserted));//;JSON.stringify(inserted));
+                $('#DeletedAssignedAppsites').val(deletedIPRangeIds);
+            } else {
+
+                $('#DeletedAssignedAppsites').val("");
+                $('#InsertedAssignedAppsites').val("");
+            }
+        }
+
+        function ShowAdvancedSearch() {
+
+            if (!$("#tr_one_Advanced_Search").is(":visible")) {
+                $("#adv").attr("class", "minimize");
+                $("#search").attr("style", "height:150px;width:100%");
+
+                $("#tr_one_Advanced_Search").show();
+                $("#tr_two_Advanced_Search").show();
+            } else {
+                $("#adv").attr("class", "maximize");
+                $("#search").attr("style", "height:80px;width:100%");
+
+                $("#tr_one_Advanced_Search").hide();
+                $("#tr_two_Advanced_Search").hide();
+
+                $("#tr_one_Advanced_Search input").val("");
+                $("#tr_two_Advanced_Search input").val("");
+                $("#TypeId option:eq(0)").attr("selected", true);
+            }
+
+        }
+
+
+
+        function deleteAssignedAppsites(elem) {
+
+            var grid = $("#AssignedAppsitesIncludeGrid").data("tGrid");
+            var tr = $(elem).parents('tr');
+            // delete the row
+            grid.deleteRow(tr);
+            getAssignedAppsites();
+        }
+
+        function includeAssignedAppsites(elem) {
+
+            var grid = $("#AssignedAppsitesIncludeGrid").data("tGrid");
+            var tr = $(elem).parents('tr');
+            getUpdated(tr, elem.checked);
+        }
+
+        function IsAdded(subPiblisherId, appSiteId) {
+
+            var grid = $('#AssignedAppsitesIncludeGrid').data("tGrid");
+            if (grid == null)
+                return;
+            if (grid.changeLog.dirty()) {
+                for (var i = 0; i < grid.changeLog.inserted.length; i++) {
+                    if (grid.changeLog.inserted[i].SubPublisherId == subPiblisherId && grid.changeLog.inserted[i].Appsite.ID == appSiteId) {
+                        return true;
+                    }
+                }
+
+                for (var y = 0; y < grid.changeLog.deleted.length; y++) {
+                    if (typeof (grid.changeLog.deleted[y]) != "undefined") {
+                        if (grid.changeLog.deleted[y].SubPublisherId == subPiblisherId && grid.changeLog.deleted[y].Appsite.ID == appSiteId) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            array = $("#AssignedAppsitesIncludeGrid tbody tr");
+            for (var i = 0; i < array.length; i++) {
+                dataItem = grid.dataItem(array[i]);
+                if (dataItem != undefined) {
+                    if (dataItem.SubPublisherId == subPiblisherId && dataItem.Appsite.ID == appSiteId) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+
+        function CheckAppSite() {
+
+            if (CampaignBidConfigNotCompleted) {
+                CheckAppSiteNotCompatibleWithCampaign();
+                return false;
+            }
+
+        }
+        var BidMustBeMoreThanMinBid = '@Html.GetResource("MinBidErrMsg")';
+        function CheckAppSiteNotCompatibleWithCampaign() {
+            var grid = $("#AssignedAppsitesIncludeGrid").data("tGrid");
+            var Data = new Object();
+            Data.CampaignId = $("#CampaignId").val();
+
+            Data.InsertedItems = $('#InsertedAssignedAppsites').val();
+            Data.UpdateItems = $('#UpdatedAssignedAppsites').val();
+
+            $.ajax({
+                type: 'POST',
+                data: Data,
+                url: CheckAppSiteCompatibleWithCampaignUrl,
+
+                success: function (data) {
+
+                    if (!data.status) {
+
+                        var grid = $("#CampaignBidConfigs").data("tGrid");
+                        $("#CampaignBidConfigs tbody").find(".t-no-data").remove();
+                        grid.dataBind(data.List);
+
+                        $("#CampaignBidConfigDialog").dialog({
+                            maxHeight: 700,
+                            minHeight: 0,
+                            buttons: [
+                            {
+                                text: OkButton,
+                                click: function () {
+
+                                    if (IsValidBidConfigDialog()) {
+                                        $('#NotCompatibleCampaignBidConfigs').val(jQuery.toJSON(getNotCompatableItems()));
+                                        $(this).dialog('close');
+                                        CampaignBidConfigNotCompleted = false;
+                                    }
+                                    else {
+                                        DialogshowErrorMessage("divErrorMessagesForBidConfigsDialog", true);
+                                        return false;
+                                    }
+
+                                    $('#Save').click();
+                                }
+                            }]
+                        });
+                        $("#CampaignBidConfigDialog").dialog({
+                            close: function (event, ui) {
+                                DialogclearErrorMessage("divErrorMessagesForBidConfigsDialog");
+
+                            }
+                        });
+
+                        $("#CampaignBidConfigDialog").dialog("open");
+
+
+                    } else {
+                        CampaignBidConfigNotCompleted = false;
+                        $('#Save').click();
+
+                    }
+                }
+            });
+
+        }
+
+    </script>
+    <div id="form">
+        <div class="data-row section-container">
+            <div class="data-row section-container">
+              
+                    @{
+                        var tabs = new List<ArabyAds.AdFalcon.Web.Controllers.Model.Tab>
+    { new ArabyAds.AdFalcon.Web.Controllers.Model.Tab
+    { IsSelected = false, Action = new ArabyAds.AdFalcon.Web.Controllers.Model.Action()
+    { DisplayText = Html.GetResource("Campaigninfo", "Titles"), ActionName = "Create",
+     ExtraPrams= ViewData["AdvertiserAccountIdForTab"]+"/"+ ViewContext.RouteData.Values["id"], IsSelected = true } },
+        new ArabyAds.AdFalcon.Web.Controllers.Model.Tab { IsSelected = false,
+            Action = new ArabyAds.AdFalcon.Web.Controllers.Model.Action()
+            { DisplayText = Html.GetResource("Settings", "Commands"),
+                ActionName = "Settings", ExtraPrams = ViewContext.RouteData.Values["id"], IsSelected = true } },
+                new ArabyAds.AdFalcon.Web.Controllers.Model.Tab { IsSelected = false, Action = new ArabyAds.AdFalcon.Web.Controllers.Model.Action() { DisplayText = Html.GetResource("AdvancedSettings", "Commands"), ActionName = "ServerSetting", ExtraPrams = ViewContext.RouteData.Values["id"], IsSelected = true } }, new ArabyAds.AdFalcon.Web.Controllers.Model.Tab { IsSelected = true, Action = new ArabyAds.AdFalcon.Web.Controllers.Model.Action() { DisplayText = Html.GetResource("CampaignAssignAppsites", "Commands"), ActionName = "CampaignAssignAppsites", ExtraPrams = ViewContext.RouteData.Values["id"], IsSelected = true, } }
+
+   };
+                        @Html.Hidden("NotCompatibleCampaignBidConfigs", "")
+                        @Html.Partial("Tabs", tabs)
+                    }
+             
+            </div>
+            @*<div class="section-form-container">
+                <h2>Appsites</h2>
+                <div class="data-row">*@
+            <br />
+
+            <div class="data-row go-center">
+                <div class="blue-filter-container" style="height:80px;width:100%" id="search">
+                    <table class="" style="width:100%">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <span class="go-bold" style="width:100%">@Html.GetResource("NameColumn", "AppSite")</span>
+
+                                </td>
+                                <td width="250px">
+                                    <input class="text-box" style="width:90%" id="Name" name="Name" type="text" value="">
+
+                                </td>
+
+                                <td>
+                                    <span class="go-bold" style="width:90%">@Html.GetResource("Name", "AppSite")</span>
+
+                                </td>
+
+                                <td width="250px">
+                                    <input class="text-box" style="width:90%" id="AppSiteName" name="Name" type="text" value="">
+                                </td>
+                                <td>
+
+                                    <span class="go-bold" style="width:90%">@Html.GetResource("SubPublisherId", "CampaignAssignAppsites")</span>
+
+
+                                </td>
+                                <td width="250px">
+                                    <input class="text-box" style="width:90%" id="SubPublisher" name="Name" type="text" value="">
+                                </td>
+
+                                <td>
+                                    <a href="javaScript:void(0);" style="border:none!important" class="maximize" onclick="ShowAdvancedSearch()" id="adv">&nbsp;&nbsp;</a>
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <div id="tr_one_Advanced_Search" style="display:none;width:100%">
+                        <table id="tr_one_Advanced_Searchs" style="display:block;width:100%">
+                            <tr>
+                                <td>
+                                    <span class="go-bold">@Html.GetResource("From", "Global")</span>
+                                </td>
+                                <td style="width: 110px;">
+                                    <input type="text" readonly="readonly" value="@(string.Empty)" data-date="true" name="DateFrom" id="DateFrom"
+                                           class="text-box range-date-cntl" />
+                                </td>
+                                <td>
+                                    <span class="go-bold">@Html.GetResource("To", "Global")</span>
+
+                                </td>
+                                <td style="width: 80px;">
+                                    <input type="text" readonly="readonly" value="@(string.Empty)" data-date="true" name="DateTo" id="DateTo"
+                                           class="text-box range-date-cntl left-range-cntrl" />
+                                </td>
+                                <td width="120px">
+                                    <span class="go-bold" style="width:100%">@Html.GetResource("Type", "AppSite")</span>
+                                </td>
+                                <td width="200px">
+                                    <span style="width:100%">@Html.DropDownList("TypeId", Model.Types, new { style = "width:100%" })</span>
+
+                                </td>
+                                <td width="210px"></td>
+                            </tr>
+                        </table>
+                        <table id="tr_two_Advanced_Search" style="display:block;width:100%">
+                            <tr>
+                                <td style="">
+                                    <span class="go-bold" style="width:90%">@Html.GetResource("AccountId", "Impersonate")</span>
+
+                                </td>
+                                <td style="width: 250px">
+                                    <input class="text-box" style="width:90%" id="AccountId" name="Name" onkeypress="AccountIdKeyPress(event)" value="">
+
+                                </td>
+                                <td width="10px"></td>
+                                <td>
+                                    <span class="go-bold" style="width:90%">@Html.GetResource("email", "Global")</span>
+
+                                </td>
+                                <td style="width: 250px">
+                                    <input class="text-box" style="width:90%" id="Email" name="Name" type="text" value="">
+
+                                </td>
+
+                                <td width="200px"></td>
+                                <td width="210px"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <table class="" style="width:100%">
+                        <tbody style="width:100%">
+
+                            <tr>
+                                <td class="go-right" colspan="6">
+                                    <input type="submit" onclick="resetPageination('AppSites_Items'); rebindList(1, 10); stopSubmit(event)" name="Filter" value='@Html.GetResource("Filter")' class="btn filter-button " />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <br />
+
+
+            <div class="grid-container floating-left go-center" style="width: 25%; margin-left:80px;margin-right:80px; margin-bottom: 10px;margin-top: 10px;">
+                <span class="t-widget t-grid th t-header floating-left" floating-left" style="width: 240px !important; font-weight: bold;font-size: 12px; color:  black;height: 30px; ">@Html.GetResource("AppSites", "CampaignAssignAppsites")</span>
+                @Html.ListBoxFor(x => Model.AppSites.Items, new SelectList(Model.AppSites.Items, "Id", "Name"), new { @class = "cloud-area text-box-like-container", style = "width: 240px;height :200px; margin-top:0px;background: none !important;border-radius: 0px;", onchange = "OnSelectAppSite(this)", @size = 10, @multiple = false })
+                @*<span id="pagilbl" class="floating-left" />*@
+
+                @*<pagerstyle mode="NumericPages" /><pagerstyle mode="Advanced" pagertextformat="{4} Page {0} from {1}, rows {2} to {3} from {5}" />*@
+
+                @{
+                    ViewDataDictionary viewDataDoc = new ViewDataDictionary();
+                    viewDataDoc.Add("ControlId", "AppSites_Items");
+                    viewDataDoc.Add("BindListFunct", "rebindList");
+                    viewDataDoc.Add("Width", "240px");
+
+                    Html.RenderPartial("PartialViews/Pagging", viewDataDoc);
+
+                }
+
+            </div>
+
+
+            <div class="grid-container floating-left go-center" style="width: 18%;margin-left:50px;margin-right:50px; margin-bottom: 10px;margin-top: 10px;">
+                <span class="t-widget t-grid th t-header floating-left" floating-left" style="width: 240px !important; font-weight: bold;font-size: 12px; color:  black;height: 30px; ">@Html.GetResource("SubPublishers", "CampaignAssignAppsites")</span>
+                @Html.ListBox("subPublishers", Model.SubPublishers, new { @class = "cloud-area text-box-like-container", style = "width: 240px;height :200px;margin-top:0px;background: none !important;border-radius: 0px;", @size = 10, @multiple = false })
+                @{
+                    ViewDataDictionary viewDataDoc2 = new ViewDataDictionary();
+                    viewDataDoc2.Add("ControlId", "subPublishers");
+                    viewDataDoc2.Add("BindListFunct", "rebindSubPublishers");
+                    viewDataDoc2.Add("Width", "240px");
+
+                    Html.RenderPartial("PartialViews/Pagging", viewDataDoc2);
+
+                }
+            </div>
+
+
+
+            <div class="floating-left" style="width: 4% ; padding: 0px 10px 0px  110px;margin-top: 50px;margin:50px">
+                <input type="button" value=">" id="btnSelectSubPublisher" style="width: 30px;" onclick="selectSubPublishers();" />
+            </div>
+
+            <div class="data-row data-container">
+
+                <div class="field-container">
+                    <div id="gridDivCampAss" class="floating-left t-widget t-grid" style="width:600px;margin-bottom: 10px;margin-top : 10px;margin-left:85px;margin-right:90px;  height: 250px;">
+                        @(Html.Telerik().Grid(Model.AssignedAppsitesList).Name("AssignedAppsitesIncludeGrid").TableHtmlAttributes(new { width = "600px;" })
+                          .DataKeys(p => p.Add(o => o.ID))
+//.ClientEvents(events => events.OnLoad("Grid_onDataBinding"))
+.DataBinding(dataBinding =>
+{
+    dataBinding.Ajax().Select("DummyAssignAppsitesSelect", "Campaign").Update("Dummy", "Campaign");
+})
+               .EnableCustomBinding(true).Filterable()
+               .Editable(ed => ed.Mode(GridEditMode.InCell).DisplayDeleteConfirmation(false)
+  .DefaultDataItem(new ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.CampaignAssignedAppsitesDto()))
+           .Columns(columns =>
+           {
+               columns.Bound(o => o.Appsite.ID).Hidden();
+
+              
+
+               columns.Bound(o => o.Appsite.Name).Width("200px").Visible(true).Title(Html.GetResource("Name", "AppSite")).ReadOnly().Template(
+                @<text><div class='grid-title-container floating-left'>
+                        <span class="trimed-span" title='@item.Appsite.Name' id='AppsiteName'>
+
+                            @item.Appsite.Name
+
+                        </span>
+                    </div>
+
+                </text>
+                            ).ClientTemplate("<div class='grid-title-container floating-left'> <span class='trimed-span' title='<#= Appsite.Name#>' id='AppsiteName'><#= Appsite.Name#></span></div>");
+           columns.Bound(o => o.SubPublisher).Title(Html.GetResource("SubPublisher", "CampaignAssignAppsites")).Template(r => (string.IsNullOrEmpty(r.SubPublisher) || r.SubPublisher == null ? Html.GetResource("All", "CampaignAssignAppsites") : r.SubPublisher)).Width("100px").ReadOnly();
+           columns.Bound(o => o.SubPublisherId).Title(Html.GetResource("SubPublisherId", "CampaignAssignAppsites")).Hidden().ReadOnly(); ;
+           columns.Bound(o => o.Include).Title(Html.GetResource("Block", "CampaignAssignAppsites")).Width("5px").Template(r => Html.CheckBox("Include", !r.Include, new { @id = "Include", onchange = "includeAssignedAppsites(this)", @novalidate = "novalidate" })).ReadOnly()
+           //.HtmlAttributes(new {ctext-align:center" })
+           .ClientTemplate("<input class='check-box'  id='Include' name='Include'  onclick='includeAssignedAppsites(this)' type='checkbox' value='false' />").ReadOnly().Width("5px");
+           columns.Template(@<text>
+                            <div><a class='t-button t-button-icon t-button-bare t-grid-delete' onclick='deleteAssignedAppsites(this);'><span class='t-icon t-delete'></span></a></div></text>)
+          .ClientTemplate("<div><a class='t-button t-button-icon t-button-bare t-grid-delete' type='button' onclick='deleteAssignedAppsites(this);'><span class='t-icon t-delete'></span></button></div>").Width("30px");
+               columns.Bound(o => o.SubAppsiteId).Hidden();
+           })
+                                                                                                                                                        //.DataBinding(dataBinding => dataBinding.Ajax())
+                                                                                                                                                        .DataBinding(dataBinding =>
+                                                                                                                                                        {
+                                                                                                                                                            dataBinding.Server().Select("GetCampaignAssignAppsites", "Campaign", new { ajax = true });
+                                                                                                                                                            dataBinding.Ajax().Select("GetCampaignAssignAppsites", "Campaign");
+
+                                                                                                                                                        }).ClientEvents(events => events.OnComplete("AssignAppsitesGrid_onComplete")).ClientEvents(e => e.OnDataBound("AssignAppsitesGrid_OnDataBound"))
+                                                                                                                                                        .Scrollable(scrolling => scrolling.Enabled(false)).EnableCustomBinding(false))
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div class="data-row button-container">
+                <input id="Save" type="submit" name="AssignAppsites" value='@Html.GetResource("Save", "Commands")' class="primary-btn" onclick="return CheckAppSite()" />
+                <input type="button" value='@Html.GetResource("Close", "Commands")' class="btn" onclick="redirect('@(string.IsNullOrWhiteSpace(Request.QueryString["returnUrl"]) ? Url.Action("Index", "Campaign") : Request.QueryString["returnUrl"])    ')" />
+
+            </div>
+        </div>
+        <div id="CampaignBidConfigDialog" style="display: none;">
+
+            @Html.Action("CampaignBidConfigDialogView", "AppSite", new { adGroupId = Model.CampaignId })
+
+        </div>
+    </div>
+
+
+                    }
+<script type="text/javascript">
+    function AssignAppsitesGrid_onComplete(e) {
+
+        if (e.name == "dataBinding") {
+            $('#UpdatedAssignedAppsites').val('');
+            $('#InsertedAssignedAppsites').val('');//;JSON.stringify(inserted));
+            $('#DeletedAssignedAppsites').val('');
+        }
+        // use the response returned from the server
+        SetGridHieght();
+    }
+
+    function AssignAppsitesGrid_OnDataBound(sender, args) {
+        var grid = $("#AssignedAppsitesIncludeGrid").data("tGrid");
+        array = $("#AssignedAppsitesIncludeGrid tbody tr");
+        for (var i = 0; i < array.length; i++) {
+            dataItem = grid.dataItem(array[i]);
+            if (dataItem != undefined) {
+                if (!dataItem.Include) {
+                    $(array[i]).find("#Include")[0].checked = !dataItem.Include;
+                }
+                if (dataItem.SubPublisher == "" || dataItem.SubPublisher == null) {
+                    $(array[i]).find("td")[2].innerText = '@Html.GetResource("All", "CampaignAssignAppsites")';
+                }
+
+            }
+        }
+    }
+</script>

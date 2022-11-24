@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Noqoush.AdFalcon.Administration.Web.Controllers.Model.AppSite.Performance.BaseChartDashboardView>
+
+<script type="text/javascript">
+    function topAppSitesGridBinding(args) {
+        args.data = $.extend(args.data,
+            {
+                FromDate: $('#DateFrom').val(),
+                ToDate: $('#DateTo').val(),
+                MetricValue: $('#metric').val()
+            });
+
+        if (loadingTopAppSitesCounter == 0) {
+            args.preventDefault();
+            loadingTopAppSitesCounter = 1;
+        }
+    };
+</script>
+<div id="topAppSitesGrid" class="floating-left" >
+    <br />
+    <br />
+     <br />
+    @(Html.Telerik().Grid(Model)
+                        .Name("TopAppSitesGrid")
+                    .Columns(columns =>
+                                 {
+                                     columns.Bound(p => p.Name).Title(Html.GetResource("AppSiteName", "TopAccounts")).Width("200px").Sortable(false).HtmlAttributes(new { style = "text-align:center !important" });
+                                     columns.Bound(p => p.MetricValueText).Title(Html.GetResource("MetricValue", "Global")).Width("160px").Sortable(false).HtmlAttributes(new { style = "text-align:center !important" });
+                                 })
+                    .DataBinding(dataBinding =>
+                    {
+                        dataBinding.Server().Select("TopAppSitesGrid", "AppOpsTest", new { ajax = true });
+                        dataBinding.Ajax().Select("TopAppSitesGrid", "AppOpsTest");
+
+                    }).EnableCustomBinding(true)
+                        .Scrollable(scrolling => scrolling.Enabled(false))
+                        .Sortable(sorting => sorting.Enabled(false))
+                        .EnableCustomBinding(true)
+                        .Pageable(paging => paging.Enabled(false))
+                        .Footer(true).ClientEvents(p => p.OnDataBound("topAppSitesGridBinding").OnDataBinding("topAppSitesGridBinding").OnError("gridReportError")))
+
+    <p style="clear:both">
+       @Html.ActionLink(@Html.GetResource("TopAppsitesLink","TopAccounts"),"AppSitesPerformance", "AppOpsTest", new {id="appsitesPerformanceLink" })
+    </p>
+</div>
+<div id="topAppSitesChart"  class="floating-right">
+
+  <div id="topAppSitesChartContainer" class="chartContainer"></div>
+</div>
+

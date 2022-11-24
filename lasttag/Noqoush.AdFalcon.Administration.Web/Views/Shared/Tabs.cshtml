@@ -1,0 +1,80 @@
+﻿@model IEnumerable<Noqoush.AdFalcon.Web.Controllers.Model.Tab>
+
+
+<div class="tabs tabs-style-underline">
+    <nav>
+        <ul>
+            @{
+                            /**/
+
+                            var items = Model.ToList();
+                            if (items.Count > 0)
+                            {
+                                if (items.First().IsSelected)
+                                {
+                                    <li class="tab-current">
+                                        <a href="@Url.Action(Model.First().Action.ActionName)">
+                                            <span>
+                                                @Model.First().Action.DisplayText
+                                            </span>
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a href="@Url.Action(Model.First().Action.ActionName)/@(items.First().Action.ExtraPrams)">
+                                            <span>
+                                                @Model.First().Action.DisplayText
+                                            </span>
+                                        </a>
+                                    </li>
+                                }
+                            }
+                            for (int i = 1; i < items.Count - 1; i++)
+                            {
+                                if (items[i].IsSelected)
+                                {
+                                    <li class="tab-current">
+                                        <a href="@Url.Action(items[i].Action.ActionName)">
+                                            <span>
+                                                @items[i].Action.DisplayText
+                                            </span>
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a href="@Url.Action(items[i].Action.ActionName)/@(items[i].Action.ExtraPrams)" class="@(( items.Last().Action.ExtraPrams != null && items.Last().Action.ExtraPrams.ToString() == "0") ?"disabled-link" : "")">
+                                            <span>
+                                                @items[i].Action.DisplayText
+                                            </span>
+                                        </a>
+                                    </li>
+                                }
+                            }
+                            if (items.Last().IsSelected)
+                            {
+                                <li class="tab-current">
+                                    <a href="@Url.Action(items.Last().Action.ActionName)" class="@(( items.Last().Action.ExtraPrams != null && items.Last().Action.ExtraPrams.ToString() == "0") ?"disabled-link" : "")">
+                                        <span>
+                                            @items.Last().Action.DisplayText
+                                        </span>
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <a href="@Url.Action(items.Last().Action.ActionName)/@(items.Last().Action.ExtraPrams)" class="@(( items.Last().Action.ExtraPrams != null && items.Last().Action.ExtraPrams.ToString() == "0") ?"disabled-link" : "")">
+                                        <span>
+                                            @items.Last().Action.DisplayText
+                                        </span>
+                                    </a>
+                                </li>
+                            }
+            }
+        </ul>
+    </nav>
+</div>

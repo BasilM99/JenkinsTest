@@ -1,0 +1,173 @@
+﻿@{
+    Layout = null;
+}
+
+
+
+
+<script type="text/javascript">
+
+    var ElemnetID = "";
+
+	var AdvertiserUrl = '@Url.Action("GetAdvertisersSecurePagination", "Advertiser")';
+	    var AdvertiserByIdUrl = '@Url.Action("GetById", "Advertiser")';
+    var selectElemnt;
+    $(document).ready(function () {
+        ElemnetID = "#" +"PartyDto_AdvertiserList";
+         selectElemnt = $(ElemnetID);
+         $(ElemnetID).select2({
+			 tags: false,
+			 allowClear: false,
+            multiple: true,
+            tokenSeparators: [','],
+ 
+			 ajax: {
+				 delay: 150,
+                url: AdvertiserUrl,
+                dataType: "json",
+                type: "GET",
+                data: function (params) {
+
+                    //var queryParameters = {
+                    //    q: params.term
+                    //}
+                    //return queryParameters;
+                    var query = {
+                        q: params.term,
+						page: params.page || 1
+                    }
+
+                    // Query parameters will be ?search=[term]&type=public
+                    return query;
+                },
+				processResults: function (data, params) {
+					params.page = params.page || 1;
+                    return {
+                        results: $.map(data.Items, function (item) {
+                            return {
+                                text: item.Name.Value,
+                                id: item.ID
+                            }
+						}
+
+
+						),
+						pagination: {
+							more: (params.page * 10) < data.TotalCount
+						}
+
+
+                    };
+                }
+                
+
+                
+            }
+         
+        });
+		var valuesBeforeAdvertiser = [];
+		$("#AdvertisersP").find("span.select2-selection").attr("style", "width: 430px;height:80px;  overflow:auto;");
+        selectElemnt.on("select2:selecting", function (e) {
+
+			//$("#AdvertisersP").find("span.select2-selection").attr("style", "width: 430px;height:80px;  overflow:auto;");
+
+            valuesBeforeAdvertiser = selectElemnt.val();
+        });
+
+
+       CustomInitSelect2();
+    });
+
+
+	function CustomInitSelect2() {
+		var arrpush = [];
+		if (typeof (ListOfAdvertisers) != "undefined") {
+			$.each(ListOfAdvertisers.split(","), function (i, e) {
+			if (e != "Not Set" && e != "" && e != null && e != undefined) {
+				//if (!/[0-9]+$/.test(e)) {
+				//    //var newList = $.merge($(nameoflist).select2('data'), [{
+				//    //    id: e,
+				//    //    tag: e
+				//    //}]);
+				//    //$(nameoflist).select2('data', newList);
+				//    //$(nameoflist).append('<option value="' + e + '">' + e + '</option>');
+
+				//    $(nameoflist).select2().val(e).trigger("change");
+				//}
+				//else {
+				//    $(nameoflist).select2().val(e).trigger("change");
+				//}
+
+				arrpush.push(e);
+				//$(nameoflist + " option[value='" + e + "']").prop("selected", true);
+
+			}
+		});
+
+		
+			var arrResult = [];
+
+
+			$.ajax({
+				type: 'GET',
+				url: AdvertiserByIdUrl + "?Ids="+ListOfAdvertisers,
+			}).then(function (data) {
+				// create the option and append to Select2
+				for (var i = 0; i < data.length;i++) {
+					var option = new Option(data[i].Name.Value, data[i].ID, true, true);
+					var resultData = {
+						text: data[i].Name.Value,
+						id: data[i].ID
+					}
+					selectElemnt.append(option).trigger('change');
+					arrResult.push(resultData);
+					
+				}
+				// manually trigger the `select2:select` event
+				selectElemnt.trigger({
+					type: 'select2:select',
+					params: {
+						data: arrResult
+					}
+				});
+			});
+		}
+
+
+            //$.ajax({
+            //    type: 'GET',
+            //    url: AdvertiserUrl+"?q=",
+            //    dataType: 'json'
+            //}).then(function (data) {
+               
+
+            //    var dataF = $.map(data, function (item) {
+            //            return {
+            //                text: item.Name.Value,
+            //                id: item.ID
+            //            }
+            //        })
+            //    ;
+            //    selectElemnt.select2({
+            //        minimumInputLength: 1,
+            //        data: dataF
+            //    });
+            //    if (typeof (ListOfAdvertisers) != "undefined") {
+                    
+            //        fillselect2multipe(ListOfAdvertisers, "#PartyDto_AdvertiserList");
+            //    }
+            //});
+       
+    }
+
+
+</script>
+
+
+<div id="AdvertiserDiv">
+    <div id="AdvertisersP">
+        <select id="PartyDto_AdvertiserList" name="PartyDto.AdvertiserList" class="js-example-theme-multiple js-states form-control select2-hidden-accessible multiselect2jq" style="width: 430px;height:80px; " multiple="" tabindex="-1" aria-hidden="true"></select>
+    </div>
+</div>
+
+

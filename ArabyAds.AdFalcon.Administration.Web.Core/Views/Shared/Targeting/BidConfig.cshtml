@@ -1,0 +1,1052 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.TargetingViewModel
+
+@{
+    var BiddingStrategyFixed = true;
+    var BiddingStrategySign = "$";
+    BiddingStrategyFixed = (Model != null && Model.BiddingStrategy == 1);
+
+    if (Model.BidOptimizationType == (int)ArabyAds.AdFalcon.Domain.Common.Model.Campaign.BidOptimizationType.MaximizeCTR || Model.BidOptimizationType == (int)ArabyAds.AdFalcon.Domain.Common.Model.Campaign.BidOptimizationType.MaximizeVCVR)
+    {
+        BiddingStrategySign = "%";
+
+
+
+    }
+
+
+}
+
+<script type="text/javascript">
+    var campaigBudget=@Model.AdGroupSettings.CampaigBudget;
+    var update_adgroup_settings = '@Url.Action("AdGroupSettings")';
+	var InvalidAdGroupBudgetMessage = '@Html.GetResource("InvalidAdGroupBudget", "Campaign")';
+
+	var DynamicBiddingBiddingError = '@Html.GetResource("BiddingError", "DynamicBidding")';
+    var InvalidAdGroupDailyBudgetMessage = '@Html.GetResource("InvalidAdGroupDailyBudget", "Campaign")';
+    var campaignId=@(ViewContext.RouteData.Values["id"]);
+    var adGroupId=@(ViewContext.RouteData.Values["adGroupId"]);
+    var textSuccsDailyBudget = "@Html.GetResource("AdGroupDailyBudgetSaveSuccessfully", "AdGroup")";
+    var warningDailyBudgetValueMessage = '@Html.GetResource("WarningDailyBudgetValue")';
+    var textSuccsBudget = "@Html.GetResource("AdGroupBudgetSaveSuccessfully", "AdGroup")";
+	@{
+		if (BiddingStrategyFixed) {
+		<text>
+		BiddingStrategyFixedValue = true;
+		</text>
+		}
+		else
+		{
+					<text>
+
+	BiddingStrategyFixedValue = false;
+		</text>
+					}
+				}
+
+
+	var dynamic_bidding_type = 1;
+
+
+        	var initial_Bid=0;
+        function checkConditionlower(val1, val2) {
+            return val1 < val2
+
+        }
+    @{
+
+        if ((ArabyAds.Framework.OperationContext.Current.UserInfo
+                      <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+                          ().AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP))
+        {
+
+                    <text>
+				function resetTargetingContinueFlag(sender) {
+
+
+					var value = $(sender).val();
+					var REGULAR = new RegExp("^\\d{1,5}(\\.\\d{1,3})?$");
+
+					if (!REGULAR.test(value)) {
+            $(sender).val("");
+
+					}
+
+
+
+
+					if (IsBidValidDecimalExpression(sender.value) && eval(sender.value) > 0 && eval(sender.value) >=initial_Bid ) {
+            $("#tab-padding").attr("style", "pointer-events:all;color:'';");
+            $("#bidConfigSubItemMenu").removeClass("disabledCustom");
+						targetingContinueFlag = false;
+                        targetingContinueFlagUpper = false;
+                             initial_Bid = eval($("#Bid").val());
+					}
+                    else {
+
+
+
+
+            $("#tab-padding").attr("style", "pointer-events:none;color:silver;");
+            $("#bidConfigSubItemMenu").addClass("disabledCustom");
+                        targetingContinueFlag = true;
+
+                        if ( checkConditionlower(eval(sender.value) , initial_Bid)   ) {
+
+                            targetingContinueFlagUpper = true;
+                            targetingContinueFlag = false;
+                        }
+
+                             initial_Bid = eval($("#Bid").val());
+					}
+    }
+
+     </text>
+
+
+        }
+        else
+
+        {    <text>
+        	function resetTargetingContinueFlag(sender) {
+
+
+					var value = $(sender).val();
+					var REGULAR = new RegExp("^\\d{1,5}(\\.\\d{1,3})?$");
+
+					if (!REGULAR.test(value)) {
+            $(sender).val("");
+
+					}
+
+
+
+
+					if (IsBidValidDecimalExpression(sender.value) && eval(sender.value) > 0 && eval(sender.value) >= eval($("#minBidValue").text())) {
+            $("#tab-padding").attr("style", "pointer-events:all;color:'';");
+            $("#bidConfigSubItemMenu").removeClass("disabledCustom");
+						targetingContinueFlag = false;
+                           targetingContinueFlagUpper = false;
+					}
+					else {
+            $("#tab-padding").attr("style", "pointer-events:none;color:silver;");
+            $("#bidConfigSubItemMenu").addClass("disabledCustom");
+                        targetingContinueFlag = true;
+
+                        if (checkConditionlower( eval(sender.value) , eval($("#minBidValue").text()))) {
+
+                            targetingContinueFlagUpper = true;
+                            targetingContinueFlag = false;
+                        }
+					}
+    }
+          </text>
+
+        }
+
+                        }
+
+				function BudgetChanged()
+				{
+					var DailyBudget = $("#DailyBudget").val();
+					var Budget = $("#Budget").val();
+					if(parseInt(Budget) < parseInt(DailyBudget))
+					{
+            $("#DailyBudgetValidation").show();
+						return false;
+
+					}else
+					{
+            $("#DailyBudgetValidation").hide();
+						return true;
+					}
+
+				}
+
+
+				function addFee() {
+
+
+
+					if ($("#FeesList").val() != null && $("#FeesList").val() != '') {
+						var segments = $("#FeesList").val().split('#');
+						if (segments[0] == "0")
+							return;
+			$("#FeeItem_" + segments[0]).show();
+						var index = $("#FeeItem_" + segments[0]).attr("indexFee");
+
+						if ($("#FeesAddList_" + index + "__IsAdded").val()=="True") {
+
+							return;
+						}
+			$("#FeesAddList_" + index + "__IsAdded").val("True");
+
+						var value = 0.0;
+						cost_element_type = parseInt(segments[1]);
+						//TODO:Osaleh to replace this code
+						//get the cost type
+						var selectedCostModel = parseInt($('#CostModelWrapper').val());
+						if (isNaN(selectedCostModel)) {
+							//toDO OSaleh to handle this issue
+							selectedCostModel = 1;
+						}
+
+						var keyValues = segments[2].split(",");
+
+						for (var i = 0; i < keyValues.length; i++) {
+							var keyValueItem = keyValues[i].split(":");
+							var costModelWrapperId = parseInt(keyValueItem[0]);
+							var costModelWrapperValue = parseFloat(keyValueItem[1]);
+
+							if (costModelWrapperId == selectedCostModel) {
+								value = costModelWrapperValue;
+								if (value == 0) {
+									value = "";
+								}
+							}
+						}
+
+						switch (cost_element_type) {
+							case 1: //percentage
+					$("#FeesAddList_" + index + "__type_desc").text('%');
+								break;
+							case 2: //fixed
+					$("#FeesAddList_" + index + "__type_desc").text('$');
+					$("#FeesAddList_" + index + "__type_desc").attr("style","padding-left:6px;padding-right:6px;");
+
+								break;
+							default:
+					$("#FeesAddList_" + index + "__type_desc").text('$');
+					$("#FeesAddList_" + index + "__type_desc").attr("style", "padding-left:6px;padding-right:6px;");
+						}
+			$("#FeesAddList_" + index + "__Value").val(value);
+			$("#FeesAddList_" + index + "__Value-error").hide();
+
+
+						var showHeader = false;
+			$('.feeItemDiv').each(function () {
+							if ($(this).css('display') != 'none') {
+								// element is not hidden
+
+								showHeader = true;
+
+								return;
+							}
+						});
+						if (showHeader)
+			$('#FeesListheader').show();
+					}
+
+				}
+				function OnChangeValueFee(self) {
+
+
+					var index = $('#' + self.id).attr("indexFee");
+					if ($('#' + self.id).val() == '' || parseFloat($('#' + self.id).val()) <= 0) {
+						//$("#" + self.id + 'Greater-ValueErrorMsg2').show();
+
+						return false;
+					}
+		else {
+
+			$("#" + self.id + 'Greater-ValueErrorMsg2').hide();
+						//return true;
+					}
+
+
+					//check if  url is valid
+					var cost_element_type=$("#FeesAddList_" + index + "__type_desc").text();
+					switch (cost_element_type) {
+						case '%': //percentage
+							var REGULAR = new RegExp("^\\d{1,3}(\\.\\d{1,3})?$");
+							break;
+						case '$': //fixed
+							var REGULAR = new RegExp("^\\d{1,5}(\\.\\d{1,3})?$");
+							break;
+						default:
+							var REGULAR = new RegExp("^\\d{1,5}(\\.\\d{1,3})?$");
+					}
+
+
+					var value = $('#' + self.id).val();
+
+
+					if (!REGULAR.test(value) || parseFloat(value > 100 && cost_element_type == '%')) {
+			$('#' + self.id).val("");
+			$("#" + self.id + 'Greater-ValueErrorMsg2').show();
+						return false;
+					}
+
+
+					return true;
+				}
+				function removeFeeDIV(Id,index) {
+
+		//$("#textbox" + Id).val('');
+		$("#FeeItem_" + Id).hide();
+
+
+		$("#FeesAddList_" + index + 'ValueGreater-ValueErrorMsg2').hide();
+		$("#FeesAddList_" + index + 'ValueGreater-ValueErrorMsg3').hide();
+		$("#FeesAddList_" + index + "__IsAdded").val("False");
+		$("#FeesAddList_" + index + "__Value").val("0");
+
+					var showHeader = false;
+		$('.feeItemDiv').each(function () {
+						if ($(this).css('display') != 'none') {
+							// element is not hidden
+
+							showHeader = true;
+
+							return;
+						}
+					});
+
+					if (showHeader)
+		$('#FeesListheader').show();
+
+				}
+
+
+		function OnKeyPressValueFee(e, textbox) {
+
+		var index = $('#' + textbox.id).attr("indexFee");
+		var cost_element_type = $("#FeesAddList_" + index + "__type_desc").text();
+		switch (cost_element_type) {
+			case '%': //percentage
+				var REGULAR = new RegExp("^\\d{1,3}(\\.\\d{1,3})?$");
+				break;
+			case '$': //fixed
+				var REGULAR = new RegExp("^\\d{1,5}(\\.\\d{1,3})?$");
+				break;
+			default:
+				var REGULAR = new RegExp("^\\d{1,5}(\\.\\d{1,3})?$");
+		}
+	var valStrLabe=	"FeesAddList_" + index + "__ValueGreater-ValueErrorMsg2";
+		$("#" + valStrLabe).hide();
+		var key = e.keyCode || e.charCode;
+
+		if (cost_element_type == 1) {
+			if (parseFloat(textbox.value) >= 100) {
+				e.preventDefault();
+			}
+		}
+
+		if (!(String.fromCharCode(key) == '.' && textbox.value.length > 0 && textbox.value.indexOf('.') < 0) && key != 8) {
+
+			if (!REGULAR.test((textbox.value + String.fromCharCode(key))) || (parseFloat(textbox.value + String.fromCharCode(key)) > 100 && cost_element_type == '%')) {
+				e.preventDefault();
+			}
+		}
+	}
+
+	$(document).ready(function () {
+		$("#updateFeesDialog").dialog({
+			autoOpen: false,
+			// height: 150,
+			width: 400,
+			modal: true,
+			resizable: false,
+			draggable: false,
+			showCloseButton: false,
+
+			buttons: [
+				{
+					text: '@Html.GetResource("Ok", "Commands")',
+					click: function () {
+						jQuery(this).dialog("close");
+
+					},
+					"class": 'delete-button'
+
+				}]
+        });
+
+
+
+
+
+        $("#confirmDeleteFeesDialog").dialog({
+            autoOpen: false,
+            // height: 150,
+            width: 400,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            showCloseButton: false,
+
+            buttons: [
+                {
+                    text: '@Html.GetResource("Yes", "Global")',
+                    click: function () {
+
+						removeFeeDIV(FeeIdVar, FeeIndexVar);
+                        $(this).dialog("close");
+						FeeIdVar = '';
+						FeeIndexVar = '';
+
+                    },
+                    class : "btn primary-btn"
+                },
+                {
+                    text: '@Html.GetResource("No", "Global")',
+                    click: function () {
+						$(this).dialog('close');
+						FeeIdVar = '';
+						FeeIndexVar = '';
+                    },
+                    class : "btn"
+                }
+
+            ]
+        });
+
+		$('#CostModelWrapper').change(function () {
+			returnerrorFee = false;
+			$('.feeItemDiv').each(function () {
+				if ($(this).css('display') != 'none') {
+					// element is not hidden
+
+					returnerrorFee = true;
+
+					return;
+				}
+			});
+			if (returnerrorFee) {
+				$("#updateText").text(updateFeesValues);
+				$("#updateFeesDialog").dialog("open");
+			}
+		});
+
+
+		var showHeader = false;
+		$('.feeItemDiv').each(function () {
+			if ($(this).css('display') != 'none') {
+				// element is not hidden
+
+				showHeader = true;
+
+				return;
+			}
+		});
+		if (showHeader)
+			$('#FeesListheader').show();
+
+
+        updateConversiontab();
+
+         initial_Bid = eval($("#Bid").val());
+	});
+
+
+	function updateFees() {
+
+		$("#updateText").text(updateFeesValues);
+		$("#updateFeesDialog").dialog("open");
+
+    }
+
+	var FeeIdVar = '';
+
+	var FeeIndexVar = '';
+	var FeeDeleText = '@Html.GetResource("FeeElementConfriamtionDel", "FeeElement")';
+
+    function deleteFees(id, index, Fee) {
+
+		FeeIdVar = id;
+		FeeIndexVar = index;
+		FeeDeleText=FeeDeleText.replace('{0}', Fee);
+        $("#confirmDeleteFeesText").text(FeeDeleText);
+        $("#confirmDeleteFeesDialog").dialog("open");
+
+    }
+	function DynamicChanged(elem) {
+
+
+		$(".BidOptimizationTypeList").hide();
+
+		dynamic_bidding_type = $("#BidOptimizationType").val();
+		dynamic_bidding_type = parseInt(dynamic_bidding_type);
+		switch (dynamic_bidding_type) {
+			case 1: //percentage
+				$('[name="dynamic_type_sign_op"]').text('%');
+				break;
+
+			case 5: //percentage
+				$('[name="dynamic_type_sign_op"]').text('%');
+				break;
+			case 2: //fixed
+				$('[name="dynamic_type_sign_op"]').text('$');
+				break;
+			default:
+				$('[name="dynamic_type_sign_op"]').text('$');
+		}
+		if (dynamic_bidding_type == 0) {
+
+			$("#required_sign_BidType").show();
+		}
+		else {
+			$("#required_sign_BidType").hide();
+		}
+		setDefaultValueDynamic();
+
+
+
+	}
+
+	function setDefaultValueDynamic() {
+		dynamic_bidding_type = parseInt(dynamic_bidding_type);
+		switch (dynamic_bidding_type) {
+			case 1: //percentage
+				$('#BidOptimizationValue').val('');
+
+				//BidOptimizationTypeList
+				break;
+			case 2: //fixed
+				$('#BidOptimizationValue').val('');
+
+				break;
+			default:
+				$('#BidOptimizationValue').val('5');
+				$("#required_sign_BidOptimizationValue").hide();
+		}
+
+	}
+	function BiddingStrategyChanged() {
+
+		if (Radio_IsChecked('#BiddingStrategyFixed')) {
+			BiddingStrategyFixedValue = true;
+
+			$("#Bid").val("");
+			$("#AdGroupDynamicBiddingConfigsDiv").hide();
+
+			if (parseFloat($("#minBidValue").text()) > 0)
+			$("#minBidValueDiv").show();
+            $("#BidValueDiv").show();
+            $(".bidModifiersContainer").show();
+
+			//$("#gridDivInventory").hide();
+
+
+		} else {
+			BiddingStrategyFixedValue = false;
+			$("#Bid").val("");
+			$("#BidOptimizationType").val("0");
+			$("#BidOptimizationValue").val("");
+			$("#MaxBidPrice").val("");
+
+			$("#AdGroupDynamicBiddingConfigsDiv").show();
+			//$("#gridDivInventory").show();
+			$("#BidValueDiv").hide();
+            $("#minBidValueDiv").hide();
+            $(".bidModifiersContainer").hide();
+
+
+
+		}
+	}
+
+
+
+	function resetTargetingContinueFlagForDynamicBidding(sender) {
+
+
+		var value = $(sender).val();
+		var REGULAR = new RegExp("^\\d{1,5}(\\.\\d{1,3})?$");
+
+		if (!REGULAR.test(value)) {
+			$(sender).val("");
+
+		}
+
+
+
+
+		if (IsBidValidDecimalExpression(sender.value) && eval(sender.value) > 0 /*&& eval(sender.value) >= eval($("#minBidValue").text())*/  ) {
+			$("#tab-padding").attr("style", "pointer-events:all;color:'';");
+			$("#bidConfigSubItemMenu").removeClass("disabledCustom");
+			targetingContinueFlag = false;
+            $("#required_sign_MaxBidPrice").hide();
+
+		}
+		else {
+			$("#tab-padding").attr("style", "pointer-events:none;color:silver;");
+			$("#bidConfigSubItemMenu").addClass("disabledCustom");
+			targetingContinueFlag = true;
+            $("#required_sign_MaxBidPrice").show();
+		}
+	}
+
+
+
+	function onValueChange_DynamicBidding(sender) {
+
+		dynamic_bidding_type = parseInt(dynamic_bidding_type);
+		switch (dynamic_bidding_type) {
+			case 1: //percentage
+				var REGULAR = new RegExp("^\\d{1,3}(\\.\\d{1,3})?$");
+				break;
+			case 5: //percentage
+				var REGULAR = new RegExp("^\\d{1,3}(\\.\\d{1,3})?$");
+				break;
+			default:
+				var REGULAR = new RegExp("^\\d{1,5}(\\.\\d{1,3})?$");
+		}
+
+		$("#required_sign_BidOptimizationValue").hide();
+		var value = $(sender).val();
+
+
+		if (!REGULAR.test(value) || parseFloat(value > 100 && dynamic_bidding_type == 1) || parseFloat(value > 100 && dynamic_bidding_type == 5)) {
+			$(sender).val("");
+			$("#required_sign_BidOptimizationValue").show();
+		}
+
+	}
+	function onpress_DynamicBidding(e, bidTextBox, nameOfValC) {
+
+
+		var key = e.keyCode || e.charCode;
+
+
+
+
+		var REGULAR = new RegExp("^\\d{1,5}(\\.\\d{1,3})?$");
+
+
+		if (!(String.fromCharCode(key) == '.' && bidTextBox.value.length > 0 && bidTextBox.value.indexOf('.') < 0) && key != 8) {
+
+			if (!REGULAR.test((bidTextBox.value + String.fromCharCode(key)))) {
+				e.preventDefault();
+
+				return;
+			}
+		}
+		$("#" + nameOfValC).hide();
+	}
+	function onValuepress_DynamicBidding(e, textbox) {
+		dynamic_bidding_type = parseInt(dynamic_bidding_type);
+		switch (dynamic_bidding_type) {
+			case 1: //percentage
+				var REGULAR = new RegExp("^\\d{1,3}(\\.\\d{1,3})?$");
+				break;
+			case 5: //percentage
+				var REGULAR = new RegExp("^\\d{1,3}(\\.\\d{1,3})?$");
+				break;
+			default:
+				var REGULAR = new RegExp("^\\d{1,5}(\\.\\d{1,3})?$");
+		}
+
+		$("#required_sign_BidOptimizationValue").hide();
+		var key = e.keyCode || e.charCode;
+
+		if (dynamic_bidding_type == 1) {
+			if (parseFloat(textbox.value) >= 100) {
+				e.preventDefault();
+			}
+		}
+
+		if (!(String.fromCharCode(key) == '.' && textbox.value.length > 0 && textbox.value.indexOf('.') < 0) && key != 8) {
+
+			if (!REGULAR.test((textbox.value + String.fromCharCode(key))) || (parseFloat(textbox.value + String.fromCharCode(key)) > 100 && dynamic_bidding_type == 1)) {
+				e.preventDefault();
+			}
+		}
+	}
+
+
+</script>
+
+@*<style type="text/css">
+
+
+        div[id$="Div"] {
+            float: left;
+        }
+
+        div .select2-selection__rendered {
+            float: left;
+        }
+    </style>*@
+<div class="section-form-inner-container info-container tab-pane fade" tabsection="7" id="bidSection"
+     style="display:none;" readonlyToBe>
+    <div class="ad-filter-text go-left floating-left">
+        @Html.Raw(Html.GetResource("BidDesc", "Campaign"))
+    </div>
+    <div class="ad-filter-data floating-left">
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("CostModel")</span>
+            </div>
+            <div class="field-container">
+                <span class="cost-model-container">@Html.DropDownList("CostModelWrapper", Model.CostModels, new { onchange = "updateAudianceSeqmenttab();updateConversiontab();" })</span>
+            </div>
+        </div>
+
+
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("BiddingStrategy", "DynamicBidding")</span>
+            </div>
+            <div class="field-container">
+                @Html.GetRadioButton("BiddingStrategy", Html.GetResource("FixedType", "Lookup"), @BiddingStrategyFixed == true, "floating-left iea-rbtn-width-b", value: "1", onChange: "BiddingStrategyChanged", Id: "BiddingStrategyFixed")
+
+
+            </div>
+
+            <div class="field-container">
+                @Html.GetRadioButton("BiddingStrategy", Html.GetResource("Dynamic", "Global"), @BiddingStrategyFixed == false, "floating-left iea-rbtn-width-b", value: "2", onChange: "BiddingStrategyChanged", Id: "BiddingStrategyDynamic")
+
+            </div>
+        </div>
+
+        <div class="data-row data-container" id="minBidValueDiv" style="@(BiddingStrategyFixed?"":"display:none;");">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("MinBid")</span>
+            </div>
+            <div class="field-container">
+                <span class="side-text" id="minBidValue"></span><span class="side-text">$</span>
+                @* <span id="micBidDiscounted" class="data-row guid-text go-left iea-go-right"></span>*@
+            </div>
+        </div>
+        <div class="data-row data-container" id="BidValueDiv" style="@(BiddingStrategyFixed?"":"display:none;");">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("Bid", "Campaign")</span>
+            </div>
+            <div class="field-container">
+                <span>@Html.AdFalconTextBox("Bid", Model == null ? string.Empty : Model.Bid.ToString("F3"), new { maskType = "decimal", onchange = "resetTargetingContinueFlag(this);", onkeypress = "onbidpress(event,this);" })</span>
+                <span class="side-text">$</span> @Html.AdFalconValidationMessageFor(p => p.Bid)
+                <span id="bidDiscounted" style="color: #E40685;" class="data-row guid-text go-left iea-go-right">@(!Model.DiscountedBid.HasValue || Model.Bid == Model.DiscountedBid ? string.Empty : "(" + string.Format(Html.GetResource("DiscountedBidDesc", "Campaign"), Model.DiscountedBid.Value.ToString("F2")) + ")")</span>
+
+            </div>
+        </div>
+
+        <div id="AdGroupDynamicBiddingConfigsDiv" style="@(BiddingStrategyFixed?"display:none;":"")">
+
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("Type", "Global")</span>
+                </div>
+                <div class="field-container">
+                    @Html.AdFalconDropDownList("BidOptimizationType", (ViewData["BidOptimizationTypeList"] as List<SelectListItem>), new { onchange = "DynamicChanged(this);" })
+                </div>
+                <div class="field-container">
+                    <span class="field-validation-error" data-valmsg-for="Code" data-valmsg-replace="true" style="display:none;padding-top:5px;" name="required_sign_BidType" id="required_sign_BidType">
+                        <span htmlfor="Code" generated="true" class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="data-row data-container">
+                <div class="label-container required-field">
+                    <span class="field-title ">@Html.GetResource("Goal", "DynamicBidding")</span>
+                </div>
+                <div class="field-container">
+                    @Html.AdFalconTextBox("BidOptimizationValue", Model == null || Model.BidOptimizationValue == 0 ? string.Empty : Model.BidOptimizationValue.ToString("F3"), new { maskType = "decimal", onkeypress = "onValuepress_DynamicBidding(event,this)", onchange = "onValueChange_DynamicBidding(this);" })
+                    <span name="dynamic_type_sign_op" id="dynamic_type_sign_op" class="side-text">@(BiddingStrategySign)</span>
+                </div>
+                <div class="field-container">
+                    <span class="field-validation-error requiredSignC" data-valmsg-for="Code" data-valmsg-replace="true" style="display:none;padding-top:5px;" name="required_sign_BidOptimizationValue" id="required_sign_BidOptimizationValue">
+                        <span htmlfor="Code" generated="true" class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span>
+                    </span>
+                </div>
+            </div>
+
+
+
+            <div class="data-row data-container">
+                <div class="label-container required-field">
+                    <span class="field-title ">@Html.GetResource("MaxBid", "DynamicBidding")</span>
+                </div>
+                <div class="field-container">
+                    @Html.AdFalconTextBox("MaxBidPrice", Model == null || Model.MaxBidPrice == 0 ? string.Empty : Model.MaxBidPrice.ToString("F3"), new { maskType = "decimal", onchange = "resetTargetingContinueFlagForDynamicBidding(this);", onkeypress = "onpress_DynamicBidding(event,this,'required_sign_MaxBidPrice');" })
+                    <span name="dynamic_type_sign" class="side-text">$</span>
+                </div>
+                <div class="field-container">
+                    <span class="field-validation-error requiredSignC" data-valmsg-for="Code" data-valmsg-replace="true" style="display:none;padding-top:5px;" name="required_sign_MaxBidPrice" id="required_sign_MaxBidPrice">
+                        <span htmlfor="Code" generated="true" class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="data-row data-container">
+                <div class="label-container required-field">
+                    <span class="field-title ">&nbsp;</span>
+                </div>
+                <div class="field-container">
+                    @Html.GetCheckBox("KeepBiddingAtMinimum", Html.GetResource("KeepBiddingAtMinimum", "DynamicBidding"), Model.KeepBiddingAtMinimum)
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+        @if (Model != null && (Model.AdActionTypeId != (int)ArabyAds.AdFalcon.Domain.Common.Model.Campaign.Objective.AdActionTypeIds.AdTrackingIOS && Model.AdActionTypeId != (int)ArabyAds.AdFalcon.Domain.Common.Model.Campaign.Objective.AdActionTypeIds.AdTrackingAndroid && Model.AdActionTypeId != (int)ArabyAds.AdFalcon.Domain.Common.Model.Campaign.Objective.AdActionTypeIds.AdTrackingIOSForLead && Model.AdActionTypeId != (int)ArabyAds.AdFalcon.Domain.Common.Model.Campaign.Objective.AdActionTypeIds.AdTrackingAndroidForLead && Model.AdActionTypeId != (int)ArabyAds.AdFalcon.Domain.Common.Model.Campaign.Objective.AdActionTypeIds.AdTracking))
+        {
+            <div class="data-row data-container">
+
+                <div class="label-container">
+                    <span class="field-title ">@Html.GetResource("DailyBudget", "Campaign") </span>
+                </div>
+                <div class="field-container">
+                    <span class="small-big-field">
+                        @Html.AdFalconTextBox("DailyBudget", Model == null || Model.AdGroupSettings == null || !Model.AdGroupSettings.DailyBudget.HasValue ? string.Empty : Model.AdGroupSettings.DailyBudget.Value.ToString("F2"), new { maskType = "decimal", title = @Html.GetResource("InvalidAdGroupDailyBudget", "Campaign"), onchange = "onbidchange(this) && BudgetChanged()", onkeypress = "onbidpress(event,this)" })
+                    </span>
+                    <span class="side-text">$</span>
+                    @await Html.PartialAsync("MoreInfo", "AdGroupBudgetMoreInfo", new ViewDataDictionary(ViewData) { { "Class_Tail", "tail-report" }, { "Style2", "float:none;" } })
+
+                    <span id="DailyBudgetValidation" class="validation-arrow field-validation-error" style="display:none;"><span id="Bid-error" class="">Daily Budget Must be lessa then Buget</span></span>
+
+                    @*&nbsp;<input type="button" value="@Html.GetResource("UpdateDailyBudget", "Commands")" name="UpdateDailyBudget" class="primary-btn" onclick="updateDailyBudget();" />*@
+                </div>
+                <div class="label-container" style="width: 60px">
+                    <span class="field-title ">@Html.GetResource("Budget", "Campaign") </span>
+                </div>
+                <div class="field-container">
+                    <span class="small-big-field">
+
+                        @Html.AdFalconTextBox("Budget", Model == null || Model.AdGroupSettings == null || !Model.AdGroupSettings.Budget.HasValue ? string.Empty : Model.AdGroupSettings.Budget.Value.ToString("F2"), new { maskType = "decimal", onchange = "BudgetChanged()", title = @Html.GetResource("InvalidAdGroupBudget", "Campaign"), })
+                    </span>
+                    <span class="side-text">$</span>
+                    @await Html.PartialAsync("MoreInfo", "AdGroupBudgetMoreInfo1", new ViewDataDictionary(ViewData) { { "Class_Tail", "tail-report" }, { "Style2", "float:none;" } })
+
+
+                    @*&nbsp; <input type="button" value="@Html.GetResource("Budget", "Commands")" name="UpdateAdGroupBudget" class="primary-btn" onclick="updateAdGroupBudget();" />*@
+                </div>
+            </div>
+        }
+
+
+
+
+
+
+    </div>
+    @{
+        <div style="clear: both">&nbsp;</div>
+        <div class="ad-filter-text go-left floating-left col-sm-1">
+            @Html.Raw(Html.GetResource("FeesDesc", "Campaign"))
+        </div>
+
+        <div class="col-sm-9" style="margin: auto;overflow-y:auto; margin-bottom: 30px; width: 715px;  max-height:240px; position: relative;
+  top: 30px;">
+            <div id="AdGroupFeesDiv">
+
+
+                @{
+
+
+
+
+                    List<SelectListItem> FeesListDynamic = new List<SelectListItem>();
+
+                    foreach (var item in Model.FeesList)
+                    {
+                        var selectItem = new SelectListItem();
+                        selectItem.Value = item.Value.ToString();
+                        selectItem.Text = item.Text;
+                        FeesListDynamic.Add(selectItem);
+                    }
+                    <div class="data-row data-container  info-container">
+
+                        <div class="label-container">
+                            <span class="field-title">@Html.GetResource("Fees", "Global")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.AdFalconDropDownList("FeesList", FeesListDynamic.ToList())
+
+                            <img name="iconImage" onclick="addFee();" class="plusicon" style="">
+                        </div>
+                    </div>
+
+                    @*<div class="data-row data-container info-container" id="FeesListheader" style="display:none;border-bottom-style:solid !important;border-color:#dae2e8 !important;border: 1px;padding-bottom:3px">
+                            <div class="label-container">
+                                <span class="field-title required-field">@Html.GetResource("NameColumn", "AppSite")</span>
+                            </div>
+                            <div class="label-container">
+                                <span class="field-title required-field">
+                                    @Html.GetResource("Value", "Lookup")
+                                </span>
+                            </div>
+
+                            <div class="label-container" style="padding-left:20px;padding-righ:20px;text-align:center">
+                                <span class="field-title required-field">
+                                    @Html.GetResource("Type", "Lookup")
+                                </span>
+                            </div>
+                        </div>*@
+                    <div id="feeElement" style="overflow-y:auto; height: 150px">
+
+                        @{
+                            for (int z = 0; z < Model.FeesAddList.Count(); z++)
+                            {
+
+                                <div class="data-row data-container info-container feeItemDiv" id="FeeItem_@Model.FeesAddList[z].FeeId" indexFee="@z" style="display:@(Model.FeesAddList[z].ID > 0 ? "block" : "none");">
+                                    <div class="label-container">
+                                        <span class="field-title">@Model.FeesAddList[z].Fee</span>
+                                    </div>
+                                    <div class="field-container">
+                                        <div class="field-container">
+                                            @{
+                                                object itemsToShow = new { maskType = "decimal", indexFee = z, @onkeypress = "OnKeyPressValueFee(event,this)", @onchange = "OnChangeValueFee(this)", @class = "text-box DynamicImageUrls textbox" + Model.FeesAddList[z].FeeId };
+                                                if (Model.FeesAddList[z].IsSystem)
+                                                {
+                                                    itemsToShow = new { maskType = "decimal", @readonly = "readonly", indexFee = z, @onkeypress = "OnKeyPressValueFee(event,this)", @onchange = "OnChangeValueFee(this)", @class = "text-box DynamicImageUrls textbox" + Model.FeesAddList[z].FeeId };
+                                                }
+                                                @Html.TextBoxFor(x => Model.FeesAddList[z].Value, itemsToShow)
+                                                @Html.ValidationMessageFor(x => Model.FeesAddList[z].Value)
+
+
+                                                if (Model.FeesAddList[z].IsSystem)
+
+                                                {<text><i class="fa fa-lock" style="padding-top:8px;padding-left:2px;padding-right:2px" aria-hidden="true"></i></text>}
+
+                                            var idSpanv = "FeesAddList_" + z + "__type_desc";
+
+                                            @Html.HiddenFor(x => Model.FeesAddList[z].IsAdded)
+                                            @Html.HiddenFor(x => Model.FeesAddList[z].IsSystem)
+                                            @Html.HiddenFor(x => Model.FeesAddList[z].Type)
+                                            @Html.HiddenFor(x => Model.FeesAddList[z].ID)
+                                            @Html.HiddenFor(x => Model.FeesAddList[z].FeeId)
+                                            var idSpan = "FeesAddList_" + z + "__ValueGreater-ValueErrorMsg2";
+
+                                            var idSpan2 = "FeesAddList_" + z + "__ValueGreater-ValueErrorMsg3";
+                                            }
+
+                                            @{ if (@Model.FeesAddList[z].TypeName == "$")
+                                                {<text>
+                                                        <span name="value_type_desc" id="@idSpanv" class="side-text" style="padding-left:6px;padding-right:6px;">@Model.FeesAddList[z].TypeName</span>
+                                                </text>
+
+                                            }
+                                            else
+                                            {
+                                                <text>
+                                                    <span name="value_type_desc" id="@idSpanv" class="side-text">@Model.FeesAddList[z].TypeName</span>
+                                                </text>
+
+                                            }
+                                            }
+
+                                            @*removeFeeDIV(@Model.FeesAddList[z].FeeId,@z)*@
+                                            @{ if (!Model.FeesAddList[z].IsSystem)
+                                                {<text><img name="iconImage" onclick="deleteFees(@Model.FeesAddList[z].FeeId,@z,'@Model.FeesAddList[z].Fee')" class="minusicon" style="padding-left:1px;padding-right:1px"></text>}
+                                            }
+
+
+
+                                            <span id=@idSpan2 class="float-right validation-arrow field-validation-error errorEnteredFees"
+                                                  style="display: none;margin-left:-3px;"><span class="">@Html.GetResource("CurrencyMsg", "ResourceSet")</span></span>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+
+                                }
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+
+    @{
+        <div style="clear: both">&nbsp;</div>
+        <div class="ad-filter-text go-left floating-left col-sm-1 bidModifiersContainer">
+            @Html.Raw(Html.GetResource("BidModifiersDesc", "Campaign"))
+        </div>
+        <div class="ad-filter-data bidModifiersContainer" id="Global" style="padding-top:7px;">
+
+
+            <div class="data-row data-container">
+                <div class="label-container" style="min-height:1px;width: 57px;">
+
+
+
+
+
+                </div>
+
+                <div class="field-container">
+
+
+                    <span class="field-title required-field">@Html.GetResource("DimensionType", "Global")</span>
+
+
+                </div>
+
+
+
+                <div class="label-container label-container-sm" style="min-height:1px;width:162px;">
+
+
+
+
+
+                </div>
+
+
+
+
+                <div class="field-container">
+
+
+                    <span class="field-title required-field">@Html.GetResource("DimensionValue", "Global")</span>
+
+                </div>
+
+
+
+                <div class="label-container" style="min-height:1px;width:333px;">
+
+
+
+
+
+                </div>
+
+
+
+                <div class="field-container">
+
+
+                    <span class="field-title required-field ">@Html.GetResource("Multiplier", "Global") </span>
+
+
+                </div>
+
+
+                <div class="label-container label-container-sm" style="min-height:1px; width:55px;">
+
+
+
+                </div>
+
+            </div>
+
+
+
+
+        </div>
+
+        @await Html.PartialAsync("BidModifierShared", new ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.BidModifierModel() { AdGroupBidModifiersDto = Model.AdGroupBidModifiersDto })
+
+    }
+
+    <div style="clear: both">&nbsp;</div>
+    @*@Html.RenderAction("TrackingEvents", new { id = Model.CampaignId, adGroupId = Model.AdGroupId, loadDefaultTrackingEvents = Model.LoadDetaultTrackingEvents })*@
+
+
+    @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.Campaign.TrackingEvents), new { id = Model.CampaignId, adGroupId = Model.AdGroupId, loadDefaultTrackingEvents = Model.LoadDetaultTrackingEvents })
+
+
+</div>
+<div id="updateFeesDialog" style="display:none;" title="@Html.GetResource("Warning", "Global")">
+    <span id="updateText"></</span>
+</div>
+<div id="confirmDeleteFeesDialog" style="display:none;" title="@Html.GetResource("Confirm", "Global")">
+    <span id="confirmDeleteFeesText"> @Html.GetResource("FeeElementConfriamtionDel", "FeeElement") </span>
+</div>

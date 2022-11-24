@@ -1,0 +1,169 @@
+﻿@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeUnitDto
+@*@using Noqoush.Framework.DomainServices*@
+@{
+    bool allowEnlarge = false;
+    if (ViewData["EnlargeImage"] != null && bool.Parse(ViewData["EnlargeImage"].ToString()) == true)
+    {
+        allowEnlarge = true;
+    }
+
+}
+<div class="data-row info-container last-container ">
+
+    @if (Model.InStreamVideoCreativeUnit.IsVideo)
+
+    {
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field reverse-link">@(Model.Name)</span>
+            </div>
+            <div class="field-container" style="width:250px; height:150px;"
+                 @(allowEnlarge ? "onclick=enlargeImage('" + Noqoush.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + Model.InStreamVideoCreativeUnit.ThumbnailDocId.ToString() + "');" : "")>
+                <img width="250" height="150" src='@(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + @Model.InStreamVideoCreativeUnit.ThumbnailDocId.ToString())' />
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field reverse-link">@(Model.Name)</span>
+            </div>
+            <div class="field-container" style="width:250px; height:150px;"
+                 @(allowEnlarge ? "onclick=enlargeImage('" + Noqoush.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + Model.InStreamVideoCreativeUnit.ThumbnailDocId.ToString() + "');" : "")>
+                <img width="250" height="150" src='@(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + @Model.InStreamVideoCreativeUnit.ThumbnailDocId.ToString())' />
+            </div>
+        </div>
+        if (Model.InStreamVideoCreativeUnit.IsXmlUrl)
+        {
+
+            <div class="data-row data-container" id="XMLUrlDiv">
+                <div class="label-container">
+                    <span class="field-title required-field campaign-upload">@Html.GetResource("URL")</span>
+                </div>
+                <div class="field-container">
+
+
+                    <span class="side-text margin-summary">@Model.InStreamVideoCreativeUnit.XmlUrl</span>
+                </div>
+            </div>
+        }
+
+        else
+        {
+
+            <div class="data-row data-container" id="XMLDiv">
+                <div class="label-container">
+                    <span class="field-title required-field campaign-upload">XML</span>
+                </div>
+                <div class="field-container">
+                    @Html.TextAreaFor(p => p.InStreamVideoCreativeUnit.Xml, new { @class = "text-box", @style = "width:600px;height:150px;" })
+                </div>
+            </div>
+
+        }
+        @*<br>
+            <div class="data-row data-container" style="font-weight: bold;">
+                   @Html.GetResource("XmlDetails", "XML") :
+            </div>*@
+        <br>
+        <div class="data-row info-container last-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">VPAID</span>
+                </div>
+                <div class="field-container">
+                    <span class="side-text margin-summary">
+                        @Html.GetCheckBox("Vpaid_1_check", "VPAID1", Model.InStreamVideoCreativeUnit.Vpaid_1, "", "", true)
+                        @Html.GetCheckBox("Vpaid_2_check", "VPAID2", Model.InStreamVideoCreativeUnit.Vpaid_2, "", "", true)
+
+                    </span>
+                </div>
+            </div>
+        </div>
+        if (@Model.InStreamVideoCreativeUnit.VASTProtocol.ToString() != "None")
+        {
+            <div class="data-row data-container info-container" id="">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("Version", "Targeting")</span>
+                </div>
+                <div class="field-container">
+                    <div class="field-container UniqueID-line-height" style="width: 95px">
+                        @Model.InStreamVideoCreativeUnit.VASTProtocol.ToText()
+                    </div>
+                </div>
+            </div>
+        }
+
+    }
+
+
+    @if (Model.InStreamVideoCreativeUnit.IsVideo)
+    {
+
+
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("InstreamVideoBitRate"): </span>
+            </div>
+            <div class="field-container">
+                <span class="side-text margin-summary">@Model.InStreamVideoCreativeUnit.BitRate</span>
+            </div>
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("InstreamVideoDuration"): </span>
+            </div>
+            <div class="field-container">
+                <span class="side-text margin-summary">@Model.InStreamVideoCreativeUnit.VideoDuration</span>
+            </div>
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("InstreamVideoWidth"): </span>
+            </div>
+            <div class="field-container">
+                <span class="side-text margin-summary">@Model.InStreamVideoCreativeUnit.VideoWidth</span>
+            </div>
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("InstreamVideoHeight"): </span>
+            </div>
+            <div class="field-container">
+                <span class="side-text margin-summary"> @Model.InStreamVideoCreativeUnit.VideoHeight</span>
+            </div>
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("InstreamVideoType"): </span>
+            </div>
+            <div class="field-container">
+                @{
+                    if (Model.InStreamVideoCreativeUnit.VideoTypeCode.IndexOf('/') > 0)
+                    {
+                        <span class="side-text margin-summary"> @Model.InStreamVideoCreativeUnit.VideoTypeCode.Split('/')[1]</span>
+                    }
+                    else
+                    {
+                        <span class="side-text margin-summary"> @Model.InStreamVideoCreativeUnit.VideoTypeCode</span>
+                    }
+                }
+
+            </div>
+        </div>
+
+
+    }
+
+
+</div>
+@if (allowEnlarge && !Noqoush.Framework.OperationContext.Current.Items.ContainsKey("IsLargeImageRegistered"))
+{
+    Noqoush.Framework.OperationContext.Current.Items["IsLargeImageRegistered"] = 1;
+    <div id="enlargeDialog-form" style="display: none;">
+
+        <img id="largeImage" />
+
+    </div>
+}

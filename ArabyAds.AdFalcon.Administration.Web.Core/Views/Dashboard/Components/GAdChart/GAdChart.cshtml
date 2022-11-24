@@ -1,0 +1,539 @@
+﻿@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.AppSite
+@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign
+@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core
+@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Reports
+@using ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.Dashboard
+@{
+
+    //List<CampaignListDto> campaigns = ViewData["Campaigns"] as List<CampaignListDto>;
+    //List<SelectListItem> campaignsList = new List<SelectListItem>();
+
+    //foreach (var campaign in campaigns)
+    //{
+    //    SelectListItem item = new SelectListItem();
+    //    item.Value = campaign.Id.ToString();
+    //    item.Text = campaign.Name;
+    //    campaignsList.Add(item);
+    //}
+
+    SelectListItem allItem = new SelectListItem();
+    allItem.Value = "";
+    allItem.Selected = true;
+    allItem.Text = Html.GetResource("AllCampaigns", "AdChart");
+
+    //campaignsList.Add(allItem);
+
+    List<SelectListItem> periodListItem = new List<SelectListItem>()
+{
+new SelectListItem()
+{
+Value = "0",
+Text = Html.GetResource("Today","Chart"),
+Selected = true
+} ,
+new SelectListItem()
+{
+Value = "1",
+Text = Html.GetResource("Yesterday","Chart"),
+},
+new SelectListItem()
+{
+Value = "2",
+Text = Html.GetResource("OneWeek","Chart"),
+},
+
+new SelectListItem()
+{
+Value = "3",
+Text = Html.GetResource("OneMonth","Chart"),
+},
+new SelectListItem()
+{
+Value = "4",
+Text = Html.GetResource("LastMonth","Chart"),
+}
+};
+
+    SelectListItem optionalItem = new SelectListItem();
+    optionalItem.Value = "";
+    optionalItem.Text = Html.GetResource("ByCountry", "Chart");
+    optionalItem.Selected = true;
+
+    ArabyAds.AdFalcon.Services.Interfaces.Services.ICountryService countryService = ArabyAds.Framework.IoC.Instance.Resolve<ArabyAds.AdFalcon.Services.Interfaces.Services.ICountryService>();
+    List<SelectListItem> countriesList = new List<SelectListItem>();
+    countriesList.Add(optionalItem);
+
+    List<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core.CountryDto> countriesDtos = countryService.GetAll().OrderBy(p => p.Name.Value).ToList();
+
+    foreach (var item in countriesDtos)
+    {
+        var selectItem = new SelectListItem();
+        selectItem.Value = item.ID.ToString();
+        selectItem.Text = item.Name.ToString();
+        countriesList.Add(selectItem);
+    }
+}
+
+<style>
+    .select2-container--open .select2-dropdown--below {
+        border-color: #A6C7FF;
+    }
+</style>
+<div class="data-row sub-header">
+    <div class="sub-header-left">
+    </div>
+    <div class="sub-header-center">
+        <div class="data-row">
+            <div class="floating-left iea-go-left sub-header-item-container objective-header">
+                <div class="sub-header-title">
+                    @Html.GetResource("TodyBillableCost", "Global").ToString()
+                </div>
+                <div class="sub-header-text">
+                    @ViewData["totalDaySpend"]
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="sub-header-right">
+    </div>
+</div>
+<div class="data-row section-container">
+    <br />
+    <div class="dashboard-left-side">
+
+
+        <div class="data-row data-container">
+            @{
+
+                if (ViewContext.RouteData.Values["id"] == null)
+                {
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("Advertiser", "Menu")</span>
+                    </div>
+                    <div class="field-container">
+
+
+
+
+                        <select id="AdvListDll" name="AdvListDll" class="js-example-theme-multiple js-states form-control select2-hidden-accessible multiselect2jq" style="width: 295px;" multiple="" tabindex="-1" aria-hidden="true"></select>
+
+                        <script>
+
+
+    var ElemnetID2 = "";
+
+    var AdvListUrl = '@Url.Action("GetAdvList", "Dashboard")';
+    var selectElemnt2;
+    $(document).ready(function () {
+        //$('#tokenize').tokenize();
+
+		ElemnetID2 = "#" + "AdvListDll";
+
+						selectElemnt2 = $(ElemnetID2);
+
+       // fillCountries();
+
+						$("#AdvListDll").select2({
+
+							placeholder: "@Html.GetResource("SelectAdvertiserRequired", "Advertiser")",
+							tags: false,
+
+            multiple: false,
+						tokenSeparators: [',', ' '],
+					allowClear: true,
+						closeOnSelect:true,
+						ajax: {
+				delay:250,
+						url: AdvListUrl,
+                dataType: "json",
+						type: "GET",
+
+                data: function (params) {
+
+                    var queryParameters = {
+						q: params.term,
+						UserId: $("#CurrentUserId").val()
+                    }
+                    return queryParameters;
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+								text: item.Name,
+								id: item.AdvertiserAccId
+                            }
+                        })
+                    };
+                }
+
+
+
+            }
+
+						});
+
+
+
+
+
+
+						$('#AdvListDll').on("select2:select", function (e) {
+
+
+							//$('[name="list"]').val($('#CampListDll').val());
+							var split = $('#AdvListDll').val().split("-");
+
+							$('[name="AdvertiserId"]').val(split[1]);
+							$('[name="AdvertiserAccountId"]').val(split[0]);
+
+							//$('[name="AdvertiserId"]').val($('#AdvListDll').val());
+							ResetReportCampaignChanged();
+							$('#CampListDll').select2('open');
+							$('#CampListDll').select2('close');
+						});
+						$('#AdvListDll').on("select2:unselect", function (e) {
+
+							$('[name="AdvertiserId"]').val('');
+							$('[name="AdvertiserAccountId"]').val('');
+							ResetReportAdvChanged();
+
+
+
+						});
+
+
+
+
+
+						//CustomInitSelect2();
+
+						//$('#CampListDll').trigger('select2:opening');
+						$('#AdvListDll').select2('open');
+						$('#AdvListDll').select2('close');
+
+
+    });
+
+
+
+
+                        </script>
+
+                    </div>
+
+
+
+                }
+            }
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("AdTitle", "AdChart")</span>
+            </div>
+            <div class="field-container">
+                @Html.Hidden("list", "")
+
+
+
+                <select id="CampListDll" name="CampListDll" class="js-example-theme-multiple js-states form-control select2-hidden-accessible multiselect2jq" style="width: 295px;" multiple="" tabindex="-1" aria-hidden="true"></select>
+
+                <script>
+
+
+    var ElemnetID1 = "";
+
+    var LanguageTypeUrl = '@Url.Action("GetCampList", "Dashboard")';
+    var selectElemnt1;
+    $(document).ready(function () {
+        //$('#tokenize').tokenize();
+
+		ElemnetID1 = "#" + "CampListDll";
+
+        selectElemnt1 = $(ElemnetID1);
+
+       // fillCountries();
+
+						$("#CampListDll").select2({
+
+							placeholder: "@Html.GetResource("SelectCampRequired", "Campaign")",
+							tags: false,
+
+            multiple: false,
+						tokenSeparators: [',', ' '],
+					allowClear: true,
+						closeOnSelect:true,
+						ajax: {
+				delay:250,
+                url: LanguageTypeUrl,
+                dataType: "json",
+						type: "GET",
+
+                data: function (params) {
+
+                    var queryParameters = {
+						q: params.term,
+						UserId: $("#CurrentUserId").val(),
+						AdvertiserAccountId: $('[name="AdvertiserAccountId"]').val(),
+						AdvertiserId: $('[name="AdvertiserId"]').val()
+                    }
+                    return queryParameters;
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                text: item.Name,
+                                id: item.Id
+                            }
+                        })
+                    };
+                }
+
+
+
+            }
+
+						});
+
+
+
+
+
+
+						$('#CampListDll').on("select2:select", function (e) {
+
+
+							$('[name="list"]').val($('#CampListDll').val());
+							getGoogleChartImage(); fillGrid();
+
+
+
+						});
+						$('#CampListDll').on("select2:unselect", function (e) {
+
+
+							ResetReportCampaignChanged();
+
+
+
+						});
+
+
+
+
+
+						//CustomInitSelect2();
+
+						//$('#CampListDll').trigger('select2:opening');
+						$('#CampListDll').select2('open');
+						$('#CampListDll').select2('close');
+
+
+    });
+
+
+
+						function ReportCampAdvertisersChanged(event, item) {
+
+
+							if ((typeof (item) != "undefined") && (item != null)) {
+
+
+								var split = item.AdvertiserAccId.split("-");
+
+								$('[name="AdvertiserId"]').val(split[1]);
+								$('[name="AdvertiserAccountId"]').val(split[0]);
+							}
+							else {
+								$('[name="AdvertiserId"]').val('');
+								$('[name="AdvertiserAccountId"]').val('');
+							}
+
+							ResetReportCampaignChanged();
+
+
+						}
+
+						function ResetReportAdvChanged() {
+
+							$('[Id="Advertisers_Name"]').val('');
+							$('[name="AdvertiserId"]').val('');
+							$('[name="AdvertiserAccountId"]').val('');
+							$('[Id="CampList_Name"]').val('');
+							//$('[name="list"]').val('');
+							//$("CampListDll").val('').change();
+							//getGoogleChartImage(); fillGrid();
+							ResetReportCampaignChanged();
+						}
+						function ResetReportCampaignChanged() {
+
+							$('[Id="CampList_Name"]').val('');
+							$('[name="list"]').val('');
+							$("#CampListDll").val('').change();
+
+							getGoogleChartImage(); fillGrid();
+
+						}
+						function ReportCampaignChanged(event, item) {
+
+
+							if ((typeof (item) != "undefined") && (item != null)) {
+
+
+
+
+								$('[name="list"]').val(item.Id);
+
+							}
+							else {
+								$('[name="list"]').val('');
+
+							}
+
+
+							getGoogleChartImage(); fillGrid();
+
+						}
+						function CustomInitSelect2() {
+							var dataF = [];
+							$.ajax({
+								type: 'GET',
+								url: LanguageTypeUrl ,
+								dataType: 'json'
+							}).then(function (data) {
+
+
+								 dataF = $.map(data, function (item) {
+									return {
+										text: item.Name,
+										id: item.Id
+									}
+								})
+									;
+
+								// $('#CampListDll').select2('data', dataF);
+
+
+
+
+								//
+								//$('#CampListDll').val('').change();
+
+
+
+							});
+
+						}
+                </script>
+
+            </div>
+
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("Period", "Chart")</span>
+            </div>
+            <div class="field-container">
+                @Html.AdFalconDropDownList("period", periodListItem, new { onchange = "getGoogleChartImage();fillGrid();" })
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-left-side floating-left">
+        <div class="data-row" id="gchartContainer" style="width:100%;height:350px">
+            @*<img id="chartImage"  class="chartImage" src="@Url.Action("chartcontrol", "dashboard", new { periodOption = 0, type = "ad", Id = "", metricCode = (ViewData["Metrics"] as List<MetricDto>).First().Code })" />*@
+        </div>
+    </div>
+    <div class="dashboard-right-side floating-right">
+        <div class="grid-container data-row">
+            @(Html.Kendo().Grid((ViewData["Metrics"] as List<MetricDto>))
+			.Name("Metrics").Columns(columns =>
+					{
+						columns.Bound(p => p.Name).ClientTemplate( Html.GetRadioButton("metric", "&nbsp; " +"#=Name.Value#"+ "" + "&nbsp;", false, "", "getGoogleChartImage", "#=Code#").ToHtmlString()).Title(Html.GetResource("Name", "Global"));
+						columns.Template("<div class='colored-box' style='background-color:#=Color#'></div>").Width(20);
+					})
+					)
+        </div>
+    </div>
+    @Html.RegisterScriptBlock(string.Format("var chartControlImageSrc='{0}'", Url.Action("GChartControl", "dashboard", new { type = "ad" })))
+
+    @Html.Hidden("AdvertiserAccountId", this.ViewContext.RouteData.Values["id"])
+    @Html.Hidden("AdvertiserId", "")
+    @Html.Hidden("CurrentUserId", ViewData["UserId"])
+
+    <div class="data-row">
+        &nbsp;
+    </div>
+    <div class="data-row section-container">
+        <div class="data-container floating-right dashboard-filter-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("CountryFilter", "AppChart")</span>
+            </div>
+            <div class="field-container">
+                @Html.AdFalconDropDownList("country", countriesList.ToList(), new { onchange = "fillGrid();" })
+            </div>
+        </div>
+        <h3>@Html.GetResource("ByGeoLocation", "Chart")</h3>
+        <div class="grid-container data-row">
+            @(Html.Kendo().Grid<AdGeoLocationDto>()
+                    .Name("GeoLocationGrid")
+            .Columns(columns =>
+            {
+                columns.Bound(o => o.CountryName).Title(Html.GetResource("CountryName", "AppChart"));
+                columns.Bound(o => o.CampaignName).Title(Html.GetResource("CampaignName", "AdChart"));
+                columns.Bound(o => o.Impress).Format("{0:n0}").Title(Html.GetResource("Impress", "AdChart"));
+                columns.Bound(o => o.Clicks).Format("{0:n0}").Title(Html.GetResource("Clicks", "AdChart"));
+                columns.Bound(o => o.CtrText).Title(Html.GetResource("CTR", "AdChart"));
+                columns.Bound(o => o.AvgCPCText).Title(Html.GetResource("AvgCPC", "AdChart"));
+                columns.Bound(o => o.BillableCostText).Title(Html.GetResource("BillableCost"));
+            })
+            .DataSource(dataBinding =>
+            {
+
+                // dataBinding.Ajax().Read("AdGeoLocation", "dashboard").da;
+                dataBinding.Ajax().Read(read => read.Action("AdGeoLocation", "dashboard").Data("geoLocationDataBindingData")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+            })
+                .Scrollable(scrolling => scrolling.Enabled(false))
+                .EnableCustomBinding(true).Pageable(paging => paging
+
+
+            .Input(false)
+            .Numeric(true)
+            .Info(true)
+            .PreviousNext(true)
+            .Refresh(true)
+
+            .Position(GridPagerPosition.Bottom))
+
+            .Groupable(grouping => grouping.Enabled(false)))
+        </div>
+        @Html.RegisterScriptBlock(string.Format("var exportUrl='{0}'", Url.Action("AdGeoLocationExport", "dashboard")))
+        <div class="data-row">
+            <a href="javascript:void(0)" onclick='geoLocationExport("excel")' class="export-icon-excel floating-left" title="Download as Excel">
+            </a><a href="javascript:void(0)" onclick='geoLocationExport("csv")' class="export-icon-cvs floating-left" title="Download as CSV">
+            </a><a href="javascript:void(0)" onclick='geoLocationExport("pdf")' class="export-icon-pdf floating-left" title="Download as PDF">
+            </a>
+        </div>
+        <br />
+        <div class="data-row section-container">
+            <h3>@Html.GetResource("AdPerformanceTitle", "AdChart")</h3>
+            @*@Html.RenderAction("adperformance", "dashboard")*@
+            @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.Dashboard.adperformance))
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        radioBox($("[name=metriccontainer]")[0]);
+        google.charts.setOnLoadCallback(getGoogleChartImage);
+        if (AccountRole == "DSP") {
+            SetSelectedTap("ListMenuDashboard");
+        } else {
+            SetSelectedTap("ListMenuAdvertiser");
+
+        }
+    });
+</script>
+

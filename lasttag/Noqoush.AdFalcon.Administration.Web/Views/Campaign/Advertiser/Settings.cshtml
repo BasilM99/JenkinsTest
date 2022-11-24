@@ -1,0 +1,307 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.Advertiser.AdvertiserAssignmentModel
+@{
+	/**/
+
+
+	ViewBag.Title = Html.GetResource("Settings", "AppSite");
+	string OpenMassage = string.Format(Html.GetResource("Open", "AdvSecurity"), @"<span style='font-weight:bold'>" + Model.AdvertiserName + "</span>");
+	string RestrictedMassage = string.Format(Html.GetResource("Restricted", "AdvSecurity"), @"<span style='font-weight:bold'>" + Model.AdvertiserName + "</span>");
+
+}
+
+<script language="javascript" type="text/javascript">
+    var ReadListId = "#Select2_ReadList";
+    var WriteListId = "#Select2_WriteList";
+    var WriteListP = "#WriteP";
+    var ReadListP = "#ReadP";
+    var option = "<option value='{0}' title='{1}'>{2}</option>";
+
+    var model = '@Html.Raw(Json.Encode(Model.Users))';
+
+    var Users = JSON.parse(model);
+    var ReadUsers = '@Model.ReadUsers';
+    var WriteUsers = '@Model.WriteUsers';
+
+   GlobalAdvertiserAccountId = '@Model.AdvertiserAccountId';
+
+
+    $(document).ready(function () {
+
+        Read_fillElements();
+        Write_fillElements();
+
+        $(ReadListId).on("select2:select", function (e) {
+            RemoveFromList(WriteListId, e.params.data.id);
+        });
+        $(WriteListId).on("select2:select", function (e) {
+            RemoveFromList(ReadListId, e.params.data.id);
+        });
+        $(ReadListId).on("select2:unselect", function (e) {
+            AddToList(WriteListId, e.params.data);
+        });
+        $(WriteListId).on("select2:unselect", function (e) {
+            AddToList(ReadListId, e.params.data);
+        });
+
+        $(ReadListId).on("change", function (e) {
+            $("#ReadUsers").val($(ReadListId).val().toString());
+
+        });
+        $(WriteListId).on("change", function (e) {
+            $("#WriteUsers").val($(WriteListId).val().toString());
+        });
+
+
+        ModeChanged();
+
+        fillselect2multipe(ReadUsers, ReadListId);
+        fillselect2multipe(WriteUsers, WriteListId);
+        var array = ReadUsers.split(',');
+        for (var i = 0; i < array.length; i++) {
+
+            RemoveFromList(WriteListId, array[i]);
+
+        }
+
+
+        array = WriteUsers.split(',');
+        for (var i = 0; i < array.length; i++) {
+
+            RemoveFromList(ReadListId, array[i]);
+
+        }
+
+    });
+
+    function format(item) {
+        var originalText = item.text;
+        return "<div title ='" + originalText + "'>" + originalText + "</div>";
+    }
+
+    function RemoveFromList(listId, id) {
+        $(listId).find("option[value='" + id + "']").remove();
+    }
+
+    function AddToList(listId, Datalist) {
+        $(listId).append(option.format(Datalist.id, Datalist.title ,Datalist.text));
+
+    }
+
+    function Read_fillElements() {
+        for (var i = 0; i < Users.length; i++) {
+            $(ReadListId).append(option.format(Users[i].Value, Users[i].Title, Users[i].Text));
+        }
+        $(ReadListId).select2();
+    }
+    function Write_fillElements() {
+        for (var i = 0; i < Users.length; i++) {
+            $(WriteListId).append(option.format(Users[i].Value, Users[i].Title, Users[i].Text));
+        }
+
+        $(WriteListId).select2();
+    }
+
+    function ModeChanged() {
+
+        var checked = $("input[customvalue='restricted']").attr("checked");
+        if (typeof (checked) == "undefined" || checked != "checked") {
+            $("#IsRestricted").val(false);
+            $("#DivRead").hide();
+
+            $("#DivWrite").hide();
+        } else {
+            $("#IsRestricted").val(true);
+            $("#DivRead").show();
+
+            $("#DivWrite").show();
+        }
+
+    }
+
+	function customAdvValidate() {
+		var result = true;
+		//clearErrorMessage();
+		//result = jQuery("form").valid();
+		//result = validateDate() && result;
+
+
+		//if (result) {
+		//	count = 0;
+		//}
+
+
+
+
+		return result;
+	};
+</script>
+@using (Html.BeginForm())
+{
+	@Html.HiddenFor(x => x.AdvertiserAccountId);
+	@Html.HiddenFor(x => x.IsRestricted);
+	@Html.HiddenFor(x => x.ReadUsers);
+	@Html.HiddenFor(x => x.WriteUsers);
+	@Html.HiddenFor(x => x.Users);
+
+	<div class="data-row section-container">
+		<h2>@Html.GetResource("Security")</h2>
+		<div class="section-form-container">
+			<div class="info-container data-row">
+
+				<div class="data-row data-container">
+					<div class="label-container">
+
+						<span class="field-title required-field">@Html.GetResource("Type", "Lookup")</span>
+
+					</div>
+					<div class="field-container">
+						<div class="container-fluid">
+
+							<div class="row" style="margin-left: -30px;padding-bottom: 5px;">
+								<div class="col-sm-1">
+									<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAScSURBVGhD7VhfaBRHHE7/gG2lVLFvfWsfiiBI++ZTKkn2Nt6ZFlHwpUIfqiC1wcQHRegF22Z375IGMUIVFDUlmLzYqmcqrUZNsrOXXCDJ5U/FRE2TWluSi0EwzZ+76e+3N7d30TFxrrd7dzQffNzc/OY3830zs3OzV7CCJeDS9A8llRx2qfoJl0IuSaoecKnkLHw/5Kpu37SjufkV1jT3UFjXugZEVwFHQTRdipJC7oPRg0XVwXUsPfvA2QVhlSAs8pTYBTD1B6xCCGi4FP0u1M+ntgE+LlH0/YXe1ldZd9kBrgII/jkhDLZQFL43gbit22v111kzCyX+ntUl1YYEBs9Ae8sU5LW6lba1rJmzKFZDb4GIsCVGId2y0vEBCy8LSTE2wip1JfKhPOi4GdxOsF2uppho4q3AcpCPXlkFW7LRMqPq1xzdZpJqHEgZ/HwBpS+xkDggF7baD8n+SAWL2Atcfhh40hwUtobHG3qDhdIGrMJruDWxT3hept3f6O+wkH0AE1VswKjIM7EcsC/sMz5BpI5V2weYufvmYLilMgzotyU+SSSCq8SqMw/8xY6bAGqkjFVnDHhsx43os56a0NusOvOIXzvMU2ohnVPqRQD9b5M0YzP7ag/g4T7JZuwBq8pPgImLaARPK1aVn5AUvS2+tfQ2VpWfWDGSK8Bbbsm3HRvgtyN+SVTgU9GL7aSsdRThmDg2k5EezPcMlXzm8QXxfSJmGsgK9ZjHb3ShFq+XvszkvRhkX/t7br8x6KkJzte03KO//jZNww/n6L1HMUfZD2P+MjRNUQNqQU1FSue7TObSKFbJ+lIfeVTeMDiHHfEGyAZ7H8zS8oaBOdTm0trfZ3L5KNPa39ziN0YrG4fmRqai3A6zyZFIlKI21Ihvm0z2s4D7U9X2o12ztycWuB3lAof+nqfbQKOsGV8x2YuBb2ZuH5luIA+5HeQSz3b8SbeAVu7fSvAO8FGpRqIDf2XmubjQM0G/ODdAt9YETWIZ63htRdkPGmWVxGRNL2Tyk4Bjbs/O+u4ZXqIov7s6SmWN0APNI7S+bdJkBZRhcIj9zs0R5c5joRk4kj9n8pOAyoN7TvX9ZyM/9kyago+D+CvDsUVEQxj7qXeSmytC1Aq3cC+TnwQa2X267x9ekghxC1XC7D9tIsGKphG6D9rwckWIWuEGoDD5SWTKCD4POPM8E0iMldV2cnNFaLuRT+q6aP2t5xs5dmvCbMPLFaHtRr5sGFxya2EMbg3cXBHabiQQjtBSnwEPe+QZE3gAYCwQnuLmitB2I8jj18ZMwV8Hxi0TRy6Pxw1eH+PmiNIRI8hDzbdpeeMdywiWsY7XNh06ZmT3qTA9EhhLrgiUsY7XNh06YuQuEI/Y1NMrcexijJcjSkeMdI/PmG93jT1PLCNYxjqM8XJE6YiRi70R6vYHaeBO1DKCZazDGC9HlI4YOXljnO76vs8ykeCnJ/rMGC9HlI4YqbownPLnwWJijJcjSkeM3Bx+TFv6p7jEGC9HlI4YcYIrRnKN/w8jH9d2zu890/8kH4hauUbwXxSXqqv5RKlal5n8FeQYCgr+BWg8XD/nzh4zAAAAAElFTkSuQmCC" width="30" height="30">
+								</div>
+								<div class="col-sm-9">
+									@Html.GetRadioButton("Restrictiontype", Html.GetResource("Open"), !Model.IsRestricted, onChange: "ModeChanged", value: "unrestricted")
+									<p style="margin-left:30px;color:gray">@Html.Raw(OpenMassage)</p>
+								</div>
+
+							</div>
+							<div class="row" style="margin-left: -30px;">
+
+								<div class="col-sm-1">
+									<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAR+SURBVGhD7VhdTxRXGKbaGzWm7V9oL5om3ugfoElhdxFEYzTxxia9qCZNWxLwotXEJTbtzOxCjRETNbFpS0LK3tjabtH0w1ZgZvlKgOWjRqil4EcNu0hMRIHd4/ucPbO7yCn04MzsmvIkTzi873nPeZ4zZ87MbMk6VoDfMHf4dOuYXzfP+TXre07eNo8iJ7oVJ0pPXn2ZBNcTJ/y6xVYk+lBf1IjywmN/JLLRp1l1dAWS+WIptkhib9GV6OWkNo/l9aH4NP2txRhiuMIAK0riLtvCfLqZov9byzVz175Gc5PolgVifsOqJtMR9M0ZstrK9N6XRDdvgYlJQNwWQwb6AlrndpFeFeiLGrseY3luBluBtsWVPBOtsiuwGqqCvZtRmzfOZU+3mU+PHbEnJ0PflDD2gkipg2qfMlMnMu6iUmt/hW7cBJ9YM3uwqiK1ZmCMzKGAMa2EJ6cZjk2+cnSzqtwTqwFj0cKkxdhBEXYPdOn/4iuHLeUwMCY3QnOIkDvAUzljgkjHqAg7Bp/Rucce38mrvQyZ1w6+YotrOaVWA8a0ny8010ci7DxoD5/PTGLeFiHH4dPMO2KxzoqQ86AJLmESnFYi5DiypxfNJULOg1arPbNaZrsIOQ4v5lg3ogJX58CTtvzTzm20fzMviRr91cwylyheRM045nzmpzz/ztCtd6pCXfie4E/cwtBMV4VjPdASDLINQt5/QyDU8VplODZS1dC10NB2k/38xyyL351nN++nPeUQzfnT6CyDBmiBpre07leFzJVRpltvVISs+zXNI/MYSDZBIThw+zGraR6ehza/0fG6kCtHtdGxdWc4NlHXMjo/PpOSDlhIjidTDNqgsTzcv0XIXg56f6rfd6rn8fXpRelAxcDRewtsL2kMGLHjQvZSlAavvlgZsmabrbvSAYqJX3XeYTtJq/Rrkr4z3qwwrNTwP87cFxf7p9n7Xw+zXQ1dnGgjJuuryiHSGNCtdMAwS4X8HOiYO3ygqW9OVqjKz69MsIBhsSORcdbUnuCspTZNTrm/pTWqPHC6d46O5HeF/Bzw2nz4wuAzG/m2P8EFnyHxP46llxCGkPtuICGtVSG0Sr8kYeTQF4OPZEUqxBaqo9V/2oTN2tZx9gH1kdWqEFrpLUAT8nNwygjuB6y8zASIXHVjt7RWha4b2XOyhzVd+3cjp69N8z6yWhW6buTD5pEVtxZy9NYgrVWh60ai8SSrCMXoZk8uM4EDALlofEZaq0LXjYBnfpnkgj+JTmVNnPhhKmPw10lpjSo9MQJ+HLnOalpuZI2gjZis71romZFDF+LsRHQyd0WojZis71roiZE/iThi808v+9hFTlajSk+M9E3N8a+7lv6HWSNoI4acrEaVnhi5NJBkleEuFr2RyhpBGzHkZDWq9MTI+d+m2NtnB7MmbB48N8hzshpVemKk/uJY3o8HS4mcrEaVnhj5fewBaxuakRI5WY0qPTHiBdeNFBv/H0Z2N3YvvPfl0MPngdAqNYJfUfy6qT9P9H1mBoT8dRQZSkqeAMldhLCZGJJtAAAAAElFTkSuQmCC" width="30" height="30">
+								</div>
+								<div class="col-sm-9">
+									@Html.GetRadioButton("Restrictiontype", Html.GetResource("Restricted"), Model.IsRestricted, onChange: "ModeChanged", value: "restricted")
+									<p style="margin-left:30px;color:gray">@Html.Raw(RestrictedMassage)</p>
+								</div>
+
+							</div>
+
+
+						</div>
+					</div>
+				</div>
+
+				<div class="data-row data-container" id="DivRead">
+					<div class="label-container">
+						<span class="field-title required-field">@Html.GetResource("Read")</span>
+					</div>
+					<div class="field-container">
+						@Html.Partial("~/Views/Campaign/Advertiser/UsersSelect2.cshtml", new Noqoush.AdFalcon.Web.Controllers.Model.Select2ViewModel
+						{
+							Id = "Read",
+							ActionName = "",
+							ControllerName = "",
+							ClintSideResourceFunction = "",
+							IsServerSide = false,
+							OptionalParameter = "",
+						})
+
+					</div>
+				</div>
+
+
+				<div class="data-row data-container" id="DivWrite">
+					<div class="label-container">
+						<span class="field-title required-field">@Html.GetResource("Write")</span>
+					</div>
+
+
+					<div class="field-container">
+						@Html.Partial("~/Views/Campaign/Advertiser/UsersSelect2.cshtml", new Noqoush.AdFalcon.Web.Controllers.Model.Select2ViewModel
+						{
+							Id = "Write",
+							ActionName = "",
+							ControllerName = "",
+							ClintSideResourceFunction = "",
+							IsServerSide = false,
+							OptionalParameter = "",
+						})
+
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="section-footer">
+		</div>
+	</div>
+	if ((Noqoush.Framework.OperationContext.Current.UserInfo
+<Noqoush.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+().AccountRole == (int)Noqoush.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP))
+	{
+		<div class="data-row section-container">
+			<h2>@Html.GetResource("Billing", "Global")</h2>
+			<div class="section-form-container">
+				<div class="info-container data-row col-sm-9 col-md-push-1">
+					<div class="data-row data-container">
+
+						<div class="label-container required-field">
+							<span class="field-title required-field ">@Html.GetResource("AgencyCommission", "Global")</span>
+
+						</div>
+
+
+						<div class="field-container">
+							@{
+
+								var isunCPMSelected = (int)Model.AgencyCommission == 0 ? "selected" : "";
+								var isFixedCPMSelected = (int)Model.AgencyCommission == 1 ? "selected" : "";
+								var isNetCostMarginSelected = (int)Model.AgencyCommission == 2 ? "selected" : "";
+								var isBillableCostMarginSelected = (int)Model.AgencyCommission == 3 ? "selected" : "";
+								var isGrossCostMarginSelected = (int)Model.AgencyCommission == 4 ? "selected" : "";
+							}
+							<select id="selectAgencyCommission" name="AgencyCommission" onchange="OnChangeAgencyCommissionChanged()">
+								<option value="0" @isunCPMSelected>@Html.GetResource("Select", "Global")</option>
+								<option value="1" @isFixedCPMSelected>@Html.GetResource("FixedCPM", "Global")</option>
+								<option value="2" @isNetCostMarginSelected>@Html.GetResource("NetCostMargin", "Global")</option>
+								<option value="3" @isBillableCostMarginSelected>@Html.GetResource("BillableCostMargin", "Global")</option>
+								<option value="4" @isGrossCostMarginSelected>@Html.GetResource("GrossCostMargin", "Global")</option>
+							</select>
+
+						</div>
+					</div>
+
+
+
+					<div class="data-row data-container" id="AgencyCommissionValueSec" style="display:@((int)Model.AgencyCommission!=0 ? "block" : "none")">
+						<div class="label-container required-field">
+							<span class="field-title ">@Html.GetResource("AgencyCommissionValue", "Global")</span>
+						</div>
+						<div class="field-container">
+							<span class="small-big-field">
+								@Html.AdFalconTextBox("AgencyCommissionValue", Model.AgencyCommissionValue.ToString("F2"), new { maskType = "decimal", @onkeypress = "OnKeyPressCommissionValue(event,this)", @onchange = "OnChangeCommissionValue(this)" })
+							</span><span class="side-text" id="textForAgencyCommissionValue">@((int)Model.AgencyCommission == 1 ? '$' : '%')</span>
+							<span id="AgencyCommissionValueErorMassege" class="validation-arrow field-validation-error errorEnteredFees"
+								  style="display: none;margin-left:15px;"><span class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span></span>
+
+
+							</div>
+						</div>
+					</div>
+			</div>
+
+			<div class="section-footer">
+			</div>
+		</div>
+
+
+
+
+	}
+
+	<div class="data-row button-container">
+		@Html.SubmitButton(@Html.GetResource("Save", "Commands"), "Create", new { @class = "primary-btn", onclick = "customAdvValidate();" })
+		<input type="button" value='@Html.GetResource("Close", "Commands")' class="btn" onclick="redirect('@(string.IsNullOrWhiteSpace(Request.QueryString["returnUrl"]) ? Url.Action("AccountAdvertisers", "Campaign") : Request.QueryString["returnUrl"])')" />
+	</div>
+
+
+
+
+
+}
+
+

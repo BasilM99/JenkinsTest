@@ -1,0 +1,16 @@
+﻿@model  IEnumerable<ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.CreativeUnitViewModel>
+<div class="section-form-inner-container info-container">
+    <div class="ad-banner-container-right floating-right">
+       
+    </div>
+    <div class="ad-banner-container-left floating-left">
+        <br />
+        @{
+            foreach (var uploadViewModel in Model)
+            {
+                @Html.Partial("Creative/CreativeUnit/ExternalUrlCreativeUnit",uploadViewModel)
+            }
+        }
+
+    </div>
+</div>

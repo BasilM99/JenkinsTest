@@ -1,0 +1,15 @@
+﻿@using ArabyAds.AdFalcon.Web.Controllers.Model.Core
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.CreativeUnitViewModel
+
+@{
+    var uploadInfo = UploadViewModel.ParseCreativeUnit(Model);
+    //uploadInfo.PreviewHeight = 100;
+    //uploadInfo.PreviewWidth = 200;
+    var viewDataDic = new ViewDataDictionary();
+    
+    if(ViewData["ShowImpressionTracker"] != null)
+    {
+        viewDataDic.Add("ShowImpressionTracker", ViewData["ShowImpressionTracker"]);
+    }
+}
+@Html.Partial("Upload", uploadInfo,viewDataDic)

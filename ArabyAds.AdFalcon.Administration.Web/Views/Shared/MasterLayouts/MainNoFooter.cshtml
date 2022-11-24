@@ -1,0 +1,281 @@
+﻿@using Combres.Mvc
+@using ArabyAds.AdFalcon.Web.Controllers.Model;
+@{
+    var homeController = ViewContext.Controller as ArabyAds.AdFalcon.Web.Controllers.Core.ControllerBase;
+}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>@ViewBag.Title</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+
+
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.min.js" type="text/javascript"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.migrate/jquery-migrate-3.0.0.min.js" type="text/javascript"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular-sanitize.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-touch.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-animate.js"></script>
+    @*<script src="http://ui-grid.info/docs/grunt-scripts/csv.js"></script>
+        <script src="http://ui-grid.info/docs/grunt-scripts/pdfmake.js"></script>
+        <script src="https://ui-grid.info/docs/grunt-scripts/vfs_fonts.js"></script>*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-grid/4.0.6/ui-grid.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet" />
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script type="text/javascript">
+
+      (function($){if(!$.browser&&1.9<=parseFloat($.fn.jquery)){var a={browser:void 0,version:void 0,mobile:!1};navigator&&navigator.userAgent&&(a.ua=navigator.userAgent,a.webkit=/WebKit/i.test(a.ua),a.browserArray="MSIE Chrome Opera Kindle Silk BlackBerry PlayBook Android Safari Mozilla Nokia".split(" "),/Sony[^ ]*/i.test(a.ua)?a.mobile="Sony":/RIM Tablet/i.test(a.ua)?a.mobile="RIM Tablet":/BlackBerry/i.test(a.ua)?a.mobile="BlackBerry":/iPhone/i.test(a.ua)?a.mobile="iPhone":/iPad/i.test(a.ua)?a.mobile=
+        "iPad":/iPod/i.test(a.ua)?a.mobile="iPod":/Opera Mini/i.test(a.ua)?a.mobile="Opera Mini":/IEMobile/i.test(a.ua)?a.mobile="IEMobile":/BB[0-9]{1,}; Touch/i.test(a.ua)?a.mobile="BlackBerry":/Nokia/i.test(a.ua)?a.mobile="Nokia":/Android/i.test(a.ua)&&(a.mobile="Android"),/MSIE|Trident/i.test(a.ua)?(a.browser="MSIE",a.version=/MSIE/i.test(navigator.userAgent)&&0<parseFloat(a.ua.split("MSIE")[1].match(/[0-9\.]{1,}/)[0])?parseFloat(a.ua.split("MSIE")[1].match(/[0-9\.]{1,}/)[0]):"Edge",/Trident/i.test(a.ua)&&
+        /rv:([0-9]{1,}[\.0-9]{0,})/.test(a.ua) && (a.version = '' + parseFloat(a.ua.match(/rv:([0-9]{1,}[\.0-9]{0,})/)[1].match(/[0-9\.]{1,}/)[0]))) : /Chrome/.test(a.ua) ? (a.browser = "Chrome", a.version = '' +  parseFloat(a.ua.split("Chrome/")[1].split("Safari")[0].match(/[0-9\.]{1,}/)[0])) : /Opera/.test(a.ua) ? (a.browser = "Opera", a.version = ''+parseFloat(a.ua.split("Version/")[1].match(/[0-9\.]{1,}/)[0])) : /Kindle|Silk|KFTT|KFOT|KFJWA|KFJWI|KFSOWI|KFTHWA|KFTHWI|KFAPWA|KFAPWI/i.test(a.ua) ? (a.mobile = "Kindle", /Silk/i.test(a.ua) ? (a.browser =
+        "Silk", a.version = '' + parseFloat(a.ua.split("Silk/")[1].split("Safari")[0].match(/[0-9\.]{1,}/)[0])) : /Kindle/i.test(a.ua) && /Version/i.test(a.ua) && (a.browser = "Kindle", a.version = '' + parseFloat(a.ua.split("Version/")[1].split("Safari")[0].match(/[0-9\.]{1,}/)[0]))) : /BlackBerry/.test(a.ua) ? (a.browser = "BlackBerry", a.version = ''+parseFloat(a.ua.split("/")[1].match(/[0-9\.]{1,}/)[0])) : /PlayBook/.test(a.ua) ? (a.browser = "PlayBook", a.version =''+ parseFloat(a.ua.split("Version/")[1].split("Safari")[0].match(/[0-9\.]{1,}/)[0])) :
+        /BB[0-9]{1,}; Touch/.test(a.ua) ? (a.browser = "Blackberry", a.version = '' + parseFloat(a.ua.split("Version/")[1].split("Safari")[0].match(/[0-9\.]{1,}/)[0])) : /Android/.test(a.ua) ? (a.browser = "Android", a.version = '' + parseFloat(a.ua.split("Version/")[1].split("Safari")[0].match(/[0-9\.]{1,}/)[0])) : /Safari/.test(a.ua) ? (a.browser = "Safari", a.version = ''+parseFloat(a.ua.split("Version/")[1].split("Safari")[0].match(/[0-9\.]{1,}/)[0])) : /Firefox/.test(a.ua) ? (a.browser = "Mozilla", a.version = ''+parseFloat(a.ua.split("Firefox/")[1].match(/[0-9\.]{1,}/)[0])) :
+        /Nokia/.test(a.ua) && (a.browser = "Nokia", a.version = '' + parseFloat(a.ua.split("Browser")[1].match(/[0-9\.]{1,}/)[0]))); if (a.browser) for (var b in a.browserArray) a[a.browserArray[b].toLowerCase()] = a.browser == a.browserArray[b]; $.extend(!0, $.browser = {}, a)
+      }
+      })(jQuery);
+    </script>
+
+    @Html.RegisterInternalStyleSheetLink("bootstrap.css")
+    @*<link href="http://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />*@
+    @(Html.Telerik().StyleSheetRegistrar().DefaultGroup(group => group.Add("/" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage + "/telerik.common.css")
+        .Add("/" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage + "/telerik.webblue.css").
+        Add("/" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage + "/telerik.rtl.css").UseTelerikContentDeliveryNetwork(false).Combined(true).Compress(true)))
+
+    @(Html.Telerik().ScriptRegistrar()
+
+     .jQuery(false).jQueryValidation(false)
+
+                .DefaultGroup(group => group.Combined(true).Compress(true).UseTelerikContentDeliveryNetwork(false))
+     .jQuery(false).Globalization(true))
+
+    @Html.CombresLink(string.Format("{0}-{1}-siteCss", ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage, "magenta"))
+
+
+    @*@Html.RegisterInternalStyleSheetLink("jquery-ui-custom.css")*@
+
+    @Html.CombresLink(homeController.GetJavaScriptSet())
+
+
+    @{
+        <!--[if lte IE 7]>@Html.RegisterInternalStyleSheetLink("styleie7.css")<![endif]-->
+    }
+    <style>
+        .reset-box-sizing,
+        .reset-box-sizing *,
+        .reset-box-sizing *:before,
+        .reset-box-sizing *:after {
+            -webkit-box-sizing: inherit;
+            -moz-box-sizing: inherit;
+            box-sizing: content-box;
+        }
+
+        .btn {
+            vertical-align: unset !important;
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-grid/4.0.6/ui-grid.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+
+    @Html.CombresLink(string.Format("{0}-{1}-siteCss_OverRide", ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage, "magenta"))
+    @Html.RegisterInternalStyleSheetLinkOverRide("bootstrap_OverRide.css")
+    @Html.RegisterInternalStyleSheetLinkOverRide("telerik_OverRide.css")
+    <style>
+            .select2-container--default .select2-results__option[aria-selected=true] {
+                background-color: #a4cbec;
+            }
+
+            .select2-container--default .select2-results__option--highlighted[aria-selected=true] {
+                background-color: #6591b7;
+                color: #fff;
+            }
+
+            .select2-container--default .select2-results__option--highlighted[aria-selected] {
+                background-color: #6591b7;
+                color: #fff;
+            }
+
+            .select2-container--default .select2-selection--multiple .select2-selection__choice:hover {
+                background-color: #6591b7;
+                color: #fff;
+            }
+
+            .select2-container--default .select2-selection--multiple .select2-selection__choice {
+                background-color: #a4cbec;
+                /*border: 1px solid #aaa;
+        border-radius: 4px;
+        cursor: default;
+        float: left;
+        margin-right: 5px;
+        margin-top: 5px;
+        padding: 0 5px;*/
+                border-bottom-left-radius: 5px;
+                border-bottom-right-radius: 5px;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+                box-sizing: border-box;
+                color: rgb(45, 45, 46);
+                cursor: pointer;
+                display: inline-block;
+                font-family: Verdana, Arial, "Times New Roman";
+                font-size: 11px;
+                height: 17px;
+                line-height: 11px;
+                margin-bottom: 5px;
+                margin-right: 5px;
+                outline-color: rgb(45, 45, 46);
+                outline-style: none;
+                outline-width: 0px;
+                overflow-x: hidden;
+                overflow-y: hidden;
+                padding-bottom: 2px;
+                padding-left: 9px;
+                padding-right: 5px;
+                text-align: left;
+                  font-weight:normal;
+                text-decoration-color: rgb(45, 45, 46);
+                text-decoration-line: none;
+                text-decoration-style: solid;
+            }
+
+            .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+                float: right;
+                color: white;
+                background-attachment: scroll;
+                background-clip: border-box;
+                background-color: rgba(0, 0, 0, 0);
+                background-origin: padding-box;
+                background-position-x: 0%;
+                background-position-y: 0%;
+                background-size: auto;
+                box-sizing: border-box;
+                cursor: pointer;
+                display: inline-block;
+                font-family: Verdana, Arial, "Times New Roman";
+                font-size: 11px;
+                height: 11px;
+                line-height: 11px;
+                text-align: right;
+                text-size-adjust: 100%;
+                width: 16px;
+            }
+    </style>
+
+    @if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage == "ar")
+    {
+        <text>
+            <style>
+                .select2-container--default .select2-selection--multiple .select2-selection__choice {
+                    float: right;
+                }
+
+                .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+                    float: left;
+                    text-align: left;
+                }
+            </style>
+        </text>
+    }
+    <script type="text/javascript" defer=defer defer=defer>
+
+        var close = "@Html.GetResource("Close","Commands")";
+               @{
+                   if (ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP)
+                   {
+                       <text> AccountRole = "DSP";</text>
+                   }
+               else
+               {
+                   <text> AccountRole = "Normal";</text>
+
+               }
+        }
+
+        @Html.Partial("Localization")
+                @{
+
+
+                    <text>
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-25905897-1']);
+        _gaq.push(['_setDomainName', 'adfalcon.com']);
+        _gaq.push(['_trackPageLoadTime']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+        </text>
+                }
+        //$(window).on('load', function () {
+
+
+        //    if (typeof (localInitilize) != "undefined") {
+        //        localInitilize();
+        //    }
+
+        //});
+        $(document).ready(function () {
+            var $forms = $('form');
+            $.each($forms, function (key, value) {
+                // enable validation when an input loses focus.
+                var settings = $.data(value, 'validator').settings;
+                settings.onchange = function (element) { $(element).valid(); };
+                //settings.onfocusin = function (element) { $(element).valid(); };
+            });
+        });
+
+    </script>
+</head>
+
+
+@{
+   
+    var idBodayall = @ViewContext.RouteData.GetRequiredString("controller") + '_' + @ViewContext.RouteData.GetRequiredString("action");
+}
+<body  id="@idBodayall" style="background-color:white!important;" >
+    @{
+        if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage == "ar")
+        {
+            <text> <div class="t-rtl">
+            </text>
+        }
+        else
+        {
+            <text> <div>
+            </text>
+        }
+    }
+
+
+    
+      
+            @RenderBody()
+           
+ 
+
+
+
+    <div class="spinner-container" style="display: none">
+        <img src="@Url.GetImagePath("ajax-loader.gif")" alt="" />
+
+    </div>
+    <div id="dialog-confirm" title="?" style="display: none;">
+        <p>
+            <span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
+            <span id="dialog-confirm-Msg">
+                @Html.GetResource("ProceedMsg")
+            </span>
+        </p>
+    </div>
+
+
+</div>
+</body>
+</html>

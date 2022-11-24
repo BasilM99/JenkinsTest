@@ -1,0 +1,50 @@
+﻿@{
+    Layout = null;
+}
+@model List<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Reports.CampaignCommonReportDto>
+
+
+@using (Html.BeginForm())
+{
+    <div id="appSitesResultContainer">
+        <div class="grid-container" id="topAccountsGrid">
+            @(Html.Kendo().Grid(Model)
+        .Name("TPGrid")
+            .Columns(columns =>
+            {
+
+
+                columns.Bound(o => o.Name).Title(Html.GetResource("ByCountry", "Chart")).Width(500);
+                columns.Bound(o => o.SecondSubName).Title(Html.GetResource("SubAppSite", "AppSite")).Hidden();
+                columns.Bound(o => o.Impress).Title(Html.GetResource("Impressions", "Campaign")).Format("{0:n0}").HtmlAttributes(new { @class = "go-center" });
+                columns.Bound(o => o.UniqueImp).Title(Html.GetResource("UniqueImp", "Report")).Format("{0:n0}").HtmlAttributes(new { @class = "go-center" });
+                columns.Bound(o => o.eCPMText).Title(Html.GetResource("eCPM", "AppChart")).Format("{0:n0}").HtmlAttributes(new { @class = "go-center" }).Hidden();
+
+
+
+            }).EnableCustomBinding(true)
+                                                     .DataSource(dataBinding =>
+                                                     {
+                                                         dataBinding.Ajax().Read(read => read.Action("_TPGrid", "Campaign").Data("TPGridData")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+                                                     })
+                                             .Events(clientEvents => clientEvents.DataBinding("appSitePartialIndexGridDataBinding").DataBound("TPGridData"))
+                                             .Scrollable(scrolling => scrolling.Enabled(false))
+                                             .Selectable().Pageable(paging => paging
+
+
+            .Input(false)
+            .Numeric(true)
+            .Info(true)
+            .PreviousNext(true)
+            .Refresh(true)
+
+                                                                     .Position(GridPagerPosition.Bottom))
+                                             .Filterable(filtering => filtering.Enabled(false))
+                                             .Groupable(grouping => grouping.Enabled(false)))
+
+
+        </div>
+
+    </div>
+}

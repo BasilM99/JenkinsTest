@@ -1,0 +1,18 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Core.RecipientEmailModel
+@{
+    Layout = null;
+}
+@{
+    <div class="label-container">
+        <span class="field-title required-field">
+            @Html.GetResource("RecipientEmails", "Global")
+        </span>
+    </div>
+    <div class="field-container" style="width: 50%;">
+
+        @foreach (string item in Model.RecipientEmail)
+        {
+            <a class="side-text" href="#" onclick="return false;" target="_tab" style="">@item</a>
+        }
+    </div>
+}

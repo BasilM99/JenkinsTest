@@ -1,0 +1,310 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.User.TransactionVATHistoryModel
+
+@{
+    ViewBag.Title = Html.GetResource("TransactionVATHistory", "Global");
+}
+
+<style type="text/css">
+    .dropdown.dropdown-lg .dropdown-menu {
+        margin-top: -1px;
+        padding: 6px 20px;
+    }
+
+    .input-group-btn .btn-group {
+        display: flex !important;
+    }
+
+    .btn-group .btn {
+        border-radius: 0;
+        margin-left: -1px;
+    }
+
+        .btn-group .btn:last-child {
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+
+    .btn-group .form-horizontal .btn[type="submit"] {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
+
+    .form-horizontal .form-group {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .form-group .form-control:last-child {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
+</style>
+
+<script language="javascript">
+    $(document).ready(function () {
+        localInitilizeDateCaleander();
+        SetSelectedTap("ListMenuAdmin");
+        onFilterTypeChanged();
+        DetailsChanged();
+        localAccountSearchInitilize();
+        $("#account-search-dialog-form").dialog({
+            autoOpen: false,
+            // height: 520,
+            width: 900,
+            draggable: false,
+            modal: true,
+            resizable: false
+        });
+    });
+
+    function showAccountSearchDialogPMP() {
+
+        showDialog('account-search-dialog-form');
+    }
+
+    function ResetAccountNameData() {
+        $("#AccountNameSpan").text('');
+        $("#AccountNameSpan").val('');
+        $("#AccountId").val('');
+        $("#AccountName").val('');
+
+
+        $("#deleteAccountName").hide();
+
+    }
+
+    function generateTransHistGrid() {
+
+        var grid = $("#GridTrans").data("tGrid");
+        grid.rebind();
+    };
+    function TransHistGridDataBinding(args) {
+        args.data = $.extend(args.data,
+        {
+            FromDate: $('#FromDate').val(),
+            ToDate: $('#ToDate').val(),
+            AccountId: $('#AccountId').val(),
+            Details: $("#Details").val(),
+            FilterType:  $("#FilterType").val()
+        });
+    };
+    function TransHistGridDataBound(e) {
+
+        var grid = $("#GridTrans").data("tGrid");
+        $("#Grid #ApproveButton").removeClass("t-last");
+
+        if ($("#Details").val() != "true")
+            grid.hideColumn(0);
+        else
+            grid.showColumn(0);
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(1);
+        }
+    };
+    function localInitilizeDateCaleander() {
+        jQuery('input[data-date="true"]')
+            .daterangepicker({ dateFormat: '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat' });
+    };
+    function localInitilize() {
+        jQuery('input').keypress(function (e) {
+            return e.keyCode != 13;
+        });
+        jQuery("input").keyup(function (event) {
+            if (event.keyCode == 13) {
+                generateTransHistGrid();
+            }
+            return event.keyCode != 13;
+        });
+    }
+
+
+    function changeAccount(accountId, accountDesc) {
+
+        if ((typeof (accountId) != "undefined") && (typeof (accountDesc) != "undefined")) {
+            $('#AccountNameSpan').text(accountDesc);
+            $('#AccountNameSpan').val(accountDesc);
+            $('[name="AccountId"]').val(accountId);
+            $('[name="AccountName"]').val(accountDesc);
+            $("#deleteAccountName").show();
+        }
+        $('#account-search-dialog-form').dialog('close');
+        AccountIdChanged();
+    }
+
+    function AccountIdChanged() {
+        $("[htmlfor='AccountId']").parent().html('')
+    }
+
+    function DetailsChanged() {
+        if ($("#Details").val() == "true") {
+            $("#Details").val('false');
+        } else {
+            $("#Details").val('true');
+        }
+    }
+    function onFilterTypeChanged() {
+        if ($('[customtext="Payment"]').attr("checked") == "checked") {
+            $("#FilterType").val('payment');
+        } else {
+            $("#FilterType").val('fund');
+        }
+
+    }
+
+</script>
+<h2>
+    @Html.GetResource("TransactionVATHistory", "Global")
+</h2>
+
+<div class="section-form-container">
+    @Html.Hidden("FilterType")
+    <div class="">
+        <div class="data-row">
+            <div class="col-sm-7" style="padding: 0px;">
+
+
+            </div>
+
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-4 col-sm-push-1">
+
+                <table class="special-content">
+                    <tr>
+                        <td>
+                            <span class="go-bold">@Html.GetResource("From", "Global")</span>
+                        </td>
+                        <td style="width: 110px;">
+                            <input type="text" readonly="readonly" data-date="true" id="FromDate" name="FromDate"
+                                   class="text-box range-date-cntl" />
+                        </td>
+                        <td>
+                            <span class="go-bold">@Html.GetResource("To", "Global")</span>
+                        </td>
+                        <td style="width: 110px;">
+                            <input type="text" readonly="readonly" data-date="true" id="ToDate" name='ToDate'
+                                   class="text-box range-date-cntl left-range-cntrl" onchange="generateTransHistGrid()" />
+                        </td>
+                        <td>
+                            <div class="field-container dropdown-toggle" data-toggle="collapse" data-target="#TransVATFilterCollapse" aria-expanded="false">
+                                &nbsp;&nbsp;<a href="javaScript:void(0);" class="maximize AdvanceFilterIcon" onclick="" style="margin-top:0px" id="advfilterAudit"></a>
+
+                            </div>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+        <div class="data-row" style="overflow:visible">
+            <div class="col-sm-6 col-sm-push-0 customDealsFilterShiftRight floating-right" style="padding: 0px;">
+                <div style="width: 295px;font-size:12px ;margin-top:2px;" class="dropdown-menu dropdown-menu-right" id="TransVATFilterCollapse" role="menu">
+                    <div id="filterdiv" style="overflow:unset">
+
+
+
+                        <div class="data-row CampRow">
+                            <div class="field-container marignBotoomCus" style="padding-left:6px;padding-right:6px;">
+                                <span class="go-bold ">@Html.GetResource("Account", "Menu")</span>
+                            </div>
+                            <div class="col-lg-offset-2">
+                                <div class="field-container marignBotoomCus">
+                                    @Html.HiddenFor(p => p.AccountId, new { id = "AccountId" })
+                                    @Html.HiddenFor(p => p.AccountName)
+                                    <input type="text" readonly="readonly" id="AccountNameSpan" name='AccountNameSpan'
+                                           value="@(Model != null ? Model.AccountName : string.Empty)" class="text-box range-date-cntl left-range-cntrl side-text" style="width:115px" />
+                                    <img class="floating-right" src='@Url.GetImagePath("find-icon.png")' onclick="showAccountSearchDialogPMP();" />
+                                    <label id="deleteAccountName" class="floating-right" style="display:none">
+                                        <a style="padding:8px !important;  margin-bottom:5px !important;border:none!important;" class="t-button t-button-icon t-button-bare t-grid-delete" type="button" onclick="ResetAccountNameData()">
+                                            <span class="t-icon t-delete"></span>
+                                        </a>
+                                    </label>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="data-row CampRow">
+                            <div class="field-container marignBotoomCus" style="margin-left: 19%;">
+                                <span class="go-bold ">&nbsp;</span>
+                            </div>
+                            <div class="col-lg-offset-2">
+                                <div class="field-container marignBotoomCus">
+                                    @Html.GetCheckBox("Details", "Details", false, onChange: "DetailsChanged")
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="data-row CampRow">
+                            <div class="field-container" style="margin-left: 19%;">
+                                <span class="go-bold ">&nbsp;</span>
+                            </div>
+                            <div class="col-lg-offset-2">
+                                <div class="field-container marignBotoomCus">
+                                    @Html.GetRadioButton("FilterTypes", "Fund", true, "floating-left iea-rbtn-width-b", onChange: "onFilterTypeChanged")
+                                    @Html.GetRadioButton("FilterTypes", "Payment", false, "floating-left iea-rbtn-width-b", onChange: "onFilterTypeChanged")
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="floating-right">
+                        <br>
+                        <input type="button" onclick="generateTransHistGrid()" value='@Html.GetResource("Filter")' class="btn filter-button primary-btn" />
+                        <input type="button" onclick="return true;" data-toggle="collapse" data-target="#TransVATFilterCollapse" aria-expanded="false" value='@Html.GetResource("Cancel")' class="btn filter-button " />
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="grid-container">
+
+            @(Html.Telerik().Grid(Model.Items)
+                    .Name("GridTrans")
+                    .Columns(columns =>
+                    {
+                        columns.Bound(o => o.TransactionDate).Title(Html.GetResource("TransactionDate", "AccountHistory")).Format("{0:" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(100).HtmlAttributes(new { @class = "go-center" }).Hidden();
+
+                        columns.Bound(o => o.AccountName).Width(210).Title(Html.GetResource("Name", "Global")).HtmlAttributes(new { @class = "go-center" });
+                        columns.Bound(o => o.Country).Width(180).Title(Html.GetResource("Country", "Global")).HtmlAttributes(new { @class = "go-center" });
+                        columns.Bound(o => o.AmountText).Width(180).Title(Html.GetResource("Amount", "AddFund")).HtmlAttributes(new { @class = "go-center" });
+                        columns.Bound(o => o.VATAmountText).Width(180).Title(Html.GetResource("VATAmount", "Global")).HtmlAttributes(new { @class = "go-center" });
+                    })
+
+                    .DataBinding(dataBinding =>
+                    {
+                        dataBinding.Ajax().Select("_TransactionVATHistory", "AccountManagement");
+
+                    }).EnableCustomBinding(true)
+                                        .ClientEvents(clientEvents => clientEvents.OnDataBinding("TransHistGridDataBinding").OnDataBound("TransHistGridDataBound").OnRowDataBound("onRowDataBound"))
+                        .Scrollable(scrolling => scrolling.Enabled(false))
+                        .Selectable()
+                                .Pageable(paging => paging.PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total(int.Parse(ViewData["total"].ToString())).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+                        .Filterable(filtering => filtering.Enabled(false))
+                        .Groupable(grouping => grouping.Enabled(true)).Footer(true))
+        </div>
+        <br />
+        <div class="data-row">
+            <a href="javascript:void(0)" onclick='TransactionVATExport("excel")' class="export-icon-excel floating-left">
+            </a><a href="javascript:void(0)" onclick='TransactionVATExport("csv")' class="export-icon-cvs floating-left">
+            </a><a href="javascript:void(0)" onclick='TransactionVATExport("pdf")' class="export-icon-pdf floating-left">
+            </a>
+        </div>
+        @Html.RegisterScriptBlock(string.Format("var reportExportUrl = '{0}'", Url.Action("TransactionVATReportExport", "AccountManagement")))
+    </div>
+
+</div>
+
+<div class="section-footer">
+</div>
+
+
+
+
+
+<div id="account-search-dialog-form" style="display: none;" title="@Html.GetResource("AccountSearch", "Global")">
+    @Html.Action("AccountSearch", "AccountManagement")
+</div>

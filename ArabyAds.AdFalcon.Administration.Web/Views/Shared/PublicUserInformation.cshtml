@@ -1,0 +1,26 @@
+﻿@{
+    var sp = "|";
+    if (ArabyAds.Framework.OperationContext.Current.CurrentPrincipal.Identity.IsAuthenticated)
+    {
+
+
+        string name = ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.Framework.UserInfo.IUserInfo>().FirstName + " " + ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.Framework.UserInfo.IUserInfo>().LastName;
+    @name
+
+        var impersonatedAccount = ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().ImpersonatedAccount;
+        if (impersonatedAccount != null)
+        {
+            string impersonatedAccountName = " (" + impersonatedAccount.FirstName + " " + impersonatedAccount.LastName + ")";
+ @impersonatedAccountName
+         
+        }
+       
+    <a href="../@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage/dashboard/index?charttype=ad" class="reverse-link">@Html.GetResource("MyAccount")</a> @sp
+    <a href="javascript:void(0)" onclick="logout();">@Html.GetResource("Logout", "UserInformation")</a>
+    }
+    else
+    {
+        sp = " - ";
+    @Html.ActionLink(Html.GetResource("Register", "UserInformation"), "register", "user", null) @sp @(Html.ActionLink(Html.GetResource("Login", "UserInformation"), "login", "user"))
+    }
+}

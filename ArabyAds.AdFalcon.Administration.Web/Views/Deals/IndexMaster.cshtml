@@ -1,0 +1,480 @@
+﻿@{
+	Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+	bool AllowGlobalization = ViewData["AllowGlobalization"] != null ? Convert.ToBoolean(ViewData["AllowGlobalization"]) : false;
+	string AdvertiserAccountId = ViewData["AdvertiserAccountId"] != null ? ViewData["AdvertiserAccountId"].ToString() : "";
+	string AdvertiserId= ViewData["AdvertiserId"] != null ? ViewData["AdvertiserId"].ToString() : "";
+}
+@*@*@using ArabyAds.Framework.DomainServices*@*@
+
+<script language="javascript">
+    $(document).ready(function () {
+        localInitilize();
+        $('.multiselect2jq').select2();
+
+        onAdFormatChange();
+        jQuery('input[id="FromDateFilterPMP"],[id="ToDatefilterPMP"]').bind('click', function (e) {
+            var modalZindex = jQuery(e.target).closest('.modal').css('z-index');
+            //
+            jQuery('.ui-daterangepickercontain').css('z-index', 5000000000000);
+        });
+
+        SetSelectedTap("ListMenuAdvertiser");
+       // if ('AllowGlobalization') {
+            $("#GlobalFilterDealRow").hide();
+        //}
+       
+       // generatePartyGridPMP();
+            
+        
+    });
+
+    var result = false;
+    var SSPCheckedIDs = "";
+
+    var ischecked = false;
+    var yesbtn = "@Html.GetResource("Yes", "Global")";
+    var nobtn = "@Html.GetResource("No", "Global")";
+    //var Confirmation = "@Html.GetResource("Send", "Confirmation")";
+    var ConfriamtionBoxTitle = "@Html.GetResource("Confirm")";
+    var close = "@Html.GetResource("Close","Commands")";
+    var rename = "@Html.GetResource("Rename", "Commands")";
+    var PMPDealstring = "@Html.GetResource("PMPDeals", "PMPDeal")";
+    var selectedName = "";
+    var selectednumber = 0;
+    var text;
+    var direction = "left";
+    GlobalAdvertiserId = '@AdvertiserId';
+	 GlobalAdvertiserAccountId = '@AdvertiserAccountId';
+    function onAdFormatChange() {
+        var types = '';
+        var checked = false;
+        if (typeof ($("#AdFormatBanner").attr("checked")) != 'undefined' && $("#AdFormatBanner").attr("checked") == "checked") {
+            types += '@Convert.ToInt32(ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.Banner)' + ",";
+            checked = true;
+        }
+
+        if (typeof ($("#AdFormatNative").attr("checked")) != 'undefined' && $("#AdFormatNative").attr("checked") == "checked") {
+            types += '@Convert.ToInt32(ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.Native)' + ",";
+            checked = true;
+        }
+
+        if (typeof ($("#AdFormatInStream").attr("checked")) != 'undefined' && $("#AdFormatInStream").attr("checked") == "checked") {
+            types += '@Convert.ToInt32(ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.InStream)';
+            checked = true;
+        }
+        if (checked) {
+            $('#PMPTargetingSaveDto_AdSizes').select2("enable", 'true');
+
+
+        } else {
+
+            $('#PMPTargetingSaveDto_AdSizes').select2("enable", false);
+
+        }
+        $("#PMPTargetingSaveDto_RawAdFormats").val(types);
+        fillTree(types);
+
+
+    }
+
+    function checked() {
+        $('input').each(function () {
+
+            if ($(this).is(':checked')) {
+
+                var name = $(this).eq(0).parent().parent().find("#PMPTitle").text().trim();
+
+                if (name.length > 30)
+                    name = name.substring(0, 30) + "..";
+                ischecked = true;
+                @{
+                    if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage=="ar")
+                    {
+
+                        <text>
+
+                selectedName += "<span style='float:" + direction + ";'>" + name + "-</span><br>";
+
+                </text>
+
+                    }else
+                    {
+                        <text>
+                selectedName += "<span style='float:" + direction + ";'>" + "-" + name + "</span><br>";
+                </text>
+                    }
+
+                }
+            }
+        });
+        return ischecked;
+    }
+
+    function popup(sender, SelectConfirmation, Confirmation) {
+
+        selectedName = "";
+        selectednumber = 0;
+        if (checked()) {
+            if (!result) {
+
+                $('<div id ="ConfirmationDialog" title="' + ConfriamtionBoxTitle + '"></div>').dialog({
+
+                    open: function () {
+                        text = Confirmation.format(PMPDealstring) + " <br><br> <div style='float: " + direction + ";'>" + selectedName + "</div>";
+                        $(this).html(text);
+
+                    },
+                    close: function () {
+                        $(this).remove();
+                    },
+                    resizable: false,
+                    draggable: false,
+                    modal: true,
+                    showCloseButton: false,
+
+                    buttons: [
+               {
+                   text: yesbtn,
+                   click: function () {
+                       $(this).dialog("close");
+                       result = true;
+
+                       $(sender).click();
+                   }
+               },
+               {
+                   text: nobtn,
+                   click: function () {
+                       $(this).dialog('close');
+                       result = false;
+                   }
+               }
+                    ]
+
+                });
+            }
+        } else {
+            $('<div id = "NoCampaignsareSelected"></div>').dialog({
+
+                open: function (event, ui) {
+                    $(this).html(SelectConfirmation);
+                },
+                close: function () {
+                    result = false;
+
+                    $(this).remove();
+                },
+                resizable: false,
+                draggable: false,
+                // height: 140,
+                modal: true,
+
+            });
+
+        }
+        ischecked = false;
+        return result;
+    }
+
+
+    var gridItemId = 0;
+    var ok_text = '@Html.GetResource("Ok", "Commands")';
+    var service_url = null;
+    var service_callback = null;
+    function callServiceDownload(item, callback) {
+
+        //var src = baseUrl + 'Downloader.ashx?docId=' + jQuery(item).attr("item_extra_info");
+
+        //var link = document.createElement("a");
+        //jQuery(item).download = name;
+        //jQuery(item).href = src;
+        //jQuery(item).click();
+        return false;
+        //jQuery.ajax(
+        //                                      {
+        //                                          dataType: "json",
+        //                                          contentType: 'application/json; charset=utf-8',
+        //                                          type: "GET",
+        //                                          //data: prams,
+        //                                          url: src,
+        //                                          success: function (result) {
+        //                                              jQuery.globalEval(callback);
+
+        //                                          },
+        //                                          error: function (error) {
+        //                                              if (error.status == "200") {
+        //                                                  jQuery.globalEval(service_callback);
+        //                                              }
+
+        //                                          }
+        //                                      });
+    }
+
+
+    function callService(item, callback) { }
+
+
+    function old_callService(item, callback) {
+        gridToolTip.hide();
+        var url = jQuery(item).attr("href2");
+
+    }
+
+    function refreshPMPGrid() {
+        RefrashGrid('DealsGrid');
+    }
+    function generatePMPGrid() {
+        var grid = $("#DealsGrid").data("tGrid");
+        grid.rebind();
+    };
+    function PMPGridDataBinding(args) {
+        //$('select').select2();
+        args.data = $.extend(args.data,
+            {
+                FromDateFilter: $('#FromDateFilterPMP').val(),
+                ToDatefilter: $('#ToDatefilterPMP').val(),
+                ExchangeId: $("#ExchangeId").val(),
+				PublisherName: $("#PublisherName").val(),
+                DealName: $("#DealName").val(),
+                AdFormat: getAdFormat(),
+                showArchived: typeof ($("#showArchived").attr("checked")) != "undefined" && $("#showArchived").attr("checked") == "checked",
+
+                IsGlobal: typeof ($("#IsGlobal").attr("checked")) != "undefined" && $("#IsGlobal").attr("checked") == "checked",
+
+                Countries: getStringList($("#PMPTargetingSaveDto_Geographies").data("select2") ? $("#PMPTargetingSaveDto_Geographies").select2("val") : ""),
+                AdSize: getStringList($("#PMPTargetingSaveDto_AdSizes").data("select2") ? $("#PMPTargetingSaveDto_AdSizes").select2("val") : "")
+
+            });
+    };
+    function getStringList(array) {
+        var string = "";
+        for (var i = 0 ; i < array.length ; i++) {
+            string += array[i] + ",";
+        }
+        return string;
+    }
+
+    function getAdFormat() {
+        var types = "";
+        if (typeof ($("#AdFormatBanner").attr("checked")) != "undefined" && $("#AdFormatBanner").attr("checked") == "checked") {
+            types += '@Convert.ToInt32(ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.Banner)' + ",";
+        }
+
+        if (typeof ($("#AdFormatNative").attr("checked")) != "undefined" && $("#AdFormatNative").attr("checked") == "checked") {
+            types += '@Convert.ToInt32(ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.Native)' + ",";
+        }
+        if (typeof ($("#AdFormatInStream").attr("checked")) != "undefined" && $("#AdFormatInStream").attr("checked") == "checked") {
+            types += '@Convert.ToInt32(ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.InStream)';
+        }
+        return types;
+    }
+    //function changePartyExchange(partytId, partyDesc) {
+
+    //    if ((typeof (partytId) != "undefined") && (typeof (partyDesc) != "undefined")) {
+    //        jQuery('#ExchangeName').text(partyDesc);
+    //        jQuery('#ExchangeNameSpan').text(partyDesc);
+    //        jQuery('#ExchangeNameSpan').val(partyDesc);
+    //        jQuery('[name="ExchangeId"]').val(partytId);
+    //        jQuery('[name="ExchangeName"]').val(partyDesc);
+
+    //        jQuery('#deleteExchangeName').show();
+    //    }
+    //    jQuery('#party-search-dialog-form').dialog('close');
+    //}
+    function changeAccount(accpartytId, accpartyDesc) {
+
+        if ((typeof (accpartytId) != "undefined") && (typeof (accpartyDesc) != "undefined")) {
+            jQuery('#PublisherName').text(accpartyDesc);
+            jQuery('#PublisherNameSpan').text(accpartyDesc);
+            jQuery('#PublisherNameSpan').val(accpartyDesc);
+            jQuery('[name="PublisherId"]').val(accpartytId);
+            jQuery('[name="PublisherName"]').val(accpartytId);
+
+            jQuery('#deletePublisherName').show();
+        }
+        jQuery('#account-search-dialog-form').dialog('close');
+    }
+    function PMPGridDataBound(e) {
+
+        var grid = $("#DealsGrid").data("tGrid");
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(1);
+        }
+
+        var url = e.currentTarget.baseURI.toLowerCase()
+        var data = "";
+
+        if (url.indexOf('campaign') > 0)
+            data = $('#DealsGrid table a[href*="Campaign"]');
+        else
+            data = $('#DealsGrid table a[href*="HouseAd"]');
+
+
+        for (var i = 0 ; i < data.length; i++) {
+
+            data[i].outerHTML = "<span class='trimed-span'><a href='" + data[i] + "' title='" + data[i].innerText + "'>" + data[i].innerText + "</a></span>";
+        }
+
+    };
+
+    function showAccountSearchDialogPMP() {
+        //AccountDialogInitilize();
+        //refreshAccountGrid();
+        generateUsersGridForPuplisher();
+        showDialog('account-search-dialog-form');
+    }
+
+
+    function localInitilize() {
+        $("#account-search-dialog-form").dialog({
+            autoOpen: false,
+            //height: 460,
+            width: 900,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            open: function () {
+
+
+
+            },
+            close: function () {
+
+                $("#account-search-dialog-form ,#AccountSearchName ,#CompanyName,#Email").val('');
+                // generateUsersGrid();
+
+            }
+        });
+
+        jQuery('input[id="FromDateFilterPMP"],[id="ToDatefilterPMP"]')
+          .daterangepicker({ dateFormat: '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat' });
+
+        jQuery("#party-search-dialog-form").dialog({
+            autoOpen: false,
+            //height: 450,
+            width: 700,
+            modal: true,
+            resizable: false,
+            draggable: false
+        });
+
+    }
+
+
+    function showPartySearchDialogPMP() {
+
+        //  refreshPartyGrid();
+
+        showDialog('party-search-dialog-form');
+        $("#SSPPartyName").val('');
+        generatePartyGridPMP();
+
+    }
+    function showfilter() {
+
+
+
+        if ($("#advfilterPMP").hasClass('maximize')) {
+            $("#advfilterPMP").attr("class", "minimize AdvanceFilterIcon");
+
+        }
+        else {
+
+            $("#advfilterPMP").attr("class", "maximize AdvanceFilterIcon");
+        }
+
+
+
+    }
+
+
+</script>
+
+<style>
+
+
+
+</style>
+@model ArabyAds.AdFalcon.Web.Controllers.Model.PMPDeal.PMPDealListViewModel
+@using (Html.BeginForm())
+{
+
+    @RenderSection("subheader")
+    <br />
+    <div class="data-row section-container">
+        <div class="data-row">
+            <div class="col-sm-7" style="padding: 0px;">
+                @if (Model.TopActions != null)
+                {
+                    Html.RenderPartial("PartialViews/Actions", Model.TopActions);
+                }
+            </div>
+          
+            <div class="col-sm-1">
+            </div>
+
+            <div class="col-sm-4 col-sm-push-1">
+
+                <table class="special-content" style="margin-top:-3px">
+                    <tr>
+                      
+
+                        <td>
+                            <span class="go-bold">@Html.GetResource("From", "Global")</span>
+                        </td>
+                        <td style="width: 110px;">
+                            <input type="text" readonly="readonly"   id="FromDateFilterPMP" name='FromDateFilterPMP'
+                                   class="text-box range-date-cntl left-range-cntrl rangeDateFromC" />
+                        </td>
+                        <td>
+                            <span class="go-bold">@Html.GetResource("To", "Global")</span>
+                        </td>
+                        <td style="width: 110px;">
+                            <input type="text" readonly="readonly"  id="ToDatefilterPMP" name='ToDatefilterPMP'
+                                   class="text-box range-date-cntl left-range-cntrl rangeDateFromC" onchange="generatePMPGrid()" />
+                        </td>
+                        <td>
+                          
+
+                            <div class="field-container dropdown-toggle" data-toggle="collapse" data-target="#DealsFilterCollapse" aria-expanded="false"  onclick="showfilter()">
+                                &nbsp;&nbsp;<a href="javaScript:void(0);" class="maximize AdvanceFilterIcon" onclick="" style="margin-top:0px" id="advfilterPMP"></a>
+
+                            </div>
+                        </td>
+                    
+                    </tr>
+                </table>
+
+              
+            </div>
+           
+    
+        </div>
+        <div class="data-row" style="overflow:visible">
+            <div class="col-sm-7 col-sm-push-3 customDealsFilterShiftRight floating-right" style="padding: 0px;">
+                @Html.Partial("PMPFilter", Model)
+                </div>
+            </div>
+            <div class="grid-container">
+                @RenderSection("Grid1")
+            </div>
+            @if (Model.BelowAction != null)
+            {
+                Html.RenderPartial("PartialViews/Actions", Model.BelowAction);
+            }
+        </div>
+    if (Model.ToolTips != null)
+    {
+        @Html.Partial("GridToolTop", Model.ToolTips)
+    }
+}
+<div id="account-search-dialog-form" style="display: none;" title="@Html.GetResource("Publisher", "Menu")">
+    @Html.Action("nohttpsPublisherAccountSearch", "User")
+
+</div>
+<div id="party-search-dialog-form" title="@Html.GetResource("Exchange", "PMPDeal")" style="display: none; ">
+
+    @Html.Action("SSPSearch", "Party")
+</div>

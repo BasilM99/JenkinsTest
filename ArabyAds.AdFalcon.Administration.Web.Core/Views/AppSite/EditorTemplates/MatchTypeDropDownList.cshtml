@@ -1,0 +1,13 @@
+﻿<div class="small-select">
+@model string
+@{
+                 
+    ArabyAds.AdFalcon.Services.Interfaces.Services.Core.IMatchTypeService matchTypeService = ArabyAds.Framework.IoC.Instance.Resolve<ArabyAds.AdFalcon.Services.Interfaces.Services.Core.IMatchTypeService>();
+    SelectList selecList = new SelectList(matchTypeService.GetAll(), "Id", "Name");
+}
+
+@(Html.AdFalconDropDownList("", selecList)
+
+
+) 
+</div>

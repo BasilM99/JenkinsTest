@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C3AEFB0E-E88B-4955-9095-0BE8943D99CD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Noqoush.AdFalcon.API.Controllers</RootNamespace>
+    <AssemblyName>Noqoush.AdFalcon.API.Controllers</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper">
+      <HintPath>..\..\..\..\lib\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.JScript" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\..\lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Stack 5\Packages\Microsoft.AspNet.Mvc.5.0.0\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
+    <Compile Include="Controllers\ReportController.cs" />
+    <Compile Include="Controllers\PubReportController.cs" />
+    <Compile Include="Controllers\TestController.cs" />
+    <Compile Include="Core\ExceptionHandling\APIExceptionMessages.cs" />
+    <Compile Include="Core\Response\APIHandleErrorAttribute.cs" />
+    <Compile Include="Core\Response\APIReponseResult.cs" />
+    <Compile Include="Core\Response\ResponseData\APIResponseData.cs" />
+    <Compile Include="Core\Response\APIResponseWriter.cs" />
+    <Compile Include="Core\ExceptionHandling\APIException.cs" />
+    <Compile Include="Core\NoqoushControllerFactory.cs" />
+    <Compile Include="Core\Response\ResponseData\JSONResponseData.cs" />
+    <Compile Include="Mapping\MapperHelper.cs" />
+    <Compile Include="Mapping\MappingRegister.cs" />
+    <Compile Include="Model\Reports\AppSiteStatsCriteria.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\Config.cs" />
+    <Compile Include="Utilities\DateTimeUtility.cs" />
+    <Compile Include="Utilities\TestingDataUtility.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Noqoush.Framework\Noqoush.Framework\Noqoush.Framework.csproj">
+      <Project>{64d00377-15ee-4c1f-932c-0325580e2003}</Project>
+      <Name>Noqoush.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Services.Interfaces\Noqoush.AdFalcon.Services.Interfaces.csproj">
+      <Project>{c26f3a2d-1eec-4567-9d1c-d8ae5834d83f}</Project>
+      <Name>Noqoush.AdFalcon.Services.Interfaces</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

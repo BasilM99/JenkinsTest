@@ -1,0 +1,492 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("PartyManagement", "Titles");
+}
+    <script language="javascript" type="text/javascript">
+
+    var DemandTypeId = '';
+    var SupplyTypeId = '';
+    var get_party_URL = '@Url.Action("Create")';
+    var Delet_party_URL = '@Url.Action("DeleteParty", "Party")';
+    var save_party_URL = '@Model.SaveURL';
+    var party_type = '@Model.PartyType.ToLower()';
+    var yesbtn = "@Html.GetResource("Yes", "Global")";
+    var nobtn = "@Html.GetResource("No", "Global")";
+    var Confirmation = "@Html.GetResource("DeleteConfirmation", "Party")";
+
+    var ConfirmationDeleteSuccess = "@Html.GetResource("DeleteSuccess", "Party")";
+    var AppSiteSearchUrl = '@Url.Action("AppSiteSearch", "AppSite")';
+
+
+    var ConfriamtionBoxTitle = "@Html.GetResource("Confirm")";
+    var close = "@Html.GetResource("Close","Commands")";
+
+    var direction = "left";
+    function onRowSelect(e) {
+        var entityId = $(e.row.cells[0]).text();
+        onEntityChange(entityId);
+    }
+    function generatePartyGrid() {
+        var grid = $("#GridParty").data("kendoGrid");
+        if (typeof (grid) != "undefined") {
+            grid.dataSource.read();
+            grid.refresh();
+
+        }
+    };
+
+    function PartyGridDataBinding(args) {
+        @*args.data = $.extend(args.data,
+            {
+                Prefix: $('#Name').val(),
+                id: '@Html.ViewContext.RouteData.Values["id"]'
+            });*@
+    };
+    function PartyGridData() {
+        var j = {
+            Prefix: $('#Name').val(),
+            id: '@Html.ViewContext.RouteData.Values["id"]'
+        };
+        return j;
+    }
+
+    function DeleteParty(element) {
+
+        var self = this;
+        var tr = $(element).parents('tr');
+        var selectedName = $(tr).find("#PartyEnityLabel").text();
+        $('<div id ="ConfirmationDialog" title="' + ConfriamtionBoxTitle + '"></div>').dialog({
+
+            open: function () {
+                text = Confirmation.format($("h1").html()) + " <br><br> <div style='float: " + direction + ";'>" + selectedName + "</div>";
+                $(this).html(text);
+
+            },
+            close: function () {
+                $(this).remove();
+            },
+            resizable: false,
+            draggable: false,
+            showCloseButton: false,
+
+            modal: true,
+            buttons: [
+       {
+           text: yesbtn,
+           click: function () {
+               $(this).dialog("close");
+               result = true;
+
+               //$(element).click();
+
+
+               var tr = $(element).parents('tr');
+               var id = $(tr).find("#IdPartyEnity").text();
+               if (id != "" && id != "undefined") {
+                   self.CallDeleteParty(id);
+               }
+           }
+       },
+       {
+           text: nobtn,
+           click: function () {
+               $(this).dialog('close');
+               result = false;
+           }
+       }
+            ]
+
+        });
+
+
+    }
+    function CallDeleteParty(id) {
+        jQuery.ajax(
+                     {
+                         dataType: "json",
+                         contentType: 'application/json; charset=utf-8',
+                         type: "GET",
+                         url: Delet_party_URL + "?id=" + id,
+                         success: function (result) {
+
+                             if (result.Success) {
+                                 generatePartyGrid();
+                                 showSuccessfullyMessage(ConfirmationDeleteSuccess, false);
+                             }
+                             else {
+                                 showErrorMessage(result.ErrorMessage, false);
+                             }
+                         },
+                         error: function (error) {
+
+                             alert("Somthing Went Worng Please contact the admin");
+                         }
+                     });
+    }
+    function PartyGridDataBound(e) {
+        var grid = $("#GridParty").data("kendoGrid");
+        //if not first page and the no data then try load first page
+        if ((grid._data.length == 0) && (grid.dataSource.page() > 1)) {
+            e.preventDefault();
+            if (grid.dataSource.page() != 1) {
+                grid.dataSource.page(1);
+            }
+        }
+
+        $("#GridParty #DeleteAdrequestIcon").removeClass("t-last");
+        $(".t-no-data").addClass("go-center");
+    };
+
+    function callSave() {
+        //
+        var setting = $.data($("#saveForm")[0], 'validator').settings;
+
+        setting.ignore = '.ValdationIgnored';
+        CollectIps();
+        if ($("#saveForm").validate().form()) {
+            var data = $('#saveForm').serialize();
+            $.ajax({
+                type: 'POST',
+                url: save_party_URL,
+                cache: false,
+                data: data,
+                success: function (responce) {
+                    if (responce.Success) {
+                        if ((typeof (closeNewPartyDialog) != "undefined") && (closeNewPartyDialog != null)) {
+                            closeNewPartyDialog();
+                        }
+                    } else {
+                        alert(responce.ErrorMessage);
+                    }
+                },
+                error: function (s, e, f) {
+                    alert(e);
+                }
+            });
+        }
+    }
+
+    function onEntityChange(entityId) {
+
+        if (!isNaN(parseInt(entityId))) {
+            entityId = "/" + entityId;
+        } else {
+            entityId = '';
+        }
+        var url = get_party_URL + entityId + "?type=" + party_type;
+        $("#entityDetails").html('');
+        ResetAccountData();
+        ResetAppSiteData();
+        $.ajax(
+            {
+                url: url,
+                cache: false,
+                success: function (html) {
+
+                    html = html.toString();
+                    $("#entityDetails").html('');
+                    var newelem = jQuery(html);
+                    $("#entityDetails").append(newelem);
+                    parseScript(html);
+                    initilize();
+                    /*if (typeof (localInitilize) != "undefined") {
+                    localInitilize();
+                    }*/
+                    jQuery.validator.unobtrusive.parseDynamicContent("#entityDetails");
+                    attachValidation();
+                    $.validator.setDefaults({
+                        ignore: '.ValdationIgnored'
+                    });
+
+
+
+
+                    showNewPartyDialog();
+                },
+                error: function (error) {
+                    //spinner.hideSpinner();
+                }
+            });
+    };
+    function showNewPartyDialog() {
+
+        CommoDialogInitilize();
+
+        //showDialog('party-add-dialog-form');
+        showDialog('party-add-dialog-form', { width: 750 });
+        if (jQuery('[name="PartyDto.AccountId"]').val() != '' && jQuery('[name="PartyDto.AccountId"]').val() != '0') {
+
+            jQuery('#deleteAccount').show();
+        }
+        jQuery("select[isdisable=isdisable]").on("focus mousedown mouseup click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+    }
+    function closeNewPartyDialog() {
+        closeDialog('party-add-dialog-form');
+        RefrashGrid("GridParty");
+        jQuery('#deleteAccount').hide();
+
+
+
+    }
+    function showAccountSearchDialog() {
+
+        localAccountSearchInitilize();
+        AccountDialogInitilize();
+        showDialog("account-search-dialog-form");
+        // ResetAccountData();
+        //$('#account-search-dialog-form').dialog('open');
+    }
+    function showAppSiteSearchDialog() {
+
+        //localAppSiteSearchInitilize();
+        //AppSiteDialogInitilize();
+        // showDialog("AppSite-search-dialog-form");
+        // ResetAccountData();
+        //$('#account-search-dialog-form').dialog('open');
+        //ResetAppSiteData();
+        if ($("#accountName").text() != "")
+            AppSiteSearch(accountID);
+        else return false;
+    }
+    function AccountDialogInitilize() {
+        $("#account-search-dialog-form").dialog({
+            autoOpen: false,
+            //  height: 520,
+            width: 900,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            open: function () {
+
+
+
+            },
+            close: function () {
+
+                $("#account-search-dialog-form ,#Name ,#CompanyName,#Email").val('');
+                generateUsersGrid();
+
+            }
+        });
+    }
+
+    function AppSiteDialogInitilize() {
+        $("#AppSite-search-dialog-form").dialog({
+            autoOpen: false,
+            height: 520,
+            width: 900,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            open: function () {
+
+
+
+            },
+            close: function () {
+
+                $("#AppSite-search-dialog-form ,#NameAppSite").val('');
+                //generateUsersGrid();
+
+            }
+        });
+    }
+
+    function ResetAccountData() {
+        jQuery('#accountName').text('');
+        jQuery('[name="PartyDto.AccountId"]').val('');
+        jQuery('[name="PartyDto.AccountName"]').val('');
+        jQuery('#deleteAccount').hide();
+
+        accountID = null;
+    }
+
+    function ResetAppSiteData() {
+        $("#AppSiteDet").find('#AppSiteName').text('');
+        $("#AppSiteDet").find('[name="PartyDto.AppSiteId"]').val('');
+
+
+
+        //jQuery('[name="PartyDto.AccountName"]').val('');
+        jQuery('#deleteAppSite').hide();
+
+        AppSiteId = null;
+    }
+    function changeAccount(accountId, accountDesc) {
+
+        if ((typeof (accountId) != "undefined") && (typeof (accountDesc) != "undefined")) {
+            jQuery('#accountName').text(accountDesc);
+            jQuery('[name="PartyDto.AccountId"]').val(accountId);
+            jQuery('[name="PartyDto.AccountName"]').val(accountDesc);
+            jQuery('#deleteAccount').show();
+            if ($("#PartyDto_BusinessPartnerTypeId").val() == DemandTypeId || $("#PartyDto_BusinessPartnerTypeId").val() == SupplyTypeId) {
+                $(".commonSupply").show();
+            }
+
+            $("#AppSiteDet").find('#AppSiteName').text('');
+            $("#AppSiteDet").find('[name="PartyDto.AppSiteId"]').val('');
+
+            $("#AppSiteDet").find('[name="PartyDto.AppSiteId"]').removeClass('ValdationIgnored');
+            ResetAppSiteData();
+        }
+        else {
+            $("#AppSiteDet").find('#AppSiteName').text('');
+            $("#AppSiteDet").find('[name="PartyDto.AppSiteId"]').val('');
+            $(".commonSupply").hide();
+
+            if ($("#PartyDto_BusinessPartnerTypeId").val() == DemandTypeId || $("#PartyDto_BusinessPartnerTypeId").val() == SupplyTypeId) {
+                $("#AppSiteDet").find('[name="PartyDto.AppSiteId"]').addClass('ValdationIgnored');
+            }
+            ResetAppSiteData();
+        }
+        jQuery('#account-search-dialog-form').dialog('close');
+        $("#saveForm").validate().form();
+
+    }
+    function changeAppSite(AppSiteId, AppSiteDesc) {
+
+        if ((typeof (AppSiteId) != "undefined") && (typeof (AppSiteDesc) != "undefined")) {
+            $("#AppSiteDet").find('#AppSiteName').text(AppSiteDesc);
+            $("#AppSiteDet").find('[name="PartyDto.AppSiteId"]').val(AppSiteId);
+            // $("#AppSiteDet").find('#deleteAppSite').show();
+        }
+        jQuery('#AppSite-search-dialog-form').dialog('close');
+
+        $("#saveForm").validate().form();
+    }
+
+    function AppSiteSearch(accountId) {
+
+        if ($("#PartyDto_BusinessPartnerTypeId")[0].selectedIndex > 0) {
+            AppSiteDialogInitilize();
+            jQuery('#AppSite-search-dialog-form').dialog('open');
+            localAppSiteSearchInitilize();
+            generateAppSiteGrid();
+        }
+    }
+    </script>
+
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Core.Party.ListViewModel
+<div class="section-form-container">
+    <div class="section-form-inner-container">
+        <div class="data-row go-center">
+            <div class="blue-filter-container">
+                @{
+                    var selected = string.Empty;
+                    if (Model.PartyType.Equals("employee", StringComparison.OrdinalIgnoreCase))
+                    {
+                        selected = "selected";
+                    }
+                    <a class="@selected" id="employeeTap" href='@(Url.Action("Index", "Party", new { id = "employee" }))'>@Html.GetResource("Employees", "Menu")</a>
+
+                    selected = Model.PartyType.Equals("businesspartner", StringComparison.OrdinalIgnoreCase) ? "selected" : string.Empty;
+                }
+                <a class="@selected" id="businesspartnerTap" href='@(Url.Action("Index", "Party", new { id = "businesspartner" }))'>@Html.GetResource("BusinessPartners", "Menu")</a>
+
+
+            </div>
+            <div class="tail">
+            </div>
+        </div>
+        <br>
+        <div class="data-row data-container" style="width: 50%; margin: 0 auto;">
+            <div class="grid-container" style="width: 400px;">
+                &nbsp;
+                <div>
+                    <div class="t-toolbar t-grid-toolbar t-grid-top">
+                        <a class="t-button t-button-icon t-button-bare t-grid-add" href="javascript:void(0)"
+                           onclick="onEntityChange('');"><span class="t-icon t-add"></span></a>
+                    </div>
+                </div>
+                @if (Model.PartyType.Equals("employee", StringComparison.OrdinalIgnoreCase))
+                {
+                    @(Html.Kendo().Grid(Model.Items)
+                    .Name("GridParty")
+                    .Columns(columns =>
+                    {
+                        columns.Bound(o => o.ID).Title(Html.GetResource("ID", "Lookup")).Hidden(true).HtmlAttributes(new { @id = "IdPartyEnity" });
+                        columns.Bound(o => o.Name).Title(Html.GetResource("Name")).HtmlAttributes(new { @id = "PartyEnityLabel" });
+                        columns.Template("<div><a class='t-button t-button-icon t-button-bare' type='button' onclick='DeleteParty(this);'><span class='t-icon t-delete t-ip-Range-Section-delete-button'></span></button></div>").Width(45).HtmlAttributes(new { @class = "go-center", @id = "DeleteAdrequestIcon" }).HtmlAttributes(new { @class = "go-center", @id = "DeleteAdrequestIcon" });
+
+
+                    }).EnableCustomBinding(true)
+                            .DataSource(dataBinding =>
+                            {
+                                //dataBinding.WebApi.Select("Index", "AppSite", new { ajax = true });
+                                dataBinding.Ajax().Read(read => read.Action("_Index", "Party").Data("PartyGridData")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+                            })
+                    .Events(clientEvents => clientEvents.DataBinding("PartyGridDataBinding").DataBound("PartyGridDataBound"))
+                    .Scrollable(scrolling => scrolling.Enabled(false))
+                    .Selectable().Pageable(paging => paging
+
+                    .Input(false)
+                    .Numeric(true)
+                    .Info(true)
+                    .PreviousNext(true)
+                    .Refresh(true)
+
+                    .Position(GridPagerPosition.Bottom))
+                    .Filterable(filtering => filtering.Enabled(false))
+                    .Groupable(grouping => grouping.Enabled(false)))
+                }
+                else
+
+                {
+                    @(Html.Kendo().Grid(Model.Items)
+            .Name("GridParty")
+            .Columns(columns =>
+            {
+                columns.Bound(o => o.ID).Title(Html.GetResource("ID", "Lookup")).Hidden(true).HtmlAttributes(new { @id = "IdPartyEnity" });
+                      columns.Bound(o => o.Name).Title(Html.GetResource("Name")).HtmlAttributes(new { @id = "PartyEnityLabel" });
+                      columns.Bound(o => o.TypeNameString).Title(Html.GetResource("Type", "Lookup")).HtmlAttributes(new { @id = "PartyEnityTypeLabel" });
+                      columns.Template("<div><a class='t-button t-button-icon t-button-bare' type='button' onclick='DeleteParty(this);'><span class='t-icon t-delete t-ip-Range-Section-delete-button'></span></button></div>").Width(45).HtmlAttributes(new { @class = "go-center", @id = "DeleteAdrequestIcon" }).HtmlAttributes(new { @class = "go-center", @id = "DeleteAdrequestIcon" });
+
+            }).EnableCustomBinding(true)
+                    .DataSource(dataBinding =>
+                    {
+                        //dataBinding.WebApi.Select("Index", "AppSite", new { ajax = true });
+                        dataBinding.Ajax().Read(read => read.Action("_Index", "Party").Data("PartyGridData")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+                    })
+            .Events(clientEvents => clientEvents.DataBinding("PartyGridDataBinding").DataBound("PartyGridDataBound"))
+            .Scrollable(scrolling => scrolling.Enabled(false))
+            .Selectable().Pageable(paging => paging
+
+            .Input(false)
+            .Numeric(true)
+            .Info(true)
+            .PreviousNext(true)
+            .Refresh(true)
+
+            .Position(GridPagerPosition.Bottom))
+            .Filterable(filtering => filtering.Enabled(false))
+            .Groupable(grouping => grouping.Enabled(false)))
+
+                   
+
+                }
+            </div>
+        </div>
+        <div id="party-add-dialog-form" class="section-form-inner-container" title="@Html.GetResource("Party", "Titles" )" style="display: none; ">
+            @using (Html.BeginForm("Index", "Partner", FormMethod.Post, new { id = "saveForm" }))
+            {
+                <div id="entityDetails">
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div id="account-search-dialog-form" style="display: none;" title="@Html.GetResource("AccountSearch", "Global" )">
+    @*@Html.RenderAction("AccountSearch", "AccountManagement")*@
+</div>
+
+<div id="AppSite-search-dialog-form" style="display: none;" title="AppSiteSearch">
+
+    @*@Html.RenderAction("AppSiteSearch", "AppSite")*@
+    @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.AppSite.AppSiteSearch))
+</div>
+

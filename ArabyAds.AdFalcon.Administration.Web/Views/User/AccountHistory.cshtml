@@ -1,0 +1,142 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("AccountHistory", "Titles");
+
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+}
+
+<style>
+	#breadcrumb a.btn#BreadCrum1 {
+		padding-left: 30px !important;
+	}
+</style>
+<div class="data-row sub-header">
+    <div class="sub-header-left">
+    </div>
+    <div class="sub-header-center">
+        <div class="data-row">
+
+            @{ if (!(ArabyAds.Framework.OperationContext.Current.UserInfo
+<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+().AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP))
+                {
+                    <div class="floating-left sub-header-item-container objective-header iea-go-left">
+                        <div class="sub-header-title" style="left:40px;top:10px;">
+                            @Html.GetResource("Earnings", "AccountHistory").ToString()
+                        </div>
+                        <div class="sub-header-text">
+                            @ViewData["Earnings"]
+                        </div>
+                    </div>
+                }
+            }
+            @{ if (!(ArabyAds.Framework.OperationContext.Current.UserInfo
+      <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+      ().AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DataProvider))
+                {
+                    if ((ArabyAds.Framework.OperationContext.Current.UserInfo
+     <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+     ().AccountRole != (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.NormalUser))
+                    {
+                        <div class="floating-left sub-header-item-container objective-header iea-go-left">
+                            <div class="sub-header-title" style="left:40px;top:10px;">
+                                @Html.GetResource("Funds", "AccountHistory").ToString()
+                            </div>
+                            <div class="sub-header-text">
+                                @ViewData["Funds"]
+                            </div>
+                        </div>
+                    }
+                    else
+
+                    {
+
+                        <div class="floating-left sub-header-item-container objective-header iea-go-left">
+                            <div class="sub-header-title" style="left:320px;top:10px;">
+                                @Html.GetResource("Funds", "AccountHistory").ToString()
+                            </div>
+                            <div class="sub-header-text">
+                                @ViewData["Funds"]
+                            </div>
+                        </div>
+
+                    }
+                }
+            }
+
+
+
+        </div>
+    </div>
+    <div class="sub-header-right">
+    </div>
+</div>
+<div class="section-form-inner-container">
+    <div class=" data-row ">
+        @if (!(ArabyAds.Framework.OperationContext.Current.UserInfo
+            <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+                ().AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DataProvider))
+        {
+            <div class="data-row tab-container">
+                @{ if (!(ArabyAds.Framework.OperationContext.Current.UserInfo
+     <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+     ().AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DataProvider))
+                    {
+
+                        <a href="javascript:void(0)" tabindex="0" id="aTab0" onclick="changeHistoryTab(this);" class="first-tab selected tab-padding">
+                            @Html.GetResource("Funds", "AccountHistory")
+                        </a>
+
+                    } }
+                @{ if (!(ArabyAds.Framework.OperationContext.Current.UserInfo
+                                        <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+                                          ().AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP))
+                    {
+
+
+                        <a href="javascript:void(0)"
+                           tabindex="1" id="aTab1" onclick="changeHistoryTab(this);" class="tab-padding">@Html.GetResource("Payments", "AccountHistory")</a>
+
+
+                    } }
+
+            </div>
+                    }
+        @{ if (!(ArabyAds.Framework.OperationContext.Current.UserInfo
+         <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+         ().AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DataProvider))
+            {
+                <div class="grid-container" id="tabContainer0">
+                    @{Html.RenderAction("FundHistory");}
+                </div>
+                        }
+        }
+
+
+        @{ if (!(ArabyAds.Framework.OperationContext.Current.UserInfo
+       <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+       ().AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP || ArabyAds.Framework.OperationContext.Current.UserInfo
+       <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+       ().AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DataProvider))
+            {
+
+                <div class="grid-container" style="display:none" id="tabContainer1">
+                    @{Html.RenderAction("PaymentHistory");}
+                </div>
+
+
+
+                        }
+                        else if ((ArabyAds.Framework.OperationContext.Current.UserInfo
+                            <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+                                ().AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DataProvider))
+                        {
+
+                            <div class="grid-container" id="tabContainer1">
+                                @{Html.RenderAction("PaymentHistory");}
+                            </div>
+
+
+                                    }
+        }
+    </div>
+</div>

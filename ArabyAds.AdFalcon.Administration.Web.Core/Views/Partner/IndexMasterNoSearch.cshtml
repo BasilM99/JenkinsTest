@@ -1,0 +1,408 @@
+@{
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+}
+<script language="javascript">
+
+    var message = '@Html.GetResource("savedSuccessfully", "Global")';
+    var ItemIdVarInvSys= "@(Context.Request.Query["ItemId"])";
+    var result = false;
+    var ischecked = false;
+    var yesbtn = "@Html.GetResource("Yes", "Global")";
+    var nobtn = "@Html.GetResource("No", "Global")";
+    var ConfriamtionBoxTitle = "@Html.GetResource("Confirm")";
+    var close = "@Html.GetResource("Close","Commands")";
+    var rename = "@Html.GetResource("Rename", "Commands")";
+    var selectedName = "";
+    var selectednumber = 0;
+    var text;
+    var message = '@Html.GetResource("savedSuccessfully", "Global")';
+    var direction = "left";
+    var duplicatedAppSite = "@Html.GetResource("SelectConfirmation", "Appsite")";
+    var wait = false;
+
+    $(document).ready(function () {
+
+        //var div = $("#divSuccessMessages")[0].outerHTML;
+
+        //$("#divSuccessMessages").remove();
+
+        //$(div).insertBefore("#MainHeader");
+
+        //div = $("#divErrorMessages")[0].outerHTML;
+
+        //$("#divErrorMessages").remove();
+        //$(div).insertBefore("#MainHeader");
+
+        if (ItemIdVarInvSys != "") {
+            onEntityChange(''+ItemIdVarInvSys);
+        }
+    });
+
+    function refreshBusinessPartnersGrid() {
+        RefrashGrid('Grid');
+    }
+    function generateBusinessPartnersGrid() {
+        var grid = $("#Grid").data("tGrid");
+        grid.rebind();
+    };
+    function BusinessPartnersGridDataBinding(args) {
+
+        args.data = $.extend(args.data,
+      {
+          FloorTypeId: $('#FloorTypeId').val()
+
+      });
+    };
+    function BusinessPartnersGridDataBound(e) {
+
+        var grid = $("#Grid").data("kendoGrid");
+        //if not first page and the no data then try load first page
+        if ((grid._data.length == 0) && (grid.dataSource.page() > 1)) {
+            e.preventDefault();
+            if (grid.dataSource.page() != 1) {
+                grid.dataSource.page(1);
+            }
+
+        }
+
+
+    };
+
+
+    function callSave() {
+
+
+        if ($("#saveForm").validate().form()) {
+            if (sp == undefined) {
+                sp = getSpinner("entityDetails");
+            }
+
+            sp.showSpinner();
+            var data = $('#saveForm').serialize();
+            $.ajax({
+                type: 'POST',
+                url: save_party_URL,
+                cache: false,
+                data: data,
+                success: function (responce) {
+                    if (responce.Success) {
+                        //
+
+                        if ((typeof (closeNewPartyDialog) != "undefined") && (closeNewPartyDialog != null)) {
+                            closeNewPartyDialog();
+                            showSuccessfullyMessage(message.format($("h1").text()), false);
+
+
+
+                        }
+
+                    } else {
+                        //alert(responce.ErrorMessage);
+                        $("#error_text").text(responce.ErrorMessage);
+
+                        DialogshowErrorMessage("divErrorMessages_partner");
+
+                    }
+                    sp.hideSpinner();
+                },
+                error: function (s, e, f) {
+                    alert(e);
+                    sp.hideSpinner();
+                }
+            });
+        }
+    }
+
+    function fnValidateDynamicContent(element) {
+
+        var currForm = element.closest("form");
+        currForm.removeData("validator");
+        currForm.removeData("unobtrusiveValidation");
+        $.validator.unobtrusive.parse(currForm);
+        currForm.validate(); // This line is important and added for client side validation to trigger, without this it didn't fire client side errors.
+    }
+    function onEntityChange(entityId) {
+        var IsIniDialog = false;
+        var Orgbuttons = [];
+        try {
+            Orgbuttons = $("#party-add-dialog-form").dialog("option", "buttons");
+
+        } catch (e) {
+            IsIniDialog = false;
+        }
+     
+
+        if (!isNaN(parseInt(entityId))) {
+            entityId = "/" + entityId;
+            @*$("#party-add-dialog-form").dialog({
+                buttons: [
+                    {
+                        text: '@Html.GetResource("Save", "Commands")',
+                        click: function () {
+
+                            if (typeof (Validation) == "function")
+                                return Validation() && callSave();
+
+                            return callSave();
+                        },
+                        "class": 'primary-btn',
+
+                    }]
+            });*@
+        } else {
+            entityId = '';
+        }
+
+        if(BasePriceId=='0')
+        {
+            var BasePriceRequiredValueMessage = '@Html.GetResource("BasePriceSuccessfullyRequired", "SSPFloorPrices")';
+            showErrorMessage(BasePriceRequiredValueMessage, false);
+            return;
+        }
+        var target = event.target || event.srcElement;
+        //ValItem
+        if (!(typeof ($(target).attr("ValItem")) == "undefined")) {
+
+            entityId = $(target).attr("ValItem");
+            entityId = "/" + entityId
+        }
+        var url = get_party_URL.replace("{0}", entityId);
+        $("#entityDetails").html('');
+
+        if (sp == undefined) {
+            sp = getSpinner("gridSection");
+        }
+
+        sp.showSpinner();
+        $.ajax(
+            {
+                url: url,
+                cache: false,
+                success: function (html) {
+
+                    html = html.toString();
+                    $("#entityDetails").html('');
+                    var newelem = jQuery(html);
+                    $("#entityDetails").append(newelem);
+                    parseScript(html);
+                    initilize();
+                    /*if (typeof (localInitilize) != "undefined") {
+                    localInitilize();
+                    }*/
+                    //fnValidateDynamicContent($("#entityDetails"));
+                    $.validator.unobtrusive.parseDynamicContent("#entityDetails");
+                    //$.validator.unobtrusive.parse("#entityDetails");
+                    //attachValidation();
+
+                    $.validator.setDefaults({
+                        ignore: '.ValdationIgnored'
+                    });
+                    DialogclearErrorMessage("divErrorMessages_partner");
+        
+                    var innerhtml = "<div class='data-row red-box' style='display:none;' id='divErrorMessages_partner'><div class='data-row'><span class='msg-img'></span><span id='error_text' style='width:450px!important;'></span></div></div>";
+
+                    $("#party-add-dialog-form").prepend(innerhtml);
+                    $(".ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-draggable.ui-resizable").addClass("ZoneMappingDailog");
+
+                    sp.hideSpinner();
+                    if (Orgbuttons.length == 0 && !IsIniDialog) {
+                        $("#party-add-dialog-form").dialog({
+                            buttons: [
+                                {
+                                    text: '@Html.GetResource("Save", "Commands")',
+                                    click: function () {
+
+                                        if (typeof (Validation) == "function")
+                                            return Validation() && callSave();
+
+                                        return callSave();
+                                    },
+                                    "class": 'primary-btn',
+
+                                }]
+                        });
+                    }
+                                showNewPartyDialog();
+                    //$("#saveForm").validate().form();
+                    //$('#saveForm').serialize();
+                },
+                error: function (error) {
+                    //spinner.hideSpinner();
+                    sp.hideSpinner();
+                }
+            });
+    };
+    function showNewPartyDialog() {
+
+        CommoDialogInitilize();
+
+        showDialog('party-add-dialog-form', { width: DialogWidth_Form+25, title: DialogTitle_Form});
+    }
+    function closeNewPartyDialog() {
+        closeDialog('party-add-dialog-form');
+        RefrashGrid("Grid");
+    }
+
+    function checked() {
+        $('input').each(function () {
+
+            if ($(this).is(':checked')) {
+
+                var name = $(this).eq(0).parent().parent().find(".grid-title-container.floating-left").children().text().trim();
+
+                if (name.length > 30)
+                    name = name.substring(0, 30) + "..";
+                ischecked = true;
+                @{
+                    if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage=="ar")
+                    {
+
+                        <text>
+
+                selectedName += "<span style='float:" + direction + ";'>" + name + "-</span><br>";
+
+                        </text>
+
+                    }else
+                    {
+                        <text>
+                selectedName += "<span style='float:" + direction + ";'>" + "-" + name + "</span><br>";
+                        </text>
+                    }
+
+                }
+            }
+        });
+        return ischecked;
+    }
+
+    function popup(sender, SelectConfirmation, Confirmation) {
+
+        selectedName = "";
+        selectednumber = 0;
+        if (checked()) {
+            if (!result) {
+
+                $('<div id ="ConfirmationDialog" title="' + ConfriamtionBoxTitle + '"></div>').dialog({
+
+                    open: function () {
+                        text = Confirmation.format($("#MainHeader span").html().trim()) + " <br><br> <div style='float: " + direction + ";'>" + selectedName + "</div>";
+                        $(this).html(text);
+
+                    },
+                    close: function () {
+                        $(this).remove();
+                    },
+                    resizable: false,
+                    draggable: false,
+                    showCloseButton:false,
+
+                    modal: true,
+                    buttons: [
+              {
+                  text: yesbtn,
+                  click: function () {
+                      $(this).dialog("close");
+                      result = true;
+                      $(sender).click();
+                  }
+              },
+              {
+                  text: nobtn,
+                  click: function () {
+                      $(this).dialog('close');
+                      result = false;
+                  }
+              }
+                    ]
+
+                });
+            }
+        } else {
+            $('<div id = "NoCampaignsareSelected"></div>').dialog({
+
+                open: function (event, ui) {
+                    $(this).html(SelectConfirmation);
+                },
+                close: function () {
+                    result = false;
+
+                    $(this).remove();
+                },
+                resizable: false,
+                draggable: false,
+                modal: true,
+            });
+
+        }
+        ischecked = false;
+        return result;
+    }
+
+
+</script>
+@model ArabyAds.AdFalcon.Web.Controllers.Model.BusinessPartners.BusinessPartnersListViewModelBase
+@using (Html.BeginForm())
+{
+
+    @RenderSection("subheader")
+
+
+    <div class="data-row section-container">
+
+        <br />
+        <div class="data-row go-center">
+            <div class="blue-filter-container" >
+                <table class="special-content">
+                    <tr>
+                        <td>
+                            <span class="go-bold">@Html.GetResource("Type", "SSPFloorPrices")</span>
+                        </td>
+                        <td style="width: 200px;">
+
+                            @Html.AdFalconDropDownList("FloorTypeId", Model.Types ,new { style = "width:190px;" })
+                           
+                        </td>
+                        <td>
+                            <input type="submit" onclick="generateBusinessPartnersGrid();return false;" value='@Html.GetResource("Filter")' class="btn filter-button " />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="tail" style="display:none">
+            </div>
+        </div>
+        <br />
+        @if (Model.TopActions != null)
+        {
+            await Html.RenderPartialAsync("PartialViews/Actions", Model.TopActions);
+        }
+        <div class="grid-container" id="gridSection">
+            <script language="javascript">
+                var save_party_URL = '@Html.Raw(Model.SaveUrl)';
+                var get_party_URL = '@Html.Raw(Model.GetUrl)';
+                var DialogTitle_Form = '@Model.DialogTitle';
+                var DialogWidth_Form = @Model.DialogWidth;
+                var DialogHeight_Form =  @Model.DialogHeight;
+            </script>
+            @RenderSection("Grid1")
+
+        </div>
+        @if (Model.BelowAction != null)
+        {
+            await Html.RenderPartialAsync("PartialViews/Actions", Model.BelowAction);
+        }
+    </div>
+    if (Model.ToolTips != null)
+    {
+        @await Html.PartialAsync("GridToolTop", Model.ToolTips)
+    }
+}
+<div id="party-add-dialog-form" class="section-form-inner-container" title="@Html.GetResource("Party", "Titles")" style="display: none; ">
+    @using (Html.BeginForm("Index", "Partner", FormMethod.Post, new { id = "saveForm" }))
+    {
+        <div id="entityDetails" >
+        </div>
+    }
+</div>
+

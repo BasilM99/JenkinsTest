@@ -1,0 +1,38 @@
+﻿@{
+    Layout = null;
+}
+@model List<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Reports.CampaignCommonReportDto>
+
+
+@using (Html.BeginForm())
+{
+    <div id="appSitesResultContainer">
+        <div class="grid-container" id="topAccountsGrid">
+            @(Html.Telerik().Grid(Model)
+                      .Name("TPGrid")
+                      .Columns(columns =>
+                      {
+
+                          columns.Bound(o => o.Name).Title(Html.GetResource("ByCountry", "Chart")).Width(500);
+                          columns.Bound(o => o.SecondSubName).Title(Html.GetResource("SubAppSite", "AppSite")).Hidden();
+                          columns.Bound(o => o.Impress).Title(Html.GetResource("Impressions", "Campaign")).Format("{0:n0}").HtmlAttributes(new { @class = "go-center" });
+                          columns.Bound(o => o.UniqueImp).Title(Html.GetResource("UniqueImp", "Report")).Format("{0:n0}").HtmlAttributes(new { @class = "go-center" });
+                          columns.Bound(o => o.eCPMText).Title(Html.GetResource("eCPM", "AppChart")).Format("{0:n0}").HtmlAttributes(new { @class = "go-center" }).Hidden();
+
+                      })
+                      .DataBinding(dataBinding =>
+                      {
+                          dataBinding.Server().Select("TPGrid", "Campaign", new { ajax = true });
+                          dataBinding.Ajax().Select("_TPGrid", "Campaign");
+
+                      }).EnableCustomBinding(true)
+                      .ClientEvents(clientEvents => clientEvents.OnDataBinding("TPGridDataBinding").OnDataBound("TPGridDataBound"))
+                      .Scrollable(scrolling => scrolling.Enabled(false))
+                      .Selectable()
+                      .Pageable(paging => paging.PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total(int.Parse(ViewData["total"].ToString())).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+                      .Filterable(filtering => filtering.Enabled(false))
+                      .Groupable(grouping => grouping.Enabled(true)).Footer(true))
+        </div>
+
+    </div>
+}

@@ -1,0 +1,97 @@
+﻿@{
+    Layout = null;
+}
+
+<head>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        function ValidateCall() {
+            var url = "";
+            if ($("#publicKey").val() == "") {
+                alert("Public Key is Required");
+                return false;
+            }
+            if ($("#hashing").val() == "") {
+                alert("Hash Key is Required");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <form method="post" action="@Request.RawUrl">
+    <table cellpadding="0" cellspacing="0" width="100%" id="tableInputs">
+        <colgroup>
+            <col width="20%" />
+            <col width="80%" />
+        </colgroup>
+        <tr>
+            <td>Public Key</td>
+            <td>
+                <input type="text" name="publicKey" id="publicKey" value="" /></td>
+        </tr>
+        <tr>
+            <td>Hashing Key</td>
+            <td>
+                <input type="text" name="hashing" id="hashing" value="" /></td>
+        </tr>
+        <tr>
+            <td>Format</td>
+            <td>
+                <input type="text" name="f" id="f" value="json" data-json="true" readonly="readonly" /></td>
+        </tr>
+        <tr>
+            <td>From Date</td>
+            <td>
+                <input type="text" name="fdate" id="fdate" value="" data-json="true" /></td>
+        </tr>
+        <tr>
+            <td>To Date</td>
+            <td>
+                <input type="text" name="tdate" id="tdate" value="" data-json="true" /></td>
+        </tr>
+        <tr>
+            <td>Application Id</td>
+            <td>
+                <input type="text" name="aid" id="aid" value="" data-json="true" /></td>
+        </tr>
+        <tr>
+            <td>Groupb By</td>
+            <td>
+                <input type="text" name="gb" id="gb" value="" data-json="true" /></td>
+        </tr>
+        <tr>
+            <td>Length</td>
+            <td>
+                <input type="text" name="l" id="l" value="" data-json="true" /></td>
+        </tr>
+        <tr>
+            <td>Offset</td>
+            <td>
+                <input type="text" name="os" id="os" value="" data-json="true" /></td>
+        </tr>
+        <tr>
+            <td>Country Code</td>
+            <td>
+                <input type="text" name="cc" id="cc" value="" data-json="true" /></td>
+        </tr>
+        <tr>
+            <td>Is Test</td>
+            <td>
+                <input type="checkbox" name="isTest" id="isTest" value="true" /></td>
+        </tr>
+        <tr>
+            <td>Is Include Empty</td>
+            <td>
+                <input type="checkbox" name="isIncludeEmpty" id="isIncludeEmpty" value="true" /></td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                <input type="submit" name="submit" value="Submit" onclick="return ValidateCall()" />
+            </td>
+        </tr>
+    </table>
+        </form>
+</body>

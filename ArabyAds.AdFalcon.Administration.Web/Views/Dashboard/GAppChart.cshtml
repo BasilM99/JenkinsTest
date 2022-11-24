@@ -1,0 +1,192 @@
+﻿@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.AppSite
+@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core
+@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Reports
+@{
+    
+    List<AppSiteDto> appsites = ViewData["AppSites"] as List<AppSiteDto>;
+    List<SelectListItem> appsitesList = new List<SelectListItem>();
+
+    foreach (var appsite in appsites)
+    {
+        SelectListItem item = new SelectListItem();
+        item.Value = appsite.ID.ToString();
+        item.Text = appsite.Name;
+        appsitesList.Add(item);
+    }
+
+    SelectListItem allItem = new SelectListItem();
+    allItem.Value = "";
+    allItem.Selected = true;
+    allItem.Text = Html.GetResource("AllAppSites", "AppChart");
+
+    appsitesList.Add(allItem);
+
+    List<SelectListItem> periodListItem = new List<SelectListItem>()
+    {
+      new SelectListItem()
+      {
+        Value = "0",
+        Text = Html.GetResource("Today","Chart"),
+        Selected = true   
+      } ,
+      new SelectListItem()
+      {
+        Value = "1",
+        Text = Html.GetResource("Yesterday","Chart"),
+      },
+      new SelectListItem()
+      {
+        Value = "2",
+        Text = Html.GetResource("OneWeek","Chart"),
+      },
+      
+      new SelectListItem()
+      {
+        Value = "3",
+        Text = Html.GetResource("OneMonth","Chart"),
+      },
+       new SelectListItem()
+      {
+        Value = "4",
+        Text = Html.GetResource("LastMonth","Chart"),
+      }         
+    };
+
+    SelectListItem optionalItem = new SelectListItem();
+    optionalItem.Value = "";
+    optionalItem.Text = Html.GetResource("ByCountry", "Chart");
+
+    ArabyAds.AdFalcon.Services.Interfaces.Services.ICountryService countryService = ArabyAds.Framework.IoC.Instance.Resolve<ArabyAds.AdFalcon.Services.Interfaces.Services.ICountryService>();
+    List<SelectListItem> countriesList = new List<SelectListItem>();
+    countriesList.Add(optionalItem);
+
+    List<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core.CountryDto> countriesDtos = countryService.GetAll().OrderBy(p => p.Name.Value).ToList();
+
+    foreach (var item in countriesDtos)
+    {
+        var selectItem = new SelectListItem();
+        selectItem.Value = item.ID.ToString();
+        selectItem.Text = item.Name.ToString();
+        countriesList.Add(selectItem);
+    }
+}
+   <div class="data-row sub-header">
+        <div class="sub-header-left">
+        </div>
+        <div class="sub-header-center">
+            <div class="data-row">
+                <div class="floating-left iea-go-left sub-header-item-container objective-header">
+                    <div class="sub-header-title">
+                      @Html.GetResource("TodayRevenue","Dashboard").ToString()
+                    </div>
+                    <div class="sub-header-text">
+                        @ViewData["totalDayRevenue"] 
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="sub-header-right">
+        </div>
+    </div>
+<div class="data-row section-container">
+<br />
+<div class="dashboard-left-side">
+<div class="data-row data-container">
+            <div class="label-container floating-left">
+                <span class="field-title required-field">@Html.GetResource("AppSite", "AppChart")</span>
+            </div>
+            <div class="field-container">
+                <div class="ddl-container data-row">
+                    @Html.AdFalconDropDownList("list", appsitesList, new { onchange = "getGoogleChartImage();fillGrid();" })
+                </div>
+            </div>
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("Period", "Chart")</span>
+            </div>
+            <div class="field-container">
+                @Html.AdFalconDropDownList("period", periodListItem, new { onchange = "getGoogleChartImage();fillGrid();" })
+            </div>
+          
+           
+        </div>
+        </div>
+    <div class="dashboard-left-side floating-left">
+        
+         
+        <div class="data-row" id="gchartContainer" style="width:100%;height:350px">
+            @*<img id="chartImage"  class="chartImage" src="@Url.Action("chartcontrol", "dashboard", new { periodOption = 0, type = "appsite", Id = "", metricCode = (ViewData["Metrics"] as List<MetricDto>).First().Code })" />*@
+        </div>
+    </div>
+    <div class="dashboard-right-side floating-right">
+        <div class="grid-container data-row">
+            @(Html.Telerik().Grid((ViewData["Metrics"] as List<MetricDto>))
+                            .Name("Metrics").Columns(columns =>
+                                 {
+                                     columns.Bound(p => p.Name).Template(p => Html.GetRadioButton("metric", "&nbsp;" + p.Name + "&nbsp;", false, "", "getGoogleChartImage", p.Code)).Title(Html.GetResource("Name", "Global"));
+                                     columns.Bound("").Template(p => "<div class='colored-box' style='background-color:" + p.Color + "'></div>").Width(20);
+                                 })
+                                 .Footer(false))
+        </div>
+    </div>
+    @Html.RegisterScriptBlock(string.Format("var chartControlImageSrc='{0}'", Url.Action("GChartControl", "dashboard", new { type = "appsite" })))
+   <div class="data-row">
+          &nbsp;
+          </div>
+    <div class="data-row section-container">
+        <div class="data-container floating-right dashboard-filter-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("CountryFilter", "AppChart")</span>
+            </div>
+            <div class="field-container">
+                @Html.AdFalconDropDownList("country", countriesList.ToList(), new { onchange = "fillGrid();" })
+            </div>
+        </div>
+        <h3>@Html.GetResource("ByGeoLocation", "Chart")</h3>
+        <div class="grid-container data-row">
+            @(Html.Telerik().Grid((ViewData["AppSiteGeoLocation"] as List<AppSiteGeoLocationDto>))
+                            .Name("GeoLocationGrid")
+                    .Columns(columns =>
+                                 {
+                                     columns.Bound(o => o.CountryName).Title(Html.GetResource("CountryName", "AppChart"));
+                                     columns.Bound(o => o.AppSiteName).Title(Html.GetResource("AppName", "AppChart"));
+                                     columns.Bound(o => o.AdRequests).Format("{0:n0}").Title(Html.GetResource("AdRequests", "AppChart"));
+                                     columns.Bound(o => o.AdImpress).Format("{0:n0}").Title(Html.GetResource("AdImpress", "AppChart"));
+                                     columns.Bound(o => o.AdClicks).Format("{0:n0}").Title(Html.GetResource("AdClicks", "AppChart"));
+                                     columns.Bound(o => o.FillRateText).Title(Html.GetResource("FillRate", "AppChart"));
+                                     columns.Bound(o => o.CtrText).Title(Html.GetResource("CTR", "AppChart"));
+                                     columns.Bound(o => o.eCPMText).Title(Html.GetResource("eCPM", "AppChart"));
+                                     columns.Bound(o => o.RevenueText).Title(Html.GetResource("Revenue", "AppChart"));
+                                 })
+                    .DataBinding(dataBinding =>
+                    {
+                        dataBinding.Ajax().Select("AppSiteGeoLocation", "dashboard");
+
+                    })
+                        .Scrollable(scrolling => scrolling.Enabled(false))
+                        .EnableCustomBinding(true)
+                                      .Pageable(paging => paging.PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total(int.Parse(ViewData["total"].ToString())).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+                                      .Groupable(grouping => grouping.Enabled(false)).Footer(true).ClientEvents(p => p.OnDataBinding("geoLocationDataBinding")))
+        </div>
+        @Html.RegisterScriptBlock(string.Format("var exportUrl='{0}'", Url.Action("AppSiteGeoLocationExport", "dashboard")))
+        <div class="data-row">
+            <a href="javascript:void(0)" onclick='geoLocationExport("excel")' class="export-icon-excel floating-left" title="Download as Excel">
+            </a><a href="javascript:void(0)" onclick='geoLocationExport("csv")' class="export-icon-cvs floating-left" title="Download as CSV">
+            </a><a href="javascript:void(0)" onclick='geoLocationExport("pdf")' class="export-icon-pdf floating-left" title="Download as PDF">
+            </a>
+        </div>
+        <div class="data-row">
+            <h3>@Html.GetResource("AppPerformanceTitle", "AppChart")</h3>
+            <div class="grid-container">@Html.Action("appperformance", "dashboard")</div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        radioBox($("[name=metriccontainer]")[0]);
+        google.charts.setOnLoadCallback(getGoogleChartImage);
+        SetSelectedTap("ListMenuPublisher");
+    });
+    </script>

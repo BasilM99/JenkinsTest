@@ -1,0 +1,25 @@
+﻿@{
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+}
+@model ArabyAds.AdFalcon.Web.Controllers.Model.AppSite.ListViewModelBase
+@using (Html.BeginForm())
+{
+    <div class="section-form-inner-container">
+        @RenderBody()
+        @if (Model.FilterBar != null)
+        {
+            await Html.RenderPartialAsync("PartialViews/bar", Model.FilterBar);
+        }
+        @if (Model.TopActions != null)
+        {
+            await Html.RenderPartialAsync("PartialViews/Actions", Model.TopActions);
+        }
+        <div class="grid-container">
+            @RenderSection("Grid")
+        </div>
+        @if (Model.BelowAction != null)
+        {
+            await Html.RenderPartialAsync("PartialViews/Actions", Model.BelowAction);
+        }
+    </div>
+}

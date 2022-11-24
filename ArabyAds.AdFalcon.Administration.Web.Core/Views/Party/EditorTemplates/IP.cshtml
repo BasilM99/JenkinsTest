@@ -1,0 +1,19 @@
+﻿@model string
+@{
+    Layout = null;
+}
+@Html.TextBoxFor(m => m, new { maxLength = 50, Class = "special-text-box single-line required", onchange = "isSingleIP(this)" })
+@*<span id="display_ip_msg" class="validation-arrow field-validation-error"
+    style="display: none;"><span class="">ip not valid</span> </span>*@
+
+@*<script type="text/javascript">
+    $(document).ready(function () {
+
+
+        $(".t-grid-content").find("table tbody tr td").mouseover(function () {
+
+            $(this).attr('title', $(this).text());
+        });
+    });
+
+</script>*@

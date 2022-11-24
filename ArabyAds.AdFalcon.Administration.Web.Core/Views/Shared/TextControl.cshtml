@@ -1,0 +1,16 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Core.TextViewModel
+@{
+    Layout = null;
+
+}
+
+
+<div id="@(Model.Name)Div">
+    <div id="@(Model.Name)P">
+        @if (!string.IsNullOrEmpty(Model.callBackFunction))
+            @Html.TextBox(Model.Name, Model.Value, new { onchange = Model.callBackFunction + "(" + @Model.Code + ",'" + Model.Name + "');" })
+            else
+                @Html.TextBox(Model.Name, Model.Value, new { })
+
+    </div>
+</div>

@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("Invitations", "Invite");
+    Layout = "~/Views/User/InvitationMaster.cshtml";
+}
+@model ArabyAds.AdFalcon.Web.Controllers.Model.User.InvitationViewModel
+@*@Html.Partial("GridToolTop", Model.ToolTips)*@
+
+@section subheader
+   {
+}
+@section Grid {
+    @(Html.Telerik().Grid(Model.Items)
+               .Name("Grid")
+               .Columns(columns =>
+               {
+
+                   columns.Bound(o => o.EmailAddress).Title(Html.GetResource("email")).Width(210);
+                   columns.Bound(o => o.InvitationDate).Title(Html.GetResource("Date", "AccountHistory")).Format("{0:" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(130).HtmlAttributes(new { @class = "go-center" });
+                   //columns.Bound(o => o.invitationcode).Title(Html.GetResource("InvitationCode", "Invite")).Width(50).HtmlAttributes(new { @class = "go-center" });
+                   columns.Bound(o => o.IsAcceptedString).Title(Html.GetResource("Accepted", "Invite")).Width(60);
+                   columns.Bound(o => o.UserTypeString).Title(Html.GetResource("UserType", "Invitation")).Width(60);
+
+               }).EnableCustomBinding(true)
+                                                        .DataBinding(dataBinding =>
+                                                        {
+                                                            dataBinding.Server().Select("Invitation", "User", new { ajax = true });
+                                                            dataBinding.Ajax().Select("_Invitation", "User");
+
+                                                        })
+                                                .ClientEvents(clientEvents => clientEvents.OnDataBinding("InvitationGridDataBinding").OnDataBound("InvitationGridDataBound").OnRowDataBound("onRowDataBound"))
+                                                .Scrollable(scrolling => scrolling.Enabled(false))
+                                                .Selectable().Pageable(paging => paging.PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize)
+                                                                        .Total(int.Parse(ViewData["total"].ToString()))
+                                                                        .Style(GridPagerStyles.NextPreviousAndNumeric)
+                                                                        .Position(GridPagerPosition.Bottom))
+                                                .Filterable(filtering => filtering.Enabled(false))
+                                                .Groupable(grouping => grouping.Enabled(true)).Footer(true))
+}
+

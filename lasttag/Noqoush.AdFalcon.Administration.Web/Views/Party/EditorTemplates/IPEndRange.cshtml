@@ -1,0 +1,20 @@
+﻿@model string
+@{
+    Layout = null;
+}
+@Html.TextBoxFor(m => m, new { maxLength= 50,Class="special-text-box single-linel",onchange="isEndIP(this,this.value)"}) 
+@*<span id="display_ip_msg" class="validation-arrow field-validation-error"
+            style="display: none;"><span class="">ip not valid</span> </span>*@
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".t-grid-new-row").mouseover(function () {
+
+            for (var i = 1; i < 4; i++) {
+                $(this).children().eq(i).attr('title', $(this).children().eq(i).text());
+            }
+
+        });
+    });
+
+</script>

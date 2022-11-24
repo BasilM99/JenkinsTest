@@ -1,0 +1,108 @@
+﻿@model List<Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeAttributeDto>
+<script type="text/javascript">
+    var attributesProhibited = [@string.Join(",", Model.Where(p => !p.IsSupported).Select(p => p.ID.ToString()).ToList())]
+
+
+    $(document).ready(function () {
+        var confirmationDialogButton = {};
+        confirmationDialogButton['@Html.GetResource("Confirm","Global")'] = function () {
+            var attributes = "";
+            var attributesString = "";
+
+            $("[id^=attribute_]").each(function () {
+                var item = $(this);
+                var attributeText = item.parent().next().html();
+                if (item.attr("checked")) {
+                    var customValue = item.attr("customValue");
+                    attributes += customValue + ",";
+                    attributesString += attributeText + " - ";
+
+                }
+            });
+
+            var counter = 0;
+            if (attributesString != "") {
+                attributesString = attributesString.substr(0, attributesString.length - 2);
+                if (attributesString.length > 60) {
+                    for (var i = 60, len = 0; i > len; i--) {
+                        if (attributesString[i] == " ") {
+                            break;
+                        }
+                        counter++;
+                    }
+                }
+                attributesString = attributesString.substr(0, 60 - counter) + " ...";
+            }
+
+            attributes = attributes.substr(0, attributes.length - 1);
+            var creativeId = $("#currentCreative").val();
+            $("#Attributes_" + creativeId).val(attributes);
+            $("#AttributesList" + creativeId).html(attributesString);
+
+            $(this).dialog("close");
+        };
+
+        $("#attribiutesDialog-form").dialog({
+            autoOpen: false,
+            width: 550,
+           // height: 320,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            buttons: confirmationDialogButton,
+            showCloseButton: false,
+
+            close: function () {
+                $("[id^=attribute_]").each(function () {
+                    var item = $(this);
+
+                    if (item.attr("checked")) {
+                        var customValue = item.attr("customValue");
+                        checkBox(item.parents("div")[0]);
+                    }
+                });
+            }
+        });
+    });
+
+    function openAttributesSettingsDialog(creativeId) {
+        $("#currentCreative").val(creativeId);
+        var inputItem = $("#Attributes_" + creativeId);
+        var selectedValue = inputItem.val();
+        var selectedValuesArray = new Array();
+
+        if (selectedValue != "") {
+            selectedValuesArray = selectedValue.split(',');
+        }
+
+        $("[id^=attribute_]").each(function () {
+            var item = $(this);
+            var customValue = item.attr("customValue");
+            
+            if (selectedValuesArray.indexOf(customValue) != -1) {
+                checkBox(item.parents("div")[0]);
+            }
+        });
+
+        $('#attribiutesDialog-form').dialog('open');
+    }
+</script>
+<div id="attribiutesDialog-form" title="@Html.GetResource("Customize", "CreativesSettings")" style="display: none; ">
+    <input type="hidden" name="currentCreative" id="currentCreative" />
+    <div class="go-left data-row">
+        @Html.GetResource("SelectAttributes", "CreativesSettings")
+        <p>
+        </p>
+        <div class="data-row data-container">
+            <div class="floating-left">
+                <div class="field-container">
+                    @foreach (var item in Model)
+                    {
+                        @Html.GetCheckBox("attribute_" +  item.ID, item.Name.ToString(), customValue : item.ID.ToString())
+                    }
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>

@@ -1,0 +1,113 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.AutoComplete
+
+@if (Model.IsRequired == false)
+{
+    <div class="field-container small-autocomplete" id="keyword-container-@Model.Id">
+        <input type="text" class="text-box add-key-word-txtbox" value='@Model.CurrentText' name="@Model.Name" id="@Model.Id" style="@Model.Style" cancelenter=true />
+    </div>
+}
+else
+{
+    <div class="field-container small-autocomplete" id="keyword-container-@Model.Id">
+        <input type="text" class="required text-box add-key-word-txtbox" value='@Model.CurrentText' dat-val="true" data-val-required="@Html.GetResource("RequiredMessage", "ResourceSet")" name="@Model.Name" id="@Model.Id" style="@Model.Style" cancelenter=true />
+
+    </div>
+
+}
+	<script type="text/javascript">
+    function InitAutocomplete() {
+        //jQuery("#@Model.Id").autocomplete('search', '');
+//        jQuery("#@Model.Id").focus();
+    };
+    var falg = false;
+     jQuery(document).ready(function() {
+         (function()
+         {
+             var obj = jQuery("#@Model.Id");
+             var auto = obj.autocomplete(
+                 {
+                     source: function(request, response) {
+                         jQuery.ajax({
+                                 url: '@Url.Action(Model.ActionName, Model.ControllerName)',
+                                 dataType: "json",
+                                 data: {
+                                     q: request.term,
+                                     culture:'@Model.Culture'
+                                 },
+                                 success: function(data) {
+                                     response(jQuery.map(data, function(item)
+                                         {
+                                         var temp = item;
+										 temp.value = @Model.ValueExpression ;
+									
+										 @if(Model.UseName)
+										 {
+											 <text>
+
+										 temp.label =  @(Model.LabelExpression);
+										 </text>
+										 }
+										 else
+
+										 {
+											  <text>
+
+										 temp.label =  @(Model.LabelExpression).Value;
+										 </text>
+
+										 }
+
+										 return temp;
+										 }
+                           ))},
+                                 error: function() {
+                                 }
+                             });
+                     },
+					 delay: 0,
+					 minLength: 2,
+                     appendTo: "#keyword-container-@Model.Id",
+                     selectFirst: true,
+                     focus: function( event, ui ) {
+                        /* this.value =ui.item.label;
+                         */
+                         obj.val( ui.item.label );
+                         return false;
+                     },
+                     change: function(event, ui) {
+                         if (ui.item == null) {
+                             var functionCall = '@Model.ChangeCallBack' + '(event,ui.item);';
+                             eval(functionCall);
+                         }
+
+                     },
+                     select: function(event, ui) {
+                         jQuery("#@Model.Id").val(ui.item.label);
+                         var functionCall = '@Model.ChangeCallBack' + '(event,ui.item);';
+                         eval(functionCall);
+                         return false;
+                     }
+                 });
+             //auto.autocomplete("widget").addClass("small-autocomplete");
+             auto.data("ui-autocomplete")._renderItem = function(ul, item)
+             {
+                 ul.width(150);
+                 if (falg) {
+                     falg = false;
+                     var returnval = jQuery("<li></li>")
+                         .data("item.autocomplete", item)
+                         .append("<a>" + item.label + "</a>");
+
+                     return returnval.appendTo(ul);
+                 }
+                 else {
+                     falg = true;
+                     return jQuery("<li class='alter-item'></li>")
+                         .data("item.autocomplete", item)
+                         .append("<a>" + item.label + "</a>")
+                         .appendTo(ul);
+                 }
+             };
+         }());  });
+	</script>
+

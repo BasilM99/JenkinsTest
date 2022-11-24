@@ -1,0 +1,550 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FAC4CF79-1413-49DE-ADF7-71878CEA8CE9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Noqoush.AdFalcon.Persistence</RootNamespace>
+    <AssemblyName>Noqoush.AdFalcon.Persistence</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>True</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>True</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>True</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>True</CodeContractsRedundantAssumptions>
+    <CodeContractsRedundantTests>True</CodeContractsRedundantTests>
+    <CodeContractsMissingPublicRequiresAsWarnings>True</CodeContractsMissingPublicRequiresAsWarnings>
+    <CodeContractsInferRequires>True</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>False</CodeContractsInferEnsures>
+    <CodeContractsInferObjectInvariants>False</CodeContractsInferObjectInvariants>
+    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestRequires>False</CodeContractsSuggestRequires>
+    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
+    <CodeContractsSuggestReadonly>True</CodeContractsSuggestReadonly>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsSQLServerOption />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
+    <CodeContractsFailBuildOnWarnings>False</CodeContractsFailBuildOnWarnings>
+    <CodeContractsBeingOptimisticOnExternal>True</CodeContractsBeingOptimisticOnExternal>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>%28none%29</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>True</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>True</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>True</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>True</CodeContractsRedundantAssumptions>
+    <CodeContractsRedundantTests>True</CodeContractsRedundantTests>
+    <CodeContractsMissingPublicRequiresAsWarnings>True</CodeContractsMissingPublicRequiresAsWarnings>
+    <CodeContractsInferRequires>True</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>False</CodeContractsInferEnsures>
+    <CodeContractsInferObjectInvariants>False</CodeContractsInferObjectInvariants>
+    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestRequires>False</CodeContractsSuggestRequires>
+    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
+    <CodeContractsSuggestReadonly>True</CodeContractsSuggestReadonly>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsSQLServerOption />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
+    <CodeContractsFailBuildOnWarnings>False</CodeContractsFailBuildOnWarnings>
+    <CodeContractsBeingOptimisticOnExternal>True</CodeContractsBeingOptimisticOnExternal>
+    <CodeContractsRuntimeCheckingLevel>Preconditions</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>%28none%29</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WebBuild|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\WebBuild\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\Noqoush.AdFalcon.Persistence.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;D:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;D:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FluentNHibernate">
+      <HintPath>..\..\..\..\lib\FluentNHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate">
+      <HintPath>..\..\..\..\lib\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
+    <Compile Include="Mappings\Account\AccountCostElementMapping.cs" />
+    <Compile Include="Mappings\Account\AccountDSPRequestMapping.cs" />
+    <Compile Include="Mappings\Account\DSPAccountSettingContactMapping.cs" />
+    <Compile Include="Mappings\Account\DSPAccountSettingMapping.cs" />
+    <Compile Include="Mappings\Account\UserAccountsMapping.cs" />
+    <Compile Include="Mappings\Account\AccountPortalPermissionsMappings.cs" />
+    <Compile Include="Mappings\Account\AccountAPIAccessMapping.cs" />
+    <Compile Include="Mappings\Account\AccountInvitationMapping.cs" />
+    <Compile Include="Mappings\Account\BuyerMapping.cs" />
+    <Compile Include="Mappings\Account\AccountMapping.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\Account\AccountsummaryMapping.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\Account\AccountTrackingEventMapping.cs" />
+    <Compile Include="Mappings\Account\BankaccountMapping.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\Account\AccountPaymentDetailsMapping.cs" />
+    <Compile Include="Mappings\Account\AccountDiscountMapping.cs" />
+    <Compile Include="Mappings\Account\DPP\ImpressionLogMapping.cs" />
+    <Compile Include="Mappings\Account\FundMapping.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\Account\FundtypeMapping.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\Account\Fund\AccountFundPgwMapping.cs" />
+    <Compile Include="Mappings\Account\Fund\AccountFundTransHistoryMapping.cs" />
+    <Compile Include="Mappings\Account\Fund\AccountFundTransStatusMapping.cs" />
+    <Compile Include="Mappings\Account\Fund\AccountFundTransTypeMapping.cs" />
+    <Compile Include="Mappings\Account\PartyMapping.cs" />
+    <Compile Include="Mappings\Account\Payment\PaymentMapping.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\Account\Payment\PaymenttypeMapping.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\Account\PMP\PMPDealMapping.cs" />
+    <Compile Include="Mappings\Account\PMP\PMPDealTargetingMapping.cs" />
+    <Compile Include="Mappings\Account\SSP\DealCampaignMappingMap.cs" />
+    <Compile Include="Mappings\Account\SSP\FloorPriceMapping.cs" />
+    <Compile Include="Mappings\Account\SSP\SSPPartnerSupportedCreativeFormatsMapping.cs" />
+    <Compile Include="Mappings\Account\SSP\PartnerSiteMapping.cs" />
+    <Compile Include="Mappings\Account\SSP\SiteZoneMapping.cs" />
+    <Compile Include="Mappings\Account\SSP\SiteZoneMappingMap.cs" />
+    <Compile Include="Mappings\Account\UserMapping.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\Account\UserstatusMapping.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\AppSite\AppSiteEventMapping.cs" />
+    <Compile Include="Mappings\AppSite\AppSiteKeywordMapping.cs" />
+    <Compile Include="Mappings\AppSite\AppsitesettingMapping.cs" />
+    <Compile Include="Mappings\AppSite\AppsitesettingServerMapping.cs" />
+    <Compile Include="Mappings\AppSite\SubAppsiteMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdActionValueTrackerMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreativeUnitVendorMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\AdCreativeUnitAttributeMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\AdCreativeUnitTrackerMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\AdCustomParameterMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\SubtypeActionMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\AdSubTypeMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\AppMarketingPartnerMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\AppMarketingPartnerTrackerMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\VideoDeliveryMethodMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\VideoTypeMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\AdSupportedCreativeUnitMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\NativeAdIconMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\NativeAdImageMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\RichMediaRequiredProtocolMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdGroupInventorySourceMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdGroupTrackingEventMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdRequestPlatformMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdRequestTypeMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdRequestTypePlatformVersionMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdvertiserAccountMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdvertiserAccountMasterAppSiteItemMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdvertiserAccountMasterAppSiteMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdvertiserAccountUserMapping.cs" />
+    <Compile Include="Mappings\Account\AccountFeaturesMapping.cs" />
+    <Compile Include="Mappings\Account\FeaturesMapping.cs" />
+    <Compile Include="Mappings\Campaign\AudienceSegmentPixelMapMapping.cs" />
+    <Compile Include="Mappings\Campaign\ClickTagTrackerMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdGroupDynamicBiddingConfigMapping.cs" />
+    <Compile Include="Mappings\Campaign\PixelMapping.cs" />
+    <Compile Include="Mappings\Campaign\ThirdPartyTrackerMapping.cs" />
+    <Compile Include="Mappings\Core\BusinessPartnerAccountWhiteMapping.cs" />
+    <Compile Include="Mappings\Core\BusinessPartnerDomainBlockMapping.cs" />
+    <Compile Include="Mappings\Core\lookalikejobMapping.cs" />
+    <Compile Include="Mappings\QueryBuilder\ColumnMap.cs" />
+    <Compile Include="Mappings\QueryBuilder\DimensionMap.cs" />
+    <Compile Include="Mappings\QueryBuilder\FactMap.cs" />
+    <Compile Include="Mappings\QueryBuilder\MeasureMap.cs" />
+    <Compile Include="Repositories\Account\FeatureRepository.cs" />
+    <Compile Include="Repositories\Account\AccountFeaturesRepository.cs" />
+    <Compile Include="Repositories\Account\AccountSettingRepository.cs" />
+    <Compile Include="Repositories\Account\DSPAccountSettingContactRepository.cs" />
+    <Compile Include="Repositories\Campaign\AdGroupDynamicBiddingConfigRepository.cs" />
+    <Compile Include="Repositories\Campaign\AdGroupEventRepository.cs" />
+    <Compile Include="Repositories\Campaign\AdvertiserAccountMasterAppSiteItemRepository.cs" />
+    <Compile Include="Repositories\Campaign\AdvertiserAccountMasterAppSiteRepository.cs" />
+    <Compile Include="Repositories\Campaign\AdvertiserAccountUserRepository.cs" />
+    <Compile Include="Mappings\Campaign\AdvertiserMapping.cs" />
+    <Compile Include="Mappings\Campaign\CampaignAssignedAppsitesMapping.cs" />
+    <Compile Include="Mappings\Campaign\CampaignBidConfigMapping.cs" />
+    <Compile Include="Mappings\Campaign\CampaignFrequencyCappingMapping.cs" />
+    <Compile Include="Mappings\Campaign\CampaignServerSettingMapping.cs" />
+    <Compile Include="Mappings\Campaign\CreativeVendorKeywordMapping.cs" />
+    <Compile Include="Mappings\Campaign\CreativeFormatsMapping.cs" />
+    <Compile Include="Mappings\Campaign\CreativeVendorMapping.cs" />
+    <Compile Include="Mappings\Campaign\HouseAdMapping.cs" />
+    <Compile Include="Mappings\Campaign\CampaignDiscountMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\AdCreativeMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\AdCreativeUnitMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\AppSiteAdQueueMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\TileImageDocumentMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\TileImageSizeMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\TileImageMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdGroupMapping.cs" />
+    <Compile Include="Mappings\Campaign\CampaignMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCampaignStatusMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdActionValuesMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdGroupStatusMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\AdStatusMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\AdTypeMapping.cs" />
+    <Compile Include="Mappings\Campaign\BidConfigMapping.cs" />
+    <Compile Include="Mappings\Campaign\CampaignPerformanceMapping.cs" />
+    <Compile Include="Mappings\Campaign\DeviceTragetingTypeMapping.cs" />
+    <Compile Include="Mappings\Campaign\MappingClassMap.cs" />
+    <Compile Include="Mappings\Campaign\NativeAdLayoutMapping.cs" />
+    <Compile Include="Mappings\Campaign\Objective\AdActionCostModelWrapperMapping.cs" />
+    <Compile Include="Mappings\Campaign\Objective\AdActionTypeTrackingEventsMapping.cs" />
+    <Compile Include="Mappings\Campaign\Objective\AdGroupObjectiveTypeMapping.cs" />
+    <Compile Include="Mappings\Campaign\Objective\AdActionTypesMapping.cs" />
+    <Compile Include="Mappings\Campaign\Objective\AdActionTypeConstraintMapping.cs" />
+    <Compile Include="Mappings\Campaign\Objective\AdGroupObjectiveMapping.cs" />
+    <Compile Include="Mappings\Campaign\TragetingTypeMapping.cs" />
+    <Compile Include="Mappings\Campaign\TragetingMapping.cs" />
+    <Compile Include="Mappings\Campaign\VideoConversionCreativeUnitMapping.cs" />
+    <Compile Include="Mappings\Campaign\VideoMediaFileMapping.cs" />
+    <Compile Include="Mappings\Campaign\MetricVendorMapping.cs" />
+    <Compile Include="Mappings\Core\BusinessPartnerAdvertiserBlockMapping.cs" />
+    <Compile Include="Mappings\Core\CompanyTypeMapping.cs" />
+    <Compile Include="Mappings\Core\CountryVATMapping.cs" />
+    <Compile Include="Mappings\Core\ImpressionMetricMapping.cs" />
+    <Compile Include="Mappings\Core\MatrixCriteriaMapping.cs" />
+    <Compile Include="Mappings\Core\MatrixColumnMapping.cs" />
+    <Compile Include="Mappings\Core\PortalPermisionMappings.cs" />
+    <Compile Include="Mappings\Core\AgegroupMapping.cs" />
+    <Compile Include="Mappings\AppSiteFilters\FiltersMapping.cs" />
+    <Compile Include="Mappings\AppSite\AppsiteMapping.cs" />
+    <Compile Include="Mappings\AppSite\AppSiteRevenueCalculationSettingMapping.cs" />
+    <Compile Include="Mappings\AppSite\AppsitestatussMapping.cs" />
+    <Compile Include="Mappings\AppSite\AppsitetypeMapping.cs" />
+    <Compile Include="Mappings\Core\AudienceSegmentMapping.cs" />
+    <Compile Include="Mappings\Core\BusinessPartnerMapping.cs" />
+    <Compile Include="Mappings\Core\AdGroupCostElementMapping.cs" />
+    <Compile Include="Mappings\Core\BusinessPartnerTypeMapping.cs" />
+    <Compile Include="Mappings\Core\CostModelWrapperMapping.cs" />
+    <Compile Include="Mappings\Core\CostModelMapping.cs" />
+    <Compile Include="Mappings\Campaign\AdCreative\AdCreativeAttributeMapping.cs" />
+    <Compile Include="Mappings\Core\CreativeUnitGroupMapping.cs" />
+    <Compile Include="Mappings\Core\EmployeeMapping.cs" />
+    <Compile Include="Mappings\Core\JobPositionMapping.cs" />
+    <Compile Include="Mappings\Core\CostElementMapping.cs" />
+    <Compile Include="Mappings\Core\LookupBaseMapping.cs" />
+    <Compile Include="Mappings\Core\CurrencyMapping.cs" />
+    <Compile Include="Mappings\Core\DeviceCapabilityMapping.cs" />
+    <Compile Include="Mappings\Core\MIMETypeMapping.cs" />
+    <Compile Include="Mappings\Core\PlatformVersionMapping.cs" />
+    <Compile Include="Mappings\Core\ProtocolMapping.cs" />
+    <Compile Include="Mappings\Core\ReportRecipientMapping.cs" />
+    <Compile Include="Mappings\Core\ReportCriteriaMapping.cs" />
+    <Compile Include="Mappings\Core\ReportSchedulerMapping.cs" />
+    <Compile Include="Mappings\Core\SSPPartnerWhileIPMapping.cs" />
+    <Compile Include="Mappings\Core\TileImageUnitFormatMapping.cs" />
+    <Compile Include="Mappings\Core\CreativeUnitFormatMapping.cs" />
+    <Compile Include="Mappings\Core\DeviceTypeMapping.cs" />
+    <Compile Include="Mappings\Core\CreativeUnitMapping.cs" />
+    <Compile Include="Mappings\AppSite\AppSiteRefreshModeMapping.cs" />
+    <Compile Include="Mappings\Core\DocumentMapping.cs" />
+    <Compile Include="Mappings\Core\DocumentTypeMapping.cs" />
+    <Compile Include="Mappings\Core\DeviceMapping.cs" />
+    <Compile Include="Mappings\Core\GenderMapping.cs" />
+    <Compile Include="Mappings\Core\KeywordMapping.cs" />
+    <Compile Include="Mappings\Core\LanguageMapping.cs" />
+    <Compile Include="Mappings\Core\LocationMapping.cs" />
+    <Compile Include="Mappings\Core\ManufacturerMapping.cs" />
+    <Compile Include="Mappings\Core\MatchtypeMapping.cs" />
+    <Compile Include="Mappings\Core\MetricMapping.cs" />
+    <Compile Include="Mappings\Core\OperatorMapping.cs" />
+    <Compile Include="Mappings\Core\PlatformMapping.cs" />
+    <Compile Include="Mappings\AppSite\TextadthemeMapping.cs" />
+    <Compile Include="Mappings\Core\TrackingEventMapping.cs" />
+    <Compile Include="Mappings\Core\Video\InStreamPositionMapping.cs" />
+    <Compile Include="Mappings\Core\Video\PlacementTypeMapping.cs" />
+    <Compile Include="Mappings\Core\Video\PlaybackMethodsMapping.cs" />
+    <Compile Include="Mappings\Core\Video\SkippableAdsMapping.cs" />
+    <Compile Include="Mappings\MappingSettings.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\Account\AccountAdPermissionsRepository.cs" />
+    <Compile Include="Repositories\Account\AccountCostElementRepository.cs" />
+    <Compile Include="Repositories\Account\AccountDSPRequestRepository.cs" />
+    <Compile Include="Repositories\Account\AccountInvitationRepository.cs" />
+    <Compile Include="Repositories\Account\AccountPartyDefineRepository.cs" />
+    <Compile Include="Repositories\Account\BuyerRepository.cs" />
+    <Compile Include="Repositories\Account\AccountRepository.cs" />
+    <Compile Include="Repositories\Account\AccountDiscountRepository.cs" />
+    <Compile Include="Repositories\Account\AccountSummaryRepository.cs" />
+    <Compile Include="Repositories\Account\DPP\ImpressionLogRepository.cs" />
+    <Compile Include="Repositories\Account\UserAccountsRepository.cs" />
+    <Compile Include="Repositories\Account\PMP\PMPDealRepository.cs" />
+    <Compile Include="Repositories\Account\PMP\PMPDealTargetingRepository.cs" />
+    <Compile Include="Repositories\Account\SSP\DealCampaignMappingRepository.cs" />
+    <Compile Include="Repositories\Account\SSP\FloorPriceRepository.cs" />
+    <Compile Include="Repositories\Account\SSP\SSPPartnerSupportedCreativeFormatsRepository.cs" />
+    <Compile Include="Repositories\Account\SSP\PartnerSiteRepository.cs" />
+    <Compile Include="Repositories\Account\SSP\SiteZoneMappingRepository.cs" />
+    <Compile Include="Repositories\Account\SSP\SiteZoneRepository.cs" />
+    <Compile Include="Repositories\AppSite\SubAppsiteRepository.cs" />
+    <Compile Include="Repositories\Campaign\AdCreativeUnitVendorRepository.cs" />
+    <Compile Include="Repositories\Campaign\AdGroupInventorySourceRepository.cs" />
+    <Compile Include="Repositories\Campaign\AdRequestPlatformRepository.cs" />
+    <Compile Include="Repositories\Campaign\AdRequestTargetingRepository.cs" />
+    <Compile Include="Repositories\Campaign\AdRequestTypePlatformVersionRepository.cs" />
+    <Compile Include="Repositories\Campaign\AdRequestTypeRepository.cs" />
+    <Compile Include="Repositories\Campaign\AdvertiserAccountRepository.cs" />
+    <Compile Include="Repositories\Campaign\AudienceSegmentEventMapRepository.cs" />
+    <Compile Include="Repositories\Campaign\CampaignFrequencyCappingRepository.cs" />
+    <Compile Include="Repositories\Campaign\ClickTagTrackerRepository.cs" />
+    <Compile Include="Repositories\Campaign\CreativeVendorKeywordRepository.cs" />
+    <Compile Include="Repositories\Campaign\CreativeFormatsRepository.cs" />
+    <Compile Include="Repositories\Campaign\CreativeVendorRepository.cs" />
+    <Compile Include="Repositories\Campaign\ImpressionMetricTargetingRepository.cs" />
+    <Compile Include="Repositories\Campaign\InStreamVideoCreativeRepository.cs" />
+    <Compile Include="Repositories\Campaign\MasterAppSiteTargetingReposiory.cs" />
+    <Compile Include="Repositories\Campaign\PixelRepository.cs" />
+    <Compile Include="Repositories\Campaign\SubtypeAction.cs" />
+    <Compile Include="Repositories\Campaign\AdvertiserRepository.cs" />
+    <Compile Include="Repositories\Campaign\AppMarketingPartnerRepository.cs" />
+    <Compile Include="Repositories\Campaign\AppSiteAdQueueRepository.cs" />
+    <Compile Include="Repositories\Campaign\Creative\AdCreativeUnitAttributeMappingRepository.cs" />
+    <Compile Include="Repositories\Campaign\NativeAdCreativeBaseRepository.cs" />
+    <Compile Include="Repositories\Campaign\NativeAdLayoutRepository.cs" />
+    <Compile Include="Repositories\Campaign\VideoConversionCreativeUnitRepository.cs" />
+    <Compile Include="Repositories\Campaign\VideoEndCardCreativeRepository.cs" />
+    <Compile Include="Repositories\Campaign\VideoMediaFileRepository.cs" />
+    <Compile Include="Repositories\Campaign\MetricVendorRepository.cs" />
+    <Compile Include="Repositories\Core\AdPermissionRepository.cs" />
+    <Compile Include="Repositories\Core\AccountTrackingEventRepository.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Repositories\Account\Fund\AccountFundTypeRepository.cs" />
+    <Compile Include="Repositories\Account\Payment\AccountPaymentDetailsRepository.cs" />
+    <Compile Include="Repositories\Account\Payment\PaymentTypeRepository.cs" />
+    <Compile Include="Repositories\Account\Payment\PaymentRepository.cs" />
+    <Compile Include="Repositories\AppSite\AppSiteRepository.cs" />
+    <Compile Include="Repositories\AppSite\AppSiteTypeRepository.cs" />
+    <Compile Include="Repositories\AppSite\AppSiteStatusRepository.cs" />
+    <Compile Include="Repositories\AppSite\RefreshIntervalRepository.cs" />
+    <Compile Include="Repositories\Campaign\AdActionTypeTrackingEvent.cs" />
+    <Compile Include="Repositories\Campaign\AdCreativeAttributeRepository.cs" />
+    <Compile Include="Repositories\Campaign\AdGroupRepository.cs" />
+    <Compile Include="Repositories\Campaign\AdGroupTrackingEventRepository.cs" />
+    <Compile Include="Repositories\Campaign\CampaignBidConfigRepository.cs" />
+    <Compile Include="Repositories\Campaign\Creative\InStreamVideoCreativeUnitRepository.cs" />
+    <Compile Include="Repositories\Campaign\VideoDeliveryMethodRepository.cs" />
+    <Compile Include="Repositories\Campaign\VideoTypeRepository.cs" />
+    <Compile Include="Repositories\Campaign\CampaignAssignedAppsiteRepository.cs" />
+    <Compile Include="Repositories\Campaign\CampaignRepository.cs" />
+    <Compile Include="Repositories\Campaign\CampaignStatusRepository.cs" />
+    <Compile Include="Repositories\Campaign\AdGroupStatusRepository.cs" />
+    <Compile Include="Repositories\Campaign\AdCreativeStatusRepository.cs" />
+    <Compile Include="Repositories\Campaign\AdActionTypeRepository.cs" />
+    <Compile Include="Repositories\Campaign\AdGroupObjectiveTypeRepository.cs" />
+    <Compile Include="Repositories\Campaign\BidConfigRepository.cs" />
+    <Compile Include="Repositories\Campaign\AdTypeRepository.cs" />
+    <Compile Include="Repositories\Campaign\CampaignPerformanceRepository.cs" />
+    <Compile Include="Repositories\Campaign\AdSupportedCreativeUnitRepository.cs" />
+    <Compile Include="Repositories\Campaign\Creative\AdCustomParameterRepository.cs" />
+    <Compile Include="Repositories\Campaign\Creative\RichMediaRequiredProtocolRepository.cs" />
+    <Compile Include="Repositories\Campaign\HouseAdRepository.cs" />
+    <Compile Include="Repositories\Campaign\Creative\AdCreativeRepository.cs" />
+    <Compile Include="Repositories\Campaign\Creative\AdCreativeUnitRepository.cs" />
+    <Compile Include="Repositories\Campaign\Creative\AdRepository.cs" />
+    <Compile Include="Repositories\Campaign\Creative\TileImageSizeRepository.cs" />
+    <Compile Include="Repositories\Campaign\Creative\CreativeUnitRepository.cs" />
+    <Compile Include="Repositories\Campaign\Creative\TileImageRepository.cs" />
+    <Compile Include="Repositories\Campaign\DeviceTragetingTypeRepository.cs" />
+    <Compile Include="Repositories\Campaign\ObjectiveTypeRepository.cs" />
+    <Compile Include="Repositories\Campaign\TargetingTypeRepository.cs" />
+    <Compile Include="Repositories\Campaign\TargetingBaseRepository.cs" />
+    <Compile Include="Repositories\Campaign\TrackingEventRepository.cs" />
+    <Compile Include="Repositories\Core\AgeGroupRepository.cs" />
+    <Compile Include="Repositories\Core\AudienceSegmentOccupationRepository.cs" />
+    <Compile Include="Repositories\Core\AudienceSegmentRepository.cs" />
+    <Compile Include="Repositories\Core\BusinessPartnerAccountWhiteRepository.cs" />
+    <Compile Include="Repositories\Core\BusinessPartnerAdvertiserBlockRepository.cs" />
+    <Compile Include="Repositories\Core\BusinessPartnerRepository.cs" />
+    <Compile Include="Repositories\Core\BusinessPartnerTypeRepository.cs" />
+    <Compile Include="Repositories\Core\lookalikejobRepository.cs" />
+    <Compile Include="Repositories\Core\MatrixCriteriaRepository.cs" />
+    <Compile Include="Repositories\Core\MatrixColumnRepository.cs" />
+    <Compile Include="Repositories\Core\CityRepository.cs" />
+    <Compile Include="Repositories\Core\CompanyTypeRepository.cs" />
+    <Compile Include="Repositories\Core\DeviceLanguageRepository.cs" />
+    <Compile Include="Repositories\Core\DSPPartnerRepository.cs" />
+    <Compile Include="Repositories\Core\EmployeeRepository.cs" />
+    <Compile Include="Repositories\Core\ImpressionMetricRepository.cs" />
+    <Compile Include="Repositories\Core\ProtocolRepository.cs" />
+    <Compile Include="Repositories\Core\ReportCriteriaRepository.cs" />
+    <Compile Include="Repositories\Core\ReportRecipientRepository.cs" />
+    <Compile Include="Repositories\Core\ReportSchedulerRepository.cs" />
+    <Compile Include="Repositories\Core\SSPPartnerRepository.cs" />
+    <Compile Include="Repositories\Core\SSPPartnerWhileIPRepository.cs" />
+    <Compile Include="Repositories\Core\StateRepository.cs" />
+    <Compile Include="Repositories\Core\CostModelRepository.cs" />
+    <Compile Include="Repositories\Core\CostModelWrapperRepository.cs" />
+    <Compile Include="Repositories\Core\ContinentRepository.cs" />
+    <Compile Include="Repositories\Core\CreativeUnitGroupRepository.cs" />
+    <Compile Include="Repositories\Core\MIMETypeRepository.cs" />
+    <Compile Include="Repositories\Core\PartyRepository.cs" />
+    <Compile Include="Repositories\Core\JobPositionRepository.cs" />
+    <Compile Include="Repositories\Core\DeviceTypeRepository.cs" />
+    <Compile Include="Repositories\Core\CostElementRepository.cs" />
+    <Compile Include="Repositories\Core\LookupRepository.cs" />
+    <Compile Include="Repositories\Core\CurrencyRepository.cs" />
+    <Compile Include="Repositories\Core\DeviceCapabilityRepository.cs" />
+    <Compile Include="Repositories\Core\GenderRepository.cs" />
+    <Compile Include="Repositories\Core\DocumentRepository.cs" />
+    <Compile Include="Repositories\Core\DocumentTypeRepository.cs" />
+    <Compile Include="Repositories\Core\LocationRepository.cs" />
+    <Compile Include="Repositories\Core\PlatformRepository.cs" />
+    <Compile Include="Repositories\Core\ManufacturerRepository.cs" />
+    <Compile Include="Repositories\Core\DeviceRepository.cs" />
+    <Compile Include="Repositories\Core\KeyWordRepository.cs" />
+    <Compile Include="Repositories\AppSite\TextAdThemeRepository.cs" />
+    <Compile Include="Repositories\Core\CountryRepository.cs" />
+    <Compile Include="Repositories\Core\LanguageRepository.cs" />
+    <Compile Include="Repositories\Core\MatchTypeRepository.cs" />
+    <Compile Include="Repositories\Core\OperatorRepository.cs" />
+    <Compile Include="Repositories\Core\MetricRepository.cs" />
+    <Compile Include="Repositories\Account\FundsRepository.cs" />
+    <Compile Include="Repositories\Account\Fund\AccountFundPgwRepository.cs" />
+    <Compile Include="Repositories\Account\Fund\AccountFundTransHistoryRepository.cs" />
+    <Compile Include="Repositories\Account\Fund\AccountFundTransStatusRepository.cs" />
+    <Compile Include="Repositories\Account\Fund\AccountFundTransTypeRepository.cs" />
+    <Compile Include="Repositories\Core\Video\InStreamPositionRepository.cs" />
+    <Compile Include="Repositories\Core\Video\PlacementTypeRepository.cs" />
+    <Compile Include="Repositories\Core\Video\PlaybackMethodsRepository.cs" />
+    <Compile Include="Repositories\Core\Video\SkippableAdsRepository.cs" />
+    <Compile Include="Repositories\QueryBuilder\FactRepository.cs" />
+    <Compile Include="Repositories\UserRepository.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Noqoush.AdFalcon.EventDTOs\Noqoush.AdFalcon.EventDTOs\Noqoush.AdFalcon.EventDTOs.csproj">
+      <Project>{8af8d925-e576-47ea-9eec-4c17bbf9bfe9}</Project>
+      <Name>Noqoush.AdFalcon.EventDTOs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Noqoush.Framework\Noqoush.Framework.DomainServices\Noqoush.Framework.DomainServices.csproj">
+      <Project>{F70B1F2E-AD4B-406E-B668-7C510198700D}</Project>
+      <Name>Noqoush.Framework.DomainServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Noqoush.Framework\Noqoush.Framework.Persistence\Noqoush.Framework.Persistence.csproj">
+      <Project>{2DBB0F5E-0516-4D97-88EB-0C2B420195A9}</Project>
+      <Name>Noqoush.Framework.Persistence</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Noqoush.Framework\Noqoush.Framework\Noqoush.Framework.csproj">
+      <Project>{64D00377-15EE-4C1F-932C-0325580E2003}</Project>
+      <Name>Noqoush.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Base\Noqoush.AdFalcon.Base.csproj">
+      <Project>{18b45557-cdea-4fd5-aeec-95e4bac5f6d0}</Project>
+      <Name>Noqoush.AdFalcon.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Common\Noqoush.AdFalcon.Common.csproj">
+      <Project>{DC961A65-F217-4C17-8DEE-DEC452AD6BF1}</Project>
+      <Name>Noqoush.AdFalcon.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Domain.Common\Noqoush.AdFalcon.Domain.Common.csproj">
+      <Project>{fe62b4e8-9278-4b6f-b0e9-67495d74cb22}</Project>
+      <Name>Noqoush.AdFalcon.Domain.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Domain\Noqoush.AdFalcon.Domain.csproj">
+      <Project>{DF4DFEDD-0F98-45DD-BE73-951FC014AAA5}</Project>
+      <Name>Noqoush.AdFalcon.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

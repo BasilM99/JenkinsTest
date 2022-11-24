@@ -1,0 +1,377 @@
+﻿@using Noqoush.AdFalcon.Services.Interfaces.DTOs.AppSite
+@using Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign
+@using Noqoush.AdFalcon.Services.Interfaces.DTOs.Core
+@using Noqoush.AdFalcon.Services.Interfaces.DTOs.Reports
+@using Noqoush.AdFalcon.Services.Interfaces.DTOs.Account.PMP;
+@{
+
+	List<PMPDealDto> deals = ViewData["deals"] as List<PMPDealDto>;
+	List<SelectListItem> dealsList = new List<SelectListItem>();
+	//foreach (var deal in deals)
+	//{
+	//    SelectListItem item = new SelectListItem();
+	//    item.Value = deal.ID.ToString();
+	//    item.Text = deal.Name;
+	//    dealsList.Add(item);
+	//}
+	//SelectListItem allItem = new SelectListItem();
+	//allItem.Value = "";
+	//allItem.Selected = true;
+	//allItem.Text = Html.GetResource("AllDeals", "PMPDeal");
+
+	//dealsList.Add(allItem);
+
+	List<SelectListItem> campaignsList = new List<SelectListItem>();
+	List<SelectListItem> advertisersList = new List<SelectListItem>();
+
+	List<SelectListItem> periodListItem = new List<SelectListItem>()
+{
+new SelectListItem()
+{
+Value = "0",
+Text = Html.GetResource("Today","Chart"),
+Selected = true
+} ,
+new SelectListItem()
+{
+Value = "1",
+Text = Html.GetResource("Yesterday","Chart"),
+},
+new SelectListItem()
+{
+Value = "2",
+Text = Html.GetResource("OneWeek","Chart"),
+},
+
+new SelectListItem()
+{
+Value = "3",
+Text = Html.GetResource("OneMonth","Chart"),
+},
+new SelectListItem()
+{
+Value = "4",
+Text = Html.GetResource("LastMonth","Chart"),
+}
+};
+
+
+}
+
+<script type="text/javascript">
+    var getDealCampsUrl = '@Url.Action("getCampsBydeal", "Deals")';
+    var getDealAdgruopsUrl = '@Url.Action("getDealCampsAdgruops", "Deals")';
+    var CampaignName = "@Html.GetResource("CampaignName", "Campaign")";
+    var GroupName = "@Html.GetResource("GroupName", "AdGroup")";
+    var ByDeal = "@Html.GetResource("ByDeal", "byCatgeo")";
+    var ByCampaignAndGroups = "@Html.GetResource("ByCampaignAndGroups", "byCatgeo")";
+    var DealString = "@Html.GetResource("Deal", "PMPDeal")";
+    var CampaignString = "@Html.GetResource("Campaign", "CampaignsReport")";
+    var GroupString = "@Html.GetResource("AdGroup", "Global")";
+
+
+
+    var AllCampaStr = '@Html.GetResource("AllCampaigns", "AdChart")';
+	var AllAdvertisersStr = 'All Advertiser';
+
+
+    function dealsChanged() {
+
+		$("#campaignsDiv").hide();
+		$("#advertisersDiv").hide();
+        var dealid = $("#list").val();
+        if(typeof($("#list").val())!="undefined" &&  $("#list").val()!="")
+        {
+            $('#dealPublisher').html($("#list option:selected").text()+" / "+$("#list option:selected").attr("customvalue"));
+        }
+        else
+        {
+            $('#dealPublisher').html($("#list option:selected").text());
+            $("#DealPerformanceGrid thead [class='t-header'] .t-link").eq(1).html(DealString);
+
+        }
+		$('#campaigns').empty();
+		$('#advertisers').empty();
+        $("#byCatgeo").text(ByDeal);
+
+        if (dealid == '')
+            return;
+        $.ajax(
+       {
+           url: getDealCampsUrl + "?dealId=" + dealid,
+           cache: false,
+           success: function (data) {
+
+               $('#campaigns').append($('<option></option>').val(null).html(AllCampaStr));
+			   if (data.results.CampaignItems.length > 0) {
+				   $.each(data.results.CampaignItems, function (index, item) {
+					   $('#campaigns').append(
+						   $('<option></option>').val(item.ID).html(item.Name)
+					   );
+				   });
+				   $('#advertisers').append($('<option></option>').val(null).html(AllAdvertisersStr));
+				   $.each(data.results.AdvertiserAccountItems, function (index, item) {
+					   $('#advertisers').append(
+                            $('<option></option>').val(item.Id).html(item.Name)
+                        );
+                   });
+				   $("#campaignsDiv").show();
+				   $("#advertisersDiv").show();
+                   $("#DealPerformanceGrid thead [class='t-header'] .t-link").eq(1).html(CampaignString);
+                   $("#byCatgeo").text(DealString+"/"+CampaignString);
+
+
+               } else {
+                   $("#DealPerformanceGrid thead [class='t-header'] .t-link").eq(1).html(DealString);
+
+               }
+
+           },
+           error: function (error) {
+               $("#DealPerformanceGrid thead [class='t-header'] .t-link").eq(1).html(DealString);
+
+           }
+       });
+
+    }
+	function advertisersChanged() {
+
+		$("#campaignsDiv").hide();
+		//$("#advertisersDiv").hide();
+		var dealid = $("#list").val();
+		if (typeof ($("#list").val()) != "undefined" && $("#list").val() != "") {
+			$('#dealPublisher').html($("#list option:selected").text() + " / " + $("#list option:selected").attr("customvalue"));
+		}
+		else {
+			$('#dealPublisher').html($("#list option:selected").text());
+			$("#DealPerformanceGrid thead [class='t-header'] .t-link").eq(1).html(DealString);
+
+		}
+		$('#campaigns').empty();
+		$("#byCatgeo").text(ByDeal);
+
+		if (dealid == '')
+			return;
+		$.ajax(
+			{
+				url: getDealCampsUrl + "?dealId=" + dealid,
+				cache: false,
+				success: function (data) {
+
+					$('#campaigns').append($('<option></option>').val(null).html(AllCampaStr));
+					if (data.results.CampaignItems.length > 0) {
+						$.each(data.results.CampaignItems, function (index, item) {
+							$('#campaigns').append(
+								$('<option></option>').val(item.ID).html(item.Name)
+							);
+						});
+					
+						$("#campaignsDiv").show();
+						$("#advertisersDiv").show();
+						$("#DealPerformanceGrid thead [class='t-header'] .t-link").eq(1).html(CampaignString);
+						$("#byCatgeo").text(DealString + "/" + CampaignString);
+
+
+					} else {
+						$("#DealPerformanceGrid thead [class='t-header'] .t-link").eq(1).html(DealString);
+
+					}
+
+				},
+				error: function (error) {
+					$("#DealPerformanceGrid thead [class='t-header'] .t-link").eq(1).html(DealString);
+
+				}
+			});
+
+	}
+
+    function campaignsChanged()
+    {
+
+
+        if(typeof($("#campaigns").val())=="undefined" || $("#campaigns").val()=="" )
+        {
+            $("#byCatgeo").text(DealString+"/"+CampaignString);
+            $("#DealPerformanceGrid thead [class='t-header'] .t-link").eq(1).html(CampaignString);
+
+
+        }else
+        {
+            $("#byCatgeo").text(ByCampaignAndGroups);
+            $("#DealPerformanceGrid thead [class='t-header'] .t-link").eq(1).html(GroupString);
+
+
+        }
+    }
+
+</script>
+
+<div class="data-row section-container">
+	<br />
+	<div class="dashboard-left-side">
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("Deals", "PMPDeal")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconDropDownList("list", dealsList, new { onchange = "getGoogleChartImage();fillGridDeal();dealsChanged();" })
+			</div>
+		</div>
+
+
+		<div class="data-row data-container" style="display:none;" id="advertisersDiv">
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("Advertiser", "Global")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconDropDownList("advertisers", advertisersList, new { onchange = "getGoogleChartImage();fillGridDeal();advertisersChanged();" })
+			</div>
+		</div>
+
+
+		<div class="data-row data-container" style="display:none;" id="campaignsDiv">
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("AdTitle", "AdChart")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconDropDownList("campaigns", campaignsList, new { onchange = "getGoogleChartImage();fillGridDeal();campaignsChanged();" })
+			</div>
+		</div>
+		<div class="data-row data-container" style="display:block;" id="periodDiv">
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("Period", "Chart")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconDropDownList("period", periodListItem, new { onchange = "getGoogleChartImage();fillGridDeal();" })
+			</div>
+		</div>
+
+	</div>
+
+	<div class="dashboard-left-side floating-left">
+		<div class="data-row" id="gchartContainer" style="width:100%;height:350px">
+			@*<img id="chartImage"  class="chartImage" src="@Url.Action("chartcontrol", "dashboard", new { periodOption = 0, type = "ad", Id = "", metricCode = (ViewData["Metrics"] as List<MetricDto>).First().Code })" />*@
+		</div>
+	</div>
+	<div class="dashboard-right-side floating-right">
+		<div class="grid-container data-row">
+			@(Html.Telerik().Grid((ViewData["Metrics"] as List<MetricDto>))
+													.Name("Metrics").Columns(columns =>
+														 {
+															 columns.Bound(p => p.Name).Template(p => Html.GetRadioButton("metric", "&nbsp;" + p.Name + "&nbsp;", false, "", "getGoogleChartImage", p.Code)).Title(Html.GetResource("Name", "Global"));
+															 columns.Bound("").Template(p => "<div class='colored-box' style='background-color:" + p.Color + "'></div>").Width(20);
+														 })
+														 .Footer(false))
+		</div>
+	</div>
+	@Html.RegisterScriptBlock(string.Format("var chartControlImageSrc='{0}'", Url.Action("GChartControl", "dashboard", new { type = "deal" })))
+	<div class="data-row">
+		&nbsp;
+	</div>
+	<div class="data-row data-container" id="ResultDivg">
+		<div class="data-container floating-right dashboard-filter-container">
+			<div class="label-container">
+				<span class="field-title required-field" id="dealPublisher"></span>
+			</div>
+
+		</div>
+		<h3 id="byCatgeo">@Html.GetResource("ByDeal", "byCatgeo")</h3>
+		<div class="grid-container data-row">
+			@(Html.Telerik().Grid((ViewData["DealPerformance"] as List<DealPerformanceDto>))
+													.Name("DealPerformanceGrid")
+											.Columns(columns =>
+											{
+												columns.Bound(o => o.DateRange).Title(Html.GetResource("Date", "AccountHistory"));
+
+												columns.Bound(o => o.FinalSecondSubName).Title(Html.GetResource("Deal", "PMPDeal"));
+												columns.Bound(o => o.FinalAvailableImpressions).Format("{0:n0}").Title(Html.GetResource("AvailableImpressions", "PMPDeal"));
+												columns.Bound(o => o.AdResponse).Format("{0:n0}").Title(Html.GetResource("AdResponse", "PMPDeal"));
+												columns.Bound(o => o.ResponseRateText).Title(Html.GetResource("ResponseRateText", "PMPDeal"));
+												columns.Bound(o => o.WonImpressions).Format("{0:n0}").Title(Html.GetResource("WonImpressions", "PMPDeal"));
+												columns.Bound(o => o.WinRateText).Title(Html.GetResource("WinRateText", "PMPDeal"));
+												columns.Bound(o => o.DisplayedImpressions).Format("{0:n0}").Title(Html.GetResource("DisplayedImpressions", "PMPDeal"));
+												columns.Bound(o => o.DisplayRateText).Title(Html.GetResource("DisplayRateText", "PMPDeal"));
+
+											})
+											.DataBinding(dataBinding =>
+											{
+												dataBinding.Ajax().Select("DealPerformance", "dashboard");
+
+											})
+												.Scrollable(scrolling => scrolling.Enabled(false))
+												.EnableCustomBinding(true)
+															  .Pageable(paging => paging.PageSize(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total(int.Parse(ViewData["total"].ToString())).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+																	  .Groupable(grouping => grouping.Enabled(false)).Footer(true).ClientEvents(p => p.OnDataBinding("DealPerformanceDataBinding")))
+		</div>
+		@Html.RegisterScriptBlock(string.Format("var exportUrl='{0}'", Url.Action("DealPerformanceExport", "dashboard")))
+		<div class="data-row">
+			<a href="javascript:void(0)" onclick='DealPerformanceExport("excel")' class="export-icon-excel floating-left" title="Download as Excel">
+			</a><a href="javascript:void(0)" onclick='DealPerformanceExport("csv")' class="export-icon-cvs floating-left" title="Download as CSV">
+			</a><a href="javascript:void(0)" onclick='DealPerformanceExport("pdf")' class="export-icon-pdf floating-left" title="Download as PDF">
+			</a>
+		</div>
+		<br />
+
+	</div>
+</div>
+<script type="text/javascript">
+    var alldealsString =  '@Html.GetResource("AllDeals", "PMPDeal")';
+
+    $(document).ready(function () {
+        radioBox($("[name=metriccontainer]")[0]);
+        google.charts.setOnLoadCallback(getGoogleChartImage);
+        SetSelectedTap("ListMenuAdvertiser");
+
+        var data = @Html.Raw(Json.Encode(ViewData["deals"]));
+
+
+        $('#list').append( $('<option></option>').val('').html(alldealsString));
+        $.each(data, function (index, item) {
+            $('#list').append(
+                 $("<option customvalue="+item.ExchangeName+"></option>").val(item.ID).html(item.Name)
+             );
+        });
+    });
+
+
+    function fillGridDeal() {
+
+        var grid = $("#DealPerformanceGrid").data("tGrid");
+
+        grid.rebind();
+    }
+
+    function DealPerformanceDataBinding(args) {
+
+        args.data = $.extend(args.data,
+                                  {
+									  subId: $('#campaigns').val(),
+									  AdvertiserAccountId: $('#advertisers').val(),
+                                      id: $('#list').val(),
+                                      period: $('#period').val()
+                                  });
+    }
+
+
+
+
+    function DealPerformanceExport(type) {
+
+        var grid = $("#DealPerformanceGrid").data("tGrid");
+
+        var geoLocationParams = {
+			subId: $('#campaigns').val(),
+
+			AdvertiserAccountId: $('#advertisers').val(),
+            id: $('#list').val(),
+            period: $('#period').val(),
+            orderby: grid.orderBy,
+            NameTitle:$("#DealPerformanceGrid thead [class='t-header'] .t-link").eq(1).html(),
+            type: type
+        };
+
+        downlaodByPostAction(exportUrl, geoLocationParams);
+    }
+
+</script>

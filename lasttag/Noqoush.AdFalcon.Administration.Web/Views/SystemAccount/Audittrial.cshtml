@@ -1,0 +1,248 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.User.ListViewModel
+@{
+    ViewBag.Title = "Audittrial";
+
+}
+
+<script language="javascript">
+    $(document).ready(function () {
+
+        localInitilizeDateCaleander();
+        localInitilize_AuditTrialSessions();
+
+    });
+    var urlSessions = '@Url.Action("AuditTrialSessions", "SystemAccount")';
+    function ShowSessionsForThisObject(element) {
+        var tr = $(element).parents('tr');
+
+        var RootId = ($(tr.find("td"))[0]).innerText;
+        var UserId = ($(tr.find("td"))[1]).innerText;
+        var ObjectRootTypeId = ($(tr.find("td"))[2]).innerText;
+
+        showDialog('party-search-dialog-form');
+        refreshPartyGrid(RootId, UserId, ObjectRootTypeId);
+    }
+    function localInitilizeDateCaleander() {
+        jQuery('input[data-date="true"]')
+            .daterangepicker({ dateFormat: '@Noqoush.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat' });
+    };
+
+    function refreshPartyGrid(RootId, UserId, ObjectRootTypeId) {
+        
+        queryString = "objectRootId=" + RootId + "&objectRootTypeId=" + ObjectRootTypeId + "&UserId=" + UserId;
+        $.ajax(
+           {
+               url: urlSessions + "?" + queryString,
+               cache: false,
+               success: function (html) {
+                   
+                   //
+                   html = html.toString();
+                   $("#party-search-dialog-form").html('');
+                   var newelem = jQuery(html);
+                   $("#party-search-dialog-form").append(newelem);
+                   parseScript(html);
+                   initilize();
+                   //generateAuditTrialSessionsGrid();
+                   //$("#SearchParty").show();
+
+               },
+               error: function (error) {
+                   
+               }
+           });
+    }
+
+    function localInitilize_AuditTrialSessions() {
+
+
+        jQuery("#party-search-dialog-form").dialog({
+            autoOpen: false,
+            //height: 450,
+            title: '@Html.GetResource("LookupSearch", "Global")',
+            width: 650,
+            // position: { my: "top top", at: "top top", of: target },
+            modal: true,
+            resizable: true,
+            draggable: false,
+            open: function () {
+
+
+
+            },
+            close: function () {
+
+
+                // GridReset();
+
+            }
+        });
+
+        jQuery("#DetailsDialog").dialog({
+            autoOpen: false,
+            //height: 450,
+            title: '@Html.GetResource("LookupSearch", "Global")',
+            width: 650,
+            // position: { my: "top top", at: "top top", of: target },
+            modal: true,
+            resizable: true,
+            draggable: false,
+            open: function () {
+
+
+
+            },
+            close: function () {
+
+
+                // GridReset();
+
+            }
+        });
+    }
+
+
+    function AuditTrailDataBinding(args) {
+
+        args.data = $.extend(args.data,
+            {
+                FromDate: $('#FromDate').val(),
+                ToDate: $('#ToDate').val(),
+                ObjectType: $('#ObjectType').val()
+            });
+
+    };
+
+
+    function PartyGridDataBinding() {
+        args.data = $.extend(args.data,
+       {
+           FromDate: $('#LookUpGrid-FromDate').val(),
+           ToDate: $('#LookUpGrid-ToDate').val()
+       });
+
+    }
+
+    function PartyGridDataBound(e) {
+
+        var grid = $("#LookUpGrid").data("LookUpGrid");
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(1);
+        }
+    };
+
+
+    function AuditTrailGridDataBound(e) {
+
+        var grid = $("#Grid").data("tGrid");
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(1);
+        }
+    };
+
+    function generateAudittrialGrid(name) {
+        var grid = $("#" + name).data("tGrid");
+        grid.rebind();
+    };
+
+    function showXML(Details) {
+        
+        debugger;
+        $("#DetailsDialog").find("#Details").text(Details);
+
+        showDialog('DetailsDialog');
+
+    }
+
+</script>
+
+<br />
+@using (Html.BeginForm())
+{
+    <div class="data-row go-center">
+        <div class="blue-filter-container" style="height: 200px;">
+            <table class="special-content">
+                <tr>
+                    <td>
+                        <span class="go-bold">@Html.GetResource("From", "Global")</span>
+                    </td>
+                    <td style="width: 110px;">
+                        <input type="text" readonly="readonly" value="" data-date="true" name="FromDate" id="FromDate"
+                               class="text-box range-date-cntl" />
+                    </td>
+                    <td>
+                        <span class="go-bold">@Html.GetResource("To", "Global")</span>
+                    </td>
+                    <td style="width: 110px;">
+                        <input type="text" readonly="readonly" value="" data-date="true" name="ToDate" id="ToDate"
+                               class="text-box range-date-cntl left-range-cntrl" />
+                    </td>
+
+                    <td>
+                        <span class="go-bold">@Html.GetResource("To", "Global")</span>
+                    </td>
+                    <td style="width: 110px;">
+                        <span class="cost-model-container">@Html.AdFalconDropDownList("ObjectType", Model.ObjectTypes)</span>
+
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <td class="go-center" colspan="5">
+                        <input type="button" onclick="generateAudittrialGrid('Grid')" value='@Html.GetResource("Filter")' class="btn filter-button " />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="tail">
+        </div>
+    </div>
+
+    <br />
+
+    @(Html.Telerik().Grid(Model.Items)
+                            .Name("Grid")
+                            .Columns(columns =>
+                            {
+                            columns.Bound(o => o.RootId).Title("RootId").Hidden();
+                            columns.Bound(o => o.UserId).Title("UserId").Hidden();
+                            columns.Bound(o => o.ObjectRootTypeId).Title("ObjectRootTypeId").Hidden();
+                            columns.Bound(o => o.Type).Title(Html.GetResource("Type", "AppSite")).Width("40px");
+                            columns.Bound(o => o.Name).Title("Name").Width("100px");
+                            columns.Template(@<text>
+            <button type='button' onclick='ShowSessionsForThisObject(this)' class='btncustom btncustom-default'> <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span></button></text>)
+                                .ClientTemplate("<button type='button' onclick='ShowSessionsForThisObject(this)' class='btncustom btncustom-default'> <span class='glyphicon glyphicon-info-sign' aria-hidden='true'></span></button>").Width(40).HtmlAttributes(new { @class = "go-center" });
+
+                            })
+
+        .DataBinding(dataBinding =>
+        {
+            dataBinding.Server().Select("Audittrial", "SystemAccount", new { ajax = true });
+            dataBinding.Ajax().Select("_Audittrial", "SystemAccount");
+
+        }).EnableCustomBinding(true)
+         .ClientEvents(clientEvents => clientEvents.OnDataBinding("AuditTrailDataBinding").OnDataBound("AuditTrailGridDataBound").OnRowDataBound("onRowDataBound"))
+        .Scrollable(scrolling => scrolling.Enabled(false))
+        .Selectable()
+        .Pageable(paging => paging.PageSize(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total(int.Parse(ViewData["total"].ToString())).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+        .Filterable(filtering => filtering.Enabled(false))
+        .Groupable(grouping => grouping.Enabled(true)).Footer(true))
+
+}
+
+
+
+<div id="party-search-dialog-form" title="@Html.GetResource("PartySearch", "Party")" style="display: none; ">
+
+</div>
+
+<div id="DetailsDialog" title="DetailsDialog" style="display: none; ">
+    <span id="Details"></span>
+</div>
+
+<br>

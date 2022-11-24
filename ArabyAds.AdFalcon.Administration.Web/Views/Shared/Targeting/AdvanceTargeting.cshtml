@@ -1,0 +1,144 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.TargetingViewModel
+
+
+<script>
+	function AdPositionTargeting_OnChange(elem, value) {
+
+		if ($('#AdPosition_Enabled').attr('checked') == 'checked') {
+
+			//radioBox($("#FeeCalculatedFromSystem").parent().parent());
+			$("#AdPosition_AboveTheFold.check-box").removeAttr('disabled');
+
+			$("#AboveFoldAdPositionTargetingDiv").removeAttr('disabled');
+
+
+			$("#AdPosition_BelowTheFold.check-box").removeAttr('disabled');
+
+			$("#BelowFoldAdPositionTargetingDiv").removeAttr('disabled');
+
+			$("#AdPosition_Unknown.check-box").removeAttr('disabled');
+
+			$("#UnkownAdPositionTargetingDiv").removeAttr('disabled');
+
+
+			check("AdPosition_AboveTheFold");
+			check("AdPosition_BelowTheFold");
+			check("AdPosition_Unknown");
+		}
+		else {
+			uncheck("AdPosition_AboveTheFold");
+
+			uncheck("AdPosition_BelowTheFold");
+			uncheck("AdPosition_Unknown");
+
+			$("#AboveFoldAdPositionTargetingDiv").attr('disabled', 'disabled');
+			$("#AdPosition_AboveTheFold.check-box").attr('disabled', 'disabled');
+			$("#BelowFoldAdPositionTargetingDiv").attr('disabled', 'disabled');
+			$("#AdPosition_BelowTheFold.check-box").attr('disabled', 'disabled');
+			$("#UnkownAdPositionTargetingDiv").attr('disabled', 'disabled');
+			$("#AdPosition_Unknown.check-box").attr('disabled', 'disabled');
+
+
+
+
+		}
+
+
+
+
+	}
+
+
+</script>
+<div class="data-row section-container">
+
+	<div class="row">
+		<div class="col-sm-5">
+			<div class="videoTargeting">
+				<div style="padding-bottom:20px">
+					@Html.GetCheckBox("AdPosition_Enabled", Html.GetResource("PagePostion", "Targeting"), Model.AdPosition_Enabled, onChange: "AdPositionTargeting_OnChange", divid: "AdPositionTargeintgDiv")
+					<div class="floating-left" style="width: 70px;">
+						@Html.Partial("MoreInfo", "PagePositionTargeting", new ViewDataDictionary { { "Class_Tail", "tail-report" }, { "Style2", "float:none;border-top:none" } })
+
+
+					</div>
+					@*<div class="floating-left" style="width: 70px;">
+							@Html.Partial("MoreInfo", "HTML5ToolTip", new ViewDataDictionary { { "Class_Tail", "tail-report" }, { "Style2", "float:none;" } })
+
+
+						</div>*@
+				</div>
+
+
+
+				<div id="AdPostingTargeint" class="container">
+
+					<div class="data-row section-container">
+						<div class="data-row data-container">
+
+							<div class="field-container">
+
+								@Html.GetCheckBox("AdPosition_AboveTheFold", Html.GetResource("AboveFold", "Targeting"), Model.AdPosition_AboveTheFold, onChange: "", disabled: Model.AdPosition_Enabled == false, divid: "AboveFoldAdPositionTargetingDiv")
+								@Html.GetCheckBox("AdPosition_BelowTheFold", Html.GetResource("BelowFold", "Targeting"), Model.AdPosition_BelowTheFold, onChange: "", disabled: Model.AdPosition_Enabled == false, divid: "BelowFoldAdPositionTargetingDiv")
+								@Html.GetCheckBox("AdPosition_Unknown", Html.GetResource("unkown", "Targeting"), Model.AdPosition_Unknown, onChange: "", disabled: Model.AdPosition_Enabled == false, divid: "UnkownAdPositionTargetingDiv")
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+
+			</div>
+		</div>
+
+
+	</div>
+
+
+
+
+
+	@if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.IsAdmin)
+	{<text>
+			<div class="row">
+				<div class="col-sm-7 col-sm-pull-1">
+
+				
+
+
+					<div class="data-row data-container" style="margin-right:16px;margin-left:16px">
+						<div class="label-container">
+							<span class="field-title required-field">Viewability Vendor</span>
+						</div>
+						<div class="field-container">
+							<span class="cost-model-container">	@Html.DropDownList("ViewabilityVendorId", Model.MetricVendors)</span>
+						</div>
+					</div>
+
+
+				</div>
+
+
+			</div>
+
+	</text>
+}
+
+else
+
+{
+	<text>
+
+		@Html.HiddenFor(p => p.ViewabilityVendorId)
+	</text>
+}
+
+
+</div>
+
+
+
+
+
+

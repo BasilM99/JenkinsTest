@@ -1,0 +1,87 @@
+﻿@model IEnumerable<Noqoush.AdFalcon.Web.Controllers.Model.Action>
+<div class="iea-gide-tool-tip">
+    <div id="gridToolTip" class="grid-tool-tip-container" style="display: none; visibility:visible;">
+        @foreach (var action in Model)
+		{
+			if (action == null)
+			{ continue; }
+
+			if (action.Type!=null && action.Type == Noqoush.AdFalcon.Web.Controllers.Model.ActionType.ajax)
+			{
+				if (action.AjaxType == null || action.AjaxType == Noqoush.AdFalcon.Web.Controllers.Model.AjaxType.clone)
+				{
+
+				<a customtype="GridToolTip" valitem="0" no-href="true" basicurl="@Url.Action(action.ActionName, action.ControllerName, new { id = action.ExtraPrams, adGroupId = action.ExtraPrams2 })" href="javascript:void(0)" onclick="callService(this,'@action.CallBack')" class="@action.ClassName" type="@action.AjaxType">@action.DisplayText</a>
+                <br />}
+        else if (action.AjaxType == null || action.AjaxType == Noqoush.AdFalcon.Web.Controllers.Model.AjaxType.rename)
+        {
+            <a customtype="GridToolTip"  valitem="0" no-href="true" basicurl="@Url.Action(action.ActionName, action.ControllerName, new { id = action.ExtraPrams, adGroupId = action.ExtraPrams2 })" href="javascript:void(0)" onclick="callService(this,'@action.CallBack')" class="@action.ClassName" type="@action.AjaxType">@action.DisplayText</a>
+            <br />}
+    else if (action.AjaxType == null || action.AjaxType == Noqoush.AdFalcon.Web.Controllers.Model.AjaxType.Download)
+    {
+        <a customtype="GridToolTip" download="DownloadDoc" no-href="true" basicurl="@Url.Action(action.ActionName, action.ControllerName, new { id = action.ExtraPrams })" href="javascript:void(0)" onclick="callServiceDownload(this,'@action.CallBack')" class="@action.ClassName" type="@action.AjaxType">@action.DisplayText</a>
+        <br />
+}
+}
+else
+{
+if (!string.IsNullOrWhiteSpace(action.URL))
+{
+    <a customtype="GridToolTip" basicurl="@action.URL" class="@action.ClassName">@action.DisplayText</a>
+    <br />
+}
+else
+{
+
+if (action.ExtraPrams2 == null)
+{
+    if (action.ExtraPrams3 == "ad" || action.ExtraPrams3 == "app")
+    {
+        @*<a customtype="GridToolTip" basicurl="@Url.Action(action.ActionName, action.ControllerName, new { reportType = action.ExtraPrams3,id = action.ExtraPrams })" class="@action.ClassName">@action.DisplayText</a>*@
+        <a customtype="GridToolTip" basicurl="@Url.Action("index", "Reports")?Action=scm&reportType=@action.ExtraPrams3" class="@action.ClassName">@action.DisplayText</a>
+        <br />
+}
+else if (action.ExtraPrams3 == "Partner")
+{
+
+    <a customtype="GridToolTip" valitem="0" basicurl="@Url.Action(action.ActionName, action.ControllerName, new { id = action.ExtraPrams })" no-href="true" class="@action.ClassName" href="#" onclick="return onEntityChange('' ); return false;">@action.DisplayText</a>
+    <br />
+}
+else if (action.ExtraPrams == "AccountAdvertisers")
+{
+    <a customtype="GridToolTip" basicurl="@Url.Action(action.ActionName, action.ControllerName)" type="AccountAdvertisers" class="@action.ClassName">@action.DisplayText</a>
+    <br />
+}
+else if (action.ExtraPrams == "unArchive")
+{
+    <a customtype="GridToolTip" basicurl="@Url.Action(action.ActionName, action.ControllerName)" type="unArchive" class="@action.ClassName">@action.DisplayText</a>
+    <br />
+}
+else
+{
+
+
+    <a customtype="GridToolTip" basicurl="@Url.Action(action.ActionName, action.ControllerName, new { id = action.ExtraPrams })" class="@action.ClassName">@action.DisplayText</a>
+}
+}
+else
+{
+if (action.ControllerName == "Dashboard")
+{
+    <a customtype="GridToolTip" basicurl="@Url.Action(action.ActionName, action.ControllerName)" type="dashboard" class="@action.ClassName">@action.DisplayText</a>
+    <br />
+
+}
+else
+{
+    <a customtype="GridToolTip" basicurl="@Url.Action(action.ActionName, action.ControllerName, new { id = action.ExtraPrams, adGroupId = action.ExtraPrams2 })" class="@action.ClassName">@action.DisplayText</a>
+    <br />
+
+}
+}
+}
+}
+}
+    </div>
+</div>
+<!--<div id="gridToolTip" class="grid-tool-tip-container" style="display: none;">sad</div>-->

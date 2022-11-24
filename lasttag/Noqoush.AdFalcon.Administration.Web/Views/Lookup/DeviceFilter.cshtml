@@ -1,0 +1,47 @@
+﻿@model Noqoush.AdFalcon.Administration.Web.Controllers.Model.Lookup.DeviceListViewModel
+<script type="text/javascript" language="javascript">
+    function getCustomFilter() {
+        return {
+            platformId: $('#platformId').val(),
+            manufacturerId: $('#manufacturerId').val()
+        };
+    }
+
+</script>
+<div class="data-row go-center">
+    <div class="blue-filter-container" style="height: 135px;">
+        <table class="special-content">
+            <tr>
+                <td>
+                    <span class="go-bold">@Html.GetResource("Name", "Lookup")</span>
+                </td>
+                <td style="width: 110px;">
+                    @Html.AdFalconTextBoxFor(m => m.Name)
+                </td>
+                <tr>
+                    <td>
+                        <span class="go-bold">@Html.GetResource("Manufacturer", "Lookup")</span>
+                    </td>
+                    <td style="width: 110px;">
+                        @Html.AdFalconDropDownList("manufacturerId", Model.Manufacturers, new { style ="width:300px;"})
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="go-bold">@Html.GetResource("Platform", "Lookup")</span>
+                    </td>
+                    <td style="width: 110px;">
+                        @Html.AdFalconDropDownList("platformId", Model.Platforms, new { style = "width:300px;" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="button" onclick="generateLookupGrid()"  value='@Html.GetResource("Filter")' class="btn filter-button " />
+                    </td>
+                </tr>
+            </tr>
+        </table>
+    </div>
+    <div class="tail">
+    </div>
+</div>

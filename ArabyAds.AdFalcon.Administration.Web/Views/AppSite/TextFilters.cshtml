@@ -1,0 +1,276 @@
+﻿@model IEnumerable<ArabyAds.AdFalcon.Services.Interfaces.DTOs.AppSite.TextFilterDto>
+@{
+
+
+    ArabyAds.AdFalcon.Services.Interfaces.Services.Core.IMatchTypeService matchTypeService = ArabyAds.Framework.IoC.Instance.Resolve<ArabyAds.AdFalcon.Services.Interfaces.Services.Core.IMatchTypeService>();
+    SelectList selecList = new SelectList(matchTypeService.GetAll(), "Id", "Name");
+}
+<script language="javascript" type="text/javascript">
+
+    var TextVal;
+    var matchtypeidVal;
+    var TextFilterIdVal;
+    var ActionNameVal;
+    var MatchTypeText;
+    var yesbtn = "@Html.GetResource("Yes", "Global")";
+    var nobtn = "@Html.GetResource("No", "Global")";
+    var Confirmation = "@Html.GetResource("ProceedMsg", "Global")";
+    var ConfriamtionBoxTitle = "@Html.GetResource("Confirm")";
+    var FiltersActionurl = "@Url.Action("Filters", "AppSite")";
+    var TextFiltersActionsUrl = "@Url.Action("TextFiltersActions", "AppSite")";
+    var GetTextFilterUrl = "@Url.Action("GetTextFilter", "AppSite")";
+    var TextValFromAction;
+
+    $(document).ready(function () {
+        var Message = "@(ViewBag.Message)";
+        var Type = "@(ViewBag.kind)";
+
+        if (Message != "") {
+
+            if (Type == "Successful")
+                showSuccessfullyMessage(Message, false);
+            else
+                showErrorMessage(Message, false);
+        }
+        $("#displayURLRequiredMsg").hide();
+    });
+    function checkText() {
+        var e = $("#Text");
+        var text = $(e).val();
+        if (text == "") {
+            $("#displayURLRequiredMsg").show();
+            return false;
+        } else {
+            $("#displayURLRequiredMsg").hide();
+
+        }
+        return true;
+    }
+    function TextFiltersDialog(TextFilterId, Text, ActionName, MatchTypeId, MatchTypeText) {
+        var sendData = new Object();
+        sendData.AppSiteId = $("#AppSiteId").val();
+        sendData.actionName = ActionName;
+        sendData.textFilterDto = new Object();
+        sendData.textFilterDto.TextFilterId = TextFilterId
+        sendData.textFilterDto.Text = Text;
+        sendData.textFilterDto.MatchTypeText = MatchTypeText;
+        sendData.textFilterDto.MatchTypeId = MatchTypeId;
+        if (ActionName == "delete") {
+            sendData.textFilterDto.Text = TextValFromAction;
+            $('<div id ="ConfirmationDialog" title="' + ConfriamtionBoxTitle + '"></div>').dialog({
+
+                open: function (event, ui) {
+                    $(this).html(Confirmation);
+                },
+                close: function () {
+                    $(this).remove();
+                },
+                resizable: false,
+                draggabe: false,
+                showCloseButton:false,
+                //height: 140,
+                modal: true,
+                buttons: [
+           {
+               text: yesbtn,
+               click: function () { $(this).dialog("close"); CallTextFiltersActions(sendData); }
+           },
+           {
+               text: nobtn,
+               click: function () { $(this).dialog('close'); }
+           }
+                ]
+
+
+
+            });
+
+          
+        } else {
+            CallTextFiltersActions(sendData);
+        }
+
+    }
+
+
+    function CallTextFiltersActions(sendData) {
+
+        prams = $.toJSON(sendData);
+        $.ajax({
+            url: TextFiltersActionsUrl,
+
+            dataType: "text json",
+            contentType: 'application/json; charset=utf-8',
+            type: "POST",
+            data: prams,
+
+            success: function (data) {
+
+                window.location = FiltersActionurl + "/" + $("#AppSiteId").val() + "?Type=1" + "&Message=" + data.Message + "&Kind=" + data.Kind;
+
+            },
+
+            error: function (error) { }
+
+        });
+    }
+
+
+    function GetName(ID) {
+        if (ID != "") {
+            prams = $.toJSON(ID);
+            $.ajax({
+                url: GetTextFilterUrl + "?appsiteId=" + $("#AppSiteId").val() + "&filterID=" + ID,
+                dataType: "text json",
+                contentType: 'application/json; charset=utf-8',
+                type: "POST",
+                data: prams,
+                success: function (data) {
+
+                    $("#party-add-dialog-form").find("#Text").val(data.text);
+                    TextValFromAction = data.text;
+                },
+
+                error: function (error) { }
+
+            });
+        }
+    }
+
+
+    function EditAddFilter(TextFilterId, Text, ActionName, MatchTypeId, MatchTypeText) {
+        $("#displayURLRequiredMsg").hide();
+
+        GetName(TextFilterId);
+        Text = TextValFromAction;
+        CommoDialogInitilize();
+        InitilizeSaveButton();
+        TextFilterIdVal = TextFilterId;
+        ActionNameVal = ActionName;
+        showDialog('party-add-dialog-form');
+        $("#party-add-dialog-form").find('form').bind('keypress', function (e) {
+            if (e.keyCode == 13) {
+
+                $("#SaveButton").click();
+                return false;
+            }
+        });
+    }
+
+
+    function collect() {
+
+        TextVal = $("#party-add-dialog-form").find("#Text").val();
+        MatchTypeText = $("#list option:selected").text();
+        MatchTypeId = $("#list option:selected").val();
+        if (checkText())
+        TextFiltersDialog(TextFilterIdVal, TextVal, ActionNameVal, MatchTypeId, MatchTypeText);
+
+    }
+
+
+</script>
+
+<div class="ad-filter-text iea-go-right go-left floating-left">
+    <h3>
+        @Html.GetResource("Header", "TextFilter")
+    </h3>
+    @Html.Raw(Html.GetResource("Content", "TextFilter"))
+</div>
+<div class="go-left " style="width:40%">
+    @*<h3>@Html.GetResource("CostElements", "Titles")</h3>*@
+
+    <a class="primary-btn" href="javascript:void(0)" onclick="EditAddFilter('', '', 'insert', '', '')">@Html.GetResource("Add", "Keywords")</a>
+    <br />
+    <br />
+</div>
+<div class="ad-filter-data go-left floating-left"  >
+    @(Html.Telerik().Grid(Model)
+                        .Name("Grid")
+                    .DataKeys(p => p.Add(o => o.TextFilterId))
+                    .DataBinding(dataBinding =>
+                    {
+
+                        //dataBinding.Ajax().Insert("textfiltersactions", "appsite", new { actionName = "insert" });
+                    })
+                    //.ToolBar(commands => commands.Position(GridToolBarPosition.Top).Template("<a class='t-button t-button-icon t-button-bare t-grid-add' onclick=EditAddFilter('','','insert','','')><span class='t-icon t-add'></span></a> "))
+
+                    .Columns(columns =>
+                    {
+                        columns.Bound(o => o.Text).Sortable(false).Title(Html.GetResource("MatchTypeText", "TextFilters")).HtmlAttributes(new { @style = "max-width: 200px;" })
+                        .Template(
+                        @<text>
+
+                            <div class="grid-title-container floating-left">
+                                <span class='trimed-span' title='@item.Text'>
+
+                                    @item.Text
+                                </span>
+                            </div>
+
+                        </text>
+                            );
+                        columns.Bound(o => o.MatchTypeText).Width(180).Sortable(false).Title(Html.GetResource("MatchTypeDropDownList", "TextFilters"));
+                        columns.Template(x => " <div style='width:50px;  margin-right:10px; float:left;'> <div><a class='t-button t-button-icon t-button-bare t-grid-delete' style='float: left; margin-right: 5px' onclick=TextFiltersDialog('" + (x.TextFilterId.ToString()) + "','" + ""
+                            + "','" + "delete" + "','" + x.MatchTypeId + "','" + x.MatchTypeText + "')><span class='t-icon t-delete'></span></a></div> <div><a class='t-button t-grid-edit t-button-icon t-button-icon t-button-bare' style='float: left; margin-right: 5px' onclick=EditAddFilter('"
+                            + (x.TextFilterId.ToString()) + "','"
+                            + "" + "','update','" + x.MatchTypeId + "','" + x.MatchTypeText + "')><span class='t-icon t-edit'></span></a></div> </div>");
+
+                    })
+
+                                                                        .EnableCustomBinding(true)
+                                                                        .Sortable(sorting => sorting.Enabled(false))
+                                                                        .Scrollable(scrolling => scrolling.Enabled(false))
+                                                                        .Footer(false).ClientEvents(events => events.OnError("textFilterOperationError")))
+</div>
+
+<div id="party-add-dialog-form" class="adfalcon-dialog" title="@Html.GetResource("FromHeader", "TextFilters")" style="display: none; ">
+    @using (Html.BeginForm())
+    {
+        <div id="entityDetails" class="data-row data-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("MatchTypeText", "TextFilters")</span>
+                </div>
+                <div class="field-container">
+                    <input class="required text-box valid" id="Text" name="Text" type="text" onchange="checkText()">
+                </div>
+                <span id="displayURLRequiredMsg" class="validation-arrow field-validation-error"><span class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span></span>
+
+              </div>
+
+
+            @*<input id="matchtypeidVal" name="Text" type="text" style="display:none">*@
+
+
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("MatchTypeDropDownList", "TextFilters")</span>
+                </div>
+                <div class="field-container">
+                    <div class="field-container">
+                        @Html.DropDownList("list", selecList)
+                    </div>
+                </div>
+            </div>
+
+            @*<div class="data-row button-container">
+                <input type="button" value='@Html.GetResource("Save", "Commands")' style="float: right;" class="primary-btn" onclick="collect()" id="SaveButton">
+            </div>*@
+        </div>
+    }
+
+</div>
+
+<script type="text/javascript">
+    function textFilterOperationError(e) {
+        if (e.XMLHttpRequest.status == "0") {
+            clearErrorMessage();
+            showErrorMessage(e.XMLHttpRequest.responseText);
+            e.preventDefault();
+        }
+        if (e.XMLHttpRequest.status == "500") {
+            e.preventDefault();
+        }
+    }
+</script>

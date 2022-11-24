@@ -1,0 +1,129 @@
+﻿@model  Noqoush.AdFalcon.Web.Controllers.Model.Campaign.CreativeViewModel
+<script type="text/javascript" language="javascript">
+
+    function ValidateAdAction() {
+        var returnvalue = true;
+        //check if display url is empty
+        var val = jQuery('#AdCreativeDto_AdActionValue_Value2').val();
+        var adTypeIdElem = $('#AdTypeId');
+        var value = $('#AdType').val();
+
+        if (!hasValue(value)) {
+            value = $('input[name=AdType][checked]').val();
+        }
+        if (value == "TextCreative" || adTypeIdElem.val()==2) {
+            if ((val == null) || $.trim(val) == '') {
+                returnvalue = false;
+            }
+        }
+
+        var temp = ValidateUrl(jQuery('#AdCreativeDto_AdActionValue_Value'));
+        var temp1 = ValidateUrl($('#AdCreativeDto_AdActionValue_Value2'));
+
+        return returnvalue && temp && temp1;
+    };
+    var validateRM_AdAction = ValidateAdAction;
+    function OnUrlChange(type) {
+        if (type == "Value") {
+            ValidateUrl(jQuery('#AdCreativeDto_AdActionValue_Value'), "displayURLErrorMsg");
+        } else {
+            ValidateUrl($('#AdCreativeDto_AdActionValue_Value2'), 'displayURLErrorMsg2');
+        }
+        ShowUrlsErrorsByType(type);
+    }
+
+
+
+    function ShowUrlsErrorsByType(type) {
+        if (type == "Value") {
+            if (jQuery('#AdCreativeDto_AdActionValue_Value').val() == "") {
+                $("#displayURLRequiredMsg").show();
+            } else {
+                $("#displayURLRequiredMsg").hide();
+
+            }
+        }
+
+        else {
+            var adTypeIdElem = $('#AdTypeId');
+            var value = $('#AdType').val();
+
+            if (!hasValue(value)) {
+                value = $('input[name=AdType][checked]').val();
+            }
+            if (value == "TextCreative" || adTypeIdElem.val() == 2) {
+                if (jQuery('#AdCreativeDto_AdActionValue_Value2').val() == "") {
+                    $("#displayURLRequiredMsg2").show();
+                } else {
+                    $("#displayURLRequiredMsg2").hide();
+
+                }
+            }
+            else {
+
+                $("#displayURLRequiredMsg2").hide();
+            }
+
+
+        }
+    }
+
+    function ShowUrlsErrors() {
+        if (jQuery('#AdCreativeDto_AdActionValue_Value').val() == "") {
+            $("#displayURLRequiredMsg").show();
+        } else {
+            $("#displayURLRequiredMsg").hide();
+
+        }
+
+        var adTypeIdElem = $('#AdTypeId');
+        var value = $('#AdType').val();
+
+        if (!hasValue(value)) {
+            value = $('input[name=AdType][checked]').val();
+        }
+        if (value == "TextCreative" || adTypeIdElem.val() == 2) {
+            if (jQuery('#AdCreativeDto_AdActionValue_Value2').val() == "") {
+                $("#displayURLRequiredMsg2").show();
+            } else {
+                $("#displayURLRequiredMsg2").hide();
+
+            }
+        }
+        else {
+            $("#displayURLRequiredMsg2").hide();
+
+        }
+    }
+
+</script>
+<div id="urls">
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("CTAURL")</span>
+        </div>
+        <div class="field-container">
+            @Html.AdFalconTextBoxFor(p => p.AdCreativeDto.AdActionValue.Value, new { @class = "url", @onchange = "OnUrlChange('Value')", @onkeypress = "ShowUrlsErrorsByType('Value')" })
+            <span id="displayURLRequiredMsg" class="validation-arrow field-validation-error"
+                  style="display: none;"><span class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span></span>
+                <span id="displayURLErrorMsg" class="validation-arrow field-validation-error"
+                      style="display: none;"><span class="">@Html.GetResource("UrlMsg")</span></span>
+                </div>
+            </div>
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title" id="DisplayURLSPan">@Html.GetResource("DisplayURL")</span>
+                </div>
+                <div class="field-container">
+                    @Html.AdFalconTextBoxFor(p => p.AdCreativeDto.AdActionValue.Value2, new { @onchange = "OnUrlChange('Value2')", @onkeypress = "ShowUrlsErrorsByType('Value2')" })
+
+
+                    <span id="displayURLRequiredMsg2" class="validation-arrow field-validation-error"
+                          style="display: none;"><span class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span></span>
+
+                        <span id="displayURLErrorMsg2" class="validation-arrow field-validation-error"
+                              style="display: none;"><span class="">@Html.GetResource("UrlMsg")</span></span>
+                        </div>
+                    </div>
+                    @Html.Partial("AdAction/AdActionValueTracker/Tracker", Model)
+                </div>

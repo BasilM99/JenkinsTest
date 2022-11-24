@@ -1,0 +1,97 @@
+﻿@*<div class="data-row tab-container go-left">
+        <a href="javascript:void(0)" tabindex="0" onclick="changeTab(this);" class="first-tab selected tab-padding">@Html.GetResource("Keywords", "Campaign")</a>
+        <a href="javascript:void(0)" tabindex="1" onclick="changeTab(this);" class="tab-padding">@Html.GetResource("DeviceTargeting", "Campaign")</a>
+        <a href="javascript:void(0)" tabindex="2" onclick="changeTab(this);" class="tab-padding">@Html.GetResource("Geographic", "Campaign")</a>
+        <a href="javascript:void(0)" tabindex="3" onclick="changeTab(this);" class="tab-padding">@Html.GetResource("NetworkAndOperators", "Campaign")</a>
+        <a href="javascript:void(0)" tabindex="4" onclick="changeTab(this);" class="tab-padding">@Html.GetResource("Demographics", "Campaign")</a>
+        <a href="javascript:void(0)" tabindex="6" onclick="changeTab(this);" class="last-link-container tab-padding">@Html.GetResource("Bid", "Campaign")</a>
+        @if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsShowAdminSection)
+        {
+            <a href="javascript:void(0)" tabindex="7" onclick="changeTab(this);" class="last-link-container tab-padding">@Html.GetResource("CostElements", "Titles")</a>
+        }
+    </div>*@
+
+<div class="go-left" style="width:13%;height:100%;padding:0px;position:absolute;">
+    @*<div class="panel-heading" style="width:10%">*@
+
+	<ul class="nav nav-tabs tabs-left  " style="padding-top:5px;height:100%; width:100%; font-size: 11px !important;">
+		@{
+			/**/
+
+
+			if (ViewBag.InventorySourcesAllowed)
+			{
+				<text>
+					<li class="active mainmenueli  tab01"><a tabindex="21" onclick="changeTab(this);" href="#InventorySourcesSection" data-toggle="tab">@Html.GetResource("InventorySource", "SSPDealCampaign")</a></li>
+					@if (ViewBag.PMPDealAllowed)
+					{
+						<text>
+							<li class="mainmenueli tab12"><a tabindex="20" onclick="changeTab(this);" href="#PMPDealSection" data-toggle="tab">@Html.GetResource("PMPDeals", "PMPDeal")</a></li>
+						</text>
+					}
+					<li class="mainmenueli tab02"><a href="#keywordSection" tabindex="0" onclick="changeTab(this);" data-toggle="tab">@Html.GetResource("General", "Global")</a></li>
+				</text>
+
+			}
+			else
+			{
+				if (ViewBag.PMPDealAllowed)
+				{
+					<text>
+						<li class="mainmenueli tab12"><a tabindex="20" onclick="changeTab(this);" href="#PMPDealSection" data-toggle="tab">@Html.GetResource("PMPDeals", "PMPDeal")</a></li>
+					</text>
+				}
+
+				<text>
+
+					<li class="active mainmenueli tab02"><a href="#keywordSection" tabindex="0" onclick="changeTab(this);" data-toggle="tab">@Html.GetResource("General", "Global")</a></li>
+				</text>
+			}
+
+			<li class="mainmenueli tab03"><a href="#deviceSection" tabindex="1" onclick="changeTab(this);" data-toggle="tab">@Html.GetResource("DeviceTargeting", "Campaign")</a></li>
+
+			@*<li class="mainmenueli tab04"><a href="#geographicSection" tabindex="2" onclick="changeTab(this);" data-toggle="tab">@Html.GetResource("Geographic", "Campaign")</a></li>
+			<li class="mainmenueli tab05"><a href="#operatersSection" tabindex="3" onclick="changeTab(this);" data-toggle="tab">@Html.GetResource("NetworkAndOperators", "Campaign")</a></li>
+			<li class="mainmenueli tab06"><a href="#demographicSection" tabindex="4" onclick="changeTab(this);" data-toggle="tab">@Html.GetResource("Demographics", "Campaign")</a></li>*@
+
+
+			<li class="mainmenueli tab08"><a href="#bidSection" tabindex="6" onclick="changeTab(this);" data-toggle="tab">@Html.GetResource("BudgetAndBid", "Global")</a></li>
+			<li id="ConversionSubItemMenu" class="mainmenueli tab16"><a tabindex="26" onclick="changeTab(this);" href="#ConversionsAndEventsSection" data-toggle="tab">Events & Conversions</a></li>
+
+			if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsShowAdminSection)
+			{
+				<li class="mainmenueli tab09"><a tabindex="7" onclick="changeTab(this);" href="#costElemtnsSection" data-toggle="tab">@Html.GetResource("CostElements", "Titles")</a></li>
+
+			}
+
+
+
+
+
+			if (ViewBag.AudienceAllowed )
+			{
+				<text>
+					<li id="AudienceSegmentSubItemMenu" class="disabledCustom mainmenueli tab13"><a tabindex="22" onclick="changeTab(this);" href="#AudienceSegmentSection" data-toggle="tab">@Html.GetResource("Audiance", "Audiances")</a></li>
+				</text>
+			}
+
+
+			if ((Noqoush.Framework.OperationContext.Current.UserInfo
+		<Noqoush.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+		  ().AccountRole == (int)Noqoush.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP) || Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsAdOpsAdmin)
+			{
+				<li class="tab14"><a tabindex="14" onclick="changeTab(this);" href="#ImpressionMetricsSection" data-toggle="tab">@Html.GetResource("ImpressionMetric", "Campaign")</a></li>
+			}
+
+
+			if (ViewBag.IsVideoActionType)
+			{
+				<text>
+					<li class="mainmenueli tab15"><a tabindex="25" onclick="changeTab(this);" href="#VideoSection" data-toggle="tab">@Html.GetResource("VideoTargeting", "Targeting")</a></li>
+				</text>
+			}
+		}
+
+	</ul>
+
+</div>

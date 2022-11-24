@@ -1,0 +1,14 @@
+﻿@model IList<Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeUnitDto> 
+@foreach (var adCreativeUnit in Model)
+{
+     <div class="data-row info-container last-container">
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field reverse-link">@(adCreativeUnit.Name)</span>
+            </div>
+            <div class="field-container">
+               @adCreativeUnit.Content
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,724 @@
+﻿@using Noqoush.AdFalcon.Web.Controllers.Utilities;
+<script type="text/javascript" language="javascript">
+    function changeCappingStatus(radioButtonName) {
+        var radioButton = $("[name='" + radioButtonName + "']");
+        var divContainer = $("[name='" + radioButtonName + "container']");
+        radioBox(divContainer.get(1));
+    }
+
+    function NativeLayoutIdUpdate() {
+
+        var value = $("input[name='SettingsDto.AppSiteServerSetting.IsNative']").is(":checked");
+        if (!($("#SettingsDto_AppSiteServerSetting_NativeLayoutId").val()) && value) {
+
+            $('#msgNativeLayoutId').show();
+            return false;
+        }
+        else {
+
+            $('#msgNativeLayoutId').hide();
+            return true;
+        }
+    }
+
+
+    function IsNativeLayoutChange() {
+
+        //
+
+
+        var value = $("input[name='SettingsDto.AppSiteServerSetting.IsNative']").is(":checked");
+
+        if (value) {
+            // $("#SettingsDto_AppSiteServerSetting_NativeLayoutId").removeClass("ValdationIgnored");
+
+            $("#ddlNativeLayout").show();
+
+        }
+        else {
+            //$("#SettingsDto_AppSiteServerSetting_NativeLayoutId").addClass("ValdationIgnored");
+            $("#ddlNativeLayout").hide();
+            $("#SettingsDto_AppSiteServerSetting_NativeLayoutId").val('');
+
+        }
+
+
+    }
+    jQuery(document).ready(function () {
+
+        SetSelectedTap("ListMenuPublisher");
+    });
+</script>
+
+@{
+    ViewBag.Title = Html.GetResource("EditAppSite", "Titles");
+    var revenueSetting = Model.SettingsDto.CurrentRevenueCalculationSettings;
+    var systemDefaultRevenue = Config.AppSiteRevenuePercentage;
+
+
+
+    List<SelectListItem> options = new List<SelectListItem>();
+
+    options.Add(new SelectListItem()
+    {
+        Text = Html.GetResource("Default"),
+        Value = ""
+    });
+    for (int i = 1; i <= 60; i++)
+    {
+        options.Add(new SelectListItem()
+        {
+            Text = i.ToString(),
+            Value = i.ToString(),
+            Selected = false
+        });
+    }
+
+    IEnumerable<SelectListItem> items = new List<SelectListItem>()
+                            {
+                                new SelectListItem()
+                                {
+                                    Text = @Html.GetResource("Hour"),
+                                    Value = "3600" ,
+                                    Selected = true
+                                },
+                                new SelectListItem()
+                                {
+                                    Text = @Html.GetResource("Day"),
+                                    Value = "86400"
+                                },
+                                new SelectListItem()
+                                {
+                                    Text = @Html.GetResource("Week"),
+                                    Value = "604800"
+                                } ,
+                                new SelectListItem()
+                                {
+                                    Text = @Html.GetResource("Month"),
+                                    Value = "2592000"
+                                }
+                            };
+
+}
+@using Noqoush.AdFalcon.Domain.Common.Model.AppSite
+@model Noqoush.AdFalcon.Administration.Web.Controllers.Model.AppSite.AppSiteServerSettingViewModel
+@using (Html.BeginForm())
+{
+    <script type="text/javascript">
+        var errorSupportedAdType = '@Html.GetResource("ErrorSupportedAdTypes", "AppSite")';
+        var errorRevenueValue = '@Html.GetResource("RevenueCalculationTip", "AppSite")';
+        var errorFiledisRequired = '@Html.GetResource("RequiredMessage", "ResourceSet")';
+        var priceModelChosen;
+        var AppsiteId = "@Model.SettingsDto.AppSiteId";
+        var CurrentRevenueCalculationSettingsValue = 0;
+        var OkButton = '@Html.GetResource("Ok", "Commands")';
+        var CheckAppsiteCompatableWithCampaignsUrl = '@Url.Action("CheckAppsiteCompatableWithCampaigns", "AppSite")';
+
+        @{
+
+    if (Model.SettingsDto.CurrentRevenueCalculationSettings != null)
+    {
+        <text>
+        CurrentRevenueCalculationSettingsValue = "@Model.SettingsDto.CurrentRevenueCalculationSettings.Value";
+
+        </text>
+    }
+
+        }
+
+        $(document).ready(function () {
+
+            $.validator.setDefaults({
+                ignore: '.ValdationIgnored'
+            });
+
+
+            priceModelChosen = $("[name='PricingModelcontainer']").find(".radio-button-checked").children().attr("value");
+
+            if ($('#Percentage').is('[checked]')) {
+                $("#SettingsDto_CurrentRevenueCalculationSettings_Value").val(CurrentRevenueCalculationSettings_Valuesplitting(CurrentRevenueCalculationSettingsValue));
+                $("#Percentage-info").show();
+            }
+
+            ValueEdit();
+            $("#SettingsDto_CurrentRevenueCalculationSettings_Value").keypress(function (e) {
+
+                var value = $("#SettingsDto_CurrentRevenueCalculationSettings_Value").val();
+                if ($('#Percentage').is('[checked]')) {
+
+                    var REGULAR = new RegExp("^\\d{1,5}$");
+
+
+                    if (!REGULAR.test((value + String.fromCharCode(e.keyCode))))
+                        e.preventDefault();
+
+                } else {
+
+                    if (!(String.fromCharCode(e.keyCode) == '.' && value.length > 0 && value.indexOf('.') < 0)) {
+
+                        var REGULAR = new RegExp("^\\d{1,5}(\\.\\d{1,3})?$");
+
+                        if (!REGULAR.test((value + String.fromCharCode(e.keyCode))))
+                            e.preventDefault();
+                    }
+
+                }
+            });
+
+            $("#SettingsDto_CurrentRevenueCalculationSettings_Value").change(function (e) {
+                validatetextbox();
+            });
+
+        });
+
+        function CurrentRevenueCalculationSettings_Valuesplitting(CurrentRevenueCalculationSettings_Value) {
+
+            var stringvalue = CurrentRevenueCalculationSettings_Value;
+            var newstringvalue = [];
+            for (var i = 0 ; i < stringvalue && stringvalue[i] != '.'; i++) {
+                newstringvalue.push(stringvalue[i]);
+            }
+
+            return newstringvalue.join("");
+        }
+
+        var BidMustBeMoreThanMinBid = '@Html.GetResource("MinBidErrMsg")';
+
+        function GetAppsites(NewpriceModelChosen) {
+            var Orgbuttons = $("#CampaignBidConfigDialog").dialog("option", "buttons");
+            $.ajax({
+                type: 'POST',
+                url: CheckAppsiteCompatableWithCampaignsUrl + "?appsiteID=" + AppsiteId + "&pricingModel=" + NewpriceModelChosen,
+
+                success: function (data) {
+
+                    if (!data.status) {
+
+                        var grid = $("#CampaignBidConfigs").data("tGrid");
+
+                        grid.dataBind(data.List);
+
+                        $("#CampaignBidConfigs tbody").find(".t-no-data").remove();
+                        $("#CampaignBidConfigDialog").dialog({
+                            buttons: [
+                            {
+                                text: '@Html.GetResource("Save", "Commands")',
+                                "class": 'primary-btn',
+
+                                click: function (event) {
+
+                                    if (IsValidBidConfigDialog()) {
+                                        $("#ModifiedNotCompatableBidConfigs").val(jQuery.toJSON(getNotCompatableItems()));
+                                        $(this).dialog('close');
+
+
+                                    }
+                                    else {
+
+                                        DialogshowErrorMessage("divErrorMessagesForBidConfigsDialog", true);
+
+                                        return false;
+                                    }
+                                    $("#Save").click();
+
+                                }
+                            },
+                            Orgbuttons[Orgbuttons.length - 1]],
+                            resizable: false,
+                            draggable: false,
+                            maxHeight: 700
+
+                        });
+                        $("#CampaignBidConfigDialog").dialog({
+                            close: function (event, ui) {
+                                DialogclearErrorMessage("divErrorMessagesForBidConfigsDialog");
+
+                            }
+                        });
+
+                        $("#CampaignBidConfigDialog").dialog("open");
+
+
+                    } else {
+                        CampaignBidConfigNotCompleted = false;
+
+                        $("#Save").click();
+                    }
+
+                }
+            });
+
+
+
+
+        }
+
+        function validatePriceModel() {
+
+            var NewpriceModelChosen = $("[name='PricingModelcontainer']").find(".radio-button-checked").children().attr("value");
+
+            if (NewpriceModelChosen != "" && NewpriceModelChosen != priceModelChosen && CampaignBidConfigNotCompleted) {
+
+                GetAppsites(NewpriceModelChosen);
+
+                return !CampaignBidConfigNotCompleted;
+
+            }
+            return true;
+
+        }
+
+        function validateForm() {
+            var result = validateRevenueValue(true) && validateFloorPrices() && validatePriceModel() && NativeLayoutIdUpdate();
+            if (result)
+            {
+                
+
+                var revenueSetting = $('[name="CalculationMode"][checked="checked"]').val();
+                if (revenueSetting==0)
+                {
+                    $("#SettingsDto_CurrentRevenueCalculationSettings_Value").val('');
+                
+                }
+            }
+
+            return result;
+        }
+
+        function validateFloorPrices(e) {
+
+
+
+            var result = true;
+
+            $("[name^='FloorPrice']").each(function () {
+                var validateionResult = validateFloorPrice(this);
+
+                if (validateionResult == false) {
+                    result = false;
+                }
+            });
+
+
+
+
+            return result;
+        }
+
+        function ValueEdit() {
+
+            $('span[id^="sgin1"]').hide();
+            $('span[id^="sgin2"]').hide();
+            $('#MoreInfo').hide();
+            if ($('#Fixed').is('[checked]')) {
+
+                $('span[id^="sgin1"]').show();
+                $('#MoreInfo').hide();
+            }
+            if ($('#Percentage').is('[checked]')) {
+                $('span[id^="sgin2"]').show();
+                $('#MoreInfo').show();
+                validatetextbox();
+
+            }
+        }
+        function validatetextbox() {
+            if ($('#Percentage').is('[checked]')) {
+                if ($("#SettingsDto_CurrentRevenueCalculationSettings_Value").val().indexOf('.') != -1)
+                    $("#SettingsDto_CurrentRevenueCalculationSettings_Value").val(CurrentRevenueCalculationSettings_Valuesplitting($("#SettingsDto_CurrentRevenueCalculationSettings_Value").val()));
+            }
+        }
+
+        function validateFloorPrice(item) {
+
+            var result = true;
+            var re = /^\$?\d+(\.(\d{1,3}))?$/i;
+            var value = $(item).val();
+
+            if ((value != "" && !re.test(value)) || value.length > 29) {
+                result = false;
+            }
+
+
+            var validationItemName = $(item).attr("datavalidationitem");
+
+            if (result) {
+                $("#" + validationItemName).hide();
+            } else {
+                $("#" + validationItemName).show();
+            }
+
+            var REGULAR = new RegExp("^\\d{1,5}(\\.\\d{1,3})?$");
+
+            if (!REGULAR.test(value)) {
+                $(item).val("");
+
+            }
+
+            return result;
+        }
+
+        function validatebid(item) {
+            var value = $(item).val();
+            if (!$('#Percentage').is('[checked]')) {
+
+                var REGULAR = new RegExp("^\\d{1,5}(\\.\\d{1,3})?$");
+
+                if (!REGULAR.test(value)) {
+                    $(item).val("");
+
+                }
+            } else {
+
+
+                var REGULAR = new RegExp("^\\d{1,5}$");
+
+                if (!REGULAR.test(value)) {
+                    $(item).val("");
+
+                }
+
+            }
+        }
+
+        function validateAdRequestTextBok(item) {
+
+            var value = $(item).val();
+            var REGULAR = new RegExp("^\\d{1,5}$");
+
+            if (!REGULAR.test(value)) {
+                $(item).val("");
+
+            }
+        }
+
+        function validateRevenueValue(valiedateSupportedAdTypes) {
+
+            ValueEdit();
+            clearErrorMessage();
+
+
+            if ($('#Percentage').is('[checked]')) {
+                $("#Percentage-info").show();
+            } else {
+                $("#Percentage-info").hide();
+            }
+
+            var revenueValue = $("#SettingsDto_CurrentRevenueCalculationSettings_Value").val();
+            var revenueSetting = $('[name="CalculationMode"][checked="checked"]').val();
+
+            var isBannerAd = $("#IsSupportBannerAd").is(':checked');
+            var isTextAd = $("#IsSupportTextAd").is(':checked');
+
+            var flag = true;
+            var flagValueError = false;
+
+            if (valiedateSupportedAdTypes == true) {
+                if (!(isTextAd || isBannerAd)) {
+
+                    showErrorMessage(errorSupportedAdType);
+                    flag = false;
+                }
+
+                if (revenueSetting != 0 && revenueValue == "") {
+                    $("#errSpnMessage span").text(errorFiledisRequired);
+                    flag = false;
+                    flagValueError = true;
+                }
+            }
+
+
+
+            if (revenueSetting != 0 && typeof (revenueSetting) != "undefined") {
+
+                $("#revenueValueContainer").show();
+            }
+            else {
+
+                $("#revenueValueContainer").hide();
+            }
+
+
+            if (revenueSetting == 1 && parseFloat(revenueValue) >= 100) {
+                $("#errSpnMessage span").text(errorRevenueValue);
+                flag = false;
+                flagValueError = true;
+            }
+
+            if (flagValueError == true) {
+                $("#errSpnMessage").show();
+            }
+            else {
+                $("#errSpnMessage").hide();
+            }
+
+            return flag;
+        }
+
+        function OnAdRequestPress(e, o) {
+
+
+            var REGULAR = new RegExp("^\\d{1,5}$");
+
+            if (!REGULAR.test((o.value + String.fromCharCode(e.keyCode))))
+                e.preventDefault();
+
+        }
+
+    </script>
+    <div class="data-row section-container">
+        <div class="data-row section-container">
+            <div id="CampaignBidConfigDialog" style="display: none;">
+
+                @Html.Action("CampaignBidConfigDialogView", new { showAppSitePricingModel = false })
+
+            </div>
+            @Html.Hidden("ModifiedNotCompatableBidConfigs")
+            @Html.Partial("Tabs", Model.Tabs)
+            <input id="AppSiteId" name="SettingsDto.AppSiteId" value="@Model.SettingsDto.AppSiteId" type="hidden" />
+            <h2>@Html.GetResource("AdServerSettings", "AppSite")</h2>
+            <div class="section-form-container">
+                <br />
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">&nbsp; </span>
+                    </div>
+                    <div class="field-container">
+                        @Html.GetCheckBox("SettingsDto.AppSiteServerSetting.AllowBlindAds", @Html.GetResource("IsPremium", "AppSite"), Model.SettingsDto.AppSiteServerSetting != null && !Model.SettingsDto.AppSiteServerSetting.AllowBlindAds)
+                    </div>
+                </div>
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">&nbsp; </span>
+                    </div>
+                    <div class="field-container">
+                        @Html.GetCheckBox("SettingsDto.AppSiteServerSetting.GenerateSystemUniqueId", @Html.GetResource("GenerateSystemUniqueId", "AppSite"), Model.SettingsDto.AppSiteServerSetting != null && Model.SettingsDto.AppSiteServerSetting.GenerateSystemUniqueId)
+                    </div>
+                </div>
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("ImpressionCountMode", "AppSite")</span>
+                    </div>
+                    <div class="field-container">
+                        @{
+                            bool selected;
+                            selected = Model.SettingsDto.AppSiteServerSetting == null || Model.SettingsDto.AppSiteServerSetting.ImpressionCountMode == ImpressionCountMode.OnBanner;
+                        }
+                        @Html.GetRadioButton("SettingsDto.AppSiteServerSetting.ImpressionCountMode", Html.GetResource(ImpressionCountMode.OnBanner.ToString(), "AppSite"), selected, value: ((int)ImpressionCountMode.OnBanner).ToString())
+                    </div>
+                </div>
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">&nbsp;</span>
+                    </div>
+                    <div class="field-container">
+                        @{
+                            selected = Model.SettingsDto.AppSiteServerSetting != null && Model.SettingsDto.AppSiteServerSetting.ImpressionCountMode == ImpressionCountMode.OnBeacon;
+                        }
+                        @Html.GetRadioButton("SettingsDto.AppSiteServerSetting.ImpressionCountMode", Html.GetResource(ImpressionCountMode.OnBeacon.ToString(), "AppSite"), selected, value: ((int)ImpressionCountMode.OnBeacon).ToString())
+
+                    </div>
+                </div>
+                @*<div class="data-row data-container">
+                                    <div class="label-container">
+                                        <span class="field-title required-field">&nbsp;</span>
+                                    </div>
+                                    <div class="field-container">
+                                        @{
+                    selected = Model.SettingsDto.AppSiteServerSetting != null && Model.SettingsDto.AppSiteServerSetting.ImpressionCountMode == ImpressionCountMode.OnResponse;
+                                        }
+                                        @Html.GetRadioButton("SettingsDto.AppSiteServerSetting.ImpressionCountMode", Html.GetResource(ImpressionCountMode.OnResponse.ToString(), "AppSite"), selected, value: ((int)ImpressionCountMode.OnResponse).ToString())
+
+                                    </div>
+                                </div>*@
+                @foreach (var item in Model.CostModelEvents)
+                {
+                    var appsiteEvent = Model.SettingsDto.AppSiteServerSetting.Events.Where(p => p.EventId == item.ID).SingleOrDefault();
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">@string.Format("{0} {1}", item.EventDescription, Html.GetResource("FloorPrice", "AppSite"))</span>
+                        </div>
+                        <div class="field-container">
+                            <span class="small-big-field">@Html.AdFalconTextBox(string.Format("FloorPrice-{0}", item.ID), appsiteEvent != null && appsiteEvent.MinBid.HasValue ? appsiteEvent.MinBidValue : null, new { maskType = "decimal", datavalidationitem = string.Format("displayFloorPriceMsg-{0}", item.ID), onchange = "validateFloorPrice(this)", onkeypress = "onbidpress(event,this)" })</span>
+                            <span class="side-text">$</span>
+                            <span id="displayFloorPriceMsg-@item.ID" class="validation-arrow field-validation-error"
+                                  style="display: none;"><span class="">@Html.GetResource("FloorPriceInvalidFormat", "AppSite")</span></span>
+                            </div>
+                        </div>
+
+                }
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("AdRequestCacheTime", "AppSite")</span>
+                    </div>
+                    <div class="field-container">
+                        <span class="small-big-field">@Html.AdFalconTextBox("SettingsDto.AppSiteServerSetting.AdRequestCacheLifeTime", Model.SettingsDto.AppSiteServerSetting.AdRequestCacheLifeTime, new { maskType = "Int", onchange = "validateAdRequestTextBok(this)", onkeypress = "OnAdRequestPress(event,this)" })</span>
+                        <span class="side-text">@Html.GetResource("InSeconds", "Global")</span>
+                        @Html.AdFalconValidationMessageFor(p => p.SettingsDto.AppSiteServerSetting.AdRequestCacheLifeTime)
+                    </div>
+                </div>
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("SupportedAdTypes", "AppSite")</span>
+                    </div>
+                    <div class="field-container">
+                        @* @Html.AdFalconTextBoxFor(m => m.SettingsDto.AppSiteServerSetting.SupportedAdTypes)
+                            @Html.AdFalconValidationMessageFor(p => p.SettingsDto.AppSiteServerSetting.SupportedAdTypes)*@
+                        @Html.GetCheckBox("IsSupportBannerAd", Html.GetResource("Banner", "Campaign"), Model.IsSupportBannerAd)
+                        @Html.GetCheckBox("IsSupportTextAd", Html.GetResource("TextAd", "Campaign"), Model.IsSupportTextAd)
+
+                    </div>
+                </div>
+
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("SupportedBannerImageTypes", "AppSite")</span>
+                    </div>
+                    <div class="field-container">
+                        @* @Html.AdFalconTextBoxFor(m => m.SettingsDto.AppSiteServerSetting.SupportedBannerImageTypes)
+                            @Html.AdFalconValidationMessageFor(p => p.SettingsDto.AppSiteServerSetting.SupportedBannerImageTypes)*@
+                        @Html.AdFalconDropDownList("SupportedBannerImageTypeIds", Model.ImageFormats, new { multiple = "multiple", @style= "height: 77px!important;" })
+                    </div>
+                </div>
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">&nbsp;</span>
+                    </div>
+                    <div class="field-container">
+                        @Html.GetCheckBox("SettingsDto.AppSiteServerSetting.WatchTraffic", Html.GetResource("WatchTraffic", "AppSite"), Model.SettingsDto.AppSiteServerSetting.WatchTraffic)
+
+                    </div>
+                </div>
+
+                @{
+                    var billableCostModel = Model.SettingsDto.AppSiteServerSetting.Events.Where(p => p.IsBillable).SingleOrDefault();
+                }
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("CostModel")</span>
+                    </div>
+                    <div class="field-container">
+                        @Html.GetRadioButton("PricingModel", Html.GetResource("UseCampaignCostModel", "AppSite"), Checked: (billableCostModel == null), value: "")
+                        @foreach (var item in Model.CostModelEvents)
+                        {
+                            @Html.GetRadioButton("PricingModel", item.EventDescription, Checked: (billableCostModel != null && billableCostModel.EventId == item.ID), value: item.ID.ToString())
+                        }
+
+                    </div>
+                </div>
+
+
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">&nbsp;</span>
+                    </div>
+                    <div class="field-container">
+                        @Html.GetCheckBox("SettingsDto.AppSiteServerSetting.IsNative", Html.GetResource("IsNativeLayout", "SSPSiteZoneMappings"), Model.SettingsDto.AppSiteServerSetting == null ? false : Model.SettingsDto.AppSiteServerSetting.IsNative, onChange: "IsNativeLayoutChange", customValue: "false")
+
+                    </div>
+                </div>
+                @if (Model.SettingsDto.AppSiteServerSetting == null ? false : Model.SettingsDto.AppSiteServerSetting.IsNative)
+                {
+                    <div class="data-row data-container" id="ddlNativeLayout" style="display:block">
+                        <div class="label-container">
+                            <span class="field-title required-field">
+                                @Html.GetResource("NativeLayout", "SSPSiteZoneMappings")
+                            </span>
+                        </div>
+                        <div class="field-container  required-field">
+                            @Html.DropDownListFor(p => p.SettingsDto.AppSiteServerSetting.NativeLayoutId, Model.NativeAdLayouts, new { @class = "ValdationIgnored", onChange = "NativeLayoutIdUpdate()" })
+
+                            <span style="display: none; margin-left: 29px; margin-right: 29px;" class="validation-arrow field-validation-error" id="msgNativeLayoutId"><span>@Html.GetResource("RequiredMessage", "ResourceSet")</span></span>
+                        </div>
+
+                    </div>
+                }
+                else
+                {
+                    <div class="data-row data-container" id="ddlNativeLayout" style="display:none">
+
+                        <div class="label-container">
+                            <span class="field-title required-field">
+                                @Html.GetResource("NativeLayout", "SSPSiteZoneMappings")
+                            </span>
+                        </div>
+                        <div class="field-container  required-field">
+                            @Html.DropDownListFor(p => p.SettingsDto.AppSiteServerSetting.NativeLayoutId, Model.NativeAdLayouts, new { @class = "ValdationIgnored", onChange = "NativeLayoutIdUpdate()" })
+                            <span style="display: none; margin-left: 29px; margin-right: 29px;" class="validation-arrow field-validation-error" id="msgNativeLayoutId"><span>@Html.GetResource("RequiredMessage", "ResourceSet")</span></span>
+
+                        </div>
+
+                    </div>
+
+                }
+
+            </div>
+
+            <h2>@Html.GetResource("AppSiteRevenueCalculationSetting", "AppSite")</h2>
+            <div class="section-form-container">
+                <br />
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("CalculationMode", "AppSite")</span>
+                    </div>
+                    <div class="field-container">
+                        @{
+                            selected = revenueSetting == null;
+                        }
+                        @Html.GetRadioButton("CalculationMode", string.Format(ViewData["DefaultAccountRevenue"] == null ? string.Format(Html.GetResource("DefaultSystemRevenueMessage", "AppSite"), systemDefaultRevenue) : string.Format(Html.GetResource("DefaultAccountRevenueMessage", "AppSite"), ViewData["DefaultAccountRevenue"])), selected, value: "0", onChange: "validateRevenueValue")
+                    </div>
+                </div>
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">&nbsp;</span>
+                    </div>
+                    <div class="field-container">
+                        @{
+                            selected = revenueSetting != null && revenueSetting.CalculationMode == CalculationMode.Fixed;
+                        }
+                        @Html.GetRadioButton("CalculationMode", Html.GetResource(CalculationMode.Fixed.ToString(), "AppSite"), selected, value: "2", onChange: "validateRevenueValue", Id: "Fixed")
+                    </div>
+                </div>
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">&nbsp;</span>
+                    </div>
+                    <div class="field-container">
+                        @{
+                            selected = revenueSetting != null && revenueSetting.CalculationMode == CalculationMode.Percentage;
+                        }
+                        @Html.GetRadioButton("CalculationMode", Html.GetResource(CalculationMode.Percentage.ToString(), "AppSite"), selected, value: "1", onChange: "validateRevenueValue", Id: "Percentage")
+                    </div>
+                </div>
+                <div class="data-row data-container" id="revenueValueContainer" style="@string.Format("display:{0}", revenueSetting == null ? "none" : "block")">
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("RevenueCalculationSettingsValue", "AppSite")</span>
+                    </div>
+                    <div class="field-container">
+                        <span class="small-big-field">@Html.AdFalconTextBox("SettingsDto.CurrentRevenueCalculationSettings.Value", revenueSetting != null ? revenueSetting.Value.Value.ToString("F3") : null, new { maskType = "decimal", onblur = "validateRevenueValue()", onchange = "validatebid(this)" })</span>
+                        <span id="sgin1" style="display:none">$</span>
+                        <span id="sgin2" style="display:none">%</span>
+                        <span class="validation-arrow field-validation-error" id="errSpnMessage" style="display: none"><span></span></span>
+                        <span id="MoreInfo" style="display:none"> @*@Html.Partial("MoreInfo", "CalculationModeValue")*@</span>
+
+                        <br />
+                        <span id="Percentage-info" class="guid-text go-right field-title floating-left iea-label-container-padding-right" style="display:none; line-height: 32px;">@Html.GetResource("RevenueCalculationTip", "AppSite")</span>
+                    </div>
+                </div>
+                <br />
+            </div>
+            <div class="section-footer">
+            </div>
+        </div>
+        <div class="data-row button-container">
+            <input id="Save" type="submit" name="Settings" onclick="return validateForm(true)" value='@Html.GetResource("Save", "Commands")' class="primary-btn" />
+        </div>
+    </div>
+                            }
+
+<div id="AddEvents" title="@Html.GetResource("Confirm")" style="display:none;">
+    <span id="AddEventsDialogText">@Html.GetResource("ProceedMsg")</span>
+</div>
+<div id="confirmMessage" title="@Html.GetResource("Confirm")" style="display:none;">
+    <span></span>
+</div>

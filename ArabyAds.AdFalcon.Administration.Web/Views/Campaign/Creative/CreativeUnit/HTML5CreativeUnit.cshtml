@@ -1,0 +1,7 @@
+﻿@using Noqoush.AdFalcon.Web.Controllers.Model.Core
+@model Noqoush.AdFalcon.Web.Controllers.Model.Campaign.CreativeUnitViewModel
+
+@{
+	var uploadInfo = UploadViewModel.ParseCreativeUnit(Model);
+}
+@Html.Partial("UploadZIP", uploadInfo)

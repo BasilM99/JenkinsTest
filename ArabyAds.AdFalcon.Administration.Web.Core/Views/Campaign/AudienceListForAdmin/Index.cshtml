@@ -1,0 +1,55 @@
+﻿@{
+    //ViewBag.Title = Html.GetResource("Advertisers", "Global");
+    ViewBag.Title = Html.GetResource("AudienceList", "Global");
+    Layout = "~/Views/Campaign/AudienceListForAdmin/IndexMaster.cshtml";
+    string DeteleCheckBox = Model.PreventEdit ? "<input type = 'checkbox' name = 'checkedRecords' value = '#= ID #' disabled />" : "<input type = 'checkbox' name = 'checkedRecords' value = '#= ID #' />";
+
+
+}
+@using ArabyAds.Framework.DomainServices
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Advertiser.AudienceListViewModel
+@*@await Html.PartialAsync("GridToolTop", Model.ToolTips)*@
+
+@section subheader
+   {
+}
+@section Grid2 {
+
+    
+
+    @(Html.Kendo().Grid(Model.Items)
+            .Name("Grid")
+            .Columns(columns =>
+            {
+                columns.Template(DeteleCheckBox).Title("").Width(10).HtmlAttributes(new { style = "text-align:center" });
+
+                columns.Bound(o => o.en).Title(Html.GetResource("Name")).Width(65).ClientTemplate("<div class='grid-title-container floating-left'><span class='trimed-span'>#= en#</span></div> <div class='grid-cogwheel-contrainer floating-right go-right'> <div class='cogwheel' item_extra_info2='#= ID#' item_extra_info='#= en#'  item_extra_info3='#= SeedAudienceListCode#' item_extra_info4='#= PopulationCountryFilter#'   item_extra_info5='#= LookalikePercentage#'  onclick='showGridToolTip(#= ID#,this,undefined)'><a href='javaScript:void(0);' >&nbsp</a>&nbsp</a></div></div>");
+                                           
+                columns.Bound(o => o.Description).Title(Html.GetResource("Description", "Campaign")).Width(200);
+                columns.Bound(o => o.Performance.NoOfHits).Title(Html.GetResource("Hits", "AudienceList")).Width(65);
+                columns.Bound(o => o.Performance.UniqueUsers).Title(Html.GetResource("Users", "AudienceList")).Width(65);
+                columns.Bound(o => o.StatusString).Title(Html.GetResource("Status")).Width(65);
+
+
+            }).EnableCustomBinding(true)
+            .DataSource(dataBinding =>
+            {
+                dataBinding.Ajax().Read(read => read.Action("_AudienceList", "Campaign", new { Id = Model.AdvertiserAccountId }).Data("AccountAdvertisersGridData")).Total((int)(long)ViewData["total"]).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+            })
+            .Events(clientEvents => clientEvents.DataBinding("AccountAdvertisersGridDataBinding").DataBound("AccountAdvertisersGridDataBound"))
+            .Scrollable(scrolling => scrolling.Enabled(false))
+            .Selectable().Pageable(paging => paging
+
+
+            .Input(false)
+            .Numeric(true)
+            .Info(true)
+            .PreviousNext(true)
+            .Refresh(true)
+
+            .Position(GridPagerPosition.Bottom))
+            .Filterable(filtering => filtering.Enabled(false))
+            .Groupable(grouping => grouping.Enabled(false)))
+}
+

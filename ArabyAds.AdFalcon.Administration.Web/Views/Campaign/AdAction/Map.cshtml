@@ -1,0 +1,24 @@
+﻿@model  ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.CreativeViewModel
+
+<div id="urlDetailsContainer">
+    @if (Model.AdCreativeDto.ID == 0 || Model.AdCreativeDto.TypeId != ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.PlainHTML)
+    {
+        <script type="text/javascript" language="javascript">
+            function ValidateAdAction() {
+                return true;
+            }
+            var validateRM_AdAction = ValidateAdAction;
+        </script>
+
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("ActionUrl", "NativeAd")</span>
+            </div>
+            <div class="field-container">
+                @Html.AdFalconEditorFor(p => p.AdCreativeDto.AdActionValue.Value)
+                @Html.AdFalconValidationMessageFor(p => p.AdCreativeDto.AdActionValue.Value)
+            </div>
+        </div>
+        @Html.Partial("AdAction/AdActionValueTracker/Tracker", Model)
+    }
+</div>

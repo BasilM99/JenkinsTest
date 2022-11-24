@@ -1,0 +1,191 @@
+﻿@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.CampaignFrequencyCappingSaveDto
+@using Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign;
+@{
+	Layout = null;
+	List<SelectListItem> options = new List<SelectListItem>();
+
+	for (int i = 1; i <= 60; i++)
+	{
+		options.Add(new SelectListItem()
+		{
+			Text = i.ToString(),
+			Value = i.ToString(),
+			Selected = false
+		});
+	}
+	options.Add(new SelectListItem()
+	{
+		Text = "90",
+		Value ="90",
+		Selected = false
+	});
+	options.Add(new SelectListItem()
+	{
+		Text = "180",
+		Value = "180",
+		Selected = false
+	});
+	options.Add(new SelectListItem()
+	{
+		Text = "360",
+		Value = "360",
+		Selected = false
+	});
+	
+
+
+	IEnumerable<SelectListItem> types = new List<SelectListItem>()
+					{
+						 new SelectListItem()
+						{
+							Text = @Html.GetResource("FastMode","CampaignSettings"),
+							Value = "2" ,
+							Selected = true
+						},
+						new SelectListItem()
+						{
+							Text = @Html.GetResource("Evenly","CampaignSettings"),
+							Value = "1"
+						}
+					};
+
+	IEnumerable<SelectListItem> items = new List<SelectListItem>()
+					{
+						new SelectListItem()
+						{
+							Text = @Html.GetResource("Hour"),
+							Value = "3600" ,
+							Selected = true
+						},
+						new SelectListItem()
+						{
+							Text = @Html.GetResource("Day"),
+							Value = "86400"
+						},
+						new SelectListItem()
+						{
+							Text = @Html.GetResource("Week"),
+							Value = "604800"
+						} ,
+						new SelectListItem()
+						{
+							Text = @Html.GetResource("Month"),
+							Value = "2592000"
+						}
+
+						,
+new SelectListItem()
+{
+Text = @Html.GetResource("CampLifeTime"),
+Value = "7776000"
+}
+					};
+
+}
+
+<script type="text/javascript">
+
+
+	function changeCappingSectionDisplay(element) {
+
+		var showValue = element.attr('customvalue')
+		$("#Number").find("option[value='" + 1 + "']").attr('selected', true);
+		$("#Interval").find("option[value='" + 1 + "']").attr('selected', true);
+		$("#Type").find("option[value='" + 1 + "']").attr('selected', true);
+
+		if (showValue == "2" || showValue=="4") {
+			$("#cappingSection").show();
+
+
+			if (showValue == "4") {
+				$("#FrequencyCappingInterval").hide();
+			}
+			else {
+				$("#FrequencyCappingInterval").show();
+			}
+
+		} else {
+			$("#cappingSection").hide();
+		}
+	}
+
+
+
+</script>
+@using (Html.BeginForm())
+{
+	<div class="data-row data-container">
+		<div class="label-container">
+			<span class="field-title required-field">
+				@Html.GetResource("Event")
+			</span>
+		</div>
+		<div class="field-container">
+			<span class="field-title ">
+				<label id="EventName"></label>
+			</span>
+		</div>
+	</div>
+	<div class="data-row data-container">
+		<div class="label-container">
+			<span class="field-title required-field">&nbsp;</span>
+		</div>
+		<div class="field-container">
+			@Html.GetRadioButton("IsCapping", @Html.GetResource("NoCapping", "CampaignServerSetting"), false, value: ((int)CampignFrequencyCappingEnum.NoCapping).ToString(), onChange: "changeCappingSectionDisplay")
+		</div>
+	</div>
+
+	<div class="data-row data-container">
+		<div class="label-container">
+			<span class="field-title required-field">&nbsp;</span>
+		</div>
+		<div class="field-container">
+			@Html.GetRadioButton("IsCapping", @Html.GetResource("Capping", "CampaignServerSetting"), false, value: ((int)CampignFrequencyCappingEnum.Capping).ToString(), onChange: "changeCappingSectionDisplay")
+		</div>
+	</div>
+
+
+	@*<div class="data-row data-container">
+		<div class="label-container">
+			<span class="field-title required-field">&nbsp;</span>
+		</div>
+		<div class="field-container">
+			@Html.GetRadioButton("IsCapping", @Html.GetResource("CappingLifeTime", "Global"), false, value: ((int)CampignFrequencyCappingEnum.CappingLifeTime).ToString(), onChange: "changeCappingSectionDisplay")
+		</div>
+	</div>*@
+	<div class="data-row data-container">
+		<div class="label-container">
+			<span class="field-title required-field">&nbsp;</span>
+		</div>
+		<div class="field-container">
+			@Html.GetRadioButton("IsCapping", @Html.GetResource("Default", "Campaign"), false, value: ((int)CampignFrequencyCappingEnum.Default).ToString(), onChange: "changeCappingSectionDisplay")
+		</div>
+	</div>
+
+	<div id="cappingSection" style="display:none">
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("Number")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconDropDownList("Number", options)
+			</div>
+		</div>
+		<div class="data-row data-container" id="FrequencyCappingInterval">
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("Interval")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconDropDownList("Interval", items)
+			</div>
+		</div>
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("Type")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconDropDownList("Type", types)
+			</div>
+		</div>
+	</div>
+}

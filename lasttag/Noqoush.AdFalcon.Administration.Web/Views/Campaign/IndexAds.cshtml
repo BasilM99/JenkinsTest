@@ -1,0 +1,160 @@
+﻿@{
+	ViewBag.Title = Model.AdGroupName + " : " + Html.GetResource("Ads", "Titles");
+	Layout = "~/Views/Campaign/IndexMaster.cshtml";
+}
+@model Noqoush.AdFalcon.Web.Controllers.Model.Campaign.AdListViewModel
+@*@Html.Partial("GridToolTop", Model.ToolTips)*@
+@section subheader
+   {
+	<div class="data-row sub-header" id="ads_list_page">
+		<div class="sub-header-left">
+		</div>
+		<div class="sub-header-center iea-sub-header-width">
+			<div class="data-row">
+				<div class="floating-left iea-go-right sub-header-item-container objective-header">
+					<div class="sub-header-title">
+						@Html.GetResource("Objective", "Campaign")
+					</div>
+					<div class="sub-header-text">
+						@Model.Performance.Objective
+					</div>
+				</div>
+				<div class="floating-left iea-go-right sub-header-item-container">
+					<div class="sub-header-title">
+						@Html.GetResource("Bid", "Campaign")
+					</div>
+					<div class="sub-header-text">
+						@Model.Performance.BidText
+					</div>
+				</div>
+				<div class="floating-left iea-go-right sub-header-item-container">
+					<div class="sub-header-title">
+						@Html.GetResource("Impressions", "Campaign")
+					</div>
+					<div class="sub-header-text">
+
+						@Html.FormatNumber(Model.Performance.Impress)
+
+					</div>
+				</div>
+				<div class="floating-left iea-go-right sub-header-item-container ">
+					<div class="sub-header-title">
+						@Html.GetResource("Clicks", "Campaign")
+					</div>
+					<div class="sub-header-text">
+						@Html.FormatNumber(Model.Performance.Clicks)
+					</div>
+				</div>
+				<div class="floating-left iea-go-right sub-header-item-container   bid-header-title ">
+					<div class="sub-header-title">
+						@Html.GetResource("CTR", "Campaign")
+					</div>
+					<div class="sub-header-text">
+						@Model.Performance.CtrText
+					</div>
+				</div>
+				<div class="floating-left iea-go-right sub-header-item-container">
+					<div class="sub-header-title">
+						@Html.GetResource("AvgCPC", "Campaign")
+					</div>
+					<div class="sub-header-text">
+						@Model.Performance.AvgCPCText
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="sub-header-right">
+		</div>
+	</div>
+}
+<br />
+<br />
+<br />
+@section Grid1 {
+	<style>
+
+		.t-header {
+			white-space: unset !important;
+		}
+	</style>
+	@(Html.Telerik().Grid(Model.Items)
+									.Name("Grid")
+									.Columns(columns =>
+												 {
+													 columns.Template(
+											@<text>
+												@{
+																	if (Model.PreventEdit)
+																	{
+														<input name="checkedRecords" type="checkbox" value="@item.Id" disabled title="checkedRecords" />
+
+																	}
+																	else
+																	{
+														<input name="checkedRecords" type="checkbox" value="@item.Id" title="checkedRecords" />
+
+																	}
+
+												}
+											</text>)
+											.Title("").Width(36).HtmlAttributes(new { style = "text-align:center" })
+											.ClientTemplate("<input type='checkbox' name='checkedRecords' value='<#= Id #>' />");
+												 columns.Bound(o => o.Name).Template(
+										@<text><div class="grid-title-container floating-left">
+												<span class="trimed-span">
+													<a href='@Url.Action("Creative", "Campaign", new {id = Model.CampaignId, adGroupId = Model.AdGroupId, adId = @item.Id}, null)' title='@item.Name'>
+														@item.Name
+													</a>
+												</span>
+											</div><div class="grid-cogwheel-container floating-right go-right">
+												<div class='cogwheel' onclick='showGridToolTip(@item.Id,this,"@item.Name")'>
+													<a href='javaScript:void(0);'>&nbsp</a>
+												</div>
+											</div>
+										</text>
+									 )
+									 .ClientTemplate("<div class='grid-title-container floating-left'><a href=\"" + Url.Action("Creative", "Campaign") + "/" + Model.CampaignId + "/" + Model.AdGroupId + "/<#= Id#>\"><#= Name#></a> </div><div class='grid-cogwheel-container floating-right go-right'> <div class='cogwheel'  item_extra_info=\'<#= Name#>\' onclick='showGridToolTip(<#= Id#>,this)'><a href='javaScript:void(0);' >&nbsp</a>&nbsp</a></div></div>")
+									 .Title(Html.GetResource("Name", "Ad"))
+									 .Width(300);
+									 columns.Bound(o => o.CreationDate).Title(Html.GetResource("CreationDate", "Campaign")).Format("{0:" + Noqoush.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(75).HtmlAttributes(new { @class = "go-center" });
+									 columns.Bound(o => o.Status).Title(Html.GetResource("Status")).Width(100);
+									 columns.Bound(o => o.DiscountedBid).Format("${0:0.00}").Title(Html.GetResource("Bid", "Campaign")).Width(50).HtmlAttributes(new { @class = "go-center" });
+					 //columns.Bound(o => o.Bid).Title(Html.GetResource("Bid", "Campaign")).Width(50).Template(o => string.Format("<div title='{0}'>{1}</div", o.DiscountedBid.ToString("F2"), o.Bid.ToString("F2"))).ClientTemplate("<div title='<#= Bid#>'><#= Bid#></div>");
+					 //columns.Bound(o => o.DiscountedBid).Title(Html.GetResource("Bid", "Campaign")).Width(50);//.Template().ClientTemplate("<div title='<#= Bid#>'><#= Bid#></div>");
+					 columns.Bound(o => o.Performance.Impress).Format("{0:n0}").Title(Html.GetResource("Impressions", "Campaign")).Width(50).HtmlAttributes(new { @class = "go-center" });
+									 columns.Bound(o => o.Performance.Clicks).Format("{0:n0}").Title(Html.GetResource("Clicks", "Campaign")).Width(75).HtmlAttributes(new { @class = "go-center" });
+
+									 columns.Bound(o => o.Performance.CtrText).Title(Html.GetResource("CTR", "Campaign")).Width(50).HtmlAttributes(new { @class = "go-center" });
+									 columns.Bound(o => o.Performance.AvgCPCText).Title(Html.GetResource("AvgCPC", "Campaign")).Width(50).HtmlAttributes(new { @class = "go-center" });
+
+
+									 if (Noqoush.Framework.OperationContext.Current.UserInfo
+										 <Noqoush.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+										 ().AccountRole == 8)
+									 {
+										 columns.Bound(o => o.Performance.AdjustedNetCostText).Title(Html.GetResource("NetCost", "Global")).Width(45).HtmlAttributes(new { @class = "go-center" });
+										 columns.Bound(o => o.Performance.GrossCostText).Title(Html.GetResource("GrossCost", "Global")).Width(50).HtmlAttributes(new { @class = "go-center" });
+										 columns.Bound(o => o.Performance.BillableCostText).Title(Html.GetResource("BillableCost", "Global")).Width(50).HtmlAttributes(new { @class = "go-center" });
+
+									 }
+									 else
+									 {
+										 columns.Bound(o => o.Performance.BillableCostText).Title(Html.GetResource("BillableCost", "Global")).Width(65).HtmlAttributes(new { @class = "go-center" });
+									 }
+
+								 }).EnableCustomBinding(true)
+														.DataBinding(dataBinding =>
+														{
+															dataBinding.Server().Select("Ads", "Campaign", new { ajax = true });
+															dataBinding.Ajax().Select("_Ads", "Campaign");
+
+														})
+														  .ClientEvents(clientEvents => clientEvents.OnDataBinding("campaignGridDataBinding").OnDataBound("campaignGridDataBound").OnRowDataBound("onRowDataBound"))
+														  .Scrollable(scrolling => scrolling.Enabled(false))
+														  .Selectable().Pageable(paging => paging.PageSize(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.PageSize)
+																				 .Total(int.Parse(ViewData["total"].ToString()))
+																				 .Style(GridPagerStyles.NextPreviousAndNumeric)
+																				 .Position(GridPagerPosition.Bottom))
+														  .Filterable(filtering => filtering.Enabled(false))
+														  .Groupable(grouping => grouping.Enabled(true)).Footer(true))
+}

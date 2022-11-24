@@ -1,0 +1,27 @@
+﻿
+<script type="text/javascript">
+    var currencyValidationMessage = '@Html.GetResource("CurrencyMsg","ResourceSet")';
+</script>
+<div id="costElementsDialog-Form" title="@Html.GetResource("CostElements", "Titles")" style="display: none; ">
+    <div class="data-row red-box" style="display:none; " id="divErrorMessagesForcostElementsDialog">
+        <div class="data-row"><span class="msg-img"></span><span style ="width:450px!important">@Html.GetResource("CostElementError", "CostElements")</span></div>
+    </div>
+    <div class="go-left data-row">
+        @Html.GetResource("CostElementConflictDescription", "Campaign")
+        <p>
+        </p>
+        <div class="data-row items-table-styles" style="height:85% ">
+            <table style="margin: 0 auto;" width='80%' cellspacing='0' cellpadding='4' id="costElementConflictDialogTable">
+                <thead>
+                    <tr>
+                        <th>@Html.GetResource("CostElement", "CostElements")</th>
+                        <th>@Html.GetResource("Value", "CostElements")</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

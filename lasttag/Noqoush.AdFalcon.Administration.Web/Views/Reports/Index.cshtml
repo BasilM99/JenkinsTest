@@ -1,0 +1,64 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("Reports", "Titles");
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+}
+
+@{
+    
+}
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    var SelectableColumns = 3;
+    var HiddenSelectableColumns = 0;
+    google.charts.load('current', { packages: ['corechart', 'line'] });
+
+    function ShowSchdulingSearch() {
+
+        if (!$("#Schedulingdiv").is(":visible")) {
+            $("#adv").attr("class", "minimize");
+          
+
+            $("#Schedulingdiv").show();
+            //$("#Schedulingbutton").show();
+        } else {
+            $("#adv").attr("class", "maximize");
+           
+            $("#Schedulingdiv").hide();
+            //$("#Schedulingbutton").hide();
+        }
+
+    }
+    function ShowMetricDivSearch() {
+
+        if (!$("#MetricDivS").is(":visible")) {
+            $("#advMetric").attr("class", "minimize");
+
+
+            $("#MetricDivS").show();
+            //$("#Schedulingbutton").show();
+        } else {
+            $("#advMetric").attr("class", "maximize");
+
+            $("#MetricDivS").hide();
+            //$("#Schedulingbutton").hide();
+        }
+
+    }
+</script>
+@if (string.IsNullOrEmpty(Request.QueryString["reportType"]) || Request.QueryString["reportType"].ToLower() == "app" || Request.QueryString["reportType"].ToLower() == "gapp")
+{
+    
+    @Html.Action("AppReport", new { appSiteId = ViewBag.ID } );
+}
+else if(string.IsNullOrEmpty(Request.QueryString["reportType"]) || Request.QueryString["reportType"].ToLower() == "ad" || Request.QueryString["reportType"].ToLower() == "gad")
+{
+  
+    @Html.Action("CampaignReport", new { CampaignId = ViewBag.ID  });
+}
+ else if(string.IsNullOrEmpty(Request.QueryString["reportType"]) || Request.QueryString["reportType"].ToLower() == "scampad" || Request.QueryString["reportType"].ToLower() == "scampad")
+{
+  
+    @Html.Action("CampaignReportScheduler", new { CampaignId = ViewBag.ID });
+}
+ 

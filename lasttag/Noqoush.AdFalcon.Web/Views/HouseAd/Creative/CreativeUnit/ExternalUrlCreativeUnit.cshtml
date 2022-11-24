@@ -1,0 +1,43 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.Campaign.CreativeUnitViewModel
+<script type="text/javascript" language="javascript">
+    jQuery(document).ready(function () {
+        $('#@Model.Name').change(function () {
+            return ValidateUrl($(this), "displayURLErrorMsg" + this.name);
+        });
+    });
+</script>
+<div id="@(Model.Name)_container" class="data-row data-container" custom_name='@Model.Name' orientationType="@((int)Model.CreativeUnitDto.OrientationType)" environmentType="@((int)Model.CreativeUnitDto.EnvironmentType)" RequiredType='@(Model.CreativeUnitDto.RequiredType)' orientationtypeid='@(!Model.OrientationReplacementId.HasValue?0:Model.OrientationReplacementId.Value)'>
+    <div class="label-container data-row">
+        <span class="field-title required-field data-row">@Model.DisplayText <span class="reverse-link">@(Model.CreativeUnitDto.Width)x@(Model.CreativeUnitDto.Height)</span> @Html.GetResource("px")
+            @{
+                switch (Model.CreativeUnitDto.RequiredType)
+                {
+                    case 1:
+                        {
+                <span class="reverse-link go-normal">(@Html.GetResource("Optional"))</span>
+                            break;
+                        }
+                    case 2:
+                        {
+                <span class="reverse-link go-normal">(@Html.GetResource("Required"))</span>
+                            break;
+                        }
+                    case 3:
+                        {
+                <span class="reverse-link go-normal">(@Html.GetResource("PartialRequired"))</span>
+                            break;
+                        }
+                }
+            }
+        </span>
+    </div>
+    <div class="data-row field-container">
+
+        <div class="field-container ad-creative-unit-small">
+            @Html.AdFalconTextBox(Model.Name, Model.Content, new { custom_name = "content", })
+            <span id="displayURLErrorMsg@(Model.Name)" class="validation-arrow field-validation-error"
+                  style="display: none;"><span class="">@Html.GetResource("UrlMsg")</span> </span>
+        </div>
+
+    </div>
+</div>

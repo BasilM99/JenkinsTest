@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<!-- Favicon
+    ======================================================================== -->
+	<link rel="icon" href="images/adfalcon.ico">
+	<!-- Meta
+    ======================================================================== -->
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Title
+    ======================================================================== -->
+	<title>AdFalcon - The first mobile advertising network in the middle east</title>
+	<!-- CSS Styles
+    ======================================================================== -->
+	<link href="http://fonts.googleapis.com/css?family=Ubuntu:400,500" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="css/style.css" media="screen" />
+	<link rel="stylesheet" href="css/colors/color-green.css" media="screen" id="colors" />
+	<link rel="stylesheet" href="css/font-awesome.css" media="screen" />
+	<link rel="stylesheet" href="css/zocial.css" media="screen" />
+	<link rel="stylesheet" href="css/responsive.css" media="screen" />
+	<link rel="stylesheet" href="http://mobpages.adfalcon.com/files/override.css" media="screen" />
+
+	<script src="https://code.jquery.com/jquery-1.8.2.min.js" type="text/javascript"></script>
+	<script src="js/common.js"></script>
+
+	<!-- Google Analytics Code
+	======================================================================== -->
+	<script>
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-25905897-1']);
+		_gaq.push(['_setDomainName', 'adfalcon.com']);
+		_gaq.push(['_trackPageLoadTime']);
+		_gaq.push(['_trackPageview']);
+
+		(function () {
+			var ga = document.createElement('script');
+			ga.type = 'text/javascript';
+			ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+	<script>
+	$(document).ready(function() {
+		var is_current = $('#advertise_btn').hasClass('current');
+
+		$('#menu_hook').mouseover(function() {
+			$('#flyout_menu1 ul').css('display', 'block');
+			$('#advertise_btn a').css('color', '#B11F57');
+			if (is_current === true) $('#advertise_btn a').css('color', '#fff');
+			$(this).css('cursor', 'pointer');
+		});
+		$('#menu_hook').click(function() {
+			var _href = $('#advertise_btn a').attr('href');
+			window.open(_href, '_self');
+		});
+		$('#flyout_menu1').mouseleave(function() {
+			$('#flyout_menu1 ul').css('display', 'none');
+			$('#advertise_btn a').css('color', '#333');
+			if (is_current === true) $('#advertise_btn a').css('color', '#fff');
+		});
+	});
+</script>
+</head>
+
+<body>
+	<!-- Body Wrapper -->
+	<div id="body-wrapper">
+		<!-- Header
+    ======================================================================== -->
+		<div id="header">
+			<div class="container">
+				<div class="one-fifth ani" data-gen="fadeInLeft" data-gen-offset="bottom-in-view">
+					<div id="logo">
+						<a href="index.html"><img src="images/logo.png" alt="logo"></a>
+					</div>
+				</div>
+				<div class="four-fifth column-last ani" data-gen="fadeInRight" data-gen-offset="bottom-in-view">
+					<div class="top-line">
+						<div class="container">
+							<div id="language-ar"><a href="../ar/index.html">&nbsp;</a></div>
+							<div class="socials">
+								<ul class="socials_list">
+									<li>
+										<a href="https://twitter.com/AdFalconMENA" title="twitter" class="black zocial twitter" target="_blank"></a>
+									</li>
+									<li>
+										<a href="https://www.facebook.com/AdFalconMENA" title="facebook" class="black zocial facebook" target="_blank"></a>
+									</li>
+									<li>
+										<a href="https://www.linkedin.com/company/adfalconmena/about/" title="linkedin" class="black zocial linkedin" target="_blank"></a>
+									</li>
+								</ul>
+							</div>
+							<div id="loginInfoContainer" class="desktop"></div>
+						</div>
+					</div>
+					<!-- .top_line -->
+					<!-- Logo -->
+					<!-- Main Menu-->
+					<ul id="navigation">
+						<li> <a href="index.html">Home</a> </li>
+						<li> <a href="monetize.html">Monetize</a> </li>
+						<li id='advertise_btn'>
+							<a href="advertise.html">Advertise</a>
+							<div id='flyout_menu1'>
+								<div id='menu_hook'></div>
+								<ul>
+									<li><a href='advertise.html'>AdFalcon Network</a></li>
+									<li><a href='adm/adm.html'>AdFalcon Demand Manager</a></li>
+								</ul>
+							</div>
+						</li>
+						<li> <a href="media-agencies.html">Agencies</a> </li>
+						<li> <a href="adm/main.html">Telcos</a> </li>
+						<li> <a href="adgallery.html">Ad Gallery</a></li>
+						<li> <a href="casestudies/casestudies.html">Case Studies</a></li>
+						<li class="current"> <a href="about.html">About Us</a> </li>
+						<li> <a class="navigation-last" href="contact.html">Contact</a> </li>
+					</ul>
+					<!-- Navigation / End -->
+
+					<!-- Mobile Navigation -->
+					<form id="mobile-nav" class="mobileonly">
+						<div>
+							<select onChange="window.location.replace(this.options[this.selectedIndex].value)">
+								<option value="">Navigation Menu</option>
+								<option value="index.html">Homepage</option>
+								<option value="monetize.html">Monetize</option>
+								<option value="advertise.html">Advertise</option>
+								<option value="adm/adm.html">AdFalcon Demand Manager</option>
+								<option value="media-agencies.html">Media Agencies</option>
+								<option value="adm/main.html">Telcos</option>
+								<option value="adgallery.html">Ad Gallery</option>
+								<option value="casestudies/casestudies.html">Case Studies</option>
+								<option value="about.html">About Us</option>
+								<option value="contact.html">Contact</option>
+							</select>
+						</div>
+					</form>
+					<!-- -->
+
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	<!-- Header / End -->
+	<!-- Start Static Banner -->
+	<div id="inner_banner5">
+		<div class="container ani" data-gen="fadeInRight" data-gen-offset="bottom-in-view">
+			<hr class="sep30">
+			<h1 class="page-header">About AdFalcon</h1>
+			<p class="tagline">Who we are, What we do and where we stand</p>
+			<hr class="sep40">
+		</div>
+	</div>
+	<!-- End Static Banner -->
+	<!-- Content
+    ======================================================================== -->
+	<div class="container">
+		<hr class="sep40">
+		<!-- Main Content -->
+		<div id="content" class="ani" data-gen="fadeInRight" data-gen-offset="bottom-in-view"> <img class="no-float" src="images/logo-adfalcon.png" style="float:left;" />
+			<p><b>AdFalcon</b> is the first mobile advertising network in the Middle East aimed at providing a specialized mobile advertising experience to advertisers, publishers, developers and mobile users across the region.</p>
+			<p>AdFalcon's state of the art technology, intelligent targeting mechanism and diversified mobile ads aim to assist our partners in maximizing their campaigns return on investment (ROI) and to deliver satisfying results for their brands and businesses.</p>
+			<p>AdFalcon is committed to the growth of the mobile advertising industry in the Middle East by working directly with publishers, developers and advertisers. The Middle East has a tremendous growth in mobile internet users and today 45% of the Internet users in the region use their phones to connect to the internet. Moreover, 85% of them have downloaded mobile applications.</p>
+			<p>AdFalcon provides you with a state of the mobile advertising technology to reach out to millions of mobile users in the region; we are committed to help our advertisers meet their campaign’s objectives by offering precise targeting and real-time analytical tools.</p>
+			<div class='hr hr-short hr-center'>
+				<span class='hr-inner'>
+					<span class='hr-inner-style'></span>
+				</span>
+			</div>
+			<img class="no-float" src="images/logo-arabyads.png" style="float:left;" />
+			<p><b>ArabyAds</b> is a young and vibrant mobile media company, established in 2010 and focused on mobile advertising and the mobile media industry in the Middle East.</p>
+			<p>At ArabyAds, we are committed to providing a charming experience to our customers whether they are application developers, publishers, media agencies, advertisers or end users.</p>
+			<p>We have utilized our in-depth understanding of the mobile advertising eco system, knowledge, skills and expertise required to build a wide range of mobile media solutions and properties to cater to the massive mobile growth in the Middle East.</p>
+			<p>ArabyAds is backed with robust angel investors and has successfully raised its first round of funding.</p>
+		</div>
+	</div>
+	<hr class="sep40">
+	<!-- Footer
+    ======================================================================== -->
+	<div id="footer" class="fullwidth">
+		<div class="container">
+			<!-- Contact info -->
+			<div class="one-third">
+				<div class="widget widget_text" style="background:url(images/map.png) no-repeat center 40px;">
+					<h3>Contact Info</h3>
+					<h4 style="color:#fff;">United Arab Emirates</h4> 511, CYS Management, Falak Street
+					<br> Dubai Media City
+					<br> P.O.Box 300285 Dubai, UAE
+					<br> Tel: +971 50 151 0639
+					<p> Email: &nbsp;&nbsp;<a href="mailto:info@adfalcon.com">info@adfalcon.com</a>
+						<br>
+						<h4 style="color:#fff;">Jordan</h4> Office No. 7, 1st Floor, Al-Husseini Building
+						<br> 50 Abdullah Ghosheh main street
+						<br> Amman, PO Box 142220, Jordan
+						<p> Tel: &nbsp;&nbsp;&nbsp;<a href="tel:+96265885813">+962 6 5885813</a>
+							<br> Email: &nbsp;&nbsp;<a href="mailto:info@adfalcon.com">info@adfalcon.com</a>
+							<br>
+							<ul class="social-links">
+								<li style="padding-top:3px;">Social:</li>
+								<li>
+									<a href="https://twitter.com/AdFalconMENA" title="twitter" class="black zocial twitter"></a>
+								</li>
+								<li>
+									<a href="https://www.facebook.com/AdFalconMENA" title="facebook" class="black zocial facebook"></a>
+								</li>
+								<li>
+									<a href="https://www.linkedin.com/company/adfalconmena/about/" title="linkedin" class="black zocial linkedin"></a>
+								</li>
+							</ul>
+				</div>
+			</div>
+			<!-- Twitter feed -->
+			<div class="one-third">
+				<div class="widget widget_latest_posts">
+					<h3>Twitter Feed</h3>
+					<a class="twitter-timeline" href="https://twitter.com/AdFalconMENA" data-widget-id="379502165175189505" data-border-color="#222" height="310" data-chrome="noheader noscrollbar transparent">Tweets by @AdFalcon</a>
+					<script>
+						! function (d, s, id) {
+							var js, fjs = d.getElementsByTagName(s)[0],
+								p = /^http:/.test(d.location) ? 'http' : 'https';
+							if (!d.getElementById(id)) {
+								js = d.createElement(s);
+								js.id = id;
+								js.src = p + "://platform.twitter.com/widgets.js";
+								fjs.parentNode.insertBefore(js, fjs);
+							}
+						}(document, "script", "twitter-wjs");
+					</script>
+				</div>
+			</div>
+			<!-- Categries & Tags -->
+			<div class="one-third column-last">
+				<div class="widget widget_latest_posts" style="margin-left:50px;">
+					<h3>Site map</h3>
+					<ul>
+						<li><h6><i class="icon-chevron-right"></i><a href="about.html">About AdFalcon</a></h6></li>
+						<li><h6><i class="icon-chevron-right"></i><a href="monetize.html">Monetize</a></h6></li>
+						<li><h6><i class="icon-chevron-right"></i><a href="advertise.html">Advertise</a></h6></li>
+						<li><h6><i class="icon-chevron-right"></i><a href="media-agencies.html">Agencies</a></h6></li>
+						<li><h6><i class="icon-chevron-right"></i><a href="adgallery.html">Ad Gallery</a></h6></li>
+						<li><h6><i class="icon-chevron-right"></i><a href="casestudies/casestudies.html">Case Studies</a></h6></li>
+						<li><h6><i class="icon-chevron-right"></i><a href="contact.html">Contact Us</a></h6></li>
+						<li><h6></i><a href="#">&nbsp;</a></h6></li>
+						<li><h6><i class="icon-chevron-right"></i><a href="http://www.adfalcon.com/en/news/2014/march27.html">News Archive</a></h6></li>
+						<li><h6><i class="icon-chevron-right"></i><a href="download-sdk.html">SDK Tools</a></h6></li>
+						<li><!--<h6><i class="icon-chevron-right"></i><a href="#">Developer Documents</a></h6>--></li>
+					</ul>
+					<hr class="sep20">
+				</div>
+			</div>
+		</div>
+		<!-- Info -->
+		<div class="info">
+			<div class="container">
+				<div class="one-third">
+					<!-- Copyright -->
+					<ul class="copyright">
+						<li>© 2017 AdFalcon - By <a href="http://www.arabyads.com">ArabyAds</a></li>
+					</ul>
+				</div>
+				<div class="two-thirds column-last">
+					<ul class="botnav">
+						<li><a href="terms.html">Terms &amp; Conditions</a></li>
+						<li><a href="contact.html">Help &amp; Support</a></li>
+						<li><a class="last" href="privacy.html">Privacy Policy</a></li>
+						<li><a class="last" href="privacy.html">Privacy Policy</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Footer / End -->
+	</div>
+	<!-- Body Wrapper / End -->
+</body>
+
+</html>

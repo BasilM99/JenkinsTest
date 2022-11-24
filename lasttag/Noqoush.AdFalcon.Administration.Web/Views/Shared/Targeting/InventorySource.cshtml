@@ -1,0 +1,877 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.PMPDeal.InventorySourceModel
+
+
+
+
+<div class="section-form-inner-container info-container tab-pane fade in" tabsection="21" id="InventorySourcesSection">
+	@*<div class="ad-filter-text go-left floating-left" style="width:275px">
+			@Html.Raw(Html.GetResource("InventorySourceDesc", "Campaign"))
+		</div>*@
+
+	<script type="text/javascript" language="javascript">
+        var close = "@Html.GetResource("Close","Commands")";
+
+        var Duplicated = "@Html.GetResource("Duplicated")";
+        var Warning = "@Html.GetResource("Warning")";
+		   var ConfirmationInventorySources = "@Html.GetResource( "Delete", "Confirmation")";
+        $(function () {
+
+
+
+            RuntypeChanged();
+            if ($('#SSPCheckedString').val() && $('#SSPCheckedString').val().length > 0)
+                refreshGrid();
+        });
+
+
+        function RuntypeChanged() {
+
+            if (Radio_IsChecked('#InventoryRunOnAll')) {
+                $("#RunOnSelectedExchangeDiv").hide();
+                $("#gridDivInventory").hide();
+
+
+            } else {
+                $("#RunOnSelectedExchangeDiv").show();
+                $("#gridDivInventory").show();
+
+            }
+        }
+        function refreshGrid() {
+            jQuery("div[id^=DivSSPID]").removeClass("border-box-selected");
+            jQuery("div[id^=DivSSPID]").addClass("border-box-unSelected");
+            CollectImagesSelected();
+            $("#SSPFilterInput").val('');
+            var scope = angular.element($("#SSPGridDiv")).scope();
+            scope.resetAll();
+
+        }
+
+
+
+        function CollectImagesSelected() {
+            var imagesSSPID = '';
+            var sspID = '';
+            var id = '';
+            var accountid = '';
+            SSPImageSelectedList = '';
+            var listOfElements = $("#SSPImages").find("input[checked='checked']");
+            for (var i = 0 ; i < listOfElements.length ; i++) {
+                accountid = listOfElements.eq(i).attr("customvalue");
+                sspID = $("#SSPID" + accountid).val();
+                id = listOfElements.eq(i).attr("id");
+                imagesSSPID += sspID + ",";
+                $("#DivSSPID" + id).addClass("border-box-selected");
+                $("#DivSSPID" + id).removeClass("border-box-unSelected");
+
+                SSPImageSelectedList += listOfElements.eq(i).attr("customvalue") + ",";
+            }
+            $('#SSPCheckedString').val(imagesSSPID);
+           // SSPCheckedIDs = imagesSSPID.slice(0, -1).split(",").map(function (x) { return parseInt(x); });
+            SSPCheckedIDs = imagesSSPID.slice(0, -1);
+        }
+	</script>
+
+	@Html.Hidden("InsertedInventorySources", "")
+	@Html.Hidden("DeletedInventorySources", "")
+	@Html.Hidden("UpdatedInventorySources", "")
+	@Html.Hidden("SSPCheckedString", @Model.SSPCheckedString)
+	<div class="data-row section-container" id="form" style="margin: 4px; width:795px;">
+
+		<div class="ad-filter-data go-left floating-left campaign-right-container">
+
+			<div class="data-row space-bottom-blue-filter" style="margin-left:30%;margin-right:30%;width:100%;padding-top:4%">
+				<div class="" style="width:100%;color: #666;">
+					@{
+						var selectedInventoryRuntype = true;
+						selectedInventoryRuntype = (Model != null && Model.Runtype.ToLower() == "true");
+
+					}
+
+					@Html.GetRadioButton("Runtype", Html.GetResource("RunAll", "SSPPartner"), @selectedInventoryRuntype == true, "floating-left iea-rbtn-width-b", value: "true", onChange: "RuntypeChanged", Id: "InventoryRunOnAll")
+
+
+
+					@Html.GetRadioButton("Runtype", Html.GetResource("RunOnSelected", "SSPPartner"), @selectedInventoryRuntype == false, "floating-left iea-rbtn-width-b  col-xs-offset-1", value: "false", onChange: "RuntypeChanged", Id: "InventoryRunOnSelectedExchange")
+
+
+				</div>
+
+			</div>
+		</div>
+
+
+		<div class="data-row space-bottom-blue-filter" style="display:none;" id="RunOnSelectedExchangeDiv">
+			<div class="container">
+				<div class="row" style="padding: 20px;padding-bottom:0px;">
+					<div class="col-sm-8" style="width: 95%!important;">
+						<div class="form-horizontal" role="form">
+							<div class="row" id="SSPImages" style="padding: 20px;">
+								@{
+									foreach (var item in Model.BusinessPartners.ToList())
+									{
+										Html.RenderPartial("SSPPictureViewer", item);
+									}
+								}
+
+							</div>
+							@Html.Partial("Targeting/SSPGrid")
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+
+	<div id="gridDivInventory" class="floating-left grid-containe" style="text-align:center;margin-top : 10px;width: 710px;height: 300px;margin:40px;margin-top:0px; display:none;">
+		<div>
+			<div class="floating-right" id="btnShowAddToListItem" style="display:none; margin-top :-5px">
+				<a class="primary-btn" href="javascript:void(0)" onclick="ShowAddToListItem()">@Html.GetResource("AddToContentList", "Global")</a>
+			</div>
+			<div class="ad-filter-text go-left">
+				<h3>@Html.GetResource("SelectedSiteAndApp", "Global")</h3>
+			</div>
+
+		</div>
+		@(
+												Html.Telerik().Grid(Model.InventorySourceList).Name("InventoryConfigList").NoRecordsTemplate("<center>" + Html.GetResource("CampaignBidConfigListIsEmpty", "Campaign") + "</center").TableHtmlAttributes(new { width = "700px" })
+					.DataKeys(p => p.Add(o => o.ID))
+					.EnableCustomBinding(true)
+					.Editable(ed => ed.Mode(GridEditMode.InCell).DisplayDeleteConfirmation(false)
+					.DefaultDataItem(new Noqoush.AdFalcon.Services.Interfaces.DTOs.Account.PMP.InventorySourceDto()))
+					.Columns(columns =>
+					{
+						columns.Bound(o => o.ID).Hidden();
+						columns.Bound(o => o.Appsite.ID).Hidden();
+						columns.Bound(o => o.SSPId).Hidden();
+						columns.Bound(o => o.ExchangeName).Template(
+							@<text><div class="grid-title-container floating-left go-left" style="width:120px;">
+									<span class="trimed-span" title="@item.ExchangeName">
+										@item.ExchangeName
+									</span>
+								</div>
+							</text>
+												).Visible(true).Title(Html.GetResource("Exchange", "PMPDeal")).ReadOnly().HtmlAttributes("class='trimed-span'").Width("120px")
+																.ClientTemplate("<div class='grid-title-container floating-left go-left' style='width:120px;'><span class='trimed-span' title='<#= ExchangeName#>' ><#= ExchangeName#></div></span>").Visible(true).Title(Html.GetResource("Exchange", "PMPDeal")).ReadOnly().Width("120px");
+
+
+							columns.Bound(o => o.SubPublisher).Title(Html.GetResource("SiteAndApp", "Global")).Width("120px").Template( @<text><div class="grid-title-container floating-left">
+									<span class="trimed-span" title="@item.SubPublisher" id='AppsiteName'>
+										@item.SubPublisher
+									</span>
+								</div>
+							</text>)
+								 .ClientTemplate("<div class='grid-title-container floating-left'><span class='trimed-span' id='AppsiteName' title='<#= SubPublisher#>' ><#= SubPublisher#></div></span>")
+
+
+						.Width("120px").ReadOnly();
+								columns.Bound(o => o.subPublisherId).Title(Html.GetResource("SiteAndAppID", "Global"))
+						  .ClientTemplate("<#= subPublisherId#>")
+						.Width("120px").ReadOnly();
+								columns.Bound(o => o.SubAppSiteId).Hidden().ReadOnly();
+								columns.Bound(o => o.Include).Title(Html.GetResource("Include", "Global")).Width("25px").Template(r => Html.CheckBox("Include", r.Include, new { @id = "Include", onchange = "includeAssignedAppsites(this)", @novalidate = "novalidate" })).ReadOnly()
+
+								.ClientTemplate("<input class='check-box' id='Include' name='Include' onclick='includeAssignedAppsites(this)' checked='checked' type='checkbox' value='true' />").ReadOnly().Width("5px");
+
+
+								columns.Template(@<text>
+									<div id='DeleteButton' style='display:block'><a class='t-button t-button-icon t-button-bare' type='button' SSPIDElmen="@item.SSPId" onclick='ShowConfirmationDialogInventory(this);'><span class='t-icon t-delete'></span></a></div>
+								</text>)
+								 .HtmlAttributes(new { @class = "go-center" }).ClientTemplate("<div id='DeleteButton' style='display:block' ><a type='button'  class='t-button t-button-icon t-button-bare'   SSPIDElmen='<#=SSPId#>' onclick='ShowConfirmationDialogInventory(this);'><span class='t-icon t-delete'></span></a></div>").HtmlAttributes(new { @class = "go-center" }).Width("15px");
+
+						columns.Bound(o => o.SubPublisherMarketId).Hidden();
+					})
+								.DataBinding(dataBinding =>
+								{
+									// dataBinding.Server().Select("GetCampaignBidConfigs", "Campaign");
+									dataBinding.Ajax().Select("GetInventorySource", "Campaign");
+
+								}).ClientEvents(events => events.OnComplete("InventoryGrid_onComplete")).ClientEvents(e => e.OnDataBinding("InventoryGrid_OnDataBinding")).ClientEvents(e => e.OnDataBound("InventoryGridList_OnDataBound")).ClientEvents(e => e.OnCommand("GridInventorySource_onCommand"))
+								.Scrollable(scrolling => scrolling.Enabled(false)).EnableCustomBinding(true))
+	</div>
+
+	<script language="javascript" type="text/javascript">
+
+		    var ExportToContentUrl = '@Url.Action("SaveMasterAppSiteItemsBulk", "Campaign")';
+            function InventoryGridList_OnDataBound(sender, args) {
+
+                var grid = $("#InventoryConfigList").data("tGrid");
+                //$("#InventoryConfigList .t-last").removeClass("t-last");
+                //$("#InventoryConfigList .t-alt").removeClass("t-alt");
+				
+                array = $("#InventoryConfigList tbody tr");
+                for (var i = 0; i < array.length; i++) {
+
+                    dataItem = grid.dataItem(array[i]);
+                    if (dataItem != undefined) {
+                        $(array[i]).find("#Include")[0].checked = dataItem.Include;
+                        @*if (dataItem.SubPublisher == "" || dataItem.SubPublisher == null) {
+                    $(array[i]).find("td")[4].innerText = '@Html.GetResource("All", "CampaignAssignAppsites")';
+                }*@
+						$("#btnShowAddToListItem").show();
+					}
+					
+
+                }
+			
+
+            }
+
+
+            function includeAssignedAppsites(elem) {
+
+                var grid = $("#InventoryConfigList").data("tGrid");
+                var tr = $(elem).parents('tr');
+                getInventoryUpdated(tr, elem.checked);
+            }
+
+
+
+            $(document).ready(function () {
+
+                $("#ConfirmationDialog").dialog({
+
+                    resizable: false,
+                    draggable: false,
+                    showCloseButton: false,
+
+                    // height: 150,
+                    modal: true,
+                    autoOpen: false,
+                    title: ConfriamtionBoxTitle,
+
+                });
+
+				Spinner = getSpinnerObj();
+				jQuery("#AddToListItem-add-dialog-form").dialog({
+					autoOpen: false,
+					//height: 230,
+					width: 460,
+					resizable: false,
+					draggable: false,
+					modal: true,
+					showCloseButton: false,
+					Close: function () {
+
+						
+					},
+            buttons: [{
+                text: '@Html.GetResource("Export", "Global")',
+				click: function () {
+
+					Spinner.showSpinner();
+                
+                    var isValid = true;
+                    //if ($("#IdMasterListTobeAdded").val() != "") {
+                    if ($.trim($("#NameOfMasterListTobeAdded").val()) !== '') {
+                        $("#reqList").hide();
+                        var grid = $("#InventoryConfigList").data("tGrid");
+                        array = $("#InventoryConfigList tbody tr");
+                        var arrtoPush = [];
+                        for (var i = 0; i < array.length; i++) {
+
+                            dataItem = grid.dataItem(array[i]);
+                            if (dataItem != undefined) {
+                                if (dataItem.SubPublisherMarketId && dataItem.SubPublisherMarketId.length > 0 && isBundle(dataItem.SubPublisherMarketId))
+									arrtoPush.push({ LinkId: $("#IdMasterListTobeAdded").val(), Type: "1", BundleID: dataItem.SubPublisherMarketId, AppSiteName: dataItem.SubPublisherMarketId })
+
+                                if (dataItem.SubPublisherMarketId && dataItem.SubPublisherMarketId.length > 0 && isDomainURL(dataItem.SubPublisherMarketId))
+									arrtoPush.push({ LinkId: $("#IdMasterListTobeAdded").val(), Type: "2", Domain: dataItem.SubPublisherMarketId, AppSiteName: dataItem.SubPublisherMarketId })
+                            }
+
+                        }
+
+
+                        if (grid.changeLog.dirty()) {
+                            var inserted = new Array();
+                            var deletedIPRangeIds = '';
+                            for (var i = 0; i < grid.changeLog.inserted.length; i++) {
+                                var dataItem = grid.changeLog.inserted[i];
+
+
+                                if (dataItem != undefined) {
+                                    if (dataItem.SubPublisherMarketId && dataItem.SubPublisherMarketId.length > 0 && isBundle(dataItem.SubPublisherMarketId))
+
+                                        arrtoPush.push({ LinkId: $("#IdMasterListTobeAdded").val(), Type: "1", BundleID: dataItem.SubPublisherMarketId, AppSiteName: dataItem.SubPublisherMarketId })
+
+                                    if (dataItem.SubPublisherMarketId && dataItem.SubPublisherMarketId.length > 0 && isDomainURL(dataItem.SubPublisherMarketId))
+
+                                        arrtoPush.push({ LinkId: $("#IdMasterListTobeAdded").val(), Type: "2", Domain: dataItem.SubPublisherMarketId, AppSiteName: dataItem.SubPublisherMarketId })
+
+                                }
+                            }
+                        }
+
+
+                        var params = { Items: arrtoPush };
+
+                       
+                        params = JSON.stringify(params);
+                        var self = this;
+                        $.ajax({
+                            type: 'POST',
+                            contentType: 'application/json; charset=utf-8',
+                            dataType: 'json',
+                            url: ExportToContentUrl,
+                            //traditional: true,
+                            data: params,
+                            cache: false,
+							success: function (data) {
+								Spinner.hideSpinner();
+                                if (data.status == "success") {
+
+                                    //refreshCampaignGrid();
+
+                                    //alert("siiiii")
+									jQuery('<div id ="ConfirmationDialogListAddedSuccessfully" style="min-width: 200px;" title="' + ConfriamtionBoxTitle + '"></div>').dialog({
+
+                                        open: function () {
+                                            text = '@Html.GetResource("ListAddedSuccessfully")',
+                                            $(this).html(text);
+
+                                        },
+                                        close: function () {
+                                            result = true;
+
+                                            $(this).remove();
+                                        },
+                                        resizable: false,
+                                        draggable: false,
+
+                                        modal: true,
+
+
+                                    });
+                                    fromInventorySourceMasterList = false;
+                                    jQuery(self).dialog("close");
+
+
+
+                                } else if (data.status == "businessException") {
+                                    showErrorMessage(data.Message, true, "addToMasterListSubAppSite-divErrorMessages");
+
+                                } else {
+                                    showErrorMessage(data.Message, true, "addToMasterListSubAppSite-divErrorMessages");
+
+                                }
+
+
+                            },
+                            error: function (data) {
+                                //alert("Somthing went worng please contact the admin");
+
+								Spinner.hideSpinner();
+                                showErrorMessage(data.Message, true, "addToMasterListSubAppSite-divErrorMessages");
+
+                            }
+                        });
+
+
+                        //if (IsNotDuplicated()) {
+
+                        //    showErrorMessage(Duplicated, false);
+
+                        //} else {
+                        //    AddAdRequest();
+                        //}
+                        //jQuery(this).dialog("close");
+
+                        //####################################################
+                    }
+                    else {
+                       // alert("sadasdassa")
+                        isValid = false;
+                        $("#reqList").show();
+                    }
+                },
+                "class": 'primary-btn',
+
+            } ,{
+                text: '@Html.GetResource("Close", "Commands")',
+                click: function () {
+                    //if (IsNotDuplicated()) {
+
+                    //    showErrorMessage(Duplicated, false);
+
+                    //} else {
+                    //    AddAdRequest();
+                    //}
+                    //jQuery(this).dialog("close");
+				
+                    $("#reqList").hide();
+					fromInventorySourceMasterList = false;
+					jQuery(this).dialog("close");
+					
+                },
+					"class": 'delete-button',
+
+            }],
+        });
+
+                SetGridHieghtInventory();
+
+				checktobeShow();
+                localInitilizeInventoryConfig();
+
+                $(".ui-grid")
+     .mouseenter(function () {
+
+
+
+         if ($(".ui-grid")[0].scrollHeight >= $(".ui-grid")[0].offsetHeight-5) {
+
+
+             scrollLock = true;
+         }
+         else {
+
+             scrollLock = false;
+         }
+
+
+
+
+
+     })
+.mouseleave(function () { scrollLock = false; });
+
+
+            });
+		function isDomainURL(str) {
+
+			//return ValidateUrl(jQuery('[name="Domain"]'));
+
+
+			var pattern = new RegExp(/^(?!:\/\/)([a-zA-Z0-9]+\.)?[a-zA-Z0-9][a-zA-Z0-9-]+\.[a-zA-Z]{2,6}?$/i);
+
+			return pattern.test(str);
+		}
+
+		function isBundle(str) {
+
+
+			var reg2 = new RegExp('^\\d+$');
+			var pattern = new RegExp('^\[a-z]+\.[a-z]+\.[a-z0-9]+$');
+			var pattern2 = new RegExp('^\[a-z]+\.[a-z]+\.[a-z]+\.[a-z0-9]+$');
+
+			var pattern3 = /^([A-Za-z]{1}[A-Za-z\d_]*\.)*[A-Za-z][A-Za-z\d_]*$/g;
+
+
+
+
+
+			return pattern.test(str) || reg2.test(str) || pattern2.test(str) || pattern3.test(str);
+
+		}
+
+
+            function InventoryGrid_onComplete(e) {
+
+                if (e.name == "dataBinding") {
+                    $('#DeletedInventorySources').val('');
+                    $('#InsertedInventorySources').val('');//;
+                    $('#UpdatedInventorySources').val('');
+                }
+                SetGridHieghtInventory();
+			
+            }
+
+            function GridInventorySource_onCommand(e) {
+
+                //var $forms = $('#CampaignBidConfigListform');
+
+                //
+                //$.each($forms, function (key, value) {
+
+                //    // enable validation when an input loses focus.
+                //    var settings = $.data(value, 'validator').settings;
+                //    settings.onfocusout = function (element) { $(element).valid(); };
+                //    settings.onfocusin = function (element) { $(element).valid(); };
+                //});
+            }
+            function InventoryGrid_OnDataBinding(e) {
+
+                SetGridHieghtInventory();
+				
+
+
+            }
+            function InventoryConfigList_OnDataBound(sender, args) {
+
+                var grid = $("#InventoryConfigList").data("tGrid");
+                array = $("#InventoryConfigList tbody tr");
+                for (var i = 0; i < array.length; i++) {
+
+                    dataItem = grid.dataItem(array[i]);
+                    if (dataItem != undefined) {
+                        //if (dataItem.Bid != "") {
+                        //    $(array[i]).find("#Bid")[0].value = parseBidValue(dataItem.Bid);
+                        //}
+                        @*if (dataItem.SubPublisher == "" || dataItem.SubPublisher == null) {
+                    $(array[i]).find("td")[4].innerText = '@Html.GetResource("All", "CampaignAssignAppsites")';
+                }*@
+
+                        $(array[i]).find("#Include")[0].checked = dataItem.Include;
+
+						$("#btnShowAddToListItem").show();
+                        //if (dataItem.HideDeleteButton) {
+                        //    $(array[i]).find("#DeleteButton").attr("style", "display:none");
+                        //}
+                    }
+                }
+
+
+            }
+
+
+            function localInitilizeInventoryConfig() {
+                var pagingControls = [];
+                //$("#InventoryConfigList .t-alt").removeClass("t-alt");
+            }
+
+
+
+
+
+
+            function SetGridHieghtInventory() {
+                if ($("#InventoryConfigList tbody tr").length > 5) {
+                    $("#gridDivInventory").attr("style", "text-align:center;margin-top : 10px;width: 720px;height: 290px;margin:40px;overflow-y:scroll;");
+				}
+			
+			
+				
+            }
+		function checktobeShow()
+		{
+			if ($("#InventoryConfigList tbody").find(".t-no-data").length < 1 && $("#InventoryConfigList tbody tr").length > 0) {
+				$("#btnShowAddToListItem").show();
+			}
+		}
+            function selectInventorySubPublishers(itemAdded) {
+                SetGridHieghtInventory();
+                var selectedSubpublisher = itemAdded.SubPublisherName;
+                selectedAppsite = itemAdded.AppSiteId;
+                selectedAccount = itemAdded.ExchangeId;
+                subPiblisherId = itemAdded.SubAppSiteId;
+                if (subPiblisherId == '')
+                    subPiblisherId = null;
+
+                if (selectedSubpublisher == null)
+                    selectedSubpublisher = '';
+                var list = [];
+                var grid = $("#InventoryConfigList").data("tGrid");
+
+                if (IsAddedInventory(selectedAccount, subPiblisherId, selectedAppsite) == null) {
+					
+					dataItem = { "SSPId": selectedAccount, "ExchangeName": itemAdded.ExchangeName, "SubAppSiteId": subPiblisherId, "subPublisherId": itemAdded.subPublisherId, "SubPublisher": itemAdded.SubPublisherName, "Include": true, "SubPublisherMarketId": itemAdded.SubPublisherMarketId };
+                    dataItem.Appsite = { "ID": itemAdded.AppSiteId };
+                    $("#InventoryConfigList tbody").find(".t-no-data").remove();
+                    grid.insertRow(dataItem);
+                    initilizeFormValidationForDynamicContent('InventoryConfigListform');
+
+
+
+
+                    //CampaignBidConfigNotCompleted = true;
+                } else {
+                    jQuery('<div id ="DuplicatedInventory" title="' + Warning + '"></div>').dialog({
+
+                        open: function (event, ui) {
+                            $(this).html(Duplicated);
+                        },
+
+                        resizable: false,
+                        draggable: false,
+                        modal: true,
+                    });
+                }
+
+                alternateGrid("InventoryConfigList");
+                getInventoryAssignedAppsites();
+
+
+
+            }
+
+
+
+
+
+            var updatedInventroyArrary = new Array();
+            // AliD review
+            function getInventoryUpdated(rowUpdated, bidValue) {
+
+                var grid = $("#InventoryConfigList").data("tGrid");
+                updatedData = grid.dataItem(rowUpdated);
+                if (updatedData == undefined) {//incase modify new item
+                    for (var i = 0; i < grid.insertedDataItems().length; i++) {
+                        dataItem = grid.insertedDataItems()[i];
+                        var subPiblisherId = rowUpdated.find("td")[6].innerText;
+                        if (subPiblisherId == '')
+                            subPiblisherId = null;
+
+                        if (dataItem.SSPId + "" == rowUpdated.find("td")[2].innerText && dataItem.SubAppSiteId + "" == subPiblisherId && dataItem.Appsite.ID + "" == rowUpdated.find("td")[1].innerText) {
+                            dataItem.Include = bidValue;
+                        }
+                    }
+                    getInventoryAssignedAppsites();
+                    return;
+                }
+                updatedData.Include = bidValue;
+                var isExist = false;
+                for (var i = 0; i < updatedInventroyArrary.length; i++) {
+                    if (rowUpdated.ID == updatedInventroyArrary[i].ID) {
+                        updatedInventroyArrary[i] = updatedData;
+                        isExist = true;
+                    }
+                }
+                if (!isExist) {
+                    updatedInventroyArrary[updatedInventroyArrary.length] = updatedData;
+                }
+                $('#UpdatedInventorySources').val(jQuery.toJSON(updatedInventroyArrary));
+
+                //if (updatedInventroyArrary.length > 0)
+                //    CampaignBidConfigNotCompleted = true;
+            }
+
+
+
+
+
+            function getInventoryAssignedAppsites() {
+
+                var grid = $('#InventoryConfigList').data("tGrid");
+                if (grid == null)
+                    return;
+                if (grid.changeLog.dirty()) {
+                    var inserted = new Array();
+                    var deletedIPRangeIds = '';
+                    for (var i = 0; i < grid.changeLog.inserted.length; i++) {
+                        inserted[inserted.length] = grid.changeLog.inserted[i];
+                    }
+
+                    for (x = 0; x < grid.changeLog.deleted.length; x++) {
+                        if (typeof (grid.changeLog.deleted[x]) != "undefined") {
+                            deletedIPRangeIds += '&' + grid.changeLog.deleted[x].ID;// grid.changeLog.deleted[x].Appsite.ID + "," + grid.changeLog.deleted[x].SubPublisherId;
+                        }
+                    }
+                    $('#InsertedInventorySources').val(jQuery.toJSON(inserted));//;JSON.stringify(inserted));
+                    $('#DeletedInventorySources').val(deletedIPRangeIds);
+                } else {
+
+                    $('#DeletedInventorySources').val("");
+                    $('#InsertedInventorySources').val("");
+				}
+
+				if ($("#InventoryConfigList tbody tr").length > 0) {
+					$("#btnShowAddToListItem").show();
+				}
+				else {
+
+					$("#btnShowAddToListItem").hide();
+				}
+                //  SetBidClientRegExp();
+            }
+
+            function deleteInventoryAssignedAppsites(elem) {
+
+                var grid = $("#InventoryConfigList").data("tGrid");
+                var tr = $(elem).parents('tr');
+                //delete the row
+                grid.deleteRow(tr);
+                getInventoryAssignedAppsites();
+                alternateGrid("InventoryConfigList");
+
+
+            }
+
+            function ShowConfirmationDialogInventory(elem) {
+
+                var name = $(elem).parents('tr').find("#AppsiteName").text();
+                if (name.length > 30)
+                    name = name.substring(0, 30) + "..";
+
+                $("#ConfirmationDialog").dialog({
+
+                    open: function () {
+						$(this).html(ConfirmationInventorySources.format(" " +name));
+
+                    },
+                    showCloseButton: false,
+
+                    buttons: [
+                    {
+                        text: yesbtn,
+                        click: function () {
+
+                            deleteInventoryAssignedAppsites(elem);
+                            $(this).dialog("close");
+
+                        }
+                    },
+                    {
+                        text: nobtn,
+                        click: function () {
+                            $(this).dialog('close');
+
+                        }
+                    },
+
+                    ]
+                });
+
+                $("#ConfirmationDialog").dialog("open");
+
+            }
+
+
+
+            function IsAddedInventory(SSPId, subPiblisherId, appSiteId) {
+
+                var grid = $('#InventoryConfigList').data("tGrid");
+                if (grid == null)
+                    return null;
+                if (grid.changeLog.dirty()) {
+                    for (var i = 0; i < grid.changeLog.inserted.length; i++) {
+                        if (grid.changeLog.inserted[i].SSPId == SSPId && grid.changeLog.inserted[i].SubAppSiteId == subPiblisherId && grid.changeLog.inserted[i].Appsite.ID == appSiteId) {
+                            return dataItem;
+                        }
+                    }
+
+                    for (var y = 0; y < grid.changeLog.deleted.length; y++) {
+                        if (typeof (grid.changeLog.deleted[y]) != "undefined") {
+                            if (grid.changeLog.deleted[y].SSPId == SSPId && grid.changeLog.deleted[y].SubAppSiteId == subPiblisherId && grid.changeLog.deleted[y].Appsite.ID == appSiteId) {
+                                return null;
+                            }
+                        }
+                    }
+                }
+                array = $("#InventoryConfigList tbody tr");
+                for (var i = 0; i < array.length; i++) {
+
+                    dataItem = grid.dataItem(array[i]);
+                    if (dataItem != undefined) {
+                        if (dataItem.SSPId == SSPId && dataItem.SubAppSiteId == subPiblisherId && dataItem.Appsite.ID == appSiteId) {
+                            return dataItem;
+                        }
+                    }
+                }
+                return null;
+            }
+
+
+            var GetCampaigInventroyConfigDataUrl = "@Url.Action("InventorySourceData", "Campaign")";
+            function GetInventoryConfigData() {
+
+                var Data = new Object();
+                Data.id = $("#CampaignId").val();
+                Data.adGroupId = $("#AdGroupId").val();
+
+                $.ajax({
+                    type: 'POST',
+                    data: Data,
+                    url: GetCampaigInventroyConfigDataUrl,
+                    success: function (data) {
+
+                        var grid = $("#InventoryConfigList").data("tGrid");
+                        grid.dataBind(data.InventorySourceList);
+                        $("#InventoryConfigList tbody").find(".t-no-data").remove();
+						SetGridHieghtInventory();
+						
+                    }
+                });
+
+            }
+
+			function localMasterListAddSearchInitilize() {
+				jQuery('input').keypress(function (e) {
+					return e.keyCode != 13;
+				});
+				jQuery("input").keyup(function (event) {
+					if (event.keyCode == 13) {
+						generateUsersGrid();
+					}
+					return event.keyCode != 13;
+				});
+			}
+
+			function showaddToMasterDialogSearchDialog() {
+
+				//localMasterListAddSearchInitilize();
+				//AccountDialogInitilize();
+				//showDialog("addMasterListDialog");
+				showAddMasterListDialog();
+				//alert("Siiiiiiiiiiiiiiiiiiiiiiiiiii")
+
+		}
+
+		function ShowAddToListItem() {
+
+			//$("#AdRequestTypes").val('-1');
+			//$("#AdRequestPlatforms").val('-1');
+
+
+			//$("#AdRequestTypes").val('1');
+
+
+
+			//$("#AdRequestVersions").val('1');
+			//callServicetoFillDropDownAdRequestsTypes();
+			////$("#AdRequestPlatforms").val('1');
+			clearDialog("AddToListItem-add-dialog-form");
+			showDialog('AddToListItem-add-dialog-form');
+			fromInventorySourceMasterList = true;
+			//alert("Siiiii")
+		}
+	</script>
+
+
+	<div id="AddToListItem-add-dialog-form" class="adfalcon-dialog" title="@Html.GetResource("SelectAddToContentList", "Global")" style="display: none; ">
+
+
+		<div class="data-row red-box" style="display:none" id="addToMasterListSubAppSite-divErrorMessages">
+		
+
+				
+						<div class="data-row">
+							<span class="msg-img"></span><span></span>
+						</div>
+				
+						<div class="data-row">
+							<span class="msg-img"></span><span></span>
+						</div>
+			
+		</div>
+		<br />
+		<div id="MasterListTobeAddedDialogEntityDetails" class="data-row data-container">
+			@*@Html.Partial("AdRequest/AdRequest", Model.AdRequestDialog)*@
+            <div style="padding-left:15px;padding-right:15px;line-height: 24px;width:450px;">
+                <input type="hidden" id="IdMasterListTobeAdded" />
+                <div class="label-container">
+                    <span class="field-title required-field">@*@Html.GetResource("ConfirmPassword", "Global")*@Content List</span>
+                </div>
+				<div class="field-container">
+
+
+					@Html.AdFalconTextBox("NameOfMasterListTobeAdded", "", new { @readonly = "readonly", @class = "required" })
+
+					<div class="floating-right">
+						<img class="find-icon" onclick="showaddToMasterDialogSearchDialog();" src='@Url.GetImagePath("find-icon.png")' />
+					</div>
+				</div>
+                <div class="validation-arrow field-validation-error floating-right"  data-valmsg-for="NameOfMasterListTobeAdded" style=" display:none;  padding-top:5px" id="reqList">
+                   
+					<span>@Html.GetResource("SelectContentList", "Global") </span>
+                </div>
+            </div>
+		</div>
+	</div>
+
+
+</div>

@@ -1,0 +1,27 @@
+﻿@{
+    var sp = "|";
+    if (ArabyAds.Framework.OperationContext.Current.CurrentPrincipal != null && ArabyAds.Framework.OperationContext.Current.CurrentPrincipal.Identity.IsAuthenticated)
+    {
+
+        string name = ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.Framework.UserInfo.IUserInfo>().FirstName + " " + ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.Framework.UserInfo.IUserInfo>().LastName;
+        @name
+        <a href="https://@ArabyAds.Framework.Utilities.JsonConfigurationManager.AppSettings["AdFalconWebReact"].ToString()/@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage/dashboard/index/ad" class="reverse-link">@Html.GetResource("MyAccount")</a> @sp
+
+
+
+        @*<ul id="menu-nav">
+                <li>
+                    <a href="javascript:void(0)" onclick="logout();">@Html.GetResource("Logout", "UserInformation")</a>
+                    <ul class="dropdownAdFalcon">
+                        <li>@Html.ActionLink(Html.GetResource("IndexReportsJob", "Menu").ToString(), "IndexReportsJob", "reports", new { reportType = "ad" }, null)</li>
+                    </ul>
+                 </li>
+
+            </ul>*@
+    }
+    else
+    {
+        sp = " - ";
+        @Html.ActionLink(Html.GetResource("Register", "UserInformation"), "register", "user", null) @sp @(Html.ActionLink(Html.GetResource("Login", "UserInformation"), "login", "user"))
+    }
+}

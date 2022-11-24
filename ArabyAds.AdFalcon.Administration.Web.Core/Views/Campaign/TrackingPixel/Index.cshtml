@@ -1,0 +1,11 @@
+﻿@{
+    //ViewBag.Title = Html.GetResource("Advertisers", "Global");
+    ViewBag.Title = Html.GetResource("TrackingPixel", "Menu");
+    Layout = "~/Views/Campaign/TrackingPixel/IndexMaster.cshtml";
+    string DeteleCheckBox = Model.PreventEdit ? "<input type = 'checkbox' name = 'checkedRecords' value = '#= Id #' disabled />" : "<input type = 'checkbox' name = 'checkedRecords' value = '#= Id #' />";
+
+
+}
+<div id="APP-Root">
+</div>
+<script src="~/ClientReactJs/Dashboard.js.gz" asp-append-version="true"></script>

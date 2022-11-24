@@ -1,0 +1,71 @@
+﻿<script type="text/javascript">
+    var defaultText = "@Html.GetResource("Default")";
+    var wifiOnlyText = '@Html.GetResource("WIFIOnly", "Campaign")';
+    var specificUrlText = '@Html.GetResource("SpecificUrlText", "Campaign")';
+    var specificIPRangesText='@Html.GetResource("SpecificIPRanges", "Campaign")';
+    var maxCount = 3;
+ </script>
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.TargetingViewModel
+<div class="gray-container-box data-row">
+    <div class="target-label-container">
+        <div>@Html.GetResource("ContentCategories", "Global")</div>
+        <div>@Html.GetResource("DeviceTargeting", "Campaign")</div>
+        <div>@Html.GetResource("Geographic", "Campaign")</div>
+        @if (Model.DeviceTargetingView.DeviceTypeModel != null)
+        {
+            <div>@Html.GetResource("AdBannerType", "Campaign")</div>
+        }
+        @if (!string.IsNullOrEmpty(Model.UniqueId) && Model.UniqueId != "0")
+        {
+            <div>@Html.GetResource("UniqueId", "Global")</div>
+        }
+
+    </div>
+    <div class="target-data-container">
+        <div id="keywordsInfo" class="default-values trimed-info">@Html.GetResource("Default")</div>
+        <div id="deviceTargetingInfo" class="default-values trimed-info">@Html.GetResource("Default")</div>
+        <div id="@(Model.Geographics.GeographicalAreas.Name)TreeInfo" class="default-values trimed-info">@Html.GetResource("Default")</div>
+        @if (Model.DeviceTargetingView.DeviceTypeModel != null)
+        {
+            <div id="deviceTypeInfo" class="default-values trimed-info">@Html.GetResource("Default")</div>
+        }
+        @if (!string.IsNullOrEmpty(Model.UniqueId) && Model.UniqueId != "0")
+        {
+            <div id="UniqueIdInfo" class="default-values trimed-info UniqueID-line-height">@Model.UniqueId</div>
+        }
+
+    </div>
+    <div class="target-label-container second-field-set" style=" height: 108px;">
+        <div>
+            @Html.GetResource("NetworkAndOperators", "Campaign")
+        </div>
+        <div>
+            @Html.GetResource("Demographics", "Campaign")
+        </div>
+        <div>
+            @Html.GetResource("UrlTargeting", "Campaign")
+        </div>
+        <div>
+            @Html.GetResource("Bid", "Campaign")
+        </div>
+        @if (Model.CostModels != null)
+        {
+        <div></div>
+        }
+    </div>
+    <div class="target-data-container" >
+        <div id="@(Model.OperaterTargetingView.Operaters.Name)TreeInfo" class="default-values trimed-info">
+            @Html.GetResource("Default")
+        </div>
+        <div id="demographicsInfo" class="default-values trimed-info">@Html.GetResource("Default")</div>
+          <div id="urlInfo" class="default-values trimed-info"> @Html.GetResource("Default")</div>
+        <div id="minBid">
+            0</div>
+        @if (Model.CostModels != null)
+        {
+        <div id="CostModel" class="default-values trimed-info">
+          
+        </div>
+        }
+    </div>
+</div>

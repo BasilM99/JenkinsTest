@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+************************
+  Important note: This file is not used at all it presents just to clarify pgw configurations, the used configuration exists in the
+                  account_fund_pgw table.
+  
+************************
+  
+  vpc_Version       : The version of the Virtual Payment Client API being used. The current version is 1.
+  SECURE_SECRET     : Found in Merchant Administration/Setup page on the Payment Server. Without this seed the MD5 signature will not be created.
+  vpc_AccessCode    : The access code is provided to you when you registered your merchant profile with the Payment Provider.
+  vpc_Merchant      : The unique merchant Id assigned to you by your Payment Provider.
+  vpc_User          : This field is a special AMA user created to allow QueryDR functions to operate.
+  vpc_Password      : The password used to authorize the AMA user to access QueryDR functions.
+  tracker_Url       : URL of the QueryDR, used when traking lost transactions.
+  vpc_Pay_Command   : Command that is used when request a payment.
+  vpc_Track_Command : Command that is used when track lost transaction.
+  max_minutes_to_complete: maximum minutes that transaction might take until it completed, this value used in tracker service to exclude running pending transactions.
+-->
+<Settings>
+  <add key="vpc_Version" value="1"></add>
+  <add key="SECURE_SECRET" value="09F28FAD603BF2D3AEAEB20791184FBD"></add>
+  <add key="vpc_AccessCode" value="43183292"></add>
+  <add key="vpc_Merchant" value="TEST002200526341"></add>
+  <add key="vpc_User" value="noqoushAMA"></add>
+  <add key="vpc_Password" value="asdf*1234"></add>
+  <add key="tracker_Url" value="https://migs.mastercard.com.au/vpcdps"></add>
+  <add key="vpc_Pay_Command" value="pay"></add>
+  <add key="vpc_Track_Command" value="queryDR"></add>
+  <add key="max_minutes_to_complete" value="1"></add>
+</Settings>

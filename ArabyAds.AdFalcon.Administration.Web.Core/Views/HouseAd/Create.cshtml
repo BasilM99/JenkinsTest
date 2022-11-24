@@ -1,0 +1,221 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("HouseAd", "Titles");
+}
+
+@using ArabyAds.AdFalcon.Web.Controllers.Model.Core
+@using ArabyAds.AdFalcon.Web.Controllers.Utilities
+@model ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.CampaignDto
+<script language="javascript" type="text/javascript">
+    @{
+        var mindate = 0;
+        if (Model != null)
+        {
+            var snb = Model.StartDate.Subtract(ArabyAds.Framework.Utilities.Environment.GetServerTime());
+            if (snb.TotalDays < 0)
+            {
+                mindate = Convert.ToInt32(snb.TotalDays) - 1;
+            }
+        }
+    }
+    var max_hour_diffrence =@(Config.MaxHoursDifference);
+
+    var startDateBeforeNowBRMsg = '@Html.GetResource("CampaignStartDateBeforeNowBR")';
+    var endDateBeforeNowBRMsg = '@Html.GetResource("CampaignEndDateBR")';
+    var endDateBeforeStartDateBRMsg = '@Html.GetResource("CampaignEndDateBeforeEndDateBR")';
+    var TimeDiffrenceBRMsg = '@(string.Format(Html.GetResource("TimeDiffrenceBRM"), Config.MaxHoursDifference))';
+    var startDateChanged = false;
+    function localInitilize() {
+        var dates = jQuery("#StartDate, #EndDate").datepicker({
+            changeMonth: true,
+            showButtonPanel: true,
+            showOn: 'both',
+            minDate: @mindate,
+            buttonImageOnly: true,
+            isRTL: false,
+            dateFormat: 'dd-mm-yy',
+            buttonImage: '@(Url.GetImagePath("Calendar-icon.png"))',
+            onSelect: function (selectedDate) {
+                if (this.id == "StartDate") {
+                    startDateChanged = true;
+                    $(this).valid();
+                }
+                var option = this.id == "StartDate" ? "minDate" : "maxDate",
+                    instance = $(this).data("datepicker"),
+                    date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+                dates.not(this).datepicker("option", option, date);
+            }
+        });
+    };
+
+    function customValidate() {
+        var result = true;
+        clearErrorMessage();
+		$("form:not(#SwitchAccountForm)").valid();
+        result = validateDate() && result;
+        return result;
+    };
+    function validateDate() {
+        var result = true;
+        
+        var date_now = new Date();
+        var startDate = tempDate = jQuery("#StartDate").datepicker('getDate');
+        var endDate = jQuery("#EndDate").datepicker('getDate');
+
+        var startTime = Get_time_from_control('StartTime');
+        var endTime = Get_time_from_control("EndTime");
+
+        if(!hasValue(startTime)) {
+            startTime = new Date(date_now.getFullYear(), date_now.getMonth(), date_now.getDate(),0,0,0);
+        }
+        if(!hasValue(endTime)) {
+            endTime = new Date(date_now.getFullYear(), date_now.getMonth(), date_now.getDate(),24,0,0);
+        }
+        // check time
+        var hours = (endTime.getTime() - startTime.getTime())/(1000*60*60);
+        if(hours<max_hour_diffrence) {
+            result = false;
+            showErrorMessage(TimeDiffrenceBRMsg, true);
+        }
+        
+        var now = new Date();
+        now.setHours(0, 0, 0, 0);
+        //reset dates
+        if (startDate != null) {
+            startDate.setHours(0, 0, 0, 0);
+        }
+        if (endDate != null) {
+            endDate.setHours(23, 59, 59, 0);
+        }
+        //check if the client changed the start date
+        //check is start date is less than the current date
+        if ((startDateChanged) && (startDate != null) && (startDate < now)) {
+            showErrorMessage(startDateBeforeNowBRMsg, true);
+            result = false;
+        }
+        //check is end date is less than the current date
+        if ((endDate != null) && (endDate < now)) {
+            showErrorMessage(endDateBeforeNowBRMsg, true);
+            result = false;
+        }
+
+        //check is end date is less than the start date
+        if ((endDate != null) && (startDate > endDate)) {
+            showErrorMessage(endDateBeforeStartDateBRMsg, true);
+            result = false;
+        }
+        return result;
+    };
+
+    jQuery(document).ready(function () {
+
+        SetSelectedTap("ListMenuPublisher");
+    });
+</script>
+@using (Html.BeginForm())
+{
+    <div class="data-row section-container">
+        <br />
+		<div class="data-row section-container">
+			<ol class="steps">
+				<li class="steps__item steps__item--first steps__item--active">
+					<span class="steps__link">
+						<span class="fa">
+							<img src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIj8+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgd2lkdGg9IjUxMnB4IiBoZWlnaHQ9IjUxMnB4Ij48dGl0bGU+Y2FtcGFpZ24gPC90aXRsZT48cGF0aCBkPSJNMjgzLjA2OSw0NC4wNjlhNiw2LDAsMCwwLDQuMjQzLTEwLjI0M0wyNjAuMjQyLDYuNzU3YTYsNiwwLDAsMC04LjQ4NCwwbC0yNy4wNywyNy4wNjlhNiw2LDAsMCwwLDguNDg1LDguNDg1bDE1Ljg3LTE1Ljg2OVY3Ny4wMzVhNiw2LDAsMCwwLDEyLDBWMjUuMzU1YTUuOTY2LDUuOTY2LDAsMCwwLS4wNzUtLjlsMTcuODU5LDE3Ljg1OEE1Ljk3OSw1Ljk3OSwwLDAsMCwyODMuMDY5LDQ0LjA2OVoiIGZpbGw9IiMwMDAwMDAiLz48cGF0aCBkPSJNMjI0LjY4OCw0NjkuNjg4YTYsNiwwLDAsMCwwLDguNDg2bDI3LjA3LDI3LjA2OWE2LDYsMCwwLDAsOC40ODQsMGwyNy4wNy0yNy4wNjlhNiw2LDAsMCwwLTguNDg1LTguNDg2bC0xNS44NywxNS44N1Y0MzQuOTY1YTYsNiwwLDAsMC0xMiwwdjUxLjY3OWE1Ljk2OCw1Ljk2OCwwLDAsMCwuMDc1LjlsLTE3Ljg1OS0xNy44NTlBNiw2LDAsMCwwLDIyNC42ODgsNDY5LjY4OFoiIGZpbGw9IiMwMDAwMDAiLz48cGF0aCBkPSJNNDIuMzEyLDI3OC44MjZsLTE1Ljg3LTE1Ljg2OUg3Ny4wMzVhNiw2LDAsMCwwLDAtMTJIMjUuMzU1YTUuOTY2LDUuOTY2LDAsMCwwLS45LjA3NWwxNy44NTktMTcuODU4YTYsNiwwLDEsMC04LjQ4NS04LjQ4Nkw2Ljc1OCwyNTEuNzU3YTYsNiwwLDAsMCwwLDguNDg2bDI3LjA2OSwyNy4wNjhhNiw2LDAsMCwwLDguNDg1LTguNDg1WiIgZmlsbD0iIzAwMDAwMCIvPjxwYXRoIGQ9Ik01MDUuMjQyLDI1MS43NTdsLTI3LjA2OS0yNy4wNjlhNiw2LDAsMSwwLTguNDg1LDguNDg2bDE1Ljg3LDE1Ljg2OUg0MzQuOTY1YTYsNiwwLDAsMCwwLDEyaDUxLjY4YTYuMSw2LjEsMCwwLDAsLjktLjA3NWwtMTcuODU5LDE3Ljg1OGE2LDYsMCwxLDAsOC40ODUsOC40ODVsMjcuMDY5LTI3LjA2OGE2LDYsMCwwLDAsMC04LjQ4NloiIGZpbGw9IiMwMDAwMDAiLz48cGF0aCBkPSJNMTI3LjA0LDgyLjc1OWE2LDYsMCwwLDAtNi02SDgyLjc1OWE2LDYsMCwwLDAtNiw2VjEyMS4wNGE2LDYsMCwwLDAsMTIsMFY5OC42bDM1Ljc3NSwzNS43NzVhNiw2LDAsMCwwLDguNDg1LTguNDg1TDk2LjQ3Niw4OS4zNDRhNS45NjQsNS45NjQsMCwwLDAtLjcxNi0uNTg1aDI1LjI4QTYsNiwwLDAsMCwxMjcuMDQsODIuNzU5WiIgZmlsbD0iIzAwMDAwMCIvPjxwYXRoIGQ9Ik00MjkuMjQxLDM4NC45NmE2LDYsMCwwLDAtNiw2VjQxMy40bC0zNS43NzUtMzUuNzc1YTYsNiwwLDAsMC04LjQ4NSw4LjQ4NWwzNi41NDMsMzYuNTQzYTUuOTY0LDUuOTY0LDAsMCwwLC43MTYuNTg1SDM5MC45NmE2LDYsMCwwLDAsMCwxMmgzOC4yODFhNiw2LDAsMCwwLDYtNlYzOTAuOTZBNiw2LDAsMCwwLDQyOS4yNDEsMzg0Ljk2WiIgZmlsbD0iIzAwMDAwMCIvPjxwYXRoIGQ9Ik00MzUuMjQxLDEyMS4wNFY4Mi43NTlhNiw2LDAsMCwwLTYtNkgzOTAuOTZhNiw2LDAsMCwwLDAsMTJINDEzLjRsLTM1Ljc3NSwzNS43NzRhNiw2LDAsMSwwLDguNDg0LDguNDg1bDM2LjU0NC0zNi41NDNhNS44MTEsNS44MTEsMCwwLDAsLjU4NS0uNzE2VjEyMS4wNGE2LDYsMCwwLDAsMTIsMFoiIGZpbGw9IiMwMDAwMDAiLz48cGF0aCBkPSJNMTM0LjM3MywzNzguOTgxYTYsNiwwLDAsMC04LjQ4NSwwTDg5LjM0NCw0MTUuNTI0YTUuOTY0LDUuOTY0LDAsMCwwLS41ODUuNzE2VjM5MC45NmE2LDYsMCwwLDAtMTIsMHYzOC4yODFhNiw2LDAsMCwwLDYsNkgxMjEuMDRhNiw2LDAsMCwwLDAtMTJIOTguNmwzNS43NzUtMzUuNzc0QTYsNiwwLDAsMCwxMzQuMzczLDM3OC45ODFaIiBmaWxsPSIjMDAwMDAwIi8+PHBvbHlnb24gcG9pbnRzPSIzNDYuMjI5IDE0MC40OTUgMjE5LjI3MSAxOTEuMjc4IDIxOS4yNzEgMjg4LjA2NyAzNDYuMjI5IDMzOC44NDkgMzQ2LjIyOSAxNDAuNDk1IiBmaWxsPSIjMDAwMDAwIi8+PHJlY3QgeD0iMTk3LjAzNyIgeT0iMTkzLjIxNiIgd2lkdGg9IjEwLjIzMyIgaGVpZ2h0PSI5Mi45MTMiIGZpbGw9IiMwMDAwMDAiLz48cGF0aCBkPSJNMTg1LjAzNywyODYuMTI5VjE5My4yMTZIMTQzLjc5MkEyMS44MTYsMjEuODE2LDAsMCwwLDEyMiwyMTUuMDA4djQ5LjMzYTIxLjgxNiwyMS44MTYsMCwwLDAsMjEuNzkyLDIxLjc5MVoiIGZpbGw9IiMwMDAwMDAiLz48cGF0aCBkPSJNMzkwLDIzNy45MzVhMzAuODU5LDMwLjg1OSwwLDAsMC0zMC44MjQtMzAuODIzaC0uOTQ3djYxLjY0N2guOTQ3QTMwLjg1OSwzMC44NTksMCwwLDAsMzkwLDIzNy45MzVaIiBmaWxsPSIjMDAwMDAwIi8+PHBhdGggZD0iTTE3OS43NCwzNzQuMzY3YTIxLjEyOSwyMS4xMjksMCwwLDAsMjAuMzY4LTI2Ljc0MWwtMTMuNjQxLTQ5LjVIMTQzLjc5MmMtLjM5LDAtLjc3Ni0uMDE3LTEuMTYzLS4wM2wxNi43NDMsNjAuNzU0QTIxLjE4NSwyMS4xODUsMCwwLDAsMTc5Ljc0LDM3NC4zNjdaIiBmaWxsPSIjMDAwMDAwIi8+PC9zdmc+Cg==" width="20" height="20" />
+						</span>
+						@Html.GetResource("HouseAd", "Titles")
+					</span>
+				</li>
+				<li class="steps__item steps__item--done">
+					<span class="steps__link">
+						<span class="fa">
+							<img src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjUxMnB4IiBoZWlnaHQ9IjUxMnB4IiB2aWV3Qm94PSIwIDAgNDcuMDAyIDQ3LjAwMiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDcuMDAyIDQ3LjAwMjsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8Zz4KCTxnIGlkPSJMYXllcl8xXzE2MV8iPgoJCTxnPgoJCQk8cGF0aCBkPSJNNDUuMTkxLDIxLjY5MmgtMS44OTRjLTAuODYyLTkuNTI0LTguNDY3LTE3LjEyOC0xNy45OTEtMTcuOTkxVjEuODA5QzI1LjMwOSwwLjgxMSwyNC40OTgsMCwyMy41LDAgICAgIHMtMS44MDgsMC44MS0xLjgwOCwxLjgwOHYxLjg5NGMtOS41MjQsMC44NjItMTcuMTI4LDguNDY2LTE3Ljk5MSwxNy45OUgxLjgwOEMwLjgxLDIxLjY5MiwwLDIyLjUwMiwwLDIzLjUgICAgIHMwLjgxLDEuODA5LDEuODA4LDEuODA5aDEuODk0YzAuODYzLDkuNTIzLDguNDY3LDE3LjEyNywxNy45OTEsMTcuOTl2MS44OTVjMCwwLjk5OCwwLjgxLDEuODA4LDEuODA4LDEuODA4ICAgICBzMS44MDgtMC44MSwxLjgwOC0xLjgwOHYtMS44OTVjOS41MjQtMC44NjMsMTcuMTI5LTguNDY3LDE3Ljk5MS0xNy45OWgxLjg5NGMwLjk5OCwwLDEuODA5LTAuODExLDEuODA5LTEuODA5ICAgICBTNDYuMTg5LDIxLjY5Miw0NS4xOTEsMjEuNjkyeiBNMjEuNjkyLDcuMzM4djEuN2MwLDAuOTk5LDAuODEsMS44MDgsMS44MDgsMS44MDhzMS44MDktMC44MDksMS44MDktMS44MDh2LTEuNyAgICAgYzYuNTI1LDAuNzI2LDExLjg5Niw1LjMyMywxMy43NTYsMTEuNDM5Yy0zLjUxNi0yLjc1Ny05LjEyNS02LjEyMy0xNS41NjQtNi4xMjNjLTYuNDQsMC0xMi4wNDksMy4zNjYtMTUuNTY1LDYuMTIzICAgICBDOS43OTUsMTIuNjYyLDE1LjE2Niw4LjA2MywyMS42OTIsNy4zMzh6IE0xNi4yNjksMjMuNWMwLTMuOTg3LDMuMjQ0LTcuMjMsNy4yMzEtNy4yM2MzLjk4NiwwLDcuMjMsMy4yNDMsNy4yMyw3LjIzICAgICBjMCwzLjk4Ni0zLjI0NCw3LjIzLTcuMjMsNy4yM0MxOS41MTMsMzAuNzMxLDE2LjI2OSwyNy40ODcsMTYuMjY5LDIzLjV6IE0xMy40NzUsMjcuNjI5Yy0yLjQxMi0xLjQzNi00LjMzNy0zLjA1Ny01LjQ5Mi00LjEzMiAgICAgYzEuMTU1LTEuMDc3LDMuMDgxLTIuNzAxLDUuNDk3LTQuMTM5Yy0wLjUzLDEuMjc3LTAuODI2LDIuNjc2LTAuODI2LDQuMTQyQzEyLjY1NCwyNC45NjIsMTIuOTQ4LDI2LjM1NiwxMy40NzUsMjcuNjI5eiAgICAgIE0zMy41MjUsMTkuMzcyYzIuNDEyLDEuNDM2LDQuMzM2LDMuMDU3LDUuNDkyLDQuMTMyYy0xLjE1NiwxLjA3Ny0zLjA4MiwyLjcwMS01LjQ5OCw0LjE0YzAuNTMtMS4yNzcsMC44MjYtMi42NzcsMC44MjYtNC4xNDMgICAgIEMzNC4zNDYsMjIuMDM5LDM0LjA1MiwyMC42NDYsMzMuNTI1LDE5LjM3MnogTTI1LjMwOSwzOS42NjN2LTEuN2MwLTAuOTk5LTAuODExLTEuODA4LTEuODA5LTEuODA4cy0xLjgwOCwwLjgwOS0xLjgwOCwxLjgwOHYxLjcgICAgIGMtNi41MjYtMC43MjctMTEuODk3LTUuMzIzLTEzLjc1Ny0xMS40MzljMy41MTYsMi43NTgsOS4xMjUsNi4xMjMsMTUuNTY1LDYuMTIzYzYuNDM5LDAsMTIuMDQ5LTMuMzY1LDE1LjU2NC02LjEyMyAgICAgQzM3LjIwNSwzNC4zMzksMzEuODM0LDM4LjkzOCwyNS4zMDksMzkuNjYzeiIgZmlsbD0iIzAwMDAwMCIvPgoJCQk8Y2lyY2xlIGN4PSIyMy41IiBjeT0iMjMuNSIgcj0iNC41MiIgZmlsbD0iIzAwMDAwMCIvPgoJCTwvZz4KCTwvZz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K" width="20" height="20" />
+						</span>
+						@Html.GetResource("AdGroupObjective", "Titles")
+					</span>
+				</li>
+				<li class="steps__item steps__item--done">
+					<span class="steps__link">
+						<span class="fa fa-users"></span>
+						@Html.GetResource("TargetingAndAudience", "Titles")
+					</span>
+				</li>
+				<li class="steps__item steps__item--done steps__item--last">
+					<span class="steps__link">
+						<span class="fa">
+							<img src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIj8+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBoZWlnaHQ9IjUxMnB4IiB2aWV3Qm94PSIwIDAgNDk2IDQ5NiIgd2lkdGg9IjUxMnB4Ij48cGF0aCBkPSJtNDg4IDE0My45OTYwOTRoLTEyOHYtMTM2YzAtMi40OTYwOTQtMS4xNjc5NjktNC44Mzk4NDQtMy4xNDQ1MzEtNi4zNjMyODItMS45NzY1NjMtMS41MTE3MTgtNC41NDI5NjktMi02Ljk2MDkzOC0xLjM1OTM3NGwtMTc0Ljk2NDg0MyA0Ny43MjI2NTZoLTMwLjkyOTY4OGMtNC40MTQwNjIgMC04IDMuNTc0MjE4LTggOHY2NGMwIDQuNDIxODc1IDMuNTg1OTM4IDggOCA4aDI0djE2aC0xNjBjLTQuNDE0MDYyIDAtOCAzLjU3NDIxOC04IDh2MjU2YzAgNC40MjE4NzUgMy41ODU5MzggOCA4IDhoMTkydjMyaC00MGMtMjIuMDU0Njg4IDAtNDAgMTcuOTQxNDA2LTQwIDQwIDAgNC40MjE4NzUgMy41ODU5MzggOCA4IDhoMjQwYzQuNDE0MDYyIDAgOC0zLjU3ODEyNSA4LTggMC0yMi4wNTg1OTQtMTcuOTQ1MzEyLTQwLTQwLTQwaC00MHYtMzJoMTkyYzQuNDE0MDYyIDAgOC0zLjU3ODEyNSA4LTh2LTI1NmMwLTQuNDI1NzgyLTMuNTg1OTM4LTgtOC04em0tMzA0LTEzLjUzMTI1IDE2IDQuMzYzMjgxdjQxLjE2Nzk2OWgtMTZ6bTAtMTYuNTgyMDMydi01MS43NzczNDNsMTYwLTQzLjYyODkwN3YxMzkuMDM5MDYzem0tMzItNDkuODg2NzE4aDE2djQ4aC0xNnptMjA2LjYzMjgxMiA0MTZoLTIyMS4yNjU2MjRjMy4zMDQ2ODctOS4zMTI1IDEyLjE5OTIxOC0xNiAyMi42MzI4MTItMTZoMTc2YzEwLjQzMzU5NCAwIDE5LjMyODEyNSA2LjY4NzUgMjIuNjMyODEyIDE2em0tNzguNjMyODEyLTMyaC02NHYtMzJoNjR6bTIwMC00OGgtNDY0di0yNDBoMTUydjI0YzAgNC40MjE4NzUgMy41ODU5MzggOCA4IDhoMzJjNC40MTQwNjIgMCA4LTMuNTc4MTI1IDgtOHYtOGgxNnYtMTZoLTE2di0yMC44MDA3ODJsMTMzLjg5NDUzMSAzNi41MTk1MzJjLjY5OTIxOS4xODM1OTQgMS40MDIzNDQuMjgxMjUgMi4xMDU0NjkuMjgxMjUgMS43MzQzNzUgMCAzLjQ0OTIxOS0uNTYyNSA0Ljg1NTQ2OS0xLjY0MDYyNSAxLjk3NjU2Mi0xLjUxOTUzMSAzLjE0NDUzMS0zLjg2MzI4MSAzLjE0NDUzMS02LjM1OTM3NXYtOGgxMjB6bTAgMCIgZmlsbD0iIzAwMDAwMCIvPjxwYXRoIGQ9Im0zNzYgNjMuOTk2MDk0aDQ4djE2aC00OHptMCAwIiBmaWxsPSIjMDAwMDAwIi8+PHBhdGggZD0ibTM3My4wMTE3MTkgMzIuNTU4NTk0IDM5Ljk5NjA5My0xNi4wMDM5MDYgNS45NDUzMTMgMTQuODYzMjgxLTM5Ljk5NjA5NCAxNi4wMDM5MDZ6bTAgMCIgZmlsbD0iIzAwMDAwMCIvPjxwYXRoIGQ9Im0zNzMuMDMxMjUgMTExLjQxNDA2MiA1Ljk0NTMxMi0xNC44NjMyODEgNDAgMTYtNS45NDUzMTIgMTQuODYzMjgxem0wIDAiIGZpbGw9IiMwMDAwMDAiLz48cGF0aCBkPSJtMjA4IDMwMy45OTYwOTRoMTZ2MzJoMTZ2LTg4YzAtNC40MjU3ODItMy41ODU5MzgtOC04LThoLTMyYy00LjQxNDA2MiAwLTggMy41NzQyMTgtOCA4djg4aDE2em0xNi00OHYzMmgtMTZ2LTMyem0wIDAiIGZpbGw9IiMwMDAwMDAiLz48cGF0aCBkPSJtMjY0IDMzNS45OTYwOTRoMzJjNC40MTQwNjIgMCA4LTMuNTc4MTI1IDgtOHYtODhoLTE2djQ4aC0yNGMtNC40MTQwNjIgMC04IDMuNTc0MjE4LTggOHYzMmMwIDQuNDIxODc1IDMuNTg1OTM4IDggOCA4em04LTMyaDE2djE2aC0xNnptMCAwIiBmaWxsPSIjMDAwMDAwIi8+PHBhdGggZD0ibTMyOCAyMDcuOTk2MDk0aC0xNjBjLTQuNDE0MDYyIDAtOCAzLjU3NDIxOC04IDh2MTQ0YzAgNC40MjE4NzUgMy41ODU5MzggOCA4IDhoMTYwYzQuNDE0MDYyIDAgOC0zLjU3ODEyNSA4LTh2LTE0NGMwLTQuNDI1NzgyLTMuNTg1OTM4LTgtOC04em0tOCAxNDRoLTE0NHYtMTI4aDE0NHptMCAwIiBmaWxsPSIjMDAwMDAwIi8+PHBhdGggZD0ibTQ4IDMzNS45OTYwOTRoLTE2djQwYzAgNC40MjE4NzUgMy41ODU5MzggOCA4IDhoNDB2LTE2aC0zMnptMCAwIiBmaWxsPSIjMDAwMDAwIi8+PHBhdGggZD0ibTMyIDE4My45OTYwOTR2NDBoMTZ2LTMyaDMydi0xNmgtNDBjLTQuNDE0MDYyIDAtOCAzLjU3NDIxOC04IDh6bTAgMCIgZmlsbD0iIzAwMDAwMCIvPjxwYXRoIGQ9Im00NDggMjIzLjk5NjA5NGgxNnYtNDBjMC00LjQyNTc4Mi0zLjU4NTkzOC04LTgtOGgtNDB2MTZoMzJ6bTAgMCIgZmlsbD0iIzAwMDAwMCIvPjxwYXRoIGQ9Im00NTYgMzgzLjk5NjA5NGM0LjQxNDA2MiAwIDgtMy41NzgxMjUgOC04di00MGgtMTZ2MzJoLTMydjE2em0wIDAiIGZpbGw9IiMwMDAwMDAiLz48L3N2Zz4K" width="20" height="20" />
+						</span>
+						@Html.GetResource("AdCreation", "Titles")
+					</span>
+				</li>
+			</ol>
+
+			<h2>@Html.GetResource("Campaigninfo", "Titles")</h2>
+
+			<div class="section-form-container">
+				<div class="section-form-inner-container">
+					<div class="data-row data-container">
+						<div class="label-container">
+							<span class="field-title required-field">@Html.GetResource("CampaignName", "Campaign")</span>
+						</div>
+						<div class="field-container">
+							@Html.AdFalconEditorFor(p => p.Name)
+							<span style="display: inline-block; margin-left: 29px; margin-right: 29px;">@Html.AdFalconValidationMessageFor(p => p.Name)</span>
+						</div>
+					</div>
+					<div class="data-row data-container">
+						<div class="label-container">
+							<span class="field-title required-field">
+								@Html.GetResource("StartDate", "Campaign")
+						</span>
+					</div>
+					<div class="field-container  required-field iea-text-calender-margin">
+						@Html.AdFalconTextBox("StartDate", Model != null && Model.StartDate != null ? Model.StartDate.ToString(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.MainShortDateFormat) : "", new { @readonly = "readonly" })
+					</div>
+					@Html.AdFalconValidationMessageFor(p => p.StartDate)
+				</div>
+				<div class="data-row data-container">
+					<div class="label-container">
+						<span class="field-title">@Html.GetResource("EndDate", "Campaign")</span>
+					</div>
+					<div class="field-container">
+						@Html.AdFalconTextBox("EndDate", Model != null && Model.EndDate.HasValue ? Model.EndDate.Value.ToString(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.MainShortDateFormat) : "", new { @readonly = "readonly" })
+					</div>
+				</div>
+				<div class="data-row data-container">
+					<div class="label-container">
+						<span class="field-title">@Html.GetResource("StartTime", "Campaign")</span>
+					</div>
+					<div class="field-container">
+						@await Html.PartialAsync("TimeControl", new TimeViewModel { Name = "StartTime", Hour = Model != null && Model.StartTime.HasValue ? Model.StartTime.Value.Hour : (int?)null, Min = Model != null && Model.StartTime.HasValue ? Model.StartTime.Value.Minute : (int?)null })
+					</div>
+				</div>
+				<div class="data-row data-container">
+					<div class="label-container">
+						<span class="field-title">@Html.GetResource("EndTime", "Campaign")</span>
+					</div>
+					<div class="field-container">
+						@await Html.PartialAsync("TimeControl", new TimeViewModel { Name = "EndTime", Hour = Model != null && Model.EndTime.HasValue ? Model.EndTime.Value.Hour : (int?)null, Min = Model != null && Model.EndTime.HasValue ? Model.EndTime.Value.Minute : (int?)null })
+					</div>
+				</div>
+				<div class="data-row data-container">
+					<div class="label-container">
+						<span class="field-title ">@Html.GetResource("Note", "Campaign") </span>
+					</div>
+					<div class="field-container">
+						@Html.TextAreaFor(p => p.Note, new { @class = "text-box", rows = 5, cols = 5 })
+						@Html.AdFalconValidationMessageFor(p => p.Note)
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="section-footer">
+		</div>
+		</div>
+        <div class="data-row button-container">
+            @if ((Model == null) || (Model.ID == 0))
+            {<input type="submit" value="@Html.GetResource("Continue", "Commands")" name="Continue" class="continue-button" onclick="return customValidate();" />}
+            <input type="submit" value="@Html.GetResource("Save", "Commands")" name="Create" class="primary-btn" onclick="return customValidate();"  />
+            <input  type="button" value='@Html.GetResource("Close", "Commands")' class="btn" onclick="    redirect('@(string.IsNullOrWhiteSpace(Context.Request.Query["returnUrl"]) ? Url.Action("Index", "HouseAd") : Context.Request.Query["returnUrl"].ToString())')"/>
+        </div>
+    </div>
+}

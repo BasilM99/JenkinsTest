@@ -1,0 +1,708 @@
+﻿@{
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+}
+<script language="javascript">
+
+
+    var result = false;
+    var ischecked = false;
+    var yesbtn = "@Html.GetResource("Yes", "Global")";
+    var nobtn = "@Html.GetResource("No", "Global")";
+    var ConfriamtionBoxTitle = "@Html.GetResource("Confirm")";
+    var close = "@Html.GetResource("Close","Commands")";
+	var rename = "@Html.GetResource("Rename", "Commands")";
+
+    var AdvertiserRequired = "@Html.GetResource("AdvertiserRequired", "Advertiser")";
+    var NameRequired = "@Html.GetResource("RequiredName")";
+    var RequiredDomain = "@Html.GetResource("RequiredDomain")";
+	var RequiredBundle = "@Html.GetResource("RequiredBundle")";
+	var ValidRequiredBundle = "@Html.GetResource("ValidRequiredBundle")";
+	
+
+
+    var RequiredType = "@Html.GetResource("RequiredType")";
+    var ValidDomainUrl = "@Html.GetResource("ValidDomain" , "Global")";
+    var TypeRequired = "@Html.GetResource("DestinationAppSitesRequiredMsg", "Msgs")";
+
+    var selectedName = "";
+    var selectednumber = 0;
+    var text;
+    var direction = "left";
+
+    var LinkId = @Html.Raw(Json.Encode(ViewData["LinkId"]));
+
+
+    jQuery(document).ready(function () {
+
+        SetSelectedTap("ListMenuAdvertiser");
+
+		$("#addAdvertiserAccountEventDialog").dialog({
+			autoOpen: false,
+			width: 500,
+			modal: true,
+			resizable: false,
+			draggable: false,
+			open: function(){
+				clearErrorMessage("party-divErrorMessages");
+				countcallAdv = 0;
+			},
+			//position: { my: "center top", at: "center top"},
+            buttons: [{
+
+                text: '@Html.GetResource("Save", "Commands")',
+                "class": 'primary-btn',
+
+                click: function () {
+                    SaveAdvertiser();
+                }
+            }
+            ]
+        });
+    });
+
+
+    function checked() {
+        $('input').each(function () {
+
+            if ($(this).is(':checked')) {
+
+                var name = $(this).eq(0).parent().parent().find(".grid-title-container.floating-left").children().text().trim();
+
+                if (name.length > 30)
+                    name = name.substring(0, 30) + "..";
+                ischecked = true;
+                @{
+                    if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage=="ar")
+                    {
+
+                        <text>
+
+                selectedName += "<span style='float:" + direction + ";'>" + name + "-</span><br>";
+
+                </text>
+
+                    }else
+                    {
+                        <text>
+                selectedName += "<span style='float:" + direction + ";'>" + "-" + name + "</span><br>";
+                </text>
+                    }
+
+                }
+            }
+        });
+        return ischecked;
+    }
+
+    function popup(sender, SelectConfirmation, Confirmation) {
+
+        selectedName = "";
+        selectednumber = 0;
+        if (checked()) {
+            if (!result) {
+
+
+                jQuery('<div id ="ConfirmationDialog" style="min-width: 200px;" title="' + ConfriamtionBoxTitle + '"></div>').dialog({
+
+                    open: function () {
+                        text = Confirmation.format($("#MainHeader span").html().trim()) + " <br><br> <div style='float: " + direction + ";'>" + selectedName + "</div>";
+                        $(this).html(text);
+
+                    },
+                    close: function () {
+                        $(this).remove();
+                    },
+                    resizable: false,
+                    draggable: false,
+                    showCloseButton: false,
+                    buttons: [
+                 {
+                     text: yesbtn,
+                     click: function () {
+                         $(this).dialog("close");
+                         result = true;
+                         $(sender).click();
+                     }
+                 },
+                 {
+                     text: nobtn,
+                     click: function () {
+                         $(this).dialog('close');
+                         result = false;
+                     }
+                 }
+                    ],
+                    modal: true,
+
+                });
+
+
+
+            }
+        } else {
+            jQuery('<div id = "NoCampaignsareSelected"></div>').dialog({
+
+                open: function (event, ui) {
+                    $(this).html(SelectConfirmation);
+                },
+                close: function () {
+                    result = false;
+
+                    $(this).remove();
+                },
+                resizable: false,
+                draggable: false,
+                modal: true,
+            });
+
+        }
+        ischecked = false;
+        return result;
+    }
+
+
+    var campaignId = '@Html.ViewContext.RouteData.Values["id"]';
+    var adGroupId = '@Html.ViewContext.RouteData.Values["adGroupId"]';
+    var gridItemId = 0;
+    var ok_text = '@Html.GetResource("Ok", "Commands")';
+    var service_url = null;
+    var service_callback = null;
+    function callService(item, callback) {
+
+        gridToolTip.hide();
+        $('[name="valueRequiredErrorMsg"]').hide();
+        $('[name="MaxValueErrorMsg"]').hide();
+
+        $('[name="clone_name"]').val(jQuery(item).attr("item_extra_info"))
+        service_url = jQuery(item).attr("href2");
+        service_callback = callback;
+        if (jQuery(item).attr("type") == '@Noqoush.AdFalcon.Web.Controllers.Model.AjaxType.rename') {
+            $('#ui-dialog-title-new-name-dialog-form').text(rename);
+            $('#ui-dialog-title-dialog-form').text(rename);
+
+            $('#new-name-dialog-form').dialog('option', 'title', rename);
+
+            service_url += "&CampiagnId=" + campaignId;
+        } else {
+            $('#ui-dialog-title-new-name-dialog-form').text('@Html.GetResource("Clone", "Commands")');
+            $('#ui-dialog-title-dialog-form').text('@Html.GetResource("Clone", "Commands")');
+            $('#new-name-dialog-form').dialog('option', 'title', '@Html.GetResource("Clone", "Commands")');
+
+        }
+        $('#new-name-dialog-form').dialog('open');
+    }
+    function old_callService(item, callback) {
+        gridToolTip.hide();
+        var url = jQuery(item).attr("href2");
+
+    }
+    function localInitilize() {
+        jQuery('input[data-date="true"]')
+            .daterangepicker({
+                dateFormat: '@Noqoush.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat'
+                , onChange: generateCampaignGrid(),
+            });
+        jQuery("#dialog-form").dialog({
+            autoOpen: false,
+            // height: 150,
+            width: 400,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            close: function () {
+            }
+        });
+
+
+        jQuery("#new-name-dialog-form").dialog({
+            autoOpen: false,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            buttons:
+                   [{
+
+                       text: '@Html.GetResource("Save")',
+                       click: function () {
+                           var new_name = $('[name="clone_name"]').val();
+                           if (!hasValue(new_name)) {
+                               $('[name="valueRequiredErrorMsg"]').show();
+                               return;
+                           }
+                           else {
+                               if (new_name.length > 255) {
+                                   $('[name="MaxValueErrorMsg"]').show();
+                                   return;
+                               }
+                           }
+                           var url = service_url + '?name=' + encodeURIComponent(new_name);
+                           if (service_url.indexOf('?') > -1) {
+                               url = service_url + '&name=' + encodeURIComponent(new_name);
+                           }
+
+                           jQuery.ajax(
+                                       {
+                                           dataType: "json",
+                                           contentType: 'application/json; charset=utf-8',
+                                           type: "POST",
+                                           //data: prams,
+                                           url: url,
+                                           success: function (result) {
+                                               jQuery.globalEval(callback);
+                                               jQuery('#dialogText').text(error.responseText);
+                                               jQuery('#dialog-form').dialog('open');
+                                           },
+                                           error: function (error) {
+                                               if (error.status == "200") {
+                                                   jQuery.globalEval(service_callback);
+                                               }
+                                               jQuery('#dialogText').text(error.responseText);
+                                               jQuery('#dialog-form').dialog('open');
+                                           }
+                                       });
+                           jQuery(this).dialog("close");
+                       },
+                       "class": 'primary-btn',
+
+                   }]
+
+        });
+    };
+    function refreshCampaignGrid() {
+        RefrashGrid('Grid');
+    }
+    function generateCampaignGrid() {
+        var grid = $("#Grid").data("tGrid");
+
+        if (typeof (grid) != "undefined") {
+            grid.rebind();
+
+        }
+    };
+    function AccountAdvertisersGridDataBinding(args) {
+
+        args.data = $.extend(args.data,
+            {
+				Domain: $('#DomainSrch').val(),
+				BundleId: $('#BundleSrch').val(),
+				Name: $('#Name').val(),
+				TypeId: $('input[name=TypeId]:checked').val(),
+				//showArchived: typeof ($("#showArchived").attr("checked")) != "undefined" && $("#showArchived").attr("checked") == "checked"
+            });
+
+    };
+    function AccountAdvertisersGridDataBound(e) {
+
+        var grid = $("#Grid").data("tGrid");
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(1);
+        }
+
+
+
+    };
+
+    function showfilter() {
+
+        if ($("#advfilterCamp").hasClass('maximize')) {
+
+            $("#advfilterCamp").attr("class", "minimize AdvanceFilterIcon");
+        }
+        else {
+
+            $("#advfilterCamp").attr("class", "maximize AdvanceFilterIcon");
+        }
+    }
+
+    function AddAdvertiser() {
+
+        $("#addAdvertiserAccountEventDialog").dialog("open");
+        Radio_uncheck("App");
+        Radio_uncheck("Site");
+        $("#DomainUrl").hide();
+        $("#BundleId").hide();
+        clearDialog("addAdvertiserAccountEventDialog");
+
+    }
+
+    function AdvertisersChanged(event, item) {
+
+
+        if ((typeof (item) != "undefined") && (item != null)) {
+
+            $('[name="AdvertiserId"]').val(item.ID);
+        }
+        else {
+            $('[name="AdvertiserId"]').val('');
+        }
+        clearErrorMessage("party-divErrorMessages");
+
+        $('input[id="CustomName"]').val($('input[id="Advertisers_Name"]').val());
+    }
+    var SaveAdvertiserUrl = '@Url.Action("SaveMasterAppSiteItems", "Campaign")';
+    var countcallAdv = 0;
+
+
+    function SaveAdvertiser() {
+  
+		if (countcallAdv > 0) {
+			return;
+
+		}
+		else {
+
+
+			countcallAdv++;
+		}
+
+        //debugger;
+
+            
+                if ($('[name="CustomName"]').val() != "")
+                {
+                    if ($('[name="Type"]').is(':checked')) {
+                        if ($('input[name="Type"]:checked').val() == "2") 
+                        {
+                            if ($('[name="Domain"]').val() != "") {
+
+                              
+								if (isDomainURL()) {
+
+                                    //debugger;
+                                    var selectedType = $('input[name="Type"]:checked').val();
+                                    var Domain = $('[name="Domain"]').val()
+                                    var BundleID = $('[name="Bundle"]').val()
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: SaveAdvertiserUrl + "?AppSiteName=" + $('input[id="CustomName"]').val() + "&Type=" + selectedType + "&LinkId=" + LinkId + "&Domain=" + Domain + "&BundleID=" + BundleID,
+                                        cache: false,
+                                        success: function (data) {
+                                            if (data.status == "success") {
+
+                                                //refreshCampaignGrid();
+
+                                                $("#addAdvertiserAccountEventDialog").dialog("close");
+                                               
+                                                
+
+												refreshCampaignGrid();
+                                            } else if (data.status == "businessException") {
+                                                showErrorMessage(data.Message, true, "party-divErrorMessages");
+
+                                            } else {
+                                                showErrorMessage(data.Message, true, "party-divErrorMessages");
+
+                                            }
+                                            countcallAdv = 0;
+                                        },
+                                        error: function (data) {
+                                            //alert("Somthing went worng please contact the admin");
+                                            showErrorMessage(data.Message, true, "party-divErrorMessages");
+                                            countcallAdv = 0;
+                                        }
+                                    });
+                                }
+                                else {
+                                    showErrorMessage(ValidDomainUrl, true, "party-divErrorMessages");
+                                    countcallAdv = 0;
+                                }
+                            }
+                            else {
+                                showErrorMessage(RequiredDomain, true, "party-divErrorMessages");
+                                countcallAdv = 0;
+                            }
+                        }
+                        else
+                        {
+                            if ($('[name="Bundle"]').val() != "") {
+                                if (isBundle($('[name="Bundle"]').val())) {
+                                    var selectedType = $('input[name="Type"]:checked').val();
+                                    var Domain = $('[name="Domain"]').val()
+                                    var BundleID = $('[name="Bundle"]').val()
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: SaveAdvertiserUrl + "?AppSiteName=" + $('input[id="CustomName"]').val() + "&Type=" + selectedType + "&LinkId=" + LinkId + "&Domain=" + Domain + "&BundleID=" + BundleID,
+                                        cache: false,
+                                        success: function (data) {
+                                            if (data.status == "success") {
+
+                                                //refreshCampaignGrid();
+
+                                                $("#addAdvertiserAccountEventDialog").dialog("close");
+
+
+                                                refreshCampaignGrid();
+                                            } else if (data.status == "businessException") {
+                                                showErrorMessage(data.Message, true, "party-divErrorMessages");
+
+                                            } else {
+                                                showErrorMessage(data.Message, true, "party-divErrorMessages");
+
+                                            }
+                                            countcallAdv = 0;
+                                        },
+                                        error: function (data) {
+                                            //alert("Somthing went worng please contact the admin");
+                                            showErrorMessage(data.Message, true, "party-divErrorMessages");
+                                            countcallAdv = 0;
+                                        }
+                                    });
+                                }
+                                else {
+									showErrorMessage(ValidRequiredBundle, true, "party-divErrorMessages");
+                                    countcallAdv = 0;
+                                }
+                            }
+                            else {
+                                showErrorMessage(RequiredBundle, true, "party-divErrorMessages");
+                                countcallAdv = 0;
+                            }
+                        }
+                } else {
+                    
+                        showErrorMessage(RequiredType, true, "party-divErrorMessages");
+                        countcallAdv = 0;
+                }
+            }
+            else {
+                   
+                    showErrorMessage(NameRequired, false, "party-divErrorMessages");
+                    countcallAdv = 0;
+            }
+
+       
+
+    }
+ 
+</script>
+@model Noqoush.AdFalcon.Web.Controllers.Model.Advertiser.MasterAppSiteItemListViewModel
+@using (Html.BeginForm(Html.BeginForm(new { name = "frm", id = "frm" })))
+{
+
+    @RenderSection("subheader")
+    <div id="dialog-form" title="@Html.GetResource("Clone", "Commands")" style="display:none;">
+        <span id="dialogText"></span>
+    </div>
+
+    @*<div style="display:none;" id="new-name-dialog-form" class="small-dialog" title="@Html.GetResource("Clone", "Commands")">
+        <table>
+            <tr>
+                <td>
+                    <span>@Html.GetResource("Name", "Global")</span>
+                </td>
+                <td>
+                    @Html.AdFalconTextBox("clone_name", "")
+                </td>
+                <td>
+                    <span name="valueRequiredErrorMsg" class="validation-arrow field-validation-error"
+                          style="display: none;">
+                        <span class="">@(string.Format(Html.GetResource("RequiredMessage", "ResourceSet"), 1, 100))</span>
+                    </span>
+                    <span name="MaxValueErrorMsg" class="validation-arrow field-validation-error"
+                          style="display: none;">
+                        <span class="">@Html.GetResource("GroupNamLengthMsg", "Msgs")</span>
+                    </span>
+                </td>
+            </tr>
+        </table>
+    </div>*@
+    <br />
+    <div class="data-row section-container">
+        <div class="data-row">
+            <div class="col-sm-7" style="padding: 0px;">
+
+                @if (Model.TopActions != null)
+                {
+                    Html.RenderPartial("PartialViews/Actions", Model.TopActions);
+                }
+            </div>
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-4 col-sm-push-3">
+
+                <table class="special-content">
+                    <tr>
+                        @*<td>
+                            <span class="go-bold">@Html.GetResource("From", "Global")</span>
+                        </td>
+                        <td style="width: 110px;">
+                            <input type="text" readonly="readonly" data-date="true" id="FromDate" name="FromDate"
+                                   class="text-box range-date-cntl" />
+                        </td>
+                        <td>
+                            <span class="go-bold">@Html.GetResource("To", "Global")</span>
+                        </td>
+                        <td style="width: 110px;">
+                            <input type="text" readonly="readonly" data-date="true" id="ToDate" name='ToDate'
+                                   class="text-box range-date-cntl left-range-cntrl" onchange="generateCampaignGrid()" />
+                        </td>*@
+                        <td>
+
+
+                            <div class="field-container dropdown-toggle" data-toggle="collapse" data-target="#CampFilterCollapse" aria-expanded="false" onclick="showfilter()">
+                                &nbsp;&nbsp;<a href="javaScript:void(0);" class="maximize AdvanceFilterIcon" onclick="" style="margin-top:0px" id="advfilterCamp"></a>
+
+                            </div>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+
+
+        <div class="data-row" style="overflow:visible">
+            <div class="col-sm-7 col-sm-push-3 customDealsFilterShiftRight floating-right" style="padding: 0px;">
+                @Html.Partial("MasterAppSiteItem/MasterAppSiteItemFilter")
+            </div>
+        </div>
+
+        <div class="grid-container">
+            @RenderSection("Grid2")
+        </div>
+        @if (Model.BelowAction != null)
+        {
+            Html.RenderPartial("PartialViews/Actions", Model.BelowAction);
+        }
+    </div>
+
+    @*<div id="addAdvertiserAccountEventDialog" class="adfalcon-dialog" title="@Html.GetResource("AddNewAdvertiser", "Advertiser")" style="display:none;overflow:visible">*@
+
+    <div id="addAdvertiserAccountEventDialog" class="adfalcon-dialog" title="@Html.GetResource("AddNewContentAppSiteItem", "Global")" style="display:none;overflow:visible">
+        <div class="data-row red-box" style="display:none" id="party-divErrorMessages">
+            @{
+
+                if (ViewBag.ErrorMessages != null)
+                {
+                    foreach (var item in ViewBag.ErrorMessages)
+                    {
+                        <div class="data-row">
+                            <span class="msg-img"></span><span>@Html.Raw(item)</span>
+                        </div>
+                    }
+                }
+                if (TempData["TempErrorMessages"] != null)
+                {
+                    var tempErrorMessages = TempData["TempErrorMessages"] as List<string>;
+                    foreach (var item in tempErrorMessages)
+                    {
+                        <div class="data-row">
+                            <span class="msg-img"></span><span>@Html.Raw(item)</span>
+                        </div>
+                    }
+                }
+            }
+            @if (ViewData.ModelState != null && ViewData.ModelState.Where(p => p.Value.Errors.Count != 0).Count() != 0)
+            {
+
+                foreach (var item in ViewData.ModelState.Where(p => p.Value.Errors.Count != 0))
+                {
+                    <div class="data-row">
+                        <span class="msg-img"></span><span>@Html.Raw(item.Value.Errors[0].ErrorMessage)</span>
+                    </div>
+                }
+            }
+        </div>
+        <br />
+
+        <div class="data-row data-container" style="margin-left:12px;">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("Name", "Global")</span>
+            </div>
+            <div class="field-container">
+
+                <input type="text" name="CustomName" id="CustomName" style="width: 150px;">
+
+            </div>
+
+        </div>
+
+        <div class="data-row data-container" style="margin-left:10px;">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("Type", "Global")</span>
+
+            </div>
+            <div class="field-container">
+
+                @Html.GetRadioButton("Type", "Site", false, "floating-right iea-rbtn-width-b", onChange: "onAppTypeChange", value: "2" , Id:"Site")
+                @Html.GetRadioButton("Type", "App", false, "floating-right iea-rbtn-width-b", onChange: "onAppTypeChange", value: "1", Id: "App")
+
+
+
+            </div>
+        </div>
+
+        <div class="data-row data-container" id="DomainUrl" style="display:none; margin-left:10px;">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("Domain", "Global")</span>
+            </div>
+            <div class="field-container">
+                <input type="text" name="Domain" id="Domain" style="width: 150px;" />
+            </div>
+        </div>
+
+        <div class="data-row data-container" id="BundleId" style="display:none; margin-left:10px;">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("Bundle", "AppSite")</span>
+            </div>
+            <div class="field-container">
+                <input type="text" name="Bundle" id="Bundle" style="width: 150px;" />
+            </div>
+        </div>
+    </div>
+
+    if (Model.ToolTips != null)
+    {
+        @Html.Partial("GridToolTop", Model.ToolTips)
+    }
+}
+    <script>
+            
+    
+        function onAppTypeChange() {
+            if ($('input[name="Type"]:checked').val() == "2") {
+                $("#DomainUrl").show();
+                $("#BundleId").hide();
+            }
+            else {
+                $("#DomainUrl").hide();
+                $("#BundleId").show();
+
+            }
+            //alert($('input[name="Type"]:checked').val());
+        }
+
+
+		function isDomainURL() {
+		
+			//return ValidateUrl(jQuery('[name="Domain"]'));
+			
+
+			var pattern = new RegExp(/^(?!:\/\/)([a-zA-Z0-9]+\.)?[a-zA-Z0-9][a-zA-Z0-9-]+\.[a-zA-Z]{2,6}?$/i);
+		
+			return pattern.test(jQuery('[name="Domain"]').val());
+		}
+
+		function isBundle(str) {
+
+
+			var reg2 = new RegExp('^\\d+$');
+			var pattern = new RegExp('^\[a-z]+\.[a-z]+\.[a-z0-9]+$');
+			var pattern2 = new RegExp('^\[a-z]+\.[a-z]+\.[a-z]+\.[a-z0-9]+$');
+
+			var pattern3 = /^([A-Za-z]{1}[A-Za-z\d_]*\.)*[A-Za-z][A-Za-z\d_]*$/g;
+
+
+
+
+
+			return pattern.test(str) || reg2.test(str) || pattern2.test(str) || pattern3.test(str);
+
+		}
+     
+    
+</script>

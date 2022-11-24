@@ -1,0 +1,26 @@
+﻿@{
+
+    decimal VatAmountPercentage = ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().VATValue;
+
+
+}
+
+var baseUrl = '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.RootUrl';
+var AudianceSegmentCostModelTypeAllowed = '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.AudianceSegmentCostModelTypeAllowed';
+
+var currentLang = '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage';
+var currentDirection = '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentDirection';
+var isShowConfirmation = true; 
+var fileUploadSizeMsg = '@Html.GetResource("FileSize", "Upload")';
+var fileUploadTypeMsg = '@Html.GetResource("FileType", "Upload")';
+var defualtImageUrl='@Url.GetImagePath("image-f.png")';
+var treeFalgs = new Array();
+var isLoading=true; 
+var clearText = '@Html.GetResource("Clear", "Global")';
+var ip_not_valid_msg= '@Html.GetResource("IPNotValid", "ResourceSet")';
+var timeFormat = '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.TimeFormat';
+var AllowPrivateIPValidation = '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.AllowPrivateIPValidation';
+var MessagesTime = '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.MessagesDurationTime';
+        var VatAmountSource='@Url.Action("GetVATAmount", "User")';
+
+        var VatAmountPercentage='@VatAmountPercentage';

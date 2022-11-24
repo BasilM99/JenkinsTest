@@ -1,0 +1,86 @@
+﻿@{
+    Layout = null;
+}
+@model List<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Reports.ReportCriteriaSchedulerDto>
+<style>
+    .TempTable {
+        text-align: left;
+        line-height: 40px;
+        border-collapse: separate;
+        border-spacing: 0;
+        border: solid 1px #d2d2d4;
+        width: 500px;
+        margin: 50px auto;
+        border-radius: .25rem;
+    }
+
+    .TempThead tr:first-child {
+        background: #354f75;
+        color: #fff;
+        border: none;
+    }
+
+    .TempTable th:first-child,
+    .TempTable td:first-child {
+        padding: 0 15px 0 20px;
+    }
+
+    .TempThead tr:last-child th {
+        border-bottom: 3px solid #ddd;
+    }
+
+    .Temptbody tr:hover {
+        background-color: #d1d7dd;
+        cursor: default;
+    }
+
+    .Temptbody tr:last-child td {
+        border: none;
+    }
+
+    .Temptbody td {
+        border-bottom: 1px solid #ddd;
+    }
+
+    .TempTable td:last-child {
+        text-align: right;
+        padding-right: 10px;
+    }
+</style>
+
+
+<div id="ReportTemplates">
+
+    <table class="TempTable">
+        <thead class="TempThead">
+            <tr>
+                <th colspan="3">Frequently Used Templates</th>
+            </tr>
+          
+        </thead>
+        <tbody class="Temptbody">
+            @{
+                foreach (ArabyAds.AdFalcon.Services.Interfaces.DTOs.Reports.ReportCriteriaSchedulerDto Criteria in Model)
+                {
+                    <tr>
+                        <td>Atualizar página da equipe</td>
+                        <td>
+                            <button type="button" class="btn btn-default" aria-label="Left Align" >
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                            </button>
+                            <button type="button" class="btn btn-default" aria-label="Left Align">
+                                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                            </button>
+                        </td>
+                    </tr>
+
+                }
+
+            }
+           
+
+        </tbody>
+    </table>
+</div>
+
+

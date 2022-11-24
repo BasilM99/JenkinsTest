@@ -1,0 +1,50 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.Campaign.TargetingViewModel
+@using Noqoush.AdFalcon.Domain.Model.Core.Video;
+
+
+	<div class="data-row section-container">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-5">
+					<div class="videoTargeting">
+						<div>
+							@Html.GetCheckBox("AdPosting", Html.GetResource("PagePostion", "Targeting"), false, onChange: "", customValue: ((int)Noqoush.AdFalcon.Domain.Model.Campaign.AdTypeGroup.Banner).ToString())
+
+						</div>
+
+
+						<div id="AdPostingTargeint" class="container">
+
+							<div class="data-row section-container">
+								<div class="data-row data-container">
+
+									<div class="field-container">
+										@Html.GetCheckBox("AdFormatBanner", Html.GetResource("AboveFold", "Targeting"), false, onChange: "", customValue: ((int)Noqoush.AdFalcon.Domain.Model.Campaign.AdTypeGroup.Banner).ToString(), disabled:true)
+										@Html.GetCheckBox("AdFormatBanner", Html.GetResource("BelowFold", "Targeting"), false, onChange: "", customValue: ((int)Noqoush.AdFalcon.Domain.Model.Campaign.AdTypeGroup.Banner).ToString(), disabled: true)
+										@Html.GetCheckBox("AdFormatBanner", Html.GetResource("unkown", "Targeting"), false, onChange: "", customValue: ((int)Noqoush.AdFalcon.Domain.Model.Campaign.AdTypeGroup.Banner).ToString(),disabled: true)
+									
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+
+					</div>
+				</div>
+
+			
+			</div>
+
+		</div>
+
+
+
+
+
+	</div>
+
+
+
+
+

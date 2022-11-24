@@ -1,0 +1,405 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm5="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" dslVersion="1.0.0.0" Id="fbe6c1fe-3dc2-41c2-84ef-8c34488f60c1" name="Core" linkedPackageId="81ee1662-55e4-4aff-8140-f1a13c6ad5f6" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
+  <packagedElements>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="7f441c61-3ce7-43a4-bf32-90e1fffae609" name="Country" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="845fd052-ddbf-4797-baa3-19ad83bac39c" />
+        <generalsInternal>
+          <generalization Id="7643870c-0017-4e31-a44a-3caf319de6fa" isSubstitutable="false">
+            <classMoniker Id="cb1273d8-e82d-4772-8bb4-f9b7a1b2ec7e" LastKnownName="Location" />
+            <elementDefinition Id="cc43dd8c-392d-44b9-be8b-24ba1fe20a6b" />
+          </generalization>
+        </generalsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="9da83c02-fd31-454e-a818-ac09d22f7795" name="Device" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="aab45657-6e41-4b46-bfdb-560efa6c3b99" />
+        <generalsInternal>
+          <generalization Id="1a8f3466-ecda-4d6a-8af6-1d16f1869a6e" isSubstitutable="false">
+            <classMoniker Id="7f6532a1-b29a-40d6-ad92-fc8dec0fb256" LastKnownName="LookupBase" />
+            <elementDefinition Id="9011c77b-fbfe-4959-8b2c-f85dd0e658e0" />
+          </generalization>
+        </generalsInternal>
+        <targetEnds>
+          <association Id="4a599b85-a904-46b4-b0c4-48eeaa68a6d9" isDerived="false" sourceEndRoleName="Device" targetEndRoleName="Platform" isLeaf="false" isAbstract="false">
+            <classMoniker Id="e5a2b15c-2912-4118-bc05-e7cb1cb1c039" LastKnownName="Platform" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="456bbba1-2557-404c-bd68-71f3a5bed291" name="Device" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="020b3920-37f9-4293-a527-4fc393b4fe9f" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="0b09e821-2594-4d84-9544-29a88c20c9a9" name="Platform" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="6c074bb8-7914-490a-a40b-9c56f2bed405" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="4d3891eb-88e3-460d-bb3f-f5df36caef1e" />
+          </association>
+          <association Id="39851ba2-a6b8-4d39-8d30-fa2e017911a1" isDerived="false" sourceEndRoleName="Device" targetEndRoleName="BannerSize" isLeaf="false" isAbstract="false">
+            <classMoniker Id="13bce67d-c2d3-4518-a612-9d32c5314d79" LastKnownName="BannerSize" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="b1b8a970-5d58-4eb1-a12f-ebd192a1a600" name="Device" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="5a7f6eaf-5821-4ccd-a350-2685722815a5" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="d153b692-ea8e-4bd8-8c4b-46e2ea83d779" name="BannerSize" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="a99de183-faa0-4dd2-993e-931c8d34c291" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="77eba58e-d974-40cb-a96b-01663f0f18ca" />
+          </association>
+        </targetEnds>
+        <ownedAttributesInternal>
+          <property Id="a1019f20-bf7a-45b9-89c2-8aba7d0400ed" name="Manufacturer" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="1227af9c-19b5-4eae-8541-efab3c77f486" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="ea808e86-1d46-471d-a883-ad1f90906973" LastKnownName="Manufacturer" />
+            </type_NamedElement>
+          </property>
+          <property Id="312a171f-378a-4098-9007-43ad3ec0dcf5" name="Platform" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="f3d0aafc-5ae8-4b03-a973-5f6ac7d9b7dd" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="3c8f09e4-331b-4d42-b30f-05c9afc6a66d" LastKnownName="Platform" />
+            </type_NamedElement>
+          </property>
+          <property Id="0bc1e289-6298-47d3-9547-15a7e69faabe" name="SupportedBanners" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <lowerValueInternal>
+              <literalString Id="a595e41a-f819-4528-bd22-da5c98cad833" name="Lower" value="*">
+                <elementDefinition Id="b7407104-080a-44be-a2e2-6028538688f2" />
+              </literalString>
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString Id="3e4d2dad-823e-4641-8f19-4580e3cae709" name="Upper" value="*">
+                <elementDefinition Id="cdb2398b-9cbf-478a-86cb-72a8f0df90ce" />
+              </literalString>
+            </upperValueInternal>
+            <elementDefinition Id="7c61e753-a33c-4bd4-80d7-f3b2f5c76e7e" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="77a0ed86-38ff-491b-97f0-f91638a0e311" LastKnownName="BannerSize" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="ea808e86-1d46-471d-a883-ad1f90906973" name="Manufacturer" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::Manufacturer">
+        <elementDefinition Id="995601c8-fca9-4dd5-9253-ca39eb4d855e" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="3c8f09e4-331b-4d42-b30f-05c9afc6a66d" name="Platform" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::Platform">
+        <elementDefinition Id="1723d4c1-1744-40bb-8cbf-05988a800cbf" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="77a0ed86-38ff-491b-97f0-f91638a0e311" name="BannerSize" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::BannerSize">
+        <elementDefinition Id="7ff5bde7-e736-401f-a628-9b991f6ed364" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="cb1273d8-e82d-4772-8bb4-f9b7a1b2ec7e" name="Location" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="c101cad6-e7fe-4ae4-8af3-5cd50d557b59" />
+        <generalsInternal>
+          <generalization Id="8ec85a56-a6c4-43ea-9570-7423a7324b88" isSubstitutable="false">
+            <classMoniker Id="7f6532a1-b29a-40d6-ad92-fc8dec0fb256" LastKnownName="LookupBase" />
+            <elementDefinition Id="82dc8ed9-cb42-42e5-9a86-5270612037db" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributesInternal>
+          <property Id="0d02aa2d-4feb-4f4a-b79b-b267a39d444a" name="Parent" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="83cd57a8-cc41-4322-bf65-17a8a4ab1138" />
+          </property>
+          <property Id="80077f18-18c1-4b7b-81ac-0e9aa736137e" name="Locations" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="6fc1d15d-7599-46d6-b65e-4b97f3193d1b" />
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="af774b42-499b-463a-b87a-fe6242bb70b6" name="Manufacturer" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="995601c8-fca9-4dd5-9253-ca39eb4d855e" />
+        <generalsInternal>
+          <generalization Id="2de9735a-8cd6-494d-8d73-2d4e12773a93" isSubstitutable="false">
+            <classMoniker Id="7f6532a1-b29a-40d6-ad92-fc8dec0fb256" LastKnownName="LookupBase" />
+            <elementDefinition Id="fb3979ba-844f-4f02-bb34-2580db650d8e" />
+          </generalization>
+        </generalsInternal>
+        <targetEnds>
+          <association Id="9b2fc751-5986-47b5-b07f-0f7ab3655a1a" isDerived="false" sourceEndRoleName="Manufacturer" targetEndRoleName="Device" isLeaf="false" isAbstract="false">
+            <classMoniker Id="9da83c02-fd31-454e-a818-ac09d22f7795" LastKnownName="Device" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="2c7d28fd-9d30-4a9a-a09a-a8621ed9149c" name="Manufacturer" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="481b3847-6590-4340-9a12-cffc4ca28728" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="ef3fe381-ba4b-4a81-b689-970d11a1dd2b" name="Device" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <lowerValueInternal>
+                    <literalString Id="726e61af-fef9-4ce2-8fe6-b57bff3de464" name="Lower" value="n">
+                      <elementDefinition Id="07d0102e-7d17-453b-8770-b32aa1f66bf5" />
+                    </literalString>
+                  </lowerValueInternal>
+                  <upperValueInternal>
+                    <literalString Id="f8db1fd8-190e-4d1d-8462-64047b14de7e" name="Upper" value="n">
+                      <elementDefinition Id="ca23cfb1-08a4-4411-803d-5271736b4cdc" />
+                    </literalString>
+                  </upperValueInternal>
+                  <elementDefinition Id="6c19a010-ae22-4723-a7cc-6994026a7431" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="00ea1f33-58fa-42a9-9277-effbaeab615d" />
+          </association>
+        </targetEnds>
+        <ownedAttributesInternal>
+          <property Id="af188a7a-3c01-45e1-aeeb-cf17c5197f69" name="Devices" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <lowerValueInternal>
+              <literalString Id="375d4dc4-9219-41aa-8db1-608f73889b86" name="Lower" value="*">
+                <elementDefinition Id="4adf419a-707e-4dbe-be6e-610c193f7b57" />
+              </literalString>
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString Id="7de03958-e386-4cff-815c-0297d3d7fb6f" name="Upper" value="*">
+                <elementDefinition Id="14a72037-3ae2-4874-957d-baf7c80ddf8d" />
+              </literalString>
+            </upperValueInternal>
+            <elementDefinition Id="2e671cfd-c45c-4d93-99ce-c91aa9b576fc" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="74925d1f-2dec-4519-9b32-612ea6b7b457" LastKnownName="Device" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="74925d1f-2dec-4519-9b32-612ea6b7b457" name="Device" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::Device">
+        <elementDefinition Id="aab45657-6e41-4b46-bfdb-560efa6c3b99" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="0dd3971d-6f6c-4b5b-9e46-5f64377635f8" name="Operator" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="2cdc49da-656d-46f7-a228-f9c34edd891c" />
+        <generalsInternal>
+          <generalization Id="f36bfa8c-dbc1-409c-bf0b-71bc56bc1b39" isSubstitutable="false">
+            <classMoniker Id="7f6532a1-b29a-40d6-ad92-fc8dec0fb256" LastKnownName="LookupBase" />
+            <elementDefinition Id="49f7ad64-a6cc-4d80-b468-ac099ef532aa" />
+          </generalization>
+        </generalsInternal>
+        <targetEnds>
+          <association Id="0d3bbb30-1be8-4ac9-97bc-578524826fe1" isDerived="false" sourceEndRoleName="Operator" targetEndRoleName="Location" isLeaf="false" isAbstract="false">
+            <classMoniker Id="cb1273d8-e82d-4772-8bb4-f9b7a1b2ec7e" LastKnownName="Location" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="74c9f136-7de9-48ac-95d7-2aa6b1bd469f" name="Operator" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="02369a5e-01da-4ace-82a2-4c2ce149c447" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="3f7a5c79-f8f8-4486-ab9f-3096a8cb623f" name="Location" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="6d1fdcfa-6268-4da1-bd7a-3a2abad72130" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="a3a2bb52-c4b7-4430-b87b-b8eedd592cdc" />
+          </association>
+        </targetEnds>
+        <ownedAttributesInternal>
+          <property Id="d208f000-9ce2-4e83-994b-0f49f20d7ed2" name="Location" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="117f4e1e-1fc9-4567-ab69-024a7152d232" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="ff1eb89a-4e45-4a5f-b681-4cd34196d709" LastKnownName="Location" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="e5a2b15c-2912-4118-bc05-e7cb1cb1c039" name="Platform" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="1723d4c1-1744-40bb-8cbf-05988a800cbf" />
+        <generalsInternal>
+          <generalization Id="e82c8a96-9c0a-4802-9e77-53463b5ec441" isSubstitutable="false">
+            <classMoniker Id="7f6532a1-b29a-40d6-ad92-fc8dec0fb256" LastKnownName="LookupBase" />
+            <elementDefinition Id="3fa23137-a9a0-4ca0-8694-0327d0e5ab16" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributesInternal>
+          <property Id="d0a7d117-862b-4aaa-bc58-7f5bd45817b7" name="Devices" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="7b4f2ef4-e485-4865-a030-a033ab236a92" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="74925d1f-2dec-4519-9b32-612ea6b7b457" LastKnownName="Device" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="13bce67d-c2d3-4518-a612-9d32c5314d79" name="BannerSize" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="7ff5bde7-e736-401f-a628-9b991f6ed364" />
+        <generalsInternal>
+          <generalization Id="fc089a08-6961-4702-99e1-633479144c11" isSubstitutable="false">
+            <classMoniker Id="7f6532a1-b29a-40d6-ad92-fc8dec0fb256" LastKnownName="LookupBase" />
+            <elementDefinition Id="121effb4-0454-4552-8a4e-b366bb369d86" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributesInternal>
+          <property Id="64b0fe5f-1039-4092-8971-e3f16051ed71" name="Description" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="986a0bfc-5848-465d-a9e4-f7a8bdf856f7" />
+          </property>
+          <property Id="b4d11ed9-94f4-4480-b5e3-9112cb09c03e" name="Width" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="6ea3db51-153b-4782-9c82-b146d86f99d8" />
+          </property>
+          <property Id="be3b9dca-cd84-4447-86b8-96a7a7fd7c10" name="Height" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="95bbb04a-9997-4ff2-8e3e-12ade32e0f22" />
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="9f8d0d52-0dd8-4a82-bf88-6cfb68fac00a" name="State" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="66b51bf2-f3fb-46ca-99e7-cf3ef6ee8c9f" />
+        <generalsInternal>
+          <generalization Id="29cd1c9e-76ad-46bd-a08a-a559443397e1" isSubstitutable="false">
+            <classMoniker Id="cb1273d8-e82d-4772-8bb4-f9b7a1b2ec7e" LastKnownName="Location" />
+            <elementDefinition Id="da498c32-b167-43ee-9c27-7674bc3ec690" />
+          </generalization>
+        </generalsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="2e9ddad3-c796-4e3a-aa8b-12c2a25e8d46" name="City" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="f1eeee82-cff1-4a77-9113-63578bf7f4df" />
+        <generalsInternal>
+          <generalization Id="283ff70e-7370-4b29-9a7f-424a5bff370d" isSubstitutable="false">
+            <classMoniker Id="cb1273d8-e82d-4772-8bb4-f9b7a1b2ec7e" LastKnownName="Location" />
+            <elementDefinition Id="c2f24ebb-b111-406c-b6be-77a846fa6a0d" />
+          </generalization>
+        </generalsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="8eb7c784-2a2e-427c-b145-79bad5dcb933" name="Continent" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="f9336a00-a2eb-4abb-8d9a-e1ac79d62b7e" />
+        <generalsInternal>
+          <generalization Id="d6b2dc75-fe8d-4832-82fc-58ab923648f1" isSubstitutable="false">
+            <classMoniker Id="cb1273d8-e82d-4772-8bb4-f9b7a1b2ec7e" LastKnownName="Location" />
+            <elementDefinition Id="e81e2d05-ef59-469c-a8b6-ad69ca64dbc7" />
+          </generalization>
+        </generalsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="ff1eb89a-4e45-4a5f-b681-4cd34196d709" name="Location" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::Location">
+        <elementDefinition Id="c101cad6-e7fe-4ae4-8af3-5cd50d557b59" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="a74772aa-8e57-4563-9513-c6593f2667a2" name="Languages" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="f7701af3-960a-4bff-a03b-42993589d1ac" />
+        <generalsInternal>
+          <generalization Id="0463013f-9b54-4698-a898-66256a75de6b" isSubstitutable="false">
+            <classMoniker Id="7f6532a1-b29a-40d6-ad92-fc8dec0fb256" LastKnownName="LookupBase" />
+            <elementDefinition Id="97da7f85-eddf-4c19-a74c-64161a2884fa" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributesInternal>
+          <property Id="2b345dc3-d2d1-4449-8f9f-7c22bc332f97" name="Code" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="cc07124c-6809-495a-be45-233d22bca147" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="82256327-db35-4a53-aa14-4ca18a0c3c3b" LastKnownName="String" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="7f6532a1-b29a-40d6-ad92-fc8dec0fb256" name="LookupBase" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="324ddb8d-4160-428b-8699-019170c777c9" />
+        <suppliersInternal>
+          <interfaceRealization Id="fd000fa5-fcbf-4aa4-9464-44b294bc41ac">
+            <interfaceMoniker Id="45860ada-78a1-4ed0-908b-fff6f47dcbcf" LastKnownName="IEntity" />
+            <elementDefinition Id="bed06dd5-0372-417c-b9a4-e75fdb6af579" />
+          </interfaceRealization>
+        </suppliersInternal>
+        <ownedAttributesInternal>
+          <property Id="0206b7aa-1656-4dc0-954e-1f7801b46cc0" name="ID" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="74653fb3-c9a6-49d1-9eaa-d0263bec41a7" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="b5c55c7a-9cc2-41f2-aaa9-61e510b49330" LastKnownName="Integer" />
+            </type_NamedElement>
+          </property>
+          <property Id="deba72be-6d95-4436-a210-bf6404fdf1f0" name="Name" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="1b76fb50-41e1-410b-80f9-d6da2fa5ad81" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="35add4e6-06b4-41de-a7e1-fa9290702e73" LastKnownName="String" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="35add4e6-06b4-41de-a7e1-fa9290702e73" name="String" isAbstract="false" isLeaf="false" cachedFullName="String">
+        <elementDefinition Id="59259974-6d55-42c6-b7bd-763d77ac8ef9" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="b5c55c7a-9cc2-41f2-aaa9-61e510b49330" name="Integer" isAbstract="false" isLeaf="false" cachedFullName="Integer">
+        <elementDefinition Id="220a3521-e091-4221-bae9-3ef9018e845c" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="82256327-db35-4a53-aa14-4ca18a0c3c3b" name="String" isAbstract="false" isLeaf="false" cachedFullName="String">
+        <elementDefinition Id="59259974-6d55-42c6-b7bd-763d77ac8ef9" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="676525e1-ce77-40fe-8a87-8a5ace479397" name="Keyword" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="14835b36-8a71-4967-accb-a95c27ade5c3" />
+        <generalsInternal>
+          <generalization Id="74cd399b-97a7-449c-9fc2-62e59cac2878" isSubstitutable="false">
+            <classMoniker Id="7f6532a1-b29a-40d6-ad92-fc8dec0fb256" LastKnownName="LookupBase" />
+            <elementDefinition Id="cda0123e-2a90-4f8f-8d71-4dc2ce3709ae" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributesInternal>
+          <property Id="455c2064-b3f7-4ab1-b9f2-da9eae40b71c" name="Uasge" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="c50cfa15-1cb5-4655-93f6-ce604d105a69" />
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <Interface Id="45860ada-78a1-4ed0-908b-fff6f47dcbcf" name="IEntity" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="28358899-9167-4745-8f71-3ffd45ab1874" />
+        <ownedAttributes>
+          <property Id="cc61adad-82cf-4ee8-8e95-2e307f7c8b60" name="ID" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="a12d6929-6ad3-45ea-93db-e0fcdeb07fec" />
+          </property>
+        </ownedAttributes>
+      </Interface>
+    </logicalClassDesignerModelHasTypes>
+  </packagedElements>
+  <package Id="81ee1662-55e4-4aff-8140-f1a13c6ad5f6" name="Noqoush.AdFalcon.Modeling">
+    <elementDefinition Id="279b6b6b-303f-4465-b086-4f3a45a723be" />
+    <profileInstances>
+      <packageHasProfileInstances Id="d2d913bf-4bf8-4de1-aeec-c4993144752c">
+        <profileInstance Id="39fb96ef-4b81-49d5-a4b6-ba49679d63e1" name="StandardProfileL2">
+          <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+        </profileInstance>
+        <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+      </packageHasProfileInstances>
+      <packageHasProfileInstances Id="61899834-2f78-4ba4-a0f9-d5814f56cd8c">
+        <profileInstance Id="9c94934c-9ec1-40af-be1f-427a4d8f209e" name="StandardProfileL3">
+          <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+        </profileInstance>
+        <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+      </packageHasProfileInstances>
+    </profileInstances>
+  </package>
+</logicalClassDesignerModel>

@@ -1,0 +1,114 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.Campaign.GeographicViewModel
+<script type="text/javascript">
+    var latitudeWrongMessage = '@Html.GetResource("LatitudeErrorMessage", "Campaign")';
+    var longtitudeWrongMessage = '@Html.GetResource("LongtitudeErrorMessage", "Campaign")';
+    var radiusWrongMessage = '@Html.GetResource("RadiusErrorMessage","Campaign")';
+    var loadOperatorsFlag = false;
+    function checkOperators(event) {
+        event.stopPropagation(); //cancel bubbling
+
+        ele = event.target || event.srcElement;
+        if (ele.id == "GeographiestreeSearch" || ele.id == "GeographiesTree" || ele.id == "GeographiesTreeInfo" || ele.id == "geographicContainer") {
+            if (loadOperatorsFlag) {
+                filterOperaters();
+            }
+        }
+    }
+</script>
+
+<div class="ad-filter-text go-left floating-left">
+	@Html.Raw(Html.GetResource("GeographicsDesc", "Campaign"))
+</div>
+<div class="ad-filter-data go-left floating-left campaign-right-container">
+
+	<div class="data-row space-bottom-blue-filter">
+		<div class="blue-filter-container GeofenceInnerDiv">
+			<a href="javascript:void(0)" tabindexgeographic="1" onclick="changeTab(this,'geographic','GeographicTargetingIsAll','@Model.GeographicalAreas.Name',true);"
+			   class="selected">@Html.GetResource("All")</a> <a href="javascript:void(0)" tabindexgeographic="2"
+																onclick="changeTab(this,'geographic','GeographicTargetingIsAll','@Model.GeographicalAreas.Name',false);">@Html.GetResource("SpecificCountries", "Campaign")</a>
+															</div>
+															<div class="tail">
+															</div>
+															<div tabsectiongeographic="1">
+															</div>
+															<div tabsectiongeographic="2" style="display: none;" id="geographicContainer" onmouseout="checkOperators(event)">
+																@Html.Partial("Tree", Model.GeographicalAreas)
+															</div>
+															@if ((Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsShowAdminSection  ) || (Model.GeoFencings != null && Model.GeoFencings.Count > 0))
+															{
+																var hide_id = !(Request.Browser.Type.ToUpper().Contains("IE") && Request.Browser.MajorVersion < 8);
+
+																<div class="data-row" style="margin-top:10px">
+																	<div class="go-left floating-left" style="background-color:none !important">
+																		@*<h3>@Html.GetResource("CostElements", "Titles")</h3>*@
+
+																		<a class="primary-btn" href="javascript:void(0)" onclick="addToMVCGrid('GeoFencingsGrid')">@Html.GetResource("AddGeofence", "Campaign")</a>
+																	</div>
+																	<div class="clear" style="height:40px;">&nbsp;</div>
+
+																	<div class="small-grid ip-Range-Section" style="width: 405px;">
+																		@(Html.Telerik().Grid(Model.GeoFencings).Name("GeoFencingsGrid").NoRecordsTemplate("&nbsp;")@*.TableHtmlAttributes(new { style = "width:400px;height:auto;" })*@
+.DataKeys(keys => keys.Add(p => p.ID))
+																													  .DataBinding(dataBinding =>
+																													  {
+																														  dataBinding.Ajax().Select("DummySelect", "Campaign").Update("Dummy", "Campaign");
+																													  })
+																													  .EnableCustomBinding(true)
+																													  .Editable(ed => ed.Mode(GridEditMode.InCell).DisplayDeleteConfirmation(false)
+																																		.DefaultDataItem(new Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.Targeting.GeoFencingTargetingDto()))
+																													  //.ToolBar(commands => commands.Insert().ButtonType(GridButtonType.BareImage))
+																													  .Columns(columns =>
+																													  {
+																														  columns.Bound(o => o.ID).Title(Html.GetResource("ID", "Lookup")).HtmlAttributes(new { @class = "go-center ip-targeting-hidden-field" }).Width(1).Hidden(hide_id);
+																														  columns.Bound(o => o.Latitude).Title(Html.GetResource("Latitude", "Campaign")).Format("{0:0.############}").EditorTemplateName("TextBoxRequiredDecimal").Width(140).HtmlAttributes(new { @class = "go-center ip-targeting-width", onchange = "isLatitude(this);" });
+																														  columns.Bound(o => o.Longitude).Title(Html.GetResource("Longitude", "Campaign")).Format("{0:0.############}").EditorTemplateName("TextBoxRequiredDecimal").Width(140).HtmlAttributes(new { @class = "go-center ip-targeting-width", onchange = "isLongitude(this);" });
+																														  columns.Bound(o => o.Radius).Title(Html.GetResource("Radius", "Campaign") +" " + Html.GetResource("INKM", "Global")).Format("{0:0.##}").EditorTemplateName("TextBoxRequiredDecimal").Width(60).HtmlAttributes(new { @class = "go-center ip-targeting-width", onchange = "isRadius(this);" });
+																														  columns.Template(@<text>
+																															<div><a class='t-button t-button-icon t-button-bare t-grid-delete t-ip-Range-Section-delete-button' onclick='deleteGeoFencingTargeting(this);'><span class='t-icon t-delete t-ip-Range-Section-delete-button'></span></a></div></text>)
+																														   .ClientTemplate("<div><a class='t-button t-button-icon t-button-bare t-grid-delete t-ip-Range-Section-delete-button' type='button' onclick='deleteGeoFencingTargeting(this);'><span class='t-icon t-delete t-ip-Range-Section-delete-button'></span></button></div>").Width(70).HtmlAttributes(new { @class = "ip-targeting-width-small" });
+																											})
+																											//.Scrollable(scrolling => scrolling.Enabled(true).Height(200)).Footer(true)
+																											.ClientEvents(events => events.OnSave("Grid_onSave"))
+																		)
+																	</div>
+																</div>
+															}
+														</div>
+													</div>
+
+													<script type="text/javascript">
+														function Grid_onSave(e) {
+															var dataItem = e.dataItem;
+															var values = e.values;
+															var form = e.form;
+															e.stopPropagation();
+															//event handling code
+														}
+														function isLatitude(item) {
+															var originalValue = $(item).find("input").val();
+															var latitudeValue = parseFloat($(item).find("input").val());
+															if (!(latitudeValue == originalValue && latitudeValue >= -90 && latitudeValue <= 90)) {
+																//  alert(latitudeWrongMessage);
+																return false;
+															}
+														}
+														function isLongitude(item) {
+															var originalValue = $(item).find("input").val();
+															var longtitudeValue = parseFloat($(item).find("input").val());
+															if (!(longtitudeValue == originalValue && longtitudeValue >= -180 && longtitudeValue <= 180)) {
+																// alert(longtitudeWrongMessage);
+																return false;
+
+															}
+														}
+
+														function isRadius(item) {
+															var originalValue = $(item).find("input").val();
+															var radiusValue = parseFloat($(item).find("input").val());
+
+															if (!(radiusValue == originalValue && radiusValue > 0)) {
+																//alert(radiusWrongMessage);
+																return false;
+															}
+														}
+													</script>

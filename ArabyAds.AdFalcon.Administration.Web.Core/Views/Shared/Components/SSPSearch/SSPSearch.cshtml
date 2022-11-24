@@ -1,0 +1,112 @@
+﻿
+@{
+    ViewBag.Title = Html.GetResource("IndexAppSite", "Titles");
+}
+
+<script language="javascript" type="text/javascript">
+
+    function generatePartyGridPMP() {
+        var grid = $("#SSpartyGrid").data("kendoGrid");
+
+        if (typeof (grid) != "undefined") {
+            grid.dataSource.read();
+            grid.refresh();
+
+        }
+    };
+    function PartyGridDataBindingPMP(args) {
+        //args.data = $.extend(args.data,
+        //    {
+        //        Prefix: $('#SSPPartyName').val(),
+        //        id: 'ssppartner',
+        //        SSPCheckedIDs: SSPCheckedIDs//typeof (SSPCheckedIDs) != "undefined" ? SSPCheckedIDs : null,
+
+        //    });
+    };
+
+    function PartyGridDataPMP() {
+        var j =
+        {
+            Prefix: $('#SSPPartyName').val(),
+            id: 'ssppartner',
+            SSPCheckedIDs: SSPCheckedIDs//typeof (SSPCheckedIDs) != "undefined" ? SSPCheckedIDs : null,
+        };
+        return j;
+    };
+    function PartyGridDataBoundPMP(e) {
+        var grid = $("#SSpartyGrid").data("kendoGrid");
+        //if not first page and the no data then try load first page
+        if ((grid._data.length == 0) && (grid.dataSource.page() > 1)) {
+            e.preventDefault();
+            if (grid.dataSource.page() != 1) {
+                grid.dataSource.page(1);
+            }
+
+        }
+    };
+    var partyIDPMP, partyNamePMP;
+    function onPartyRowSelectedPMP(e) {
+
+        partyIDPMP = jQuery(e.row.cells[0]).text();
+        partyNamePMP = jQuery(e.row.cells[1]).text();
+        selectPartyPMP();
+    }
+    function selectPartyPMP() {
+        changePartyExchange(partyIDPMP, partyNamePMP);
+    }
+</script>
+@using ArabyAds.AdFalcon.Web.Controllers.Utilities
+@using ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.Party
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Core.Party.ListViewModel
+@{
+
+}
+<div>
+    <div class="data-row go-center">
+        <div class="blue-filter-container">
+            <table class="special-content">
+                <td>
+                    <span class="go-bold">@Html.GetResource("Name")</span>
+                </td>
+                <td class="go-left" colspan="4">
+                    <span class="searchform-textfield">@Html.AdFalconTextBox("SSPPartyName")</span>
+                </td>
+
+                <td class="go-right" colspan="5">
+                    <input type="button" onclick="generatePartyGridPMP();" name="Filter" value='@Html.GetResource("Filter")' class="btn filter-button " />
+                </td>
+            </table>
+        </div>
+        <div class="tail">
+        </div>
+    </div>
+    <div class="grid-container">
+        @(Html.Kendo().Grid<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core.PartyDto>()
+                    .Name("SSpartyGrid")
+                    .Columns(columns =>
+                    {
+                        columns.Bound(o => o.ID);
+                        columns.Bound(o => o.Name).ClientTemplate("<div class='grid-title-container floating-left'><span>#= Name#</span> </div>").Title(Html.GetResource("Name"));
+
+                    }).EnableCustomBinding(true)
+                            .DataSource(dataBinding =>
+                            {
+                                //dataBinding.WebApi.Select("Index", "AppSite", new { ajax = true });
+                                dataBinding.Ajax().Read(read => read.Action("_IndexNoHttps", "Party").Data("PartyGridDataPMP")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+                            })
+                    .Events(clientEvents => clientEvents.DataBinding("PartyGridDataBindingPMP").DataBound("PartyGridDataBoundPMP"))
+                    .Scrollable(scrolling => scrolling.Enabled(false))
+                    .Selectable().Pageable(paging => paging
+
+                    .Input(false)
+                    .Numeric(true)
+                    .Info(true)
+                    .PreviousNext(true)
+                    .Refresh(true)
+
+                    .Position(GridPagerPosition.Bottom))
+                    .Filterable(filtering => filtering.Enabled(false))
+                    .Groupable(grouping => grouping.Enabled(false)))
+    </div>
+</div>

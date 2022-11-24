@@ -1,0 +1,263 @@
+﻿@{
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+    ViewBag.Title = Html.GetResource("Employees", "Menu");
+
+}
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Core.Party.ListViewModel
+
+
+<script language="javascript">
+    $(document).ready(function () {
+        SetSelectedTap("ListMenuAdmin");
+
+    });
+
+    var result = false;
+    var SSPCheckedIDs = "";
+
+    var ischecked = false;
+    var yesbtn = "@Html.GetResource("Yes", "Global")";
+    var nobtn = "@Html.GetResource("No", "Global")";
+    var ConfriamtionBoxTitle = "@Html.GetResource("Confirm")";
+    var close = "@Html.GetResource("Close","Commands")";
+    var rename = "@Html.GetResource("Rename", "Commands")";
+    var EmployeeString = "@Html.GetResource("Employees", "Menu")";
+    var Confirmation = "@Html.GetResource("Delete", "Confirmation")";
+
+    var selectedName = "";
+    var selectednumber = 0;
+    var text;
+    var direction = "left";
+    var ok_text = '@Html.GetResource("Ok", "Commands")';
+
+
+
+
+    function checked() {
+        $('input').each(function () {
+            if ($(this).is(':checked')) {
+
+                var name = $(this).eq(0).parent().parent().find("#EmployeeName").text().trim();
+
+                if (name.length > 30)
+                    name = name.substring(0, 30) + "..";
+                ischecked = true;
+                @{
+                    if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage=="ar")
+                    {
+
+                        <text>
+
+                selectedName += "<span style='float:" + direction + ";'>" + name + "-</span><br>";
+
+                </text>
+
+                    }else
+                    {
+                        <text>
+                selectedName += "<span style='float:" + direction + ";'>" + "-" + name + "</span><br>";
+                </text>
+                    }
+
+                }
+            }
+        });
+        return ischecked;
+    }
+
+    function popup(sender, SelectConfirmation, Confirmation) {
+
+        selectedName = "";
+        selectednumber = 0;
+        if (checked()) {
+            if (!result) {
+
+                $('<div id ="ConfirmationDialog" title="' + ConfriamtionBoxTitle + '"></div>').dialog({
+
+                    open: function () {
+                        text = Confirmation.format(EmployeeString) + " <br><br> <div style='float: " + direction + ";'>" + selectedName + "</div>";
+                        $(this).html(text);
+
+                    },
+                    close: function () {
+                        $(this).remove();
+                    },
+                    resizable: false,
+                    draggable: false,
+                    modal: true,
+                    showCloseButton: false,
+
+                    buttons: [
+               {
+                   text: yesbtn,
+                   click: function () {
+                       $(this).dialog("close");
+                       result = true;
+
+                       $(sender).click();
+                   }
+               },
+               {
+                   text: nobtn,
+                   click: function () {
+                       $(this).dialog('close');
+                       result = false;
+                   }
+               }
+                    ]
+
+                });
+            }
+        } else {
+            $('<div id = "NoCampaignsareSelected"></div>').dialog({
+
+                open: function (event, ui) {
+                    $(this).html(SelectConfirmation);
+                },
+                close: function () {
+                    result = false;
+
+                    $(this).remove();
+                },
+                resizable: false,
+                draggable: false,
+                // height: 140,
+                modal: true,
+
+            });
+
+        }
+        ischecked = false;
+        return result;
+    }
+
+
+
+
+
+    function refreshEmployeeGrid() {
+        RefrashGrid('Grid');
+    }
+    function generateEmployeeGrid() {
+        var grid = $("#Grid").data("kendoGrid");
+        if (typeof (grid) != "undefined") {
+            grid.dataSource.read();
+            grid.refresh();
+
+        }
+    };
+    function EmployeeGridDataBinding(args) {
+        //args.data = $.extend(args.data,
+        // {
+        //     Prefix: $('#Name').val(),
+        // });
+    };
+    function EmployeeGridData() {
+        var a =  
+         {
+             Prefix: $('#Name').val(),
+        };
+        return a;
+    };
+
+
+    function EmployeeGridDataBound(e) {
+        var grid = $("#Grid").data("kendoGrid");
+        //if not first page and the no data then try load first page
+        if ((grid._data.length == 0) && (grid.dataSource.page() > 1)) {
+            e.preventDefault();
+            if (grid.dataSource.page() != 1) {
+                grid.dataSource.page(1);
+            }
+        }
+
+    };
+
+
+    function showfilter() {
+        if ($("#advfilterEmployee").hasClass('maximize')) {
+            $("#advfilterEmployee").attr("class", "minimize AdvanceFilterIcon");
+
+        }
+        else {
+
+            $("#advfilterEmployee").attr("class", "maximize AdvanceFilterIcon");
+        }
+    }
+
+
+</script>
+@using (Html.BeginForm())
+{
+
+    <br />
+    <div class="data-row section-container">
+        <div class="data-row">
+            <div class="col-sm-7" style="padding: 0px;">
+                @if (Model.TopActions != null)
+                {
+                    await Html.RenderPartialAsync("PartialViews/Actions", Model.TopActions);
+                }
+            </div>
+
+            <div class="col-sm-1">
+            </div>
+
+            <div class="col-sm-4 col-sm-push-1">
+
+            </div>
+
+
+        </div>
+        <div class="data-row" style="overflow:visible">
+            <div class="col-sm-7 col-sm-push-3 customDealsFilterShiftRight floating-right" style="padding: 0px;">
+                @*@await Html.PartialAsync("EmployeeFilter", Model)*@
+            </div>
+        </div>
+        <div class="grid-container">
+
+            @(Html.Kendo().Grid(Model.Items)
+                 .Name("Grid")
+                 .Columns(columns =>
+                 {
+
+                    columns.Template("<div class='grid-title-container floating-left'><a href=\"" + Url.Action("Employee", "Party") + "/#= ID#\">#= Name# </a></div>").Title(Html.GetResource("Name"));
+                    columns.Bound(o => o.AccountName).Title(Html.GetResource("AccountName")).HtmlAttributes(new { @id = "PartyEnityLabel" });
+                    columns.Bound(o => o.ID).Title(Html.GetResource("ID", "Lookup")).Hidden(true).HtmlAttributes(new { @id = "IdPartyEnity" });
+
+                 })
+                 .EnableCustomBinding(true)
+                    .DataSource(dataBinding =>
+                    {
+
+                        dataBinding.Ajax().Read(read => read.Action("_Employees", "Party").Data("EmployeeGridData")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+                    })
+                .Events(clientEvents => clientEvents.DataBinding("EmployeeGridDataBinding").DataBound("EmployeeGridDataBound"))
+                .Scrollable(scrolling => scrolling.Enabled(false))
+                .Selectable()
+                .Pageable(paging => paging
+
+                .Input(false)
+                .Numeric(true)
+                .Info(true)
+                .PreviousNext(true)
+                .Refresh(true)
+
+                .Position(GridPagerPosition.Bottom))
+                .Filterable(filtering => filtering.Enabled(false))
+                .Groupable(grouping => grouping.Enabled(false)))
+            
+
+        </div>
+        @if (Model.BelowAction != null)
+        {
+            await Html.RenderPartialAsync("PartialViews/Actions", Model.BelowAction);
+        }
+    </div>
+    if (Model.ToolTips != null)
+    {
+        @await Html.PartialAsync("GridToolTop", Model.ToolTips)
+    }
+}
+

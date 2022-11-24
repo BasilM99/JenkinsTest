@@ -1,0 +1,130 @@
+﻿@{
+	string lang = "";
+	if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage == "ar")
+	{
+		lang = "rtl";
+
+	}
+	else
+	{
+		lang = "ltr";
+	}
+
+}
+<style>
+	.ui-grid-row .ui-grid-cell.ui-grid-row-header-cell {
+		background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #faf9f9), color-stop(1, #ffffff));
+		border-color: #d4d4d4;
+	}
+
+	.ui-grid-row-selected {
+		/*background:-webkit-gradient(linear, left bottom, left top, color-stop(0,#eeeeeb), color-stop(1, #c4cdd4));*/
+		background-color: #c4cdd4;
+	}
+
+		.ui-grid-row-selected .ui-grid-cell.ui-grid-row-header-cell {
+			background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #faf9fb), color-stop(1, #c4cdd4));
+			background-color: unset;
+			/*background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #eeeeeb), color-stop(1, #c4cdd4));
+		background-color:#c4cdd4;*/
+		}
+
+	.ui-grid-row.ui-grid-row-selected > [ui-grid-row] > .ui-grid-cell {
+		/*background:-webkit-gradient(linear, left bottom, left top, color-stop(0, #eeeeeb), color-stop(1, #c4cdd4));*/
+		background-color: #c4cdd4;
+		border-bottom: solid 1px;
+		border-bottom-color: darkgray;
+	}
+
+	.grid .ui-grid-header-cell {
+		height: 35px;
+	}
+
+
+	.ui-grid-selection-row-header-buttons {
+		cursor: pointer;
+		opacity: 1;
+	}
+
+	.ui-grid-icon-ok {
+		background-color: unset;
+		width: 25px;
+		height: 25px;
+		margin-top: 2px;
+		margin-bottom: 2px;
+	}
+        
+		.ui-grid-icon-ok:before {
+			content: '\f096';
+			font-family: FontAwesome;
+		}
+
+	.ui-grid-selection-row-header-buttons.ui-grid-row-selected.ui-grid-icon-ok:before {
+		content: '\f046' !important;
+		font-family: FontAwesome;
+	}
+    
+    .ui-grid-cell-contents {
+		text-align: center;
+    }
+</style>
+
+
+
+<script language="javascript" type="text/javascript">
+
+
+    
+	var DataQBGridUrl = '@Url.Action("GetPaginationGrid", "Filter")';
+
+</script>
+<script src="~/ScriptsNg/Contr/QBGrid.js"></script>
+
+
+<div class="row" ng-app="app" style="float: left;">
+
+
+	<div class="" ng-controller="QBGrid" ng-show="showToolBar" id="QBGridDiv">
+		<div ng-show="showToolBar" dir="@lang" style="width:700px">
+
+			<div class="container">
+				<div class="row">
+
+
+				</div>
+			</div>
+
+		</div>
+		<br />
+		<div id="QBGridDiv" ui-grid="gridOptions" dir="@lang" style="max-width:1130px;min-width:975px; min-height:80px;" class="grid" ui-grid-infinite-scroll ui-grid-selection ui-grid-auto-resize>
+			<div class="grid-msg-overlay" ng-hide="!loading">
+
+				<div class="msg">
+					<img src="@Url.GetImagePath("ajax-loader.gif")" style="margin:50%">
+
+				</div>
+			</div>
+
+
+		</div>
+		<br>
+		<div ng-show="showToolBar" dir="@lang" style="width:700px">
+
+			<div class="container">
+				<div class="row">
+
+					<div class="col-6 col-sm-4">
+                      Total count: <b id="totalCount"></b>
+					</div>
+					<div class="col-6 col-sm-4">
+
+					</div>
+				
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+

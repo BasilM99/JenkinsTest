@@ -1,0 +1,411 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("AudienceSegments", "Audience");
+
+    if (ViewBag.Message == null)
+    {
+        ViewBag.Message = "";
+    }
+
+}
+
+<script language="javascript" type="text/javascript">
+    var ProviderUrl = '@Url.Action("Providers", "Lookup")';
+    var Audiences;
+
+    $(document).ready(function () {
+        $("#warningAudience").dialog({
+            autoOpen: false,
+            //width: 250,
+
+            text: '@Html.GetResource("OneRootWarning", "AudienceSegments")',
+            //   height: 500,
+            resizable: false,
+            draggable: false,
+            modal: true
+
+        });
+        SetSelectedTap("ListMenuAdmin");
+    });
+    function typeChanged() {
+        var value = $("#LookupTypes").val();
+        //window.location = ProviderUrl + "?providerId=" + value;
+
+        InitTree('ProviderTreeList', '' + TreeReloadUrl + "?providerId=" + value, selectTreeFunction);
+        return true;
+    }
+    function AddNode() {
+        clearErrorMessage("party-divErrorMessages");
+        $('#ParentIdError').css('display', 'none');
+        tree_CollectSelected("ProviderTreeListTree");
+        clearDialog("AudienceSegmentSave");
+        clearValidation("AudienceSegmentSave");
+        if (Audiences.length > 0 || $("#AddAudience").find("#ID").val() != "" || $("#ProviderTreeListTree").find("li").length == 0) {
+            $("#AddAudience").dialog("open");
+
+            $("#IsDeletedAudSeg").hide();
+        }
+        else {
+            $("#warningAudience").html('@Html.GetResource("OneRootWarning", "AudienceSegments")');
+
+            $("#warningAudience").dialog("open");
+
+        }
+
+
+    }
+
+    $(document).ready(function () {
+
+        $("#AddAudience").dialog({
+            autoOpen: false,
+            width: 590,
+            //   height: 500,
+            resizable: false,
+            draggable: false,
+            modal: true,
+            buttons: [
+                 {
+                     text: '@Html.GetResource("Save", "Commands")',
+                     click: function () {
+                         save();
+                     },
+                     "class": 'primary-btn',
+
+                 }]
+        });
+
+        var message = '@ViewBag.Message';
+
+        if (message != "")
+            showSuccessfullyMessage(message);
+
+    });
+
+    var GetSegmentUrl = '@Url.Action("GetSegment", "Lookup")';
+    var DeleteSegmentUrl = '@Url.Action("DeleteSegment", "Lookup")';
+
+    function Delete() {
+
+        var ProviderId = $("#LookupTypes").val();
+        var Data = new Object();
+
+        tree_CollectSelected("ProviderTreeListTree");
+
+
+        var roots = [];
+        var rootsst = '';
+        if (Audiences.length < 1) {
+
+            $("#warningAudience").html('@Html.GetResource("SelectConfirmation", "Audience")');
+            $("#warningAudience").dialog("open");
+
+        } else {
+            @*if ($("#AddAudience").find("#ID").val() == $("#ProviderTreeListTree").find("li").eq(0).attr("id")) {
+                $("#warningAudience").html('@Html.GetResource("SelectConfirmation", "Audience")');
+                $("#warningAudience").dialog("open");
+            }
+            else {*@
+            for (var i = 0 ; i < Audiences.length ; i++) {
+                roots.push(Audiences[i].id);
+                rootsst = rootsst + Audiences[i].id + ',';
+
+            }
+
+            Data.Segments = roots;
+            if (roots.length > 0) {
+                $.ajax({
+                    type: 'POST',
+                    datatype: "json",
+                    traditional: true,
+                    url: DeleteSegmentUrl,
+                    data: {
+                        Segments: roots
+                    },
+                    success: function (data) {
+
+                        if (data.result) {
+                            // window.location = ReloadUrl + "?providerId=" + ProviderId;
+
+                            InitTree('ProviderTreeList', '' + TreeReloadUrl + "?providerId=" + ProviderId, selectTreeFunction);
+
+                        } else {
+
+                            showErrorMessage(data.message, false, "party-divErrorMessages");
+                        }
+
+                    },
+                    error: function (data) {
+                        alert(data);
+                    }
+                });
+
+                //}
+
+            }
+
+        }
+    }
+
+
+
+    selectTreeFunction = function () {
+
+        var id = 'ProviderTreeList' + "Tree";
+        var eventName = 'Edit(this)';
+        if (eventName != "")
+            $("#" + id).find("li").find("a").attr("ondblclick", 'Edit(this)');
+
+        ProviderTreeListLoaded = true;
+
+
+        if (false)
+            checkAll('ProviderTreeList'), false;
+
+
+    };
+
+    
+    function Edit(element) {
+        
+        $("#IsDeletedAudSeg").hide();
+        var id = $(element).parent()[0].id;
+        //if ($("#ParentId").val() == 0) {
+        //    $('#showSegmentParent').css('display', 'none');
+        //}
+        //else {
+        //    $('#showSegmentParent').css('display', 'inline-block');
+        //}
+        $.ajax({
+            type: 'POST',
+            url: GetSegmentUrl + "?id=" + id,
+            success: function (data) {
+
+                $("#AddAudience").find("#Values_0__Value").val(data.Name.Values[0].Value);
+                $("#AddAudience").find("#Values_1__Value").val(data.Name.Values[1].Value);
+                $("#AddAudience").find("#OperatorSegmentCode").val(data.OperatorSegmentCode);
+                $("#AddAudience").find("#Price").val(data.Price);
+                $("#AddAudience").find("#CodeUQ").val(data.CodeUQ);
+                $("#AddAudience").find("#Description").val(data.Description);
+                $("#AddAudience").find("#AudienceID").val(data.ID);
+                $("#AddAudience").find("#ParentId").val(data.ParentId);
+
+              
+                if (data.ParentId == 0) {
+                    $('#showSegmentParent').css('display', 'none');
+                }
+                else {
+                    $('#showSegmentParent').css('display', 'block');
+                }
+
+                $("#IsDeletedAudSeg").hide();
+                $('input[id="Segments_Name"]').val(data.ParentName);
+                if (data.IsSelectedable) {
+                    check("IsSelectedable");
+                } else {
+                    uncheck("IsSelectedable");
+
+                }
+                if (data.IsDeleted) {
+                    check("IsDeleted");
+                } else {
+                    uncheck("IsDeleted");
+
+                }
+
+                if (data.IsPermissionNeed) {
+                    check("IsPermissionNeed");
+                } else {
+                    uncheck("IsPermissionNeed");
+
+                }
+                $('#ParentIdError').css('display', 'none');
+                clearErrorMessage("party-divErrorMessages");
+                $("#AddAudience").dialog("open");
+                $("#AudienceSegmentSave").validate().form();
+
+            },
+            error: function (data) {
+                alert(data);
+            }
+        });
+
+
+       
+    }
+    var SegmentSaveUrl = '@Url.Action("SaveSegment", "Lookup")';
+    var ReloadUrl = '@Url.Action("Providers", "Lookup")';
+    var TreeReloadUrl = '@Url.Action("GetTreeDataNoCaching", "AudienceSegment")';
+    function save() {
+
+        if ($("#AudienceSegmentSave").validate().form()) {
+            tree_CollectSelected("ProviderTreeListTree");
+            var roots = "";
+            for (var i = 0 ; i < Audiences.length ; i++) {
+                roots += Audiences[i].id + ",";
+            }
+
+            var en = $("#Values_0__Value").val();
+            var ar = $("#Values_1__Value").val();
+            var OperatorSegmentCode = $("#OperatorSegmentCode").val();
+            var Price = $("#Price").val();
+
+            var CodeUQ = $("#CodeUQ").val();
+
+            var Description = $("#Description").val();
+            var IsSelectedable = typeof ($("#IsSelectedable").attr("checked")) != "undefined";
+
+            var IsDeleted = typeof ($("#IsDeleted").attr("checked")) != "undefined";
+
+            var id = $("#AddAudience").find("#AudienceID").val();
+            var ProviderId = $("#LookupTypes").val();
+            var ParentId = $("#ParentId").val();
+            var IsPermissionNeed = typeof ($("#IsPermissionNeed").attr("checked")) != "undefined";
+
+            var Data = new Object();
+            Data.en = en;
+            Data.ar = ar;
+            Data.roots = roots;
+            Data.CodeUQ = CodeUQ;
+            Data.Description = Description;
+            Data.IsSelectedable = IsSelectedable;
+            Data.ID = id;
+
+            Data.ProviderId = ProviderId;
+            Data.Price = Price;
+            Data.ParentId = ParentId;
+
+
+            Data.OperatorSegmentCode = OperatorSegmentCode;
+            Data.IsDeleted = IsDeleted;
+            Data.IsPermissionNeed = IsPermissionNeed;
+
+
+
+            $.ajax({
+                type: 'POST',
+                url: SegmentSaveUrl,
+                data: Data,
+                success: function (data) {
+                    if (data.result) {
+                        //window.location = ReloadUrl + "?providerId=" + ProviderId + "&success=true";
+
+
+                        InitTree('ProviderTreeList', '' + TreeReloadUrl + "?providerId=" + ProviderId, selectTreeFunction);
+                        $("#AddAudience").dialog("close");
+
+                    } else {
+                        // $("#AddAudience").dialog("close");
+                        showErrorMessage(data.message, false, "party-divErrorMessages");
+                    }
+                },
+                error: function (data) {
+                    alert(data);
+                }
+            });
+        }
+    }
+
+</script>
+
+@model ArabyAds.AdFalcon.Administration.Web.Controllers.Model.Lookup.ListViewModel
+<h2>
+    @Html.GetResource("AudienceSegments", "Audience")
+</h2>
+<div class="section-form-container">
+    <div class="section-form-inner-container">
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("Providers", "Audience")</span>
+            </div>
+            <div class="field-container">
+                <select id="LookupTypes" name="LookupTypes" onchange="typeChanged()">
+                    @if (Model.LookupTypes != null)
+                    {
+
+                        foreach (var type in Model.LookupTypes)
+                        {
+                            var selected = string.Empty;
+                            if (type.Selected)
+                            {
+                                selected = "selected='selected'";
+                            }
+                            <option value="@type.Value" @selected>@type.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+    </div>
+
+    @if (Model.LookupTypes != null && Model.LookupTypes.Count > 0)
+    {
+        <div class="data-row go-center">
+            <div class="blue-filter-container" id="filter" style="width:400px;height:50px;">
+                <div style="padding: 10px;">
+                    <button type="button" onclick="AddNode()" class="btn filter-button">@Html.GetResource("AddNode", "Audience")</button>
+                    <button type="button" onclick="Delete()" class="btn filter-button">@Html.GetResource("Delete", "Commands")</button>
+                </div>
+
+
+            </div>
+
+        </div>
+    }
+
+    <br>
+    @*======================================================================*@
+    <div id="Tree" style="display: table;margin: 0 auto;">
+        <div id="AudiencesContainer" style="display:block!important;">
+            @Html.Action("ProviderTree", new { providerId = Model.Type })
+        </div>
+
+    </div>
+
+</div>
+<div id="AddAudience" class="adfalcon-dialog" title="@Html.GetResource("NodeInfo", "Audience")" style="display:none">
+    <div class="data-row red-box" style="display:none" id="party-divErrorMessages">
+        @{
+
+            if (ViewBag.ErrorMessages != null)
+            {
+                foreach (var item in ViewBag.ErrorMessages)
+                {
+                    <div class="data-row">
+                        <span class="msg-img"></span><span>@Html.Raw(item)</span>
+                    </div>
+                }
+            }
+            if (TempData["TempErrorMessages"] != null)
+            {
+                var tempErrorMessages = TempData["TempErrorMessages"] as List<string>;
+                foreach (var item in tempErrorMessages)
+                {
+                    <div class="data-row">
+                        <span class="msg-img"></span><span>@Html.Raw(item)</span>
+                    </div>
+                }
+            }
+        }
+        @if (ViewData.ModelState != null && ViewData.ModelState.Where(p => p.Value.Errors.Count != 0).Count() != 0)
+        {
+
+            foreach (var item in ViewData.ModelState.Where(p => p.Value.Errors.Count != 0))
+            {
+                <div class="data-row">
+                    <span class="msg-img"></span><span>@Html.Raw(item.Value.Errors[0].ErrorMessage)</span>
+                </div>
+            }
+        }
+    </div>
+    <br>
+    @Html.Action("SegmentSaveForm")
+
+
+</div>
+<div id="warningAudience" class="adfalcon-dialog" title="@Html.GetResource("Warning")" style="display:none">
+
+
+</div>
+<br>
+<br>

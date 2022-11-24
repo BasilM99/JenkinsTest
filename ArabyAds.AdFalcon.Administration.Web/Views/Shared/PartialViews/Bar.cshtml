@@ -1,0 +1,54 @@
+﻿@model IEnumerable<ArabyAds.AdFalcon.Web.Controllers.Model.Action>
+<script type="text/javascript">
+    function changeFilter(code) {
+        jQuery("#filterType").val(code);
+    }
+</script>
+<input id="filterType" type="hidden" value="1" />
+
+<div class="container" style="margin-left: 16px;">
+    <div class="row">
+        <div class="col-sm-7 blue-filter-container" style="padding: 0px;">
+            @{
+                string selected = "";
+                foreach (var action in Model)
+                {
+                    var d = new RouteValueDictionary { { "filterType", action.Code } };
+                    if (action.IsSelected)
+                    {
+                        selected = "selected";
+                    }
+
+                    <a class="@selected" forAppSiteFilter="true" id='@action.Code-filterType' href='#' onclick="setFilterSelected('@action.Code');stopSubmit(event);">@action.DisplayText</a>
+                    selected = "";
+                }
+            }
+
+        </div>
+
+
+        <div class="col-sm-2">
+        </div>
+
+
+        <div class="col-sm-4" style="margin-left: 75px;">
+
+            <table class="special-content">
+                <tr>
+                    <td>
+                        <span class="go-bold">@Html.GetResource("Name")</span>
+                    </td>
+                    <td>
+                        <input filternamebutton="true" type="text" id="NameAppSite" name="NameAppSite"
+                               style="width: 188px;" class="text-box" onchange="generateAppSiteGrid(); stopSubmit(event);" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+
+

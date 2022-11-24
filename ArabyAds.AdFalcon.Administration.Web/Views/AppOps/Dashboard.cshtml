@@ -1,0 +1,62 @@
+﻿@model ArabyAds.AdFalcon.Administration.Web.Controllers.Model.DashboardViewModel
+@{
+    ViewBag.Title = Html.GetResource("AppOpsDashboard", "Titles");
+}
+
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+    // Load the Visualization API and the controls package.
+    google.load('visualization', '1.1', { 'packages': ['bar', "corechart"] });
+    var performanceDashboardSpinner;
+    
+
+</script>
+<script language="javascript" type="text/javascript">
+    var loadingTopAccountsCounter = 0;
+    var loadingTopAppSitesCounter = 0;
+    var topAccountsUrl = '@Url.Action("TopAccountsChart", "AppOps")';
+    var topAppSitesUrl = '@Url.Action("TopAppSitesChart", "AppOps")';
+    var platformsUrl = '@Url.Action("PlatformsChart", "AppOps")';
+
+    var appsitesPerformanceUrl= '@Url.Action("AppSitesPerformance","AppOps")?';
+    var accountsPerformanceUrl = '@Url.Action("AccountsPerformance", "AppOps")?';
+
+    function localInitilize() {
+        jQuery('input[data-date="true"]')
+            .daterangepicker({
+                dateFormat: 'dd-mm-yy',
+                isRTL: false
+            });
+
+        loadEntireAppSiteDashboardReport();
+    }
+
+</script>
+
+<br />
+
+<div class="data-row go-center">
+    @Html.Partial("ManagementDashboardBar", Model)
+</div>
+<br />
+<br />
+<div id="bigContainer" >
+<h2>@Html.GetResource("AccountsPerformance", "AppsDashboard")</h2>
+<div class="info-container data-row" style="height: 420px;">
+
+    @Html.Partial("TopAccounts", new List<ArabyAds.AdFalcon.Administration.Web.Controllers.Model.AppSite.Performance.BaseChartDashboardView>())
+</div>
+<br />
+<br />
+<h2>@Html.GetResource("AppSitesPerformance", "AppsDashboard")</h2>
+<div class="info-container data-row" style="height: 420px;">
+    @Html.Partial("TopAppSites", new List<ArabyAds.AdFalcon.Administration.Web.Controllers.Model.AppSite.Performance.BaseChartDashboardView>())
+</div>
+<br />
+<br />
+<h2>@Html.GetResource("Platforms", "AppsDashboard")</h2>
+<div class="info-container data-row" style="margin:0px auto; width:65%">
+    @Html.Partial("PlatformsPerformance")
+</div>
+    </div>

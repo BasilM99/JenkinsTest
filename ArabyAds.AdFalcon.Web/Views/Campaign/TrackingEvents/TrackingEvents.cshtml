@@ -1,0 +1,68 @@
+﻿
+
+<script type="text/javascript">
+	var checkDeleteTrackingEventUrl = '@Url.Action("CheckDeleteTrackingEvent", "Campaign", new { id = ViewData["CampaignId"], adgroupid = ViewData["AdGroupId"] })';
+
+	var loadDefaults = '@ViewData["LoadDefaultTrackingEvents"]';
+
+    function localInitilize_TrackingEvents() {
+        $("#resultGeneralDialog").dialog({
+            autoOpen: false,
+            //  height: 150,
+            width: 400,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            showCloseButton: false,
+
+            buttons: [
+                   {
+                       text: '@Html.GetResource("Ok", "Commands")',
+                       click: function () {
+                           jQuery(this).dialog("close");
+
+                       },
+                       "class": 'delete-button',
+
+                   }]
+        });
+
+        $("#confirmDeleteAllEvents").dialog({
+            autoOpen: false,
+            //height: 150,
+            width: 400,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            showCloseButton: false,
+
+            buttons: [
+                   {
+                       text: '@Html.GetResource("Yes")',
+                       click: function () {
+                           jQuery(this).dialog("close");
+                           loadTrackingEvents();
+
+                       }
+                   },
+                   {
+                       text: '@Html.GetResource("No")',
+                       click: function () {
+                           jQuery(this).dialog("close");
+                           $("#CostModelWrapper").val(costModelWrapperBaseValue);
+						   updateAudianceSeqmenttab();
+						   updateConversiontab();
+                       }
+                   }
+            ]
+        });
+
+    }
+</script>
+<div id="resultGeneralDialog" style="display:none;" title="@Html.GetResource("Information", "Global")">
+    <span id="GeneralDialogText"></span>
+</div>
+
+<div id="confirmDeleteAllEvents" title="@Html.GetResource("Confirm")" style="display:none;">
+    <span id="confirmDeleteAllEventsDialogText">@Html.GetResource("ConfirmDeleteAllEvents", "AdGroupTrackingEvent")</span>
+</div>

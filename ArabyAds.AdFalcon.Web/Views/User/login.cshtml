@@ -1,0 +1,72 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.LoginInfo
+@{
+                /**/
+
+                ViewBag.Title = Html.GetResource("Login", "Titles");
+                Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+}
+@using (Html.BeginForm())
+{
+    <script language="javascript" type="text/javascript">
+        function localInitilize() {
+            jQuery('.page-body').addClass("login-container");
+            isShowConfirmation = false;
+
+
+        }
+    </script>
+    <style>
+        .field-validation-error {
+        /*float:none;*/
+
+        }
+    </style>
+    <div class="section-form-inner-container last-container">
+        <div class="data-row login-area-container">
+            <div class="box-content">
+                <h3>@Html.GetResource("Sign in", "login")</h3>
+                <div class="login-form-container">
+                    <div class="text-boxes-pass-container">
+                        <div class="form-group">
+                            <label>
+                                <span class="field-title required-field">@Html.GetResource("Username", "login")</span>
+                            </label>
+                            <div>
+                                @Html.AdFalconTextBox("Username", ViewData["rememberMe"], new { Class = "form-control" })
+                                <br />
+                                <br />
+                                @Html.AdFalconValidationMessageFor(p => p.Username)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label style="width:95%">
+                                <span class="field-title required-field">@Html.GetResource("Password", "login")</span>
+                                <span class="forgot-password floating-right reverse-link">@Html.ActionLink(Html.GetResource("forgetpassword", "login"), "forgetpassword", "user", new { id = "forgetpassword" })</span>
+                            </label>
+                            <div>
+                                @Html.AdFalconPasswordFor(p => p.Password, new { Class = "form-control" })
+                                <br />
+                                <br />
+                                @Html.AdFalconValidationMessageFor(p => p.Password)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="data-row data-container">
+                        <div class="">
+                            <div class="ddl-container floating-left remember-me-container">
+                                @Html.GetCheckBox("rememberMe", Html.GetResource("RememberMe", "Register"), (ViewData["rememberMe"] != null ? true : false))
+                            </div>
+                            <input value="@Html.GetResource("Log in", "login")" type="submit" id="LoginButton" class="primary-btn login-button floating-right" />
+                        </div>
+                    </div>
+                </div>
+                <div class="data-row go-bold new-account">
+                    @Html.ActionLink(Html.GetResource("Register", "Login"), "register", "user", new { id = "RegisterNow" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}

@@ -1,0 +1,13 @@
+﻿@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeUnitDto
+<div class="data-row info-container last-container">
+	<div class="data-row data-container">
+		<div class="label-container">
+			<span class="field-title required-field">@Html.GetResource("File", "Global")</span>
+		</div>
+		<div class="field-container">
+			@*<img src='@(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + @Model.DocumentId.ToString())' />*@
+
+			<a href="javascript:void(0)" id="fileZip" style="padding:5px;" onclick="downlaodByPostAction('@(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + Model.DocumentId.ToString())')" class="floating-left" title="Download as Zip File"><i id="FileNameTxt" class="fa fa-file-zip-o" style="padding:5px;font-size:14px">@(" " + Model.Name)</i></a>
+		</div>
+	</div>
+</div>

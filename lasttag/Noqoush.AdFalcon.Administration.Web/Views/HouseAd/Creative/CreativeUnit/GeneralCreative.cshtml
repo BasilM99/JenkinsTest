@@ -1,0 +1,68 @@
+﻿@using Noqoush.AdFalcon.Domain.Common.Model.Campaign
+@model  Noqoush.AdFalcon.Web.Controllers.Model.Campaign.CreativeUnitLisViewModel
+@{
+   
+}
+
+
+<div class="section-form-inner-container info-container">
+    <div class="ad-banner-container-right floating-right">
+    </div>
+	<div class="ad-banner-container-left floating-left">
+		<br />
+		@{
+			foreach (var creativeUnit in Model.CreativeUnits)
+			{
+				switch (Model.TypeId)
+				{
+					case AdTypeIds.Banner:
+						{
+							@Html.Partial("Creative/CreativeUnit/BannerCreativeUnit", creativeUnit)
+							;
+							break;
+						}
+					case AdTypeIds.PlainHTML:
+						{
+							@Html.Partial("Creative/CreativeUnit/HTMLCreativeUnit", creativeUnit)
+									break;
+								}
+							case AdTypeIds.RichMedia:
+								{
+									switch (Model.AdSubType)
+									{
+
+
+								case AdSubTypes.HTML5Interstitial:
+								case AdSubTypes.HTML5RichMedia:
+								{
+									@Html.Partial("Creative/CreativeUnit/HTML5CreativeUnit", creativeUnit)
+										break;
+								}
+							case AdSubTypes.ExpandableRichMedia:
+								{
+									@Html.Partial("Creative/CreativeUnit/ExpandableCreativeUnit", creativeUnit)
+										break;
+								}
+							case AdSubTypes.JavaScriptRichMedia:
+								{
+									@Html.Partial("Creative/CreativeUnit/JavaScriptCreativeUnit", creativeUnit)
+										break;
+								}
+							case AdSubTypes.JavaScriptInterstitial:
+								{
+									@Html.Partial("Creative/CreativeUnit/JavaScriptCreativeUnit", creativeUnit)
+										break;
+								}
+							case AdSubTypes.ExternalUrlInterstitial:
+								{
+									@Html.Partial("Creative/CreativeUnit/ExternalUrlCreativeUnit", creativeUnit)
+										break;
+								}
+						}
+						break;
+					}
+				}
+			}
+		}
+	</div>
+</div>

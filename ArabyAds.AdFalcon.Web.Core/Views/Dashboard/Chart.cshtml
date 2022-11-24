@@ -1,0 +1,49 @@
+﻿@{
+    string AdvertiserId = TempData["DashAdvertiserId"] != null ? TempData["DashAdvertiserId"].ToString() : "";
+    string AdvertiserAccountId = TempData["DashAdvertiserAccountId"] != null ? TempData["DashAdvertiserAccountId"].ToString() : "";
+}
+<script type="text/javascript">
+
+	GlobalAdvertiserId = '@AdvertiserId';
+	   GlobalAdvertiserAccountId = '@AdvertiserAccountId';
+</script>
+@if (string.IsNullOrEmpty(Context.Request.Query["chartType"]) || Context.Request.Query["chartType"].ToString().ToLower() == "app")
+{
+    @*@Html.RenderAction("GAppChart");*@
+    @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.Dashboard.GAppChart))
+
+}
+else if (Context.Request.Query["chartType"].ToString().ToLower() == "ad")
+{
+    if (ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DataProvider)
+    {
+        @*@Html.RenderAction("ImpressionLogChart");*@
+        @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.Dashboard.ImpressionLogChart))
+
+
+    }
+    else
+    {
+        @*@Html.RenderAction("GAdChart");*@
+        @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.Dashboard.GAdChart))
+
+    }
+
+
+}
+else if (Context.Request.Query["chartType"].ToString().ToLower() == "deal")
+{
+    @*@Html.RenderAction("DealChart");*@
+
+    @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.Dashboard.DealChart))
+
+
+
+}
+else if (Context.Request.Query["chartType"].ToString().ToLower() == "lmpressionlog")
+{
+    @*@Html.RenderAction("ImpressionLogChart");*@
+    @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.Dashboard.ImpressionLogChart))
+
+
+}

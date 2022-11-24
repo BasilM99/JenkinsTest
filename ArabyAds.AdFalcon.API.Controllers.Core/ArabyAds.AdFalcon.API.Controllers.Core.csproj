@@ -1,0 +1,72 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="10.0.0" />
+		<PackageReference Include="dotless.Core" Version="1.6.7" />
+		<PackageReference Include="FFMpegCore" Version="4.7.0" />
+		<PackageReference Include="iTextSharp.LGPLv2.Core" Version="1.7.5" />
+		<PackageReference Include="Karambolo.AspNetCore.Bundling.EcmaScript" Version="3.5.0" />
+		<PackageReference Include="Karambolo.AspNetCore.Bundling.Less" Version="3.5.0" />
+		<PackageReference Include="Karambolo.AspNetCore.Bundling.NUglify" Version="3.5.0" />
+		<PackageReference Include="MaxMind.Db" Version="3.0.0" />
+		<PackageReference Include="MaxMind.GeoIP2" Version="4.1.0" />
+
+		<PackageReference Include="Microsoft.AspNetCore.Html.Abstractions" Version="2.2.0" />
+
+		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.DataAnnotations" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.ViewCompilation" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.TagHelpers" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Razor.Language" Version="6.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Razor.Runtime" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Routing.Abstractions" Version="2.2.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.0.1" />
+		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+		<PackageReference Include="ArabyAds.Framework" Version="1.0.0" />
+		<PackageReference Include="ArabyAds.Framework.Grpc" Version="1.0.0" />
+		<PackageReference Include="ArabyAds.Framework.Web" Version="1.0.0" />
+
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="NReco.VideoConverter.LT" Version="1.1.4" />
+		<PackageReference Include="NReco.VideoInfo.LT" Version="1.1.0" />
+		<PackageReference Include="RestSharp" Version="107.1.1" />
+		<PackageReference Include="System.Collections" Version="4.3.0" />
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.1" />
+		<PackageReference Include="System.IO.Compression" Version="4.3.0" />
+		<PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
+		<PackageReference Include="System.Linq" Version="4.3.0" />
+		<PackageReference Include="System.Net.Http" Version="4.3.4" />
+		<PackageReference Include="System.Text.Json" Version="6.0.1" />
+		<PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
+		<PackageReference Include="Telerik.UI.for.AspNet.Core" Version="2020.3.915" />
+		<PackageReference Include="WebHDFS.Client" Version="2.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="6.0.0" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.11.40" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\ArabyAds.AdFalcon.Base\ArabyAds.AdFalcon.Base.csproj" />
+		<ProjectReference Include="..\ArabyAds.AdFalcon.Common.Web\ArabyAds.AdFalcon.Common.Web.csproj" />
+		<ProjectReference Include="..\ArabyAds.AdFalcon.Common\ArabyAds.AdFalcon.Common.csproj" />
+		<ProjectReference Include="..\ArabyAds.AdFalcon.Domain.Common\ArabyAds.AdFalcon.Domain.Common.csproj" />
+		<ProjectReference Include="..\ArabyAds.AdFalcon.Domain.Exceptions\ArabyAds.AdFalcon.Exceptions.csproj" />
+		<ProjectReference Include="..\ArabyAds.AdFalcon.Services.Interfaces\ArabyAds.AdFalcon.Services.Interfaces.csproj" />
+	</ItemGroup>
+
+</Project>

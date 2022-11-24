@@ -1,0 +1,144 @@
+﻿@{
+    string lang = "";
+    if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage == "ar")
+    {
+        lang = "rtl";
+
+    }
+    else
+    {
+        lang = "ltr";
+    }
+
+}
+<style>
+    .ui-grid-row .ui-grid-cell.ui-grid-row-header-cell {
+        background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #faf9f9), color-stop(1, #ffffff));
+        border-color: #d4d4d4;
+    }
+
+    .ui-grid-row-selected {
+        /*background:-webkit-gradient(linear, left bottom, left top, color-stop(0,#eeeeeb), color-stop(1, #c4cdd4));*/
+        background-color: #c4cdd4;
+    }
+
+        .ui-grid-row-selected .ui-grid-cell.ui-grid-row-header-cell {
+            background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #faf9fb), color-stop(1, #c4cdd4));
+            background-color: unset;
+            /*background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #eeeeeb), color-stop(1, #c4cdd4));
+        background-color:#c4cdd4;*/
+        }
+
+    .ui-grid-row.ui-grid-row-selected > [ui-grid-row] > .ui-grid-cell {
+        /*background:-webkit-gradient(linear, left bottom, left top, color-stop(0, #eeeeeb), color-stop(1, #c4cdd4));*/
+        background-color: #c4cdd4;
+        border-bottom: solid 1px;
+        border-bottom-color: darkgray;
+    }
+
+    .ui-grid-selection-row-header-buttons {
+        cursor: pointer;
+        opacity: 1;
+    }
+
+    .ui-grid-icon-ok {
+        background-color: unset;
+        width: 25px;
+        height: 25px;
+        margin-top: 2px;
+        margin-bottom: 2px;
+    }
+                 .ui-grid-icon-ok:before {
+   content:'\f096';
+    font-family: FontAwesome;
+}
+
+                                 .ui-grid-selection-row-header-buttons.ui-grid-row-selected.ui-grid-icon-ok:before {
+   content:'\f046'!important;
+    font-family: FontAwesome;
+}
+     
+</style>
+
+
+
+<script language="javascript" type="text/javascript">
+
+
+    var ExchangeNameStr = '@Html.GetResource("ExchangeName", "PMPDeals")';
+    var SubPublisherIdStr = '@Html.GetResource("SiteAndAppID", "Global")'.replace("&amp;", "&");
+    var SubPublisherStr = '@Html.GetResource("SiteAndApp", "Global")'.replace("&amp;", "&");
+    var DataSSPGridUrl = '@Url.Action("GetSSP", "Campaign")';
+
+</script>
+<script src="~/ScriptsNg/Contr/SSPGrid.js"></script>
+
+<script type="text/ng-template" id="SubPublisherNameTemplate.html">
+    <div>
+        <span class="trimed-span" style="padding: 4px;width: initial!important;" title="{{ COL_FIELD }}">
+            {{ COL_FIELD }}
+        </span>
+    </div>
+</script>
+<div class="row" ng-app="app" style="padding: 18px;">
+
+
+    <div class="col-md-12" ng-controller="SSPGrid" ng-show="showToolBar" id="SSPGridDiv">
+        <div ng-show="showToolBar" dir="@lang" style="width:700px">
+
+            <div class="container">
+                <div class="row">
+               
+                  
+                    <div class="col-6 col-sm-4">
+                        <input type="text" class="form-control" style="width:215px!important;font-family: initial;" id="SSPFilterInputEchangeName" ng-change="filter()" ng-model='filterValueExchangeName' placeholder="@Html.GetResource("SearchByName", "SSPPartner")" />
+
+                    </div>
+					  <div class="col-6 col-sm-4">
+                        <input type="text" class="form-control" style="width:215px!important;font-family: initial;" id="SSPFilterInput" ng-change="filter()" ng-model='filterValue' placeholder="@Html.GetResource("SearchByIdOrName", "Global")" />
+
+                    </div>
+                </div>
+            </div>
+        
+        </div>
+        <br />
+        <div id="SSPGridDiv" ui-grid="gridOptions" dir="@lang"  style="width:700px;" class="grid" ui-grid-infinite-scroll ui-grid-selection ui-grid-auto-resize>
+            <div class="grid-msg-overlay" ng-hide="!loading" >
+
+                <div class="msg">
+                    <img src="@Url.GetImagePath("ajax-loader.gif")" style="margin:50%">
+                   
+                </div>
+            </div>
+
+
+        </div>
+        <br>
+        <div ng-show="showToolBar" dir="@lang" style="width:700px">
+
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-6 col-sm-4">
+
+                    </div>
+                    <div class="col-6 col-sm-4">
+
+                    </div>
+                    <div class="col-6 col-sm-2">
+                        <button type="button" ng-disabled="mySelectedRows.length==0" ng-click="ClearSelection()" class="btn">@Html.GetResource("Clear", "Global")</button>
+
+                    </div>
+                    <div class="col-6 col-sm-2">
+                        <button type="button"  ng-disabled="mySelectedRows.length==0" ng-click="AddToInventorySource()" class="primary-btn">@Html.GetResource("Add", "Keywords")</button>
+
+                    </div>
+                 
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

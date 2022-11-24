@@ -1,0 +1,564 @@
+@{
+    ViewBag.Title = Html.GetResource("AdCreation", "Titles");
+}
+@using ArabyAds.AdFalcon.Domain.Common.Model.Campaign
+@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative
+@using ArabyAds.AdFalcon.Web.Controllers.Model.Campaign
+@using ArabyAds.AdFalcon.Domain.Common.Model.Campaign.Objective
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.CreativeViewModel
+@{
+    AdCreativeDto AdCreativeDto = Model.AdCreativeDto;
+    var isDownloadAction = Model.AdCreativeDto.IsDownloadAction;
+
+
+    if (isDownloadAction)
+    {
+        AdCreativeDto.StarRating = (AdCreativeDto.StarRating.HasValue ? AdCreativeDto.StarRating : -1);
+    }
+}
+<script type="text/javascript" language="javascript">
+    var maxAdTextLength = 25;
+    var maxAdDesriptionLength = 100;
+    var maxAdActionTextLenth = 10;
+    var isNew =@(Model.AdCreativeDto == null || Model.AdCreativeDto.ID < 1 ? "true" : "false");
+    var isGroupPaused = @(Model.AdCreativeDto.IsAllAdsPaused ? "true" : "false");
+    var remainingCharactersMsg = ' @Html.GetResource("remainingCharacters", "Campaign") ';
+    var close_text = '@Html.GetResource("Close")';
+    var yes_text = '@Html.GetResource("Yes")';
+    var no_text = '@Html.GetResource("No")';
+    var RequiredImageMsg = '@Html.GetResource("RequiredImageBR")';
+    var RequiredIconMsg  = '@Html.GetResource("RequiredIconBR")';;
+	var adsMoreThanMinBidDMsg = '@Html.GetResource("MinBidErrMsg")';
+		var MinBidErrorLess = '@Html.GetResource("MinBidErrorLess")';
+    var minBid = @Model.AdCreativeDto.MinBid;
+    var discountedBidDesc = '@Html.GetResource("DiscountedBidDesc", "Campaign")';
+    var has_discount = @((Model.DiscountDto != null).ToString().ToLower());
+    var discount_value = @(Model.DiscountDto != null ? Model.DiscountDto.Value : 0);
+    var discount_type = @(Model.DiscountDto != null ? Model.DiscountDto.TypeId : 0);
+    var errorDuplicateUploadedSizeIcon = '@Html.GetResource("DuplicateIconsSize", "NativeAd")';
+    var errorDuplicateUploadedSizeImage = '@Html.GetResource("DuplicateImagesSize", "NativeAd")';
+    var ishouseadd= false;
+    var requiredIconsArray = new Array();
+    var requiredImagesArray  = new Array();
+    GlobalAdvertiserId = '@Model.AdvertiserId';
+	 GlobalAdvertiserAccountId = '@Model.AdvertiserAccountId';
+    var creativesUnitsIds = new Array();
+
+    function initiateNativeAd(){
+        attachEvenToContainer($("[name='nativeadicon_container']"));
+        attachEvenToContainer($("[name='nativeadimage_container']"));
+    }
+
+    function successImageFileUpload(e){
+        sucessFileUpload("@ViewData["ImagesContainer"]",e,errorDuplicateUploadedSizeImage);
+    }
+    function successIconFileUpload(e){
+        sucessFileUpload("@ViewData["IconsContainer"]",e,errorDuplicateUploadedSizeIcon);
+    }
+
+    function sucessFileUpload(containerId,e,duplicateErrorMessage){
+
+
+        if (e.operation == "remove")
+            return true;
+
+        if (e.response.status == "OK") {
+            var docId = e.response.DocumentId;
+            var width = e.response.Width;
+            var height = e.response.Height;
+            var creativeUnitId = e.response.CreativeUnitId;
+
+            if(creativesUnitsIds.indexOf(creativeUnitId) == -1){
+                creativesUnitsIds.push(creativeUnitId);
+
+                var src = baseUrl + 'Downloader.ashx?docId=';
+
+                var removeIcon = $("<a>&nbsp;</a>");
+                removeIcon.addClass("remove_icon");
+                removeIcon.hide();
+                removeIcon.attr("href","javascript:void(0);");
+                attachClickEvent(removeIcon);
+
+                var inputDoc = $("<input type='hidden' />");
+                inputDoc.attr("name", "CreativeUnit_" + containerId + "_" + creativeUnitId);
+                inputDoc.val(docId);
+
+                var imgElement = $("<img />");
+                imgElement.attr("width","100").attr("height","100");
+                imgElement.attr("src",src + docId);
+                imgElement.attr("id","fileImage");
+                imgElement.hide();
+
+                var sizeSpan = $("<span></span>");
+                sizeSpan.text(width + "X" + height);
+
+                var divContainer = $("<div></div>");
+                attachEvenToContainer(divContainer);
+                divContainer.addClass("images_container");
+
+                divContainer.append(imgElement);
+                divContainer.append(removeIcon);
+                divContainer.append(inputDoc);
+                divContainer.append(sizeSpan);
+                $("#" + containerId).append(divContainer);
+
+                imgElement.fadeIn();
+            }else{
+                clearErrorMessage();
+                showErrorMessage(duplicateErrorMessage);
+            }
+        }
+        else {
+            clearErrorMessage();
+            showErrorMessage(e.response.status);
+        }
+    }
+
+    function attachEvenToContainer(container){
+
+        attachClickEvent(container.find("a"));
+        container.mouseenter(function(){
+            $(this).find("a").fadeIn();
+        });
+        container.mouseleave(function(){
+            $(this).find("a").fadeOut();
+        });
+    }
+
+    function attachClickEvent(removeIcon){
+        removeIcon.click(function(){
+            var containerDiv = $(this).parent();
+            var docIdInput = containerDiv.find("input");
+            var docIdInputName = docIdInput.attr("name");
+            var creativeunitId = parseInt(docIdInputName.split("_")[2]);
+
+            var removeIndex = creativesUnitsIds.indexOf(creativeunitId);
+            if(removeIndex != -1){
+                creativesUnitsIds.splice(removeIndex,1);
+            }
+            containerDiv.remove()
+        });
+    }
+
+
+        $( document ).ready(function() {
+    
+    
+
+            @{
+
+                if (!Model.IsAllowedToSaveImpressionTracker)
+
+                {
+                    <text>
+
+                    showNotfy("@Html.GetResource( "ImpressTrackerNotAllowWarnMsg", "Campaign")", "warning", '', toastroptionsWithNoTime)
+            </text>
+
+                        } }
+    });
+
+</script>
+<script type="text/javascript">
+    @foreach (var item in Model.NativeAdIcons.Where(p=>p.CreativeUnitDto.RequiredType == 2))
+    {
+        <text>
+            requiredIconsArray.push(@item.CreativeUnitDto.ID);
+    </text>
+    }
+
+       @foreach (var item in Model.NativeAdImages.Where(p=>p.CreativeUnitDto.RequiredType == 2))
+    {
+        <text>
+    requiredImagesArray.push(@item.CreativeUnitDto.ID);
+        </text>
+    }
+</script>
+@using (Html.BeginForm())
+{
+    RouteData routeData = RouteTable.Routes.GetRouteData(new HttpContextWrapper(System.Web.HttpContext.Current));
+    @Html.Hidden("AdTypeId", (int)Model.AdCreativeDto.TypeId)
+    @Html.HiddenFor(p => p.AdCreativeDto.IsAdPaused);
+    @Html.Hidden("AdCreativeDto.isDownloadAction", isDownloadAction);
+    @Html.HiddenFor(p => p.AdCreativeDto.IsSecureCompliant);
+    <div id="dialog-form" title="@Html.GetResource("Preview")" style="display: none;">
+        <div class="tablet-bg">
+            <img id="imgPreview" />
+        </div>
+    </div>
+    <div id="statusDialog-form" title="@Html.GetResource("PauseAdConfirmationTitle", "Campaign")" style="display: none; ">
+        <div class="go-left data-row">
+            @Html.GetResource("PauseAdConfirmation", "Campaign")
+        </div>
+    </div>
+    <div class="data-row section-container">
+        <br />
+		<div class="data-row section-container">
+			@Html.Partial("CreativeSlider")
+
+			<div class=" data-row ">
+				<h2>
+					@Html.GetResource("AdCreation", "Titles")
+				</h2>
+				<div class="section-form-container">
+                    <div class="section-form-inner-container info-container">
+                        <div class="data-row data-container">
+                            <div class="label-container">
+                                <span class="field-title required-field">@Html.GetResource("AdName", "Campaign")</span>
+                            </div>
+                            <div class="field-container">
+                                @Html.AdFalconEditorFor(p => AdCreativeDto.Name)
+                                @Html.AdFalconValidationMessageFor(p => AdCreativeDto.Name)
+                            </div>
+                        </div>
+                         @if (!string.IsNullOrEmpty(Model.AdCreativeDto.UniqueId) && Model.AdCreativeDto.UniqueId != "0")
+                         {
+                        <div class="data-row info-container last-container">
+                            <div class="data-row data-container">
+                                <div class="label-container">
+                                    <span class="field-title required-field">@Html.GetResource("UniqueId", "Global") </span>
+                                </div>
+                                <div class="field-container">
+                                    <span class="slide-text margin-summary UniqueID-line-height">@Model.AdCreativeDto.UniqueId</span>
+                                </div>
+                            </div>
+                        </div>
+                         }
+                        <div class="data-row data-container">
+                            <div class="label-container">
+                                <span class="field-title campaign-upload">@Html.GetResource("AdTitle", "NativeAd")</span>
+                            </div>
+                            <div class="field-container">
+                                @Html.AdFalconEditorFor(p => AdCreativeDto.AdText)@Html.AdFalconValidationMessageFor(p => AdCreativeDto.AdText)
+                                <span id="remainingCharactersDesc" class="data-row guid-text go-left"></span>
+                            </div>
+                        </div>
+                        @if (Model.AdCreativeDto.ID < 1)
+                        {
+                            <div class="data-row data-container">
+                                <div class="label-container">
+                                    <span class="field-title">@Html.GetResource("Description", "Campaign")</span>
+                                </div>
+                                <div class="field-container">
+
+                                    <div class="field-container">
+                                        @Html.AdFalconEditorFor(p => AdCreativeDto.Description)
+                                        <span id="remainingDescriptionCharactersDesc" class="data-row guid-text go-left"></span>
+                                        @Html.AdFalconValidationMessageFor(p => AdCreativeDto.Description)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="data-row data-container">
+                                <div class="label-container">
+                                    <span class="field-title required-field">@Html.GetResource("ActionText", "NativeAd")</span>
+                                </div>
+                                <div class="field-container">
+                                    @Html.AdFalconEditorFor(p => AdCreativeDto.ActionText)
+                                    <span id="remainingActionTextCharactersDesc" class="data-row guid-text go-left"></span>
+                                    @Html.AdFalconValidationMessageFor(p => AdCreativeDto.ActionText)
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="data-row data-container">
+                                <div class="label-container">
+                                    <span class="field-title">@Html.GetResource("Description", "Campaign")</span>
+                                </div>
+                                <div class="field-container">
+
+                                    <div class="field-container">
+                                        @Html.AdFalconEditorFor(p => AdCreativeDto.Description)
+                                        <span id="remainingDescriptionCharactersDesc" class="data-row guid-text go-left"></span>
+                                        @Html.AdFalconValidationMessageFor(p => AdCreativeDto.Description)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="data-row data-container">
+                                <div class="label-container">
+                                    <span class="field-title required-field">@Html.GetResource("ActionText", "NativeAd")</span>
+                                </div>
+                                <div class="field-container">
+                                    @Html.AdFalconEditorFor(p => AdCreativeDto.ActionText)
+                                    <span id="remainingActionTextCharactersDesc" class="data-row guid-text go-left"></span>
+                                    @Html.AdFalconValidationMessageFor(p => AdCreativeDto.ActionText)
+                                </div>
+                            </div>
+                        }
+                        @Html.Partial("AdAction/" + Model.AdCreativeDto.ViewName)
+
+                    </div>
+					<h2>
+						@Html.GetResource("Icons", "NativeAd")
+					</h2>
+
+					<div name="NativeAdIcons">
+						<div class="help_note">
+							- @Html.GetResource("MandatoryIconHelp", "NativeAd") @string.Join(", ", Model.NativeAdIcons.Where(p => p.CreativeUnitDto.RequiredType == 2).Select(p => p.DisplayText))
+							<br />
+							- @Html.GetResource("OptionalIconHelp", "NativeAd") @string.Join(", ", Model.NativeAdIcons.Where(p => p.CreativeUnitDto.RequiredType != 2).Select(p => p.DisplayText))
+						</div>
+						<div class="data-row data-container">
+							<div class="data-row field-container">
+								<div class="floating-right uplaod-ctnl-special">
+									@(Html.Telerik().Upload().Name("icon_upload").Multiple(true).ShowFileList(false)
+ .Async(async => async.Save("Save", "Document", new { adTypeId = (int)Model.AdCreativeDto.TypeId, group = ViewData["IconsContainer"].ToString(), typeId = (int)Model.NativeAdIcons.First().DeviceType }).Remove("Remove", "Document")
+.AutoUpload(true)).ClientEvents(events => events.OnSuccess("successIconFileUpload")))
+									@*@Html.Partial("Creative/CreativeUnit/GeneralCreative", new CreativeUnitLisViewModel { AdCreativeDto = Model.AdCreativeDto, CreativeUnits = Model.NativeAdsIcons, TypeId = AdTypeIds.NativeAd })*@
+								</div>
+							</div>
+						</div>
+						<div id="@ViewData["IconsContainer"]" class="data-row data-container">
+							@if (Model.AdCreativeDto.ID > 0)
+                            {
+
+                                foreach (var item in Model.AdCreativeDto.NativeAdIcons)
+                                {
+									<div class="images_container" name="nativeadicon_container">
+										<img width="100" height="100" src='@(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + item.DocumentId.ToString())' id="fileImage">
+										<a class="remove_icon" href="javascript:void(0);" style="display: none;">&nbsp;</a>
+										<input type="hidden" name="CreativeUnit_@ViewData["IconsContainer"]_@item.CreativeUnitId" value="@item.DocumentId">
+										<span>@string.Format("{0}X{1}", item.CreativeUnit.Width, item.CreativeUnit.Height)</span>
+									</div>
+
+                                }
+
+								<script type="text/javascript">
+                                    @foreach (var item in Model.AdCreativeDto.NativeAdIcons)
+                                    {
+		                                <text>
+                                        creativesUnitsIds.push(@item.CreativeUnitId);
+                                        </text>
+                                    }
+								</script>
+                            }
+						</div>
+					</div>
+
+					<h2>
+						@Html.GetResource("Images")
+					</h2>
+					<div name="NativeAdImages">
+						<div class="help_note">
+							- @Html.GetResource("MandatoryImageHelp", "NativeAd") @string.Join(", ", Model.NativeAdImages.Where(p => p.CreativeUnitDto.RequiredType == 2).Select(p => p.DisplayText))
+							<br />
+							- @Html.GetResource("OptionalImageHelp", "NativeAd") @string.Join(", ", Model.NativeAdImages.Where(p => p.CreativeUnitDto.RequiredType != 2).Select(p => p.DisplayText))
+						</div>
+						<div class="data-row data-container">
+							<div class="data-row field-container">
+								<div class="floating-right uplaod-ctnl-special">
+									@(Html.Telerik().Upload().Name("image_upload").Multiple(true).ShowFileList(false)
+ .Async(async => async.Save("Save", "Document", new { adTypeId = (int)Model.AdCreativeDto.TypeId, group = ViewData["ImagesContainer"].ToString(), typeId = (int)Model.NativeAdImages.First().DeviceType, AdSubTypeId = 0 }).Remove("Remove", "Document")
+.AutoUpload(true)).ClientEvents(events => events.OnSuccess("successImageFileUpload")))
+									@*@Html.Partial("Creative/CreativeUnit/GeneralCreative", new CreativeUnitLisViewModel { AdCreativeDto = Model.AdCreativeDto, CreativeUnits = Model.NativeAdsIcons, TypeId = AdTypeIds.NativeAd })*@
+								</div>
+							</div>
+						</div>
+						<div id="@ViewData["ImagesContainer"]" class="data-row data-container">
+							@if (Model.AdCreativeDto.ID > 0)
+                            {
+
+                                foreach (var item in Model.AdCreativeDto.NativeAdImages)
+                                {
+									<div class="images_container" name="nativeadimage_container">
+										<img width="100" height="100" src='@(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + item.DocumentId.ToString())' id="fileImage">
+										<a class="remove_icon" href="javascript:void(0);" style="display: none;">&nbsp;</a>
+										<input type="hidden" name="CreativeUnit_@ViewData["ImagesContainer"]_@item.CreativeUnitId" value="@item.DocumentId">
+										<span>@string.Format("{0}X{1}", item.CreativeUnit.Width, item.CreativeUnit.Height)</span>
+									</div>
+
+                                }
+
+								<script type="text/javascript">
+                                    @foreach (var item in Model.AdCreativeDto.NativeAdImages)
+                                    {
+		                                <text>
+                                    creativesUnitsIds.push(@item.CreativeUnitId);
+                                    </text>
+                                    }
+								</script>
+                            }
+						</div>
+					</div>
+					<div class="clear">
+						&nbsp;
+					</div>
+					<div class="data-row data-container">
+						<div class="label-container">
+							<span class="field-title required-field">@Html.GetResource("ImpressionTrackerRedirect", "CreativesSettings")</span>
+						</div>
+						<div class="field-container">
+                            <div class="field-container">
+                                @{
+                                    var impressionTrackerCreative = Model.AdCreativeDto.CreativeUnitsContent != null ? Model.AdCreativeDto.CreativeUnitsContent.Where(p => !string.IsNullOrEmpty(p.ImpressionTrackerRedirect)).SingleOrDefault() : null;
+
+                                    if (Model.IsAllowedToSaveImpressionTracker)
+                                    {
+
+                                        @Html.AdFalconTextBox("ImpressionTrackerRedirect", impressionTrackerCreative != null ? impressionTrackerCreative.ImpressionTrackerRedirect : null);
+                                    }
+                                    else
+
+                                    {
+                                        @Html.AdFalconTextBox("ImpressionTrackerRedirect", impressionTrackerCreative != null ? impressionTrackerCreative.ImpressionTrackerRedirect : null, new { @readonly = "readonly", @Impdisabled = "Impdisabled"  });
+
+
+                                        }
+                                    }
+
+
+
+                                    <span id="ImpressionTrackerRedirect-URLErrorMsg2" class="validation-arrow field-validation-error"
+                                          style="display: none;"><span class="">@Html.GetResource("UrlMsg")</span></span>
+                                    </div>
+							</div>
+						</div>
+						<div class="clear">
+							&nbsp;
+						</div>
+						@if (isDownloadAction)
+						{
+
+							<script type="text/javascript" language="javascript">
+								jQuery(document).ready(function () { jQuery('#AdCreativeDto_AppUrl').change(ValidateAdActionAppUrl); });
+								function ValidateAdActionAppUrl() {
+									var val = ValidateUrl(jQuery('#AdCreativeDto_AppUrl'));
+
+									if (val == false) {
+										jQuery('#displayURLErrorMsgAppUrl').show();
+
+									}
+									else {
+										jQuery('#displayURLErrorMsgAppUrl').hide();
+									}
+
+									return val;
+								};
+
+							</script>
+							<h2>
+								@Html.GetResource("AppDownloadSetting", "NativeAd")
+							</h2>
+							<div class="section-form-inner-container info-container">
+
+								<div class="data-row data-container">
+									<div class="label-container">
+										<span class="field-title required-field">&nbsp;</span>
+									</div>
+									<div class="field-container">
+										<div class="ddl-container data-row">
+											@Html.GetCheckBox("adCreativeDto.ShowIfInstalled", Html.GetResource("ShowIfInstalled", "NativeAd"), isChecked: AdCreativeDto.ShowIfInstalled)
+										</div>
+									</div>
+								</div>
+								<div class="data-row data-container">
+									<div class="label-container">
+										<span class="field-title required-field">@Html.GetResource("StarRating", "NativeAd")</span>
+									</div>
+									<div class="field-container">
+										<span class="small-big-field">@Html.AdFalconTextBox("AdCreativeDto.StarRating", Model == null || Model.AdCreativeDto == null || Model.AdCreativeDto.StarRating == -1 ? string.Empty : AdCreativeDto.StarRating.Value.ToString("F2"), new { maskType = "decimal" })</span>
+
+
+										@Html.AdFalconValidationMessageFor(p => p.AdCreativeDto.StarRating)
+									</div>
+								</div>
+								<div class="data-row data-container">
+									<div class="label-container">
+										<span class="field-title required-field">@Html.GetResource("AppUrl", "NativeAd")</span>
+									</div>
+									<div class="field-container">
+										@Html.AdFalconEditorFor(p => p.AdCreativeDto.AppUrl)
+										@Html.AdFalconValidationMessageFor(p => p.AdCreativeDto.AppUrl)
+										<span id="displayURLErrorMsgAppUrl" class="validation-arrow field-validation-error" style="display: none;">
+											<span class="">@Html.GetResource("UrlMsg")</span>
+										</span>
+									</div>
+								</div>
+							</div>
+
+						}
+						else
+						{
+							@Html.Hidden("AdCreativeDto.ShowIfInstalled")
+							@Html.Hidden("AdCreativeDto.StarRating")
+							@Html.Hidden("AdCreativeDto.AppUrl")
+						}
+
+
+						<div id="divCreativeVendor">
+							@Html.HiddenFor(m => m.CreativeVendorId)
+
+							<h2>
+								@Html.GetResource("CreativeVendor", "Campaign")
+							</h2>
+
+
+							@Html.Partial("CreativeVendorMultiSelect", Model)
+
+
+						</div>
+
+
+						<h2>
+							@Html.GetResource("Settings", "Commands")
+						</h2>
+						<div class="section-form-inner-container">
+							<div class="section-form-inner-container info-container">
+								<div class="data-row data-container">
+									<div class="label-container">
+										<span class="field-title required-field">@Html.GetResource("Settings", "Commands")</span>
+									</div>
+									<div class="field-container">
+
+										@Html.GetCheckBox("VerifyTargetingCriteria", Html.GetResource("VerifyTargetingCriteria", "TrackingAd"), Model.AdCreativeDto.VerifyTargetingCriteria)
+										@Html.GetCheckBox("UpdateEventsFrequency", Html.GetResource("UpdateEventsFrequency", "TrackingAd"), Model.AdCreativeDto.UpdateEventsFrequency)
+										@Html.GetCheckBox("VerifyDailyBudget", Html.GetResource("VerifyDailyBudget", "TrackingAd"), Model.AdCreativeDto.VerifyDailyBudget)
+										@Html.GetCheckBox("VerifyCampaignStartAndEndDate", Html.GetResource("VerifyCampaignStartAndEndDate", "TrackingAd"), Model.AdCreativeDto.VerifyCampaignStartAndEndDate)
+										@Html.GetCheckBox("UpdateTags", Html.GetResource("UpdateTags", "TrackingAd"), Model.AdCreativeDto.UpdateTags)
+										@Html.GetCheckBox("VerifyEventsFrequency", Html.GetResource("VerifyEventsFrequency", "TrackingAd"), Model.AdCreativeDto.VerifyEventsFrequency)
+										@Html.GetCheckBox("VerifyPrerequisiteEvents", Html.GetResource("VerifyPrerequisiteEvents", "TrackingAd"), Model.AdCreativeDto.VerifyPrerequisiteEvents)
+										@Html.GetCheckBox("ValidateRequestDeviceAndLocationData", Html.GetResource("ValidateRequestDeviceAndLocationData", "TrackingAd"), Model.AdCreativeDto.ValidateRequestDeviceAndLocationData)
+
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<h2>
+							@Html.GetResource("Bid", "Campaign")
+						</h2>
+						<div class="section-form-inner-container">
+							<div class="section-form-inner-container info-container">
+								<div class="data-row data-container">
+									<div class="label-container">
+										<span class="field-title required-field">@Html.GetResource("MinimalBid", "Campaign")</span>
+									</div>
+									<div class="field-container">
+										<span class="side-text">@string.Format("{0:F2}", Model.AdCreativeDto.MinBid) $</span>
+									</div>
+								</div>
+								<div class="data-row data-container">
+									<div class="label-container">
+										<span class="field-title required-field campaign-upload">@Html.GetResource("Bid", "Campaign")</span>
+									</div>
+									<div class="field-container">
+										<span class="small-big-field">@Html.AdFalconTextBox("AdCreativeDto.Bid", Model == null || Model.AdCreativeDto == null ? string.Empty : Model.AdCreativeDto.Bid.ToString("F2"), new { maskType = "decimal", onkeypress = "onbidpress(this)" })</span>
+										<span class="side-text">$</span>
+										<span id="bidDiscounted" style="color: #E40685;" class="data-row guid-text go-left iea-go-right">@(!Model.DiscountedBid.HasValue || Model.AdCreativeDto.Bid == Model.DiscountedBid ? string.Empty : "(" + string.Format(Html.GetResource("DiscountedBidDesc", "Campaign"), Model.DiscountedBid.Value.ToString("F2")) + ")")</span>
+										@Html.AdFalconValidationMessageFor(p => p.AdCreativeDto.Bid)
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="section-footer">
+						</div>
+					</div>
+				</div>
+			</div>
+        <div class="data-row button-container">
+            <input type="submit" value="@Html.GetResource("Save", "Commands")" name="Create" class="save-button" onclick="return creativeUnitValidate();" />
+            <input  type="button" value='@Html.GetResource("Close", "Commands")' class="btn" onclick="redirect('@(string.IsNullOrWhiteSpace(Request.QueryString["returnUrl"]) ? Url.Action("Ads", "Campaign", new { id = routeData.Values["id"], adGroupId = routeData.Values["adGroupId"] }) : Request.QueryString["returnUrl"])    ')"/>
+        </div>
+    </div>
+}

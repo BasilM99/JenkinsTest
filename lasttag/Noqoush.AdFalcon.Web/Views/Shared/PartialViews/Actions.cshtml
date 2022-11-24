@@ -1,0 +1,58 @@
+﻿@using Noqoush.AdFalcon.Web.Controllers.Model
+@model IEnumerable<Noqoush.AdFalcon.Web.Controllers.Model.Action>
+<div class="data-row">
+	@foreach (var action in Model)
+	{
+		switch (action.Type)
+		{
+			case ActionType.Link:
+				{
+					if (action.ExtraPrams3 == null)
+					{
+						@Html.ActionLink(action.DisplayText, action.ActionName, action.ControllerName, new { id = action.ExtraPrams, adGroupId = action.ExtraPrams2 }, htmlAttributes: new { @class = action.ClassName });
+					}
+					else if (action.ExtraPrams3.ToString() == "report")
+					{
+
+
+						@Html.ActionLink(action.DisplayText, action.ActionName, action.ControllerName, new { reportType = action.ExtraPrams, IsSchedule = action.ExtraPrams4 != null && action.ExtraPrams4.ToString() == "IsSchedule" ? true : false }, htmlAttributes: new { @class = action.ClassName });
+					}
+					else if (action.ExtraPrams3.ToString() == "Partner" || action.ExtraPrams3.ToString() == "AccountCostElement")
+					{
+						<a class="@action.ClassName" href="#" onclick="return onEntityChange(''); return false;">@action.DisplayText</a>
+
+					}
+					else if (action.ExtraPrams3.ToString() == "PartnerAddNew")
+					{
+						@Html.ActionLink(action.DisplayText, action.ActionName, action.ControllerName, new { Id = action.ExtraPrams, ItemId = "  " }, htmlAttributes: new { @class = action.ClassName });
+
+					}
+					else if (action.ExtraPrams3.ToString() == "DealsAddNew")
+					{
+						@Html.ActionLink(action.DisplayText, action.ActionName, action.ControllerName, new { Id = action.ExtraPrams }, htmlAttributes: new { @class = action.ClassName });
+
+					}
+					else
+					{
+						@Html.ActionLink(action.DisplayText, action.ActionName, action.ControllerName, new { id = action.ExtraPrams, adGroupId = action.ExtraPrams2, adTypeId = action.ExtraPrams3 }, htmlAttributes: new { @class = action.ClassName });
+
+					}
+					break;
+				}
+			default:
+				{
+					if (action.ExtraPrams != null && action.ExtraPrams.ToString() == "Dialog")
+					{
+						<input type="button" name="@action.ActionName" value="@action.DisplayText" class="@action.ClassName" onclick="@action.onClickEvent" />
+
+					}
+					else
+					{
+						<input type="submit" name="@action.ActionName" value="@action.DisplayText" class="@action.ClassName" onclick="return popup(this,'@action.ExtraPrams', '@action.ExtraPrams2')" />
+
+					}
+					break;
+				}
+		}
+	}
+</div>

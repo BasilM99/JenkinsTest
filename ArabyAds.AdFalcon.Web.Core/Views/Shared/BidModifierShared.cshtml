@@ -1,0 +1,695 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.BidModifierModel
+
+<script type="text/javascript">
+        //var initilizeSelect2URL = '/en/Filter/MultiSelectQB';
+    //ar initilizeLineURL = '/en/Filter/SubFilterForTargeting';
+    var MaxBidModifierValue = @ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.MaxBidModifierValue;
+    var MinBidModifierValue = @ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.MinBidModifierValue;
+
+
+    var MultiplierFormatMessage = '@string.Format(Html.GetResource("MultiplierFormat", "Global"), ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.MinBidModifierValue, ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.MaxBidModifierValue)';
+    var DimensionTypeGeofenceFormatMessage = '@Html.GetResource("DimensionTypeGeofenceFormat", "Global")';
+    ``
+
+    var DimensionTypeDuplicateMessage = '@Html.GetResource("DimensionTypeDuplicate", "Global")';
+
+    var DimensionValueEnterMessage = '@Html.GetResource("DimensionValueEnter", "Global")';
+    var DimensionTypeEnterMessage = '@Html.GetResource("DimensionTypeEnter", "Global")';
+
+    var bidModLastvalueId = 0;
+
+     var initilizeSelect2URL = '@Url.Action("MultiSelectBid", "Filter")';
+           var initilizeLineURL = '@Url.Action("SubFilterForBidModifier", "Filter")';
+        var selectValuesDrop = [];
+        var droplength = 23;
+
+
+    var yesbtn = "@Html.GetResource("Yes", "Global")";
+    var nobtn = "@Html.GetResource("No", "Global")";
+        //var criteriaIDs = { 6: [2, 1, 21], 21: [6, 2, 1], 2: [6, 1, 21], 1: [6, 2, 21], 7: [8, 9], 8: [7, 9], 9: [8, 7], 27: [12, 13, 11], 12: [27], 13: [27], 12: [27] };
+        //var SearchstringCriteriaIDs = {
+        //    1: 'campaigns.Id in ({0})',
+        //    2: 'adgroups.Id in ({0})',
+        //    6: 'ads.Id in ({0})',
+        //    21: 'campaigns.AssociationAdvId in ({0})',
+        //    7: 'Country.Id in ({0})',
+        //    9: 'Region.Id in ({0})',
+        //    8: 'City.Id in ({0})',
+        //    11: 'manufacturerid in ({0})',
+        //    12: 'devicetypeid in ({0})',
+        //    13: 'platformid in ({0})',
+        //    27: 'dim_devices.Id in ({0})',
+
+        //};
+
+        function collectSubDimen(CodeSelected) {
+            var things = "";
+            //debugger;
+            var dropDwonLists = $('*[id^="Drop"]');
+
+            if (typeof (criteriaIDs[CodeSelected]) != "undefined") {
+
+
+                for (let id of criteriaIDs[CodeSelected]) {
+                    for (var i = 0; i < dropDwonLists.length; i++) {
+                        if (typeof (dropDwonLists.eq(i)) != "undefined" && dropDwonLists.eq(i).val() != "-1" && dropDwonLists.eq(i).val() == id) {
+
+                            var Select2List = dropDwonLists.eq(i).parent().parent().find("[id*='List']").eq(0).val().join(",");
+
+                            things = Select2List;
+                        }
+                    }
+                    if (things.length > 0) {
+                        things = id + ":" + SearchstringCriteriaIDs[id] + ":" + things;
+                        break;
+                    }
+
+                }
+            }
+
+
+            return things;
+        }
+
+
+        function checkFrowNumber() {
+            let Frowelements = $('#SectionOne').find('.Frow-element').not(":hidden");
+            let val = false;
+            if (Frowelements.length > 1) {
+                val = true;
+            }
+            return val;
+        }
+    function CheckBidModifierDuplicationOfCompaniation(zindex) {
+        var alldrop = $('*[id^="hrBidMod"]');
+        // return;
+        var valuedropIndex = $("#Drop" + zindex).val();
+        for (var z = 0; z < alldrop.length; z++) {
+            var CodeVal = $(alldrop[z]).attr("CodeVal");
+            if (z == alldrop.length - 1) {
+                var valuedrop = $("#Drop" + CodeVal).val();
+                if (valuedrop == "-1") { return true; }
+            }
+            if ($("#AdGroupBidModifiersDto_" + CodeVal + "__IsDeleted").val() != "True") {
+
+                var valuedrop = $("#Drop" + CodeVal).val();
+                var valueDimValue = $("#AdGroupBidModifiersDto_" + CodeVal + "__DimensionValue").val();
+
+                var MultiplierValue = $("#AdGroupBidModifiersDto_" + CodeVal + "__Multiplier").val();
+
+                /*if (MultiplierValue == "" || MultiplierValue == undefined) {
+                    showErrorMessage(MultiplierFormatMessage, false);
+                    return false;
+                }*/
+                //if (valueDimValue == "" || valueDimValue == undefined) {
+                //    showErrorMessage(DimensionValueEnterMessage, false);
+                //    return false;
+                //}
+
+                /*if (valuedrop == "-1") {
+                    showErrorMessage(DimensionTypeEnterMessage, false);
+                    return false;
+
+                }*/
+
+                ///*
+                // if (/*!isNaN(MultiplierValue) ||*/ (parseFloat(MultiplierValue) > parseFloat(MaxBidModifierValue) || parseFloat(MultiplierValue) < parseFloat(MinBidModifierValue))) {
+                //    //elem.val("");
+                //    showErrorMessage(MultiplierFormatMessage, false);
+                //    return false;
+                //    // showErrorMessage(DimensionTypeGeofenceFormatMessage, false);
+                //    // e.preventDefault();
+                //}
+                //*/
+               // if (!completeLineValidator(CodeVal)) return false;
+                for (var i = z+1; i < alldrop.length; i++) {
+                   // if (z == i)
+                    //    continue;
+                    var CodeValc = $(alldrop[i]).attr("CodeVal");
+                    var valuedropc = $("#Drop" + CodeValc).val();
+                    var valueDimValuec = $("#AdGroupBidModifiersDto_" + CodeValc + "__DimensionValue").val();
+                    if (valuedrop == valuedropc) {
+                        if (valueDimValuec == valueDimValue && (valuedropIndex == valuedrop)) {
+                            showErrorMessage(DimensionTypeDuplicateMessage, false);
+                            return false;
+                        }
+
+                    }
+                }
+            }
+        }
+        return true;
+
+    }
+    function CheckBidModifierDuplication() {
+        var alldrop = $('*[id^="hrBidMod"]');
+       // return;
+        for (var z = 0; z < alldrop.length; z++) {
+            var CodeVal = $(alldrop[z]).attr("CodeVal");
+            if (z == alldrop.length - 1) {
+                var valuedrop = $("#Drop" + CodeVal).val();
+                if (valuedrop == "-1") { return true;}
+            }
+            if ($("#AdGroupBidModifiersDto_" + CodeVal + "__IsDeleted").val() != "True" ) {
+
+                var valuedrop = $("#Drop" + CodeVal).val();
+                var valueDimValue = $("#AdGroupBidModifiersDto_" + CodeVal + "__DimensionValue").val();
+
+                var MultiplierValue = $("#AdGroupBidModifiersDto_" + CodeVal + "__Multiplier").val();
+
+                if (MultiplierValue == "" || MultiplierValue == undefined) {
+                    showErrorMessage(MultiplierFormatMessage, false);
+                    return false;
+                }
+                if (valueDimValue == "" || valueDimValue == undefined) {
+                    showErrorMessage(DimensionValueEnterMessage, false);
+                    return false;
+                }
+
+                if (valuedrop == "-1") {
+                    showErrorMessage(DimensionTypeEnterMessage, false);
+                    return false;
+
+                }
+
+                if (/*!isNaN(MultiplierValue) ||*/ (parseFloat(MultiplierValue) > parseFloat(MaxBidModifierValue) || parseFloat(MultiplierValue) < parseFloat(MinBidModifierValue))) {
+                    //elem.val("");
+                    showErrorMessage(MultiplierFormatMessage, false);
+                    return false;
+                    // showErrorMessage(DimensionTypeGeofenceFormatMessage, false);
+                    // e.preventDefault();
+                }
+                if (!completeLineValidator(CodeVal)) return false;
+                for (var i = z+1; i < alldrop.length; i++) {
+                    //if (z == i)
+                    //    continue;
+                    var CodeValc = $(alldrop[i]).attr("CodeVal");
+                    var valuedropc = $("#Drop" + CodeValc).val();
+                    var valueDimValuec = $("#AdGroupBidModifiersDto_" + CodeValc + "__DimensionValue").val();
+                    if (valuedrop == valuedropc) {
+                        if (valueDimValuec == valueDimValue) {
+                            showErrorMessage(DimensionTypeDuplicateMessage, false);
+                            return false;
+                        }
+
+                    }
+                }
+            }
+        }
+        return true;
+
+    }
+        function fixDrop() {
+            var alldrop = $('*[id^="Drop"]');
+            return;
+            for (var z = 0; z < alldrop.length; z++) {
+                $(alldrop[z]).children().show();
+
+            }
+            var showexist = false;
+            for (var i = 0; i < selectValuesDrop.length; i++) {
+                showexist = false;
+                if (selectValuesDrop[i] != 7) {
+                    for (var z = 0; z < alldrop.length; z++) {
+                        if (!($(alldrop[z]).children("option[value=" + selectValuesDrop[i] + "]").css('display') == 'none' || $(alldrop[z]).children("option[value=" + selectValuesDrop[i] + "]").css("visibility") == "hidden")) {
+                            showexist = true;
+                        }
+                    }
+                    if (showexist) {
+                        for (var z = 0; z < alldrop.length; z++) {
+                            $(alldrop[z]).children("option[value=" + selectValuesDrop[i] + "]").hide();
+
+                        }
+                    }
+                } else {
+                    if (alldrop.toArray().filter(x => x.value == 7).length >= 2) {
+                        for (var z = 0; z < alldrop.length; z++) {
+                            if (!($(alldrop[z]).children("option[value=" + selectValuesDrop[i] + "]").css('display') == 'none' || $(alldrop[z]).children("option[value=" + selectValuesDrop[i] + "]").css("visibility") == "hidden")) {
+                                showexist = true;
+                            }
+                        }
+                        if (showexist) {
+                            for (var z = 0; z < alldrop.length; z++) {
+                                $(alldrop[z]).children("option[value=" + selectValuesDrop[i] + "]").hide();
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    var SpinnerBidModifier = null;
+        function initilizeSelect2(id, selectedId, list) {
+
+            if (SpinnerBidModifier == null) {
+                 SpinnerBidModifier = getSpinner("BidModifierSectionSpn");
+            }
+
+            SpinnerBidModifier.showSpinner();
+            jQuery.ajax({
+                url: initilizeSelect2URL + '?Id=' + id + "&selectedId=" + selectedId + "&ListOfIds=" + list,
+                cache: false,
+                success: function (html) {
+
+                    html = html.toString();
+                    if (html.includes('<div id="' + id + 'Div">'))
+                        html = html.replace('<div id="' + id + 'Div">', '<div id="' + id + 'Div" class=""')
+                    var newelem = jQuery(html);
+                    jQuery("#SCol" + id).append(newelem);
+                    jQuery("#SCol" + id).show();
+                    jQuery("#RCol" + id).show();
+                    jQuery("#LCol" + id).show();
+                    parseScript(html);
+                    $('.multoper-number').show();
+                    $('.minusicon').show();
+                    SpinnerBidModifier.hideSpinner();
+                },
+                error: function (error) { SpinnerBidModifier.hideSpinner();}
+            });
+
+        }
+
+        function removeBidMod(id) {
+            //debugger;
+            let linesNum = checkFrowNumber();
+            if (linesNum) {
+                var index = selectValuesDrop.indexOf($("#Drop" + id).val());
+                if (index > -1) {
+                    selectValuesDrop.splice(index, 1);
+                }
+                jQuery("#container" + id).hide();
+                $("#AdGroupBidModifiersDto_" + id + "__IsDeleted").val("True");
+                //jQuery("#container" + id).remove();
+                //jQuery("#br" + id).remove();
+                //jQuery("#hr" + id).remove();
+                //$('*[id^="Frow"]').last().find('*[id^="Plus"]').show();
+                $('*[id^="Frow"]').not(":hidden").last().find('*[id^="PlusBidMod"]').show();
+                fixDrop();
+            } else {
+                var index = selectValuesDrop.indexOf($("#Drop" + id).val());
+                if (index > -1) {
+                    selectValuesDrop.splice(index, 1);
+                }
+                $("#AdGroupBidModifiersDto_" + id + "__IsDeleted").val("True");
+                jQuery("#container" + id).hide();
+                //jQuery("#container" + id).remove();
+                //jQuery("#br" + id).remove();
+                //jQuery("#hr" + id).remove();
+                //$('*[id^="Frow"]').last().find('*[id^="Plus"]').show();
+                $('*[id^="Frow"]').not(":hidden").last().find('*[id^="PlusBidMod"]').show();
+                fixDrop();
+                PlusBidMod(id, linesNum);
+            }
+            //$('*[id^="DCol"]').first().find('*[id^="label"]').text("@(Html.GetResource("Filter", "Global"))");
+            /**/
+        }
+
+        function PlusBidMod(id, lineNumFlag) {
+            if (!CheckBidModifierDuplication())
+                return;
+            if ((MultoperNumberVal(id) && completeLineValidator(id)) || !lineNumFlag) {
+                $("#PlusBidMod" + id).hide();
+
+                if (parseInt(bidModLastvalueId) == parseInt(id)) {
+
+                    initilizeLine(id);
+                    bidModLastvalueId++;
+                }
+                else {
+                    initilizeLine(bidModLastvalueId + "");
+                    bidModLastvalueId++;
+                }
+            }
+            // placeCaretAtEnd("#SectionOne");
+        }
+
+    function initilizeLine(id) {
+
+        jQuery.ajax({
+            url: initilizeLineURL + '?Id=' + id + "&factid=1" ,
+            cache: false,
+            success: function(html) {
+
+                html = html.toString();
+                var newelem = jQuery(html);
+                jQuery("#SectionOne").append(newelem);
+                parseScript(html);
+                fixDrop();
+               // $('*[id^="DCol"]').first().find('*[id^="label"]').text("@(Html.GetResource("Filter", "Global"))");
+                    //$('.multoper-number').show();
+
+            },
+            error: function(error) {}
+        });
+
+        }
+
+
+
+
+        function clearSelect2(id) {
+            $("#" + id).select2("val", "()");
+
+        }
+    function callBackModifierDimVal(code, Name) {
+
+        $("#AdGroupBidModifiersDto_" + code + "__DimensionValue").val($("#" + Name).val());
+
+        if (!CheckBidModifierDuplicationOfCompaniation(parseInt(code))) {
+            $("#" + Name).val(null);
+            $("#" + Name+"_min").val(null);
+            $("#" + Name + "_hour").val(null);
+            return false;
+
+        }
+
+        if ($("#" + Name).val() == "" || $("#" + Name).val() == undefined)
+            showErrorMessage(DimensionValueEnterMessage, false);
+        return true;
+    }
+    function DropChangedModified(id, list, valMultu) {
+       // $("#SCol" + id + " > #" + id + "Div").remove();
+        //$("#SCol" + id + " > #time-control").remove();
+        //$("#SCol" + id).children().remove();
+        $("#LCol" + id).hide();
+        // LCol
+       // if ($("#Drop" + id).val() != "-1")
+        //    initilizeSelect2(id, $("#Drop" + id).val(), list)
+
+       // jQuery("#SCol" + id).append(newelem);
+        jQuery("#SCol" + id).show();
+        jQuery("#RCol" + id).show();
+        jQuery("#LCol" + id).show();
+        //qaparseScript(html);
+        $('.multoper-number').show();
+        $('.minusicon').show();
+        if (!selectValuesDrop.includes($("#Drop" + id).val()))
+            selectValuesDrop.push($("#Drop" + id).val());
+        //$("#Drop" + id).prop("disabled", true);
+        $("#BidModfierSelect_" + id + "List").select2("data", null);
+        $("#BidModfierSelect_" + id + "List").val(null);
+
+        $("#AdGroupBidModifiersDto_" + id + "__DimensionType").val($("#Drop" + id).val());
+        $("#AdGroupBidModifiersDto_" + id + "__DimensionValue").val(list);
+        $("#AdGroupBidModifiersDto_" + id + "__Multiplier").val(valMultu);
+        $("#multoper_" + id + "number").val(valMultu);
+
+
+        $("#PlusBidMod" + id).show();
+        /*if (droplength - selectValuesDrop.length == 0) {
+            $("#Plus" + id).hide();
+
+        }*/
+        @*// AdGroupBidModifiersDto_@(Model.Id)__IsDeleted*@
+            if ($("#AdGroupBidModifiersDto_" + (parseInt(bidModLastvalueId) + 1) + "__IsDeleted").length > 0) {
+
+            $("#PlusBidMod" + id).hide();
+        }
+        if ($("#Drop" + id).val() == "-1")
+            showErrorMessage(DimensionTypeEnterMessage, false);
+        //document.getElementById(id + 'Div').style.float = "right;";
+
+    }
+
+
+        function DropChanged(id, list,valMultu) {
+            $("#SCol" + id + " > #" + id + "Div").remove();
+            $("#SCol" + id + " > #time-control").remove();
+            $("#SCol" + id).children().remove();
+            $("#LCol" + id).hide();
+           // LCol
+            if ($("#Drop" + id).val() != "-1")
+            initilizeSelect2(id, $("#Drop" + id).val(), list)
+            if (!selectValuesDrop.includes($("#Drop" + id).val()))
+                selectValuesDrop.push($("#Drop" + id).val());
+            //$("#Drop" + id).prop("disabled", true);
+            $("#BidModfierSelect_" + id + "List").select2("data", null);
+            $("#BidModfierSelect_" + id + "List").val(null);
+
+            $("#AdGroupBidModifiersDto_" + id + "__DimensionType").val($("#Drop" + id).val());
+             $("#AdGroupBidModifiersDto_" + id + "__DimensionValue").val(list);
+            $("#AdGroupBidModifiersDto_" + id + "__Multiplier").val(valMultu);
+            $("#multoper_" + id +"number").val(valMultu);
+
+
+            $("#PlusBidMod" + id).show();
+            /*if (droplength - selectValuesDrop.length == 0) {
+                $("#Plus" + id).hide();
+
+            }*/
+           @*// AdGroupBidModifiersDto_@(Model.Id)__IsDeleted*@
+            if ($("#AdGroupBidModifiersDto_" + (parseInt(bidModLastvalueId) +1 ) + "__IsDeleted").length > 0) {
+
+                $("#PlusBidMod" + id).hide();
+            }
+            if ($("#Drop" + id).val() == "-1")
+                showErrorMessage(DimensionTypeEnterMessage, false);
+            //document.getElementById(id + 'Div').style.float = "right;";
+
+    }
+    function MultoperNumberVal( code) {
+        let elem = $("#multoper_" + code + "number");
+        if (/*!isNaN(elem.val()) ||*/ (parseFloat(elem.val()) > parseFloat(MaxBidModifierValue) || parseFloat(elem.val()) < parseFloat(MinBidModifierValue))) {
+            //elem.val("");
+            showErrorMessage(MultiplierFormatMessage, false);
+            return false;
+            // showErrorMessage(DimensionTypeGeofenceFormatMessage, false);
+           // e.preventDefault();
+        }
+        return true;
+    }
+
+    function MultoperNumberChange(e,obj,code) {
+        let elem = $(obj);
+        debugger;
+        if (/*!isNaN(elem.val()) ||*/ (parseFloat(elem.val()) > parseFloat(MaxBidModifierValue) || parseFloat(elem.val()) < parseFloat(MinBidModifierValue))) {
+            elem.val("");
+            showErrorMessage(MultiplierFormatMessage, false);
+           // showErrorMessage(DimensionTypeGeofenceFormatMessage, false);
+            e.preventDefault();
+        }
+
+        var value = $(elem).val();
+        var REGULAR = new RegExp("^\\d{1,5}(\\.\\d{1,3})?$");
+        $("#AdGroupBidModifiersDto_" + code + "__Multiplier").val(elem.val());
+        if (!REGULAR.test(value)) {
+            $(elem).val("");
+            e.preventDefault();
+            return false;
+
+        }
+
+        return true;
+    }
+    function completeLineValidator(id) {
+        let elem0 = null;
+        let elem1 = null;
+        let elem2 = $("#multoper_" + id + "number");
+        let ddlVal = $("#Drop"+id).val();
+        switch (ddlVal) {
+            case "1":// for time
+
+                elem0 = $("#BidModfierSelect_" + id + "hour");
+                elem1 = $("#BidModfierSelect_" + id + "min");
+
+                if (elem0.val() != "" && elem1.val() != "") { return true; }
+                else {
+                    showErrorMessage(DimensionValueEnterMessage, false);
+
+                    return false;
+                }
+
+                break;
+            case "5":// for geofence
+
+                elem0 = $("#BidModfierSelect_" + id);
+               // elem1 = $("#BidModfierSelect_" + id + "min");
+
+                var value = elem0.val();
+                var REGULAR = new RegExp("^(\-?([0-8]?[0-9](\.\d+)?|90(.[0]+)?)\s?[,]\s?)+((\-?([1]?[0-7]?[0-9](\.\d+)?|180((.[0]+)?)))+(\s?[,]\s?[1-9](\\d{1,5})*))$");
+
+                if (!REGULAR.test(value)) {
+                    $(elem0).val("");
+                   // showErrorMessage(MultiplierFormatMessage, false);
+                    showErrorMessage(DimensionTypeGeofenceFormatMessage, false);
+
+                    return false;
+
+                }
+                return true;
+
+                break;
+            default:
+                elem1 = $("#AdGroupBidModifiersDto_" + id + "__DimensionValue");
+                if (elem1.val().length > 0) {
+                    return true;
+
+                }
+                else { showErrorMessage(DimensionValueEnterMessage, false); return false; }
+                break;
+        }
+
+
+    }
+    function intilizeLinesFomserver(id,index, listOfIds,multiVal,lastIndex) {
+
+
+        fixDrop();
+        let tempId = parseInt(index);
+        //tempId++;
+        $('#Drop' + tempId).val(id);
+       // debugger;
+        bidModLastvalueId = tempId;
+        DropChangedModified(tempId, listOfIds, multiVal.toFixed(2));
+
+
+       // $('.btn-primary:not(:last())').remove();
+
+        $("#PlusBidMod" + tempId).hide();
+        if (index == lastIndex)
+            $("#PlusBidMod" + tempId).show();
+    }
+    function initilizeLineCustom(id) {
+        var currId = id
+        jQuery.ajax({
+            url: initilizeLineURL + '?Id=' + id +  "&ListOfIds=" + GlobalQueryJsonArray[currId],
+            cache: false,
+            success: function (html) {
+
+                html = html.toString();
+                var newelem = jQuery(html);
+                jQuery("#SectionOne").append(newelem);
+                parseScript(html);
+                fixDrop();
+                let tempId = parseInt(currId);
+                tempId++;
+                $('#Drop' + tempId).val(currId);
+                DropChanged(tempId, GlobalQueryJsonArray[currId]);
+
+
+                $('.btn-primary:not(:last())').remove();
+
+                //var funcName = "CustomInitSelect2" + currId + "('" + GlobalQueryJsonArray[currId] + "')"
+                //eval(funcName);
+                //jQuery.globalEval(funcName);
+                //$('#BidModfierSelect_' + tempId+'List').val(id);
+
+
+            },
+            error: function (error) { }
+        });
+
+    }
+    var ShowConfirmationDialogForDeleteBidModifiervar = true;
+    function ShowConfirmationDialogForDeleteBidModifier(Id) {
+
+
+        if (!ShowConfirmationDialogForDeleteBidModifiervar)
+            return;
+
+        ShowConfirmationDialogForDeleteBidModifiervar = false;
+        var yesbtn = "@Html.GetResource("Yes", "Global")";
+    var nobtn = "@Html.GetResource("No", "Global")";
+		var name = "@Html.GetResource("BidModifier", "Global")" ;
+
+		var ConfirmationPMP = "@Html.GetResource( "Delete", "Confirmation")";
+
+
+		if (name.length > 30)
+			name = name.substring(0, 30) + "..";
+        var ConfriamtionBoxTitle = "@Html.GetResource("Confirm")";
+        $('<div id ="BidConfirmationDialog" title="' + ConfriamtionBoxTitle + '"></div>').dialog({
+
+			open: function () {
+				$(this).html(ConfirmationPMP.format(" " + name));
+
+			},
+			showCloseButton: false,
+            close: function() {
+               // $(this).html(ConfirmationPMP.format(" " + name));
+                ShowConfirmationDialogForDeleteBidModifiervar = true;
+            },
+			buttons: [
+				{
+					text: yesbtn,
+					click: function () {
+                        removeBidMod(Id);
+						$(this).dialog("close");
+                        ShowConfirmationDialogForDeleteBidModifiervar = true;
+
+					}
+				},
+				{
+					text: nobtn,
+					click: function () {
+						$(this).dialog('close');
+                        ShowConfirmationDialogForDeleteBidModifiervar = true;
+					}
+				},
+
+			]
+		});
+
+       // $("#BidConfirmationDialog").dialog("open");
+		return false;
+	}
+</script>
+
+<style type="text/css">
+    #SectionOne .select2.select2-container.select2-container--default.select2-container--below,
+    #SectionOne .select2.select2-container.select2-container--default.select2-container--below.select2-container--focus,
+    #SectionOne .select2.select2-container.select2-container--default,
+    #SectionOne .select2.select2-container.select2-container--default.select2-container--focus,
+    #SectionOne .select2-selection.select2-selection--single {
+        width: 300px !important;
+    }
+
+    #SectionOne div .select2-selection__rendered {
+        float: left;
+    }
+</style>
+@**@
+
+<div class="container bidModifiersContainer" id="BidModifierSectionSpn">
+
+    <div id="SectionOne">
+
+
+        @{ if (Model.AdGroupBidModifiersDto != null && Model.AdGroupBidModifiersDto.Count > 0)
+            {
+              
+
+                for (int i = 0; i < Model.AdGroupBidModifiersDto.Count(); i++)
+
+                {
+
+
+                    @await Html.PartialAsync("SubFilterForBidModifier", new ArabyAds.AdFalcon.Web.Controllers.Model.QueryBuilder.FilterViewModel { BidModId= Model.AdGroupBidModifiersDto[i].ID, Id = i, DimensionType = @Model.AdGroupBidModifiersDto[i].DimensionTypeId, DimensionValue = Model.AdGroupBidModifiersDto[i].DimensionValue, Multiplier = Model.AdGroupBidModifiersDto[i].Multiplier })
+                    <input data-val="true" id="AdGroupBidModifiersDto_@(i)__ID" name="AdGroupBidModifiersDto[@(i)].ID" type="hidden" value="@(Model.AdGroupBidModifiersDto[i].ID)">
+                  
+
+
+                    <script>
+                        $(document).ready(function () { intilizeLinesFomserver('@Model.AdGroupBidModifiersDto[i].DimensionTypeId',@i, '@Model.AdGroupBidModifiersDto[i].DimensionValue',@Model.AdGroupBidModifiersDto[i].Multiplier, @(Model.AdGroupBidModifiersDto.Count()-1)); });
+                    </script>
+
+                }
+
+
+
+            }
+            else
+            {
+
+
+                @await Html.PartialAsync("SubFilterForBidModifier", new ArabyAds.AdFalcon.Web.Controllers.Model.QueryBuilder.FilterViewModel())
+
+
+
+            }
+
+
+        }
+
+    </div>
+</div>

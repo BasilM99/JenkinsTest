@@ -1,0 +1,118 @@
+﻿<script language="javascript" type="text/javascript">
+    function generateFeeGrid() {
+        var grid = $("#SearchFee").data("kendoGrid");
+        if (typeof (grid) != "undefined") {
+            grid.dataSource.read();
+            grid.refresh();
+        }
+
+	};
+
+    function feeElementGridDataBinding(args) {
+      
+		     args.data = $.extend(args.data,
+            {
+               
+				Name: $('#NameFeeSearch').val(),
+                LookupId: '@Html.ViewContext.RouteData.Values["LookupId"]'
+
+            });
+    };
+
+    function feeElementGridData() {
+      
+		     var j  = 
+            {
+               
+				Name: $('#NameFeeSearch').val(),
+                LookupId: '@Html.ViewContext.RouteData.Values["LookupId"]'
+
+        };
+        return j;
+    };
+
+    function feeGridDataBound(e) {
+        var grid = $("#SearchFee").data("kendoGrid");
+        //if not first page and the no data then try load first page
+        if ((grid._data.length == 0) && (grid.dataSource.page() > 1)) {
+            e.preventDefault();
+            if (grid.dataSource.page() != 1) {
+                grid.dataSource.page(1);
+            }
+        }
+    };
+    var FeeID, FeeName;
+    function onRowFeeSelected(e) {
+        var rows = e.sender.select();
+        //  var dataItem = null;
+        //  var grid = $("#MasterListItemGrid").data("kendoGrid");
+        dataItem = e.sender.dataItem(rows);
+        FeeID = dataItem.ID;
+        FeeName = dataItem.Name.Value;
+        selectFee();
+    }
+	function selectFee() {
+        AddCostElement(FeeID, FeeName);
+    }
+
+
+</script>
+
+
+<div>
+    <div class="data-row go-center">
+        <div class="blue-filter-container">
+            <table class="special-content">
+                <tr>
+                    <td>
+                        <span class="go-bold">@Html.GetResource("Name", "Global")</span>
+                    </td>
+                    <td style="width: 110px;">
+                        <input type="text" id="NameFeeSearch" name="NameFeeSearch" class="text-box " />
+                    </td>
+
+                    <td>
+                        <input type="button" onclick="generateFeeGrid()" value='@Html.GetResource("Filter")' class="btn filter-button " />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="tail">
+        </div>
+    </div>
+
+
+    @*@await Html.PartialAsync(Model.FilterView)*@
+    @model ArabyAds.AdFalcon.Administration.Web.Controllers.Model.Lookup.ListViewModel
+<div class="grid-container">
+    @(Html.Kendo().Grid(Model.Items)
+            .Name("SearchFee")
+            .Columns(columns =>
+            {
+                columns.Bound(o => o.ID);
+                columns.Bound(o => o.Name.Value).ClientTemplate("<div class='grid-title-container floating-left'><span>#=Name.Value#</span> </div>").Title(Html.GetResource("Name"));
+
+            }).EnableCustomBinding(true)
+            .DataSource(dataBinding =>
+            {
+                dataBinding.Ajax().Read(read => read.Action("_Index", "Lookup", new { Id = "fee" }).Data("feeElementGridData")).Total((int)ViewData["total"]).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+            })
+            .Events(clientEvents => clientEvents.DataBinding("feeElementGridDataBinding").DataBound("feeGridDataBound").Change("onRowFeeSelected"))
+            .Scrollable(scrolling => scrolling.Enabled(false))
+            .Selectable().Pageable(paging => paging
+
+
+            .Input(false)
+            .Numeric(true)
+            .Info(true)
+            .PreviousNext(true)
+            .Refresh(true).Responsive(false)
+
+            .Position(GridPagerPosition.Bottom))
+            .Filterable(filtering => filtering.Enabled(false))
+            .Groupable(grouping => grouping.Enabled(false)))
+    
+</div>
+
+</div>

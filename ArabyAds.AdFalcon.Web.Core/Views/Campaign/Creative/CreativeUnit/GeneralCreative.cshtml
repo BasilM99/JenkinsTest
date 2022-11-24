@@ -1,0 +1,128 @@
+﻿@using ArabyAds.AdFalcon.Domain.Common.Model.Campaign
+@model  ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.CreativeUnitLisViewModel
+@{
+
+}
+
+
+<div class="section-form-inner-container info-container p-0">
+	<div class="ad-banner-container-right floating-right">
+	</div>
+	@if (AdTypeIds.Banner == Model.TypeId)
+	{
+		<text><div class="ad-banner-container-left w-100 card-columns">
+		</text>
+
+
+}
+else if (AdTypeIds.RichMedia == Model.TypeId && AdSubTypes.ExpandableRichMedia == Model.AdSubType)
+{
+
+
+<text><div class="ad-banner-container-left w-100 card-columns">
+</text>
+}
+else
+{
+
+
+<text><div class="ad-banner-container-left">
+</text>
+
+}
+@*<br />*@
+@{
+
+    foreach (var creativeUnit in Model.CreativeUnits)
+    {
+        creativeUnit.IsAllowedToSaveImpressionTracker = Model.IsAllowedToSaveImpressionTracker;
+        switch (Model.TypeId)
+        {
+            case AdTypeIds.NativeAd:
+                {
+                    @await Html.PartialAsync("Creative/CreativeUnit/BannerCreativeUnit", creativeUnit)
+
+                    break;
+                }
+            case AdTypeIds.Banner:
+                {
+                    ViewDataDictionary viewDataDoc = new ViewDataDictionary(ViewData);
+                    if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.IsAdOpsAdmin || (ArabyAds.Framework.OperationContext.Current.UserInfo
+     <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+     ().AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP) || (creativeUnit.DocumentId.HasValue && !string.IsNullOrEmpty(creativeUnit.ImpressionTrackerRedirect)))
+                    {
+                        if ( !viewDataDoc.Keys.Contains("ShowImpressionTracker"))
+                        {
+                            viewDataDoc.Add("ShowImpressionTracker", true);
+                        }
+                    }
+                    @await Html.PartialAsync("Creative/CreativeUnit/BannerCreativeUnit", creativeUnit, new ViewDataDictionary(viewDataDoc))
+                    ;
+                    break;
+                }
+            case AdTypeIds.PlainHTML:
+                {
+                    @await Html.PartialAsync("Creative/CreativeUnit/HTMLCreativeUnit", creativeUnit)
+
+                    break;
+                }
+            case AdTypeIds.RichMedia:
+                {
+                    switch (Model.AdSubType)
+                    {
+                        case AdSubTypes.HTML5Interstitial:
+                        case AdSubTypes.HTML5RichMedia:
+                            {
+                                @await Html.PartialAsync("Creative/CreativeUnit/HTML5CreativeUnit", creativeUnit)
+
+                                break;
+                            }
+                        case AdSubTypes.ExpandableRichMedia:
+                            {
+                                @await Html.PartialAsync("Creative/CreativeUnit/ExpandableCreativeUnit", creativeUnit)
+
+                                break;
+                            }
+                        case AdSubTypes.JavaScriptRichMedia:
+                            {
+                                @await Html.PartialAsync("Creative/CreativeUnit/JavaScriptCreativeUnit", creativeUnit)
+
+                                break;
+                            }
+                        case AdSubTypes.JavaScriptInterstitial:
+                            {
+                                @await Html.PartialAsync("Creative/CreativeUnit/JavaScriptCreativeUnit", creativeUnit)
+
+                                break;
+                            }
+                        case AdSubTypes.ExternalUrlInterstitial:
+                            {
+                                @await Html.PartialAsync("Creative/CreativeUnit/ExternalUrlCreativeUnit", creativeUnit)
+
+                                break;
+                            }
+                    }
+                    break;
+                }
+            case AdTypeIds.InStreamVideo:
+                {
+
+                    if (Model.isVideoEndCard)
+                    {
+                        @await Html.PartialAsync("Creative/CreativeUnit/BannerCreativeUnit", creativeUnit)
+
+
+
+                    }
+                    else
+                    {
+                        @await Html.PartialAsync("Creative/CreativeUnit/InStreamVideoCreativeUnit", creativeUnit)
+
+                    }
+                    break;
+                }
+        }
+    }
+}
+</div>
+</div>

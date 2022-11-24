@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<!-- Favicon
+    ======================================================================== -->
+	<link rel="icon" href="images/adfalcon.ico">
+	<!-- Meta
+    ======================================================================== -->
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Title
+    ======================================================================== -->
+	<title>AdFalcon - The first mobile advertising network in the middle east</title>
+	<!-- CSS Styles
+    ======================================================================== -->
+	<link href="http://fonts.googleapis.com/css?family=Ubuntu:400,500" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="css/style.css" media="screen" />
+	<link rel="stylesheet" href="css/colors/color-green.css" media="screen" id="colors" />
+	<link rel="stylesheet" href="css/font-awesome.css" media="screen" />
+	<link rel="stylesheet" href="css/zocial.css" media="screen" />
+	<link rel="stylesheet" href="css/responsive.css" media="screen" />
+	<link rel="stylesheet" href="http://mobpages.adfalcon.com/files/override.css" media="screen" />
+	<style>
+		h1 {
+			margin: 0 0 0.4em 0
+		}
+
+		h2,
+		h3 {
+			margin: 0.5em 0
+		}
+	</style>
+	<script src="https://code.jquery.com/jquery-1.8.2.min.js" type="text/javascript"></script>
+	<script src="js/common.js"></script>
+	<!-- Google Analytics Code
+	======================================================================== -->
+	<script>
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-25905897-1']);
+		_gaq.push(['_setDomainName', 'adfalcon.com']);
+		_gaq.push(['_trackPageLoadTime']);
+		_gaq.push(['_trackPageview']);
+		(function() {
+			var ga = document.createElement('script');
+			ga.type = 'text/javascript';
+			ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+	<script>
+	$(document).ready(function() {
+		var is_current = $('#advertise_btn').hasClass('current');
+
+		$('#menu_hook').mouseover(function() {
+			$('#flyout_menu1 ul').css('display', 'block');
+			$('#advertise_btn a').css('color', '#B11F57');
+			if (is_current === true) $('#advertise_btn a').css('color', '#fff');
+			$(this).css('cursor', 'pointer');
+		});
+		$('#menu_hook').click(function() {
+			var _href = $('#advertise_btn a').attr('href');
+			window.open(_href, '_self');
+		});
+		$('#flyout_menu1').mouseleave(function() {
+			$('#flyout_menu1 ul').css('display', 'none');
+			$('#advertise_btn a').css('color', '#333');
+			if (is_current === true) $('#advertise_btn a').css('color', '#fff');
+		});
+	});
+</script>
+</head>
+
+<body>
+	<!-- Body Wrapper -->
+	<div id="body-wrapper">
+		<!-- Header
+    ======================================================================== -->
+		<div id="header">
+			<div class="container">
+				<div class="one-fifth ani" data-gen="fadeInLeft" data-gen-offset="bottom-in-view">
+					<div id="logo">
+						<a href="index.html"><img src="images/logo.png" alt="logo"></a>
+					</div>
+				</div>
+				<div class="four-fifth column-last ani" data-gen="fadeInRight" data-gen-offset="bottom-in-view">
+					<div class="top-line">
+						<div class="container">
+							<div id="language-ar"><a href="../ar/index.html">&nbsp;</a></div>
+							<div class="socials">
+								<ul class="socials_list">
+									<li>
+										<a href="https://twitter.com/AdFalconMENA" title="twitter" class="black zocial twitter" target="_blank"></a>
+									</li>
+									<li>
+										<a href="https://www.facebook.com/AdFalconMENA" title="facebook" class="black zocial facebook" target="_blank"></a>
+									</li>
+									<li>
+										<a href="https://www.linkedin.com/company/adfalconmena/about/" title="linkedin" class="black zocial linkedin" target="_blank"></a>
+									</li>
+								</ul>
+							</div>
+							<div id="loginInfoContainer" class="desktop"></div>
+						</div>
+					</div>
+					<!-- .top_line -->
+					<!-- Logo -->
+					<!-- Main Menu-->
+					<ul id="navigation">
+						<li> <a href="index.html">Home</a> </li>
+						<li> <a href="monetize.html">Monetize</a> </li>
+						<li id='advertise_btn'>
+  <a href="advertise.html">Advertise</a>
+  <div id='flyout_menu1'>
+    <div id='menu_hook'></div>
+    <ul>
+      <li><a href='advertise.html'>AdFalcon Network</a></li>
+      <li><a href='adm/adm.html'>AdFalcon Demand Manager</a></li>
+    </ul>
+  </div>
+</li>
+						<li> <a href="media-agencies.html">Agencies</a> </li>
+						<li> <a href="adm/main.html">Telcos</a> </li>
+						<li> <a href="adgallery.html">Ad Gallery</a></li>
+						<li> <a href="casestudies/casestudies.html">Case Studies</a></li>
+						<li> <a href="about.html">About Us</a> </li>
+						<li> <a class="navigation-last" href="contact.html">Contact</a> </li>
+					</ul>
+					<!-- Navigation / End -->
+					<!-- Mobile Navigation -->
+					<form id="mobile-nav" class="mobileonly">
+						<div> <select onChange="window.location.replace(this.options[this.selectedIndex].value)">
+								<option value="">Navigation Menu</option>
+								<option value="index.html">Homepage</option>
+								<option value="monetize.html">Monetize</option>
+								<option value="advertise.html">Advertise</option>
+<option value="adm/adm.html">AdFalcon Demand Manager</option>
+								<option value="media-agencies.html">Media Agencies</option>
+								<option value="adm/main.html">Telcos</option>
+								<option value="adgallery.html">Ad Gallery</option>
+								<option value="casestudies/casestudies.html">Case Studies</option>
+								<option value="about.html">About Us</option>
+								<option value="contact.html">Contact</option>
+							</select> </div>
+					</form>
+					<!-- -->
+				</div>
+			</div>
+		</div>
+		<!-- Header / End -->
+		<!-- Start Static Banner -->
+		<div id="inner_banner5">
+			<div class="container ani" data-gen="fadeInRight" data-gen-offset="bottom-in-view">
+				<hr class="sep40">
+				<h1 class="page-header">Platform Ad Creative Policy</h1>
+				<hr class="sep40"> </div>
+		</div>
+		<!-- End Static Banner -->
+		<!-- Content
+    ======================================================================== -->
+		<div class="container">
+			<hr class="sep40">
+			<!-- Main Content -->
+			<div id="content" class="ani" data-gen="fadeInRight" data-gen-offset="bottom-in-view">
+				<!-- Sidebar -->
+				<div id="sidebarleft">
+					<!-- Text Widget -->
+					<div>
+						<ul class="case-studies-list">
+							<li><a href="terms.html">Advertisers Terms</a></li>
+							<li><a href="pubterms.html">Publishers Terms</a></li>
+							<li><a href="approval-policies.html">App Approval Policies</a></li>
+              <li class="current"><a href="cr-policy.html">Ad Creative Policy</a></li>
+              <li><a href="3p-tag-policy.html">3rd Party Ad-Tags Serving Policy</a></li>
+							<li><a href="privacy.html">Website Privacy Policy</a></li>
+							<li><a href="tech-policy.html">Advertising Tech Privacy Policy</a></li>
+						</ul>
+					</div>
+				</div>
+				<!-- Sidebar End -->
+				<div id="contentright">
+					<h1 style="margin: 0 0 0.4em 0;">Platform Ad Creative Policy</h1>
+          <p>This document was last updated on July 21, ‎2020.</p>
+					<p>This Ad creative policy is designed to ensure that all advertisers using AdFalcon Platform understand and meet our ad quality standards. It applies to all ad inventory purchased through the AdFalcon Platform. This creative policy is updated from time to time and is effective as of the date written above. You are required to review it on a regular basis to ensure that your ad creatives and campaigns meet these guidelines. Failure to abide by the rules of this policy may lead to the suspension of your AdFalcon Platform account. </p>
+
+					<h3>Banned Creative and Content Type</h3>
+					<p>You warrant and agree Not to advertise for or promote advertisements/content that can be categorized as one of the following prohibited Advertising categories: </p>
+					<ul class="no-style" style="list-style-type:square; margin-left: 20px;">
+					  <li>Pornography</li>
+						<li>Tobacco</li>
+						<li>Weapons</li>
+						<li>Alcohol</li>
+						<li>Drugs and drug paraphernalia</li>
+						<li>Illegal Products</li>
+						<li>Misleading Advertisements</li>
+						<li>Illegal Advertisements (Advertisements that do not comply with all applicable local/national laws)</li>
+						<li>Comparative Advertising</li>
+					</ul>
+					<br>
+					<p>Or include content that:</p>
+					<ul class="no-style" style="list-style-type:square; margin-left: 20px;">
+						<li>Contains, promotes or provides malware, spyware or adware</li>
+						<li>Promotes or includes misleading, fraudulent or deceptive content where the End User is not getting the advertised benefit such fraudulent or non-existent sweepstakes, virus protection or virus removal</li>
+						<li>Includes negative option marketing (i.e. which End User may interpret that by failing to take affirmative action, either to reject an offer or cancel an agreement, the End User may be charged for goods or services)</li>
+						<li>Contains information misleading or deceiving an End User for purposes of for example collection of End User’s personal data which may include, but is not limited to “you are a winner of a [XYZ] price, click here”, “your device is infected by a virus, click here to clean”, “your battery needs an upgrade” or a similar misleading content</li>
+						<li>Contains, promotes, or links to sites/pages that promote concepts that are hateful or disparaging towards any race, religion, gender, sexual orientation or nationality; -promotes, or links to sites that promote, firearms, bombs, explosive subject matter and other weapons or how-to guides for any of the foregoing</li>
+						<li>Contains, promotes, encourages or links to illegal activities, including, but not limited to hacking, illegal drugs or copyright infringement</li>
+						<li>Interferes with User Navigation such as preventing a user from leaving a page by opening modal dialogs or pop-up windows.</li>
+						<li>System errors, alerts, or warnings</li>
+						<li>Counterfeit or fake products</li>
+						<li>Contains, promotes or links to pornography, indecent or obscene content or graphic sexual depictions</li>
+						<li>Facilitates or promotes illegal file-sharing (copyrighted music, copyright protected video, or the equivalent)</li>
+						<li>Promotes dating services</li>
+						<li>Facilitates or promotes gambling in any form</li>
+						<li>Specifically directed at children and/or minors</li>
+						<li>Promoting violence, crime or other violent behavior</li>
+						<li>Mobile Ad Networks or services for mobile and/or desktop application downloads that compete with ArabyAds business and advertising platforms </li>
+						<li>Promotes "instant cash" type financial products</li>
+						<li>Would embarrass AdFalcon Platform and its owner ArabyAds FZ LLC or would create relationship problems with any of its stakeholders.</li>
+					</ul>
+					<br>
+					<p>The above Advertisements and creative content types are prohibited to be displayed on or through the AdFalcon Platform. Advertisements and creative content types that infringe the rules above require written approval from an authorized representative of AdFalcon if you see that it doesn’t qualify to be prohibited and wish for it to be displayed on the AdFalcon Platform. If it is unclear whether an Advertisement or creative content type breaches any of these areas, please contact the AdFalcon Platform support.</p>
+
+					<h3>Restricted Content (pre-negotiated; requires AdFalcon approval and/or the exchange approval)</h3>
+
+					<ul class="no-style" style="list-style-type:square; margin-left: 20px;">
+						<li>Financial products such as Loans, Credit Cards, as well as Forex, Stocks and Commodities trading</li>
+						<li>Religious Advertisements</li>
+						<li>Political Advertisements</li>
+						<li>Pharmaceuticals such as prescription, over-the-counter, medical services and weight-loss products and services</li>
+					</ul>
+
+					<h3>Functional Guidelines</h3>
+					<p>You agree to abide by the below functional guidelines in relation to your ads:</p>
+					<ul class="no-style" style="list-style-type:square; margin-left: 20px;">
+						<li>Your ads should not degrade or affect the performance of the publisher’s website, mobile app or software where the ad is to be placed.</li>
+						<li>Your ads should not use any element designed to misleadingly generate a click.</li>
+						<li>The landing page to which your ad links must:
+							<ul  class="no-style" style="list-style-type:circle; margin-left: 20px;">
+								<li>Always resolve to the same final URL, and never redirect to a different URL than that which was seen when the campaign was first submitted for review by ArabyAds </li>
+								<li>Clearly disclose the company or person responsible for the ad and landing page</li>
+								<li>Not use any third parties’ brand, logo or design without the express, written permission of such party</li>
+								<li>Contain relevant information pertaining to the good or service being promoted by the ad (and not some other good or service intended to bait-and-switch a consumer)</li>
+								<li>Include the advertiser’s terms and conditions and a privacy policy (or a link thereto), as well as an option for opting-out of promotional communication.</li>
+								<li>If you request personal information from customers, include a privacy policy (or a link thereto) that make it clear why you’re asking for it and what you’ll do with it.</li>
+						</ul>
+						</li>
+					</ul>
+					<br>
+					<p>In addition, all creatives in a campaign must click-through to the same landing page domain.</p>
+					<p>Any landing page with the look and feel of a news article or other editorial content must clearly and prominently disclose to visitors that it is sponsored content or an advertorial.</p>
+
+					<h3>Intellectual Property Rights</h3>
+					<p>You are not permitted to submit any ad creative for which you do not have all necessary rights, licenses, consents and clearances regarding its intended usage.</p>
+
+					<h3>General Requirements</h3>
+
+					<ul class="no-style" style="list-style-type:square; margin-left: 20px;">
+						<li>In addition to the criteria set out in this creative policy, all advertisers must follow all applicable laws and regulations and the terms of all applicable Licenses. It is your responsibility, or if you are an advertising agency, the end advertiser’s responsibility to understand and comply with all such applicable laws and regulations.</li>
+						<br>
+						<li>You, or if you are an advertising agency, the end advertiser must comply with all applicable requirements and guidelines provided by the exchanges or inventory supply sources from which you purchase media inventory through the AdFalcon Platform.  Refer to the corresponding exchange or inventory supply web site for such policies.</li>
+					</ul>
+
+					<h3>Changes to the Policy</h3>
+					<p>ArabyAds has the rights to modify, add or remove any terms or conditions of this creative policy, which becomes effective immediately once posted. </p>
+
+				</div>
+			</div>
+
+		</div>
+		<hr class="sep40">
+		<!-- Footer
+    ======================================================================== -->
+		<div id="footer" class="fullwidth">
+			<div class="container">
+				<!-- Contact info -->
+				<div class="one-third">
+					<div class="widget widget_text" style="background:url(images/map.png) no-repeat center 40px;">
+						<h3>Contact Info</h3>
+					<h4 style="color:#fff;">United Arab Emirates</h4> 511, CYS Management, Falak Street
+					<br> Dubai Media City
+					<br> P.O.Box 300285 Dubai, UAE
+					<br> Tel: +971 50 151 0639
+					<p> Email: &nbsp;&nbsp;<a href="mailto:info@adfalcon.com">info@adfalcon.com</a>
+							<h4 style="color:#fff;">Jordan</h4> Office No. 7, 1st Floor, Al-Husseini Building <br> 50 Abdullah Ghosheh main street <br> Amman, PO Box 142220, Jordan</p>
+						<p> Tel: &nbsp;&nbsp;&nbsp;<a href="tel:+96265885813">+962 6 5885813</a> <br> Email: &nbsp;&nbsp;<a href="mailto:info@adfalcon.com">info@adfalcon.com</a> <br>
+							<ul class="social-links">
+								<li style="padding-top:3px;">Social:</li>
+								<li>
+									<a href="https://twitter.com/AdFalconMENA" title="twitter" class="black zocial twitter"></a>
+								</li>
+								<li>
+									<a href="https://www.facebook.com/AdFalconMENA" title="facebook" class="black zocial facebook"></a>
+								</li>
+								<li>
+									<a href="https://www.linkedin.com/company/adfalconmena/about/" title="linkedin" class="black zocial linkedin"></a>
+								</li>
+							</ul>
+						</p>
+					</div>
+				</div>
+				<!-- Twitter feed -->
+				<div class="one-third">
+					<div class="widget widget_latest_posts">
+						<h3>Twitter Feed</h3> <a class="twitter-timeline" href="https://twitter.com/AdFalconMENA" data-widget-id="379502165175189505" data-border-color="#222" height="310" data-chrome="noheader noscrollbar transparent">Tweets by @AdFalcon</a>
+						<script>
+							! function(d, s, id) {
+								var js, fjs = d.getElementsByTagName(s)[0],
+									p = /^http:/.test(d.location) ? 'http' : 'https';
+								if (!d.getElementById(id)) {
+									js = d.createElement(s);
+									js.id = id;
+									js.src = p + "://platform.twitter.com/widgets.js";
+									fjs.parentNode.insertBefore(js, fjs);
+								}
+							}(document, "script", "twitter-wjs");
+						</script>
+					</div>
+				</div>
+				<!-- Categries & Tags -->
+				<div class="one-third column-last">
+					<div class="widget widget_latest_posts" style="margin-left:50px;">
+						<h3>Site map</h3>
+						<ul>
+							<li>
+								<h6><i class="icon-chevron-right"></i><a href="about.html">About AdFalcon</a></h6> </li>
+							<li>
+								<h6><i class="icon-chevron-right"></i><a href="monetize.html">Monetize</a></h6> </li>
+							<li>
+								<h6><i class="icon-chevron-right"></i><a href="advertise.html">Advertise</a></h6> </li>
+							<li>
+								<h6><i class="icon-chevron-right"></i><a href="media-agencies.html">Agencies</a></h6> </li>
+							<li>
+								<h6><i class="icon-chevron-right"></i><a href="adgallery.html">Ad Gallery</a></h6> </li>
+							<li>
+								<h6><i class="icon-chevron-right"></i><a href="casestudies/casestudies.html">Case Studies</a></h6> </li>
+							<li>
+								<h6><i class="icon-chevron-right"></i><a href="contact.html">Contact Us</a></h6> </li>
+							<li>
+								<h6><a href="#">&nbsp;</a></h6> </li>
+							<li>
+								<h6><i class="icon-chevron-right"></i><a href="http://www.adfalcon.com/en/news/2014/march27.html">News Archive</a></h6> </li>
+							<li>
+								<h6><i class="icon-chevron-right"></i><a href="download-sdk.html">SDK Tools</a></h6> </li>
+							<li>
+								<!--<h6><i class="icon-chevron-right"></i><a href="#">Developer Documents</a></h6>--></li>
+						</ul>
+						<hr class="sep20"> </div>
+				</div>
+			</div>
+			<!-- Info -->
+			<div class="info">
+				<div class="container">
+					<div class="one-third">
+						<!-- Copyright -->
+						<ul class="copyright">
+							<li>┬⌐ 2017 AdFalcon - By <a href="http://www.arabyads.com">ArabyAds</a></li>
+						</ul>
+					</div>
+					<div class="two-thirds column-last">
+						<ul class="botnav">
+							<li><a href="../../terms.html">Terms &amp; Conditions</a></li>
+							<li><a href="../../contact.html">Help &amp; Support</a></li>
+							<li><a class="last" href="../../privacy.html">Privacy Policy</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Footer / End -->
+	<!-- Body Wrapper / End -->
+</body>
+
+</html>

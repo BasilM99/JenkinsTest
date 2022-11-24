@@ -1,0 +1,45 @@
+﻿@model IEnumerable<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Account.AccountCostElementDto>
+
+
+
+@(Html.Kendo().Grid(Model)
+            .Name("AccountCostElementsGrid")
+            .Columns(columns =>
+            {
+                columns.Template("<input type='checkbox' name='checkedRecords' value='#= Id #' />"
+                   )
+                   .Title("").Width(36).HtmlAttributes(new { style = "text-align:center" });
+
+
+               columns.Bound(o => o.Value).Title(Html.GetResource("CampaignName", "SSPDealCampaign")).Width(250)
+                   .ClientTemplate("<div class='grid-title-container floating-left'><span class='trimed-span' id='Value'><#= Value#></span></div>");
+            columns.Bound(o => o.ID).Title(Html.GetResource("DealId", "SSPDealCampaign")).Width(50).HtmlAttributes(new { @class = "go-center", @id = "AccountCostElementId" });
+
+
+            }).EnableCustomBinding(true)
+            .DataSource(dataBinding =>
+            {
+                //  dataBinding.Server().Select("Index", "Campaign", new { ajax = true });
+                // dataBinding.Ajax().Select("_Index", "Campaign");
+                    dataBinding.Ajax().Read(read => read.Action("_AccountCostElmentsGrid", "AccountManagement").Data("AccountCostElementsGridData")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+            })
+            .Events(clientEvents => clientEvents.DataBinding("AccountCostElementsGridDataBinding").DataBound("AccountCostElementsGridDataBound"))
+            .Scrollable(scrolling => scrolling.Enabled(false))
+            .Selectable().Pageable(paging => paging
+
+
+            .Input(false)
+            .Numeric(true)
+            .Info(true)
+            .PreviousNext(true)
+            .Refresh(true)
+
+            .Position(GridPagerPosition.Bottom))
+            .Filterable(filtering => filtering.Enabled(false))
+            .Groupable(grouping => grouping.Enabled(false)))
+
+
+
+<br />
+<br />

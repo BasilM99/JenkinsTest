@@ -1,0 +1,558 @@
+@using Noqoush.AdFalcon.Domain.Common.Model.Campaign
+@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeSummaryDto
+@{
+	bool IsDownloadAction = bool.Parse(ViewData["IsDownloadAction"].ToString());
+
+	bool hideCreative = false;
+	if (ViewData["HideCreative"] != null && bool.Parse(ViewData["HideCreative"].ToString()) == true)
+	{
+		hideCreative = true;
+	}
+}
+
+<div class="section-form-inner-container">
+	<div class="floating-left" style="width: 515px">
+		<div class="data-row info-container last-container">
+			<div class="data-row data-container">
+				<div class="label-container">
+					<span class="field-title required-field">@Html.GetResource("AdName", "Campaign")</span>
+				</div>
+				<div class="field-container">
+					<span class="side-text margin-summary" @*style="width: 300px;"*@>@Model.Name</span>
+				</div>
+			</div>
+		</div>
+		@if (!string.IsNullOrEmpty(Model.uId) && Model.uId != "0")
+		{
+			<div class="data-row info-container last-container">
+				<div class="data-row data-container">
+					<div class="label-container">
+						<span class="field-title required-field">@Html.GetResource("UniqueId", "Global") </span>
+					</div>
+					<div class="field-container">
+						<span class="slide-text margin-summary UniqueID-line-height">@Model.uId</span>
+					</div>
+				</div>
+			</div>
+		}
+		<div class="data-row info-container last-container">
+			<div class="data-row data-container">
+				<div class="label-container">
+					<span class="field-title required-field">@Html.GetResource("AdText", "Campaign")</span>
+				</div>
+				<div class="field-container">
+					<span class="side-text margin-summary" @*style="width: 300px;"*@>@Model.AdText</span>
+				</div>
+			</div>
+		</div>
+		@{
+			//Add extra details
+			switch (Model.TypeId)
+			{
+				case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.Text:
+					{
+						break;
+					}
+				case AdTypeIds.NativeAd:
+					{
+						<div class="data-row info-container">
+							<div class="data-row data-container">
+								<div class="label-container">
+									<span class="field-title required-field">@Html.GetResource("Description", "Campaign")</span>
+								</div>
+								<div class="field-container">
+									<span class="side-text margin-summary">@Model.Description</span>
+								</div>
+							</div>
+						</div>
+
+						<div class="data-row info-container">
+							<div class="data-row data-container">
+								<div class="label-container">
+									<span class="field-title required-field">@Html.GetResource("ActionText", "NativeAd")</span>
+								</div>
+								<div class="field-container">
+									<span class="side-text margin-summary">@Model.ActionText</span>
+								</div>
+							</div>
+						</div>
+						if (IsDownloadAction)
+						{
+							<div class="data-row info-container">
+								<div class="data-row data-container">
+									<div class="label-container">
+										<span class="field-title required-field">@Html.GetResource("ShowIfInstalled", "NativeAd")</span>
+									</div>
+									<div class="field-container">
+										<span class="side-text margin-summary">@Model.ShowIfInstalled</span>
+									</div>
+								</div>
+							</div>
+						}
+					}
+					break;
+				case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.Banner:
+				case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.PlainHTML:
+				case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.RichMedia:
+					{
+						if (Model.TypeId == Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.Banner || Model.TypeId == Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.PlainHTML)
+						{
+
+							<div class="data-row info-container">
+								<div class="data-row data-container">
+									<div class="label-container">
+										<span class="field-title required-field">@Html.GetResource("EnvironmentType", "Campaign")</span>
+									</div>
+									<div class="field-container">
+										<span class="side-text margin-summary">@Html.GetEnvironmentTypeString(Model.EnvironmentType)</span>
+									</div>
+								</div>
+							</div>
+						}
+						else
+						{
+							<div class="data-row info-container">
+								<div class="data-row data-container">
+									<div class="label-container">
+										<span id="fakebidDiscounted" style="color: #E40685;" class="data-row guid-text go-left "></span>
+
+										<span class="field-title required-field">@Html.GetResource("EnvironmentType", "Campaign")</span>
+									</div>
+									<div class="field-container">
+										<span id="fakebidDiscounted" style="color: #E40685;" class="data-row guid-text go-left "></span>
+
+										<span class="side-text margin-summary">@Html.GetEnvironmentTypeString(Model.EnvironmentType)</span>
+									</div>
+								</div>
+							</div>
+						}
+
+						if (Model.TypeId == Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.PlainHTML || (Model.AdSubType == AdSubTypes.JavaScriptRichMedia || Model.AdSubType == AdSubTypes.JavaScriptInterstitial))
+						{
+							<div class="data-row info-container last-container">
+								<div class="data-row data-container">
+									<div class="label-container">
+										<span class="field-title required-field">@Html.GetResource("Settings", "Commands")</span>
+									</div>
+									<div class="field-container">
+										@Html.GetCheckBox("IsSecureCompliant", Html.GetResource("IsSecureCompliant", "Creative"), Model.IsSecureCompliant, "", "", true)
+									</div>
+								</div>
+							</div>
+
+
+						}
+						break;
+					}
+
+				case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.InStreamVideo:
+					{
+						<div class="data-row info-container">
+							<div class="data-row data-container">
+								<div class="label-container">
+									<span class="field-title required-field">@Html.GetResource("Description", "Campaign")</span>
+								</div>
+								<div class="field-container">
+									<span class="side-text margin-summary">@Model.Description</span>
+								</div>
+							</div>
+						</div>
+						<div class="data-row info-container last-container">
+							<div class="data-row data-container">
+								<div class="label-container">
+									<span id="fakebidDiscounted" style="color: #E40685;" class="data-row guid-text go-left ">&nbsp;</span>
+									<span class="field-title required-field">@Html.GetResource("EnvironmentType", "Campaign")</span>
+								</div>
+								<div class="field-container">
+
+									<span id="fakebidDiscounted" style="color: #E40685;" class="data-row guid-text go-left ">&nbsp;</span>
+									<span class="margin-summary">@Html.GetEnvironmentTypeString(Model.EnvironmentType)</span>
+
+								</div>
+							</div>
+						</div>
+						@Html.Partial("Summary/AdAction/AdActionValueTracker/Tracker")
+
+						if (Model.ImpressionTrackingURL != null && Model.ImpressionTrackingURL.Count() > 0 && Model.ImpressionTrackingURL.Where(x => !string.IsNullOrEmpty(x)).Count() > 0)
+						{
+
+							@Html.Partial("Summary/AdAction/AdActionValueTracker/ImpressionTracker", Model)
+						}
+
+						break;
+					}
+			}
+		}
+	</div>
+	<div class="floating-left" style="width: 365px">
+		<div class="data-row info-container">
+			<div class="data-row data-container">
+				<div class="label-container">
+					<span class="field-title required-field">@Html.GetResource("Status")</span>
+				</div>
+				<div class="field-container">
+					<span class="side-text margin-summary">@Model.Status</span>
+				</div>
+			</div>
+		</div>
+		<div class="data-row info-container">
+			<div class="data-row data-container">
+				<div class="label-container">
+					<span class="field-title required-field">@Html.GetResource("Bid", "Campaign")</span>
+				</div>
+				<div class="field-container">
+					<span class="side-text margin-summary">@Html.DisplayFor(p => p.Bid)</span>
+					@if ((Noqoush.Framework.OperationContext.Current.UserInfo
+			<Noqoush.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+				().AccountRole == (int)Noqoush.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP))
+					{
+						if (Model.DiscountedBid != Model.Bid)
+						{
+							<span id="bidDiscounted" style="color: #E40685;" class="data-row guid-text go-left iea-go-right">@("(" + string.Format(Html.GetResource("DiscountedBidDesc", "Campaign"), Model.DiscountedBid.ToString("F2")) + ")")</span>
+						}
+					}
+				</div>
+			</div>
+		</div>
+
+		@{
+			//Add extra details
+			switch (Model.TypeId)
+			{
+				case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.Text:
+				case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.Banner:
+				case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.PlainHTML:
+					{
+						break;
+					}
+				case AdTypeIds.NativeAd:
+					{
+
+					}
+					break;
+				case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.RichMedia:
+					{
+
+						<div class="data-row info-container">
+							<div class="data-row data-container">
+								<div class="label-container">
+									<span class="field-title required-field">@Html.GetResource("OrientationType", "Campaign")</span>
+								</div>
+								<div class="field-container">
+									<span class="side-text margin-summary">@Html.GetOrientationTypeString(Model.OrientationType)</span>
+								</div>
+							</div>
+						</div>
+						break;
+					}
+			}
+		}
+		@{
+			//Add extra details
+			switch (Model.TypeId)
+			{
+				case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.Text:
+				case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.Banner:
+				case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.PlainHTML:
+
+					break;
+				case AdTypeIds.NativeAd:
+					{
+						if (IsDownloadAction)
+						{
+							<div class="data-row info-container">
+								<div class="data-row data-container">
+									<div class="label-container">
+										<span class="field-title required-field">@Html.GetResource("StarRating", "NativeAd")</span>
+									</div>
+									<div class="field-container">
+										<span class="side-text margin-summary">
+											@(Model.StarRating.HasValue ? @Model.StarRating.Value.ToString("0.00") : string.Empty)
+										</span>
+									</div>
+								</div>
+							</div>
+
+							<div class="data-row info-container">
+								<div class="data-row data-container">
+									<div class="label-container">
+										<span class="field-title required-field">@Html.GetResource("AppUrl", "NativeAd")</span>
+									</div>
+									<div class="field-container">
+										<span class="side-text margin-summary">@Model.AppUrl</span>
+									</div>
+								</div>
+							</div>
+
+						}
+
+					}
+					break;
+
+				case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.RichMedia:
+					{
+						switch (Model.AdSubType)
+						{
+							case AdSubTypes.HTML5Interstitial:
+							case AdSubTypes.HTML5RichMedia:
+							case AdSubTypes.ExpandableRichMedia:
+							case AdSubTypes.ExternalUrlInterstitial:
+							case AdSubTypes.JavaScriptInterstitial:
+							case AdSubTypes.JavaScriptRichMedia:
+								{
+
+									<div class="data-row info-container">
+										<div class="data-row data-container">
+											<div class="label-container">
+												<span class="field-title required-field">@Html.GetResource("RichMediaRequiredProtocol", "Campaign")</span>
+											</div>
+											<div class="field-container">
+												<span class="side-text margin-summary">@Html.GetRichMediaProtocolString(Model.RichMediaRequiredProtocol)</span>
+											</div>
+											<div class="label-container">
+												<span class="field-title required-field">@Html.GetResource("IsMandatory", "Global")</span>
+											</div>
+											<div class="field-container" id="IsRequiredDiv">
+												@Html.GetCheckBox("IsMandatory", "", Model.IsMandatory, "", "", true, "", "", "")
+											</div>
+										</div>
+									</div>
+									break;
+								}
+						}
+						break;
+					}
+				case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.InStreamVideo:
+					{
+						<div class="data-row info-container last-container">
+							<div class="data-row data-container">
+								<div class="label-container">
+									<span class="field-title required-field">@Html.GetResource("CTAURL")</span>
+								</div>
+								<div class="field-container">
+									<a class="side-text" href="@Model.ActionValue.Value" target="_tab">@Model.ActionValue.Value</a>
+								</div>
+							</div>
+						</div>
+						break;
+					}
+
+
+			}
+		}
+
+	</div>
+	@{
+		if (!string.IsNullOrEmpty(Model.CreativeVendorText))
+		{
+			<div class="data-row info-container">
+				<div class="data-row data-container">
+					<div class="label-container">
+						<span class="field-title required-field">@Html.GetResource("CreativeVendor", "Campaign")</span>
+					</div>
+					<div class="field-container">
+						<span class="side-text margin-summary">@Model.CreativeVendorText</span>
+					</div>
+				</div>
+			</div>
+		}
+	}
+
+	@if (!string.IsNullOrWhiteSpace(Model.ViewName))
+	{
+		@Html.Partial("Summary/AdAction/" + Model.ViewName)
+	}
+
+
+	@if (Model.AdSubType == Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdSubTypes.HTML5RichMedia || Model.AdSubType == Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdSubTypes.HTML5Interstitial)
+	{
+
+
+		{
+			int i = 0;
+
+			if (Model.ClickTags != null)
+			{
+				foreach (var item in Model.ClickTags)
+				{
+					<div class="data-row info-container last-container">
+						<div class="data-row data-container">
+							<div class="label-container">
+								<span class="field-title required-field">
+
+									@item.VariableName
+
+
+								</span>
+							</div>
+							<div class="field-container">
+								<a class="side-text" href="@item.TrackingUrl" target="_tab">@item.TrackingUrl</a>
+							</div>
+						</div>
+					</div>
+					{
+						i++;
+					}
+				}
+
+			}
+		}
+	}
+
+	@Html.Partial("PartialViews/ImpressionTrackerText")
+</div>
+
+@if (!hideCreative)
+{
+	<div class="section-form-inner-container" style="margin-bottom:10px;">
+		@{
+			switch (Model.TypeId)
+			{
+				case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.Text:
+					{
+						@Html.Partial("Summary/CreativeUnit/Text", Model.CreativeUnitsContent)
+						break;
+					}
+				case AdTypeIds.NativeAd:
+					{
+						@Html.Partial("Summary/CreativeUnit/NativeAd", Model)
+						break;
+					}
+				case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.Banner:
+					{
+						@Html.Partial("Summary/CreativeUnit/Banner", Model.CreativeUnitsContent)
+						break;
+					}
+				case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.PlainHTML:
+					{
+						@Html.Partial("Summary/CreativeUnit/PlainHtml", Model.CreativeUnitsContent)
+						break;
+					}
+				case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.RichMedia:
+					{
+						switch (Model.AdSubType)
+						{
+							case AdSubTypes.HTML5Interstitial:
+							case AdSubTypes.HTML5RichMedia:
+								{
+									@Html.Partial("Summary/CreativeUnit/RichMedia/HTML5RichMedia", Model.CreativeUnitsContent)
+									break;
+								}
+							case AdSubTypes.ExpandableRichMedia:
+								{
+									@Html.Partial("Summary/CreativeUnit/RichMedia/ExpandableRichMedia", Model.CreativeUnitsContent)
+									break;
+								}
+							case AdSubTypes.ExternalUrlInterstitial:
+								{
+									@Html.Partial("Summary/CreativeUnit/RichMedia/ExternalUrlInterstitial", Model.CreativeUnitsContent)
+									break;
+								}
+							case AdSubTypes.JavaScriptInterstitial:
+								{
+									@Html.Partial("Summary/CreativeUnit/RichMedia/JavaScriptInterstitial", Model.CreativeUnitsContent)
+									break;
+								}
+							case AdSubTypes.JavaScriptRichMedia:
+								{
+									@Html.Partial("Summary/CreativeUnit/RichMedia/JavaScriptRichMedia", Model.CreativeUnitsContent)
+									break;
+								}
+						}
+						break;
+					}
+				case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.InStreamVideo:
+					{
+						@Html.Partial("Summary/CreativeUnit/InStreamVideo", Model)
+						break;
+					}
+			}
+		}
+	</div>
+}
+@if (Model.TypeId == Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.Banner && !string.IsNullOrEmpty(Model.WrapperContent))
+{
+	<div class="data-row info-container">
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("EditScriptBannerCreative", "Creative")</span>
+			</div>
+			<div class="field-container">
+				<textarea class="text-box " style="width:590px;height: 50px;" cols="20"  readonly="readonly"  rows="10">@Html.Raw(Model.WrapperContent)</textarea>
+			</div>
+		</div>
+	</div>
+}
+else if (Model.TypeId == Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.InStreamVideo && !string.IsNullOrEmpty(Model.WrapperContent))
+{
+	<div class="data-row info-container">
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("EditUrlVideoCreative", "Creative")</span>
+			</div>
+			<div class="field-container">
+				<textarea class="text-box " style="width:590px;height: 50px;" cols="20" readonly="readonly"  rows="10">@Html.Raw(Model.WrapperContent)</textarea>
+			</div>
+		</div>
+	</div>
+}
+@*<div class="data-row info-container">
+
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("Settings", "Commands")</span>
+			</div>
+			<div class="field-container">
+
+				@Html.GetCheckBox("EnableEventsPostback", Html.GetResource("EnableEventsPostback", "TrackingAd"), Model.EnableEventsPostback, "", "", true)
+				@Html.GetCheckBox("VerifyTargetingCriteria", Html.GetResource("VerifyTargetingCriteria", "TrackingAd"), Model.VerifyTargetingCriteria, "", "", true)
+				@Html.GetCheckBox("UpdateEventsFrequency", Html.GetResource("UpdateEventsFrequency", "TrackingAd"), Model.UpdateEventsFrequency, "", "", true)
+				@Html.GetCheckBox("VerifyDailyBudget", Html.GetResource("VerifyDailyBudget", "TrackingAd"), Model.VerifyDailyBudget, "", "", true)
+
+				@Html.GetCheckBox("VerifyCampaignStartAndEndDate", Html.GetResource("VerifyCampaignStartAndEndDate", "TrackingAd"), Model.VerifyCampaignStartAndEndDate, "", "", true)
+				@Html.GetCheckBox("UpdateTags", Html.GetResource("UpdateTags", "TrackingAd"), Model.UpdateTags, "", "", true)
+				@Html.GetCheckBox("VerifyEventsFrequency", Html.GetResource("VerifyEventsFrequency", "TrackingAd"), Model.VerifyEventsFrequency, "", "", true)
+				@Html.GetCheckBox("VerifyPrerequisiteEvents", Html.GetResource("VerifyPrerequisiteEvents", "TrackingAd"), Model.VerifyPrerequisiteEvents, "", "", true)
+												@Html.GetCheckBox("ValidateRequestDeviceAndLocationData", Html.GetResource("ValidateRequestDeviceAndLocationData", "TrackingAd"), Model.AdCreativeDto.ValidateRequestDeviceAndLocationData)
+
+			</div>
+		</div>
+	</div>*@
+
+
+@{
+
+	<div class="data-row info-container">
+
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("Settings", "Commands") </span>
+			</div>
+			<div class="field-container">
+				@if (Model.TypeId == Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.TrackingAd)
+				{
+					@Html.GetCheckBox("EnableEventsPostback", Html.GetResource("EnableEventsPostback", "TrackingAd"), Model.EnableEventsPostback, "", "", true)
+				}
+				@Html.GetCheckBox("VerifyTargetingCriteria", Html.GetResource("VerifyTargetingCriteria", "TrackingAd"), Model.VerifyTargetingCriteria, "", "", true)
+				@Html.GetCheckBox("UpdateEventsFrequency", Html.GetResource("UpdateEventsFrequency", "TrackingAd"), Model.UpdateEventsFrequency, "", "", true)
+				@Html.GetCheckBox("VerifyDailyBudget", Html.GetResource("VerifyDailyBudget", "TrackingAd"), Model.VerifyDailyBudget, "", "", true)
+
+				@Html.GetCheckBox("VerifyCampaignStartAndEndDate", Html.GetResource("VerifyCampaignStartAndEndDate", "TrackingAd"), Model.VerifyCampaignStartAndEndDate, "", "", true)
+				@Html.GetCheckBox("UpdateTags", Html.GetResource("UpdateTags", "TrackingAd"), Model.UpdateTags, "", "", true)
+				@Html.GetCheckBox("VerifyEventsFrequency", Html.GetResource("VerifyEventsFrequency", "TrackingAd"), Model.VerifyEventsFrequency, "", "", true)
+
+				@Html.GetCheckBox("VerifyPrerequisiteEvents", Html.GetResource("VerifyPrerequisiteEvents", "TrackingAd"), Model.VerifyPrerequisiteEvents, "", "", true)
+
+				@Html.GetCheckBox("ValidateRequestDeviceAndLocationData", Html.GetResource("ValidateRequestDeviceAndLocationData", "TrackingAd"), Model.ValidateRequestDeviceAndLocationData, "", "", true)
+
+
+
+
+
+			</div>
+		</div>
+	</div>
+
+}
+
+

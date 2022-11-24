@@ -1,0 +1,226 @@
+﻿
+@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core
+@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign
+@model ArabyAds.AdFalcon.Administration.Web.Controllers.Model.Lookup.CreativeVendorViewModel
+
+<script type="text/javascript">
+    function validateForm() {
+        return true;
+    }
+    var Duplicated = '@Html.GetResource("Duplicated", "Global")';
+    var close = "@Html.GetResource("Close","Commands")";
+
+    $(document).ready(function () {
+        //$(".t-grid-content").find("table tbody tr td").mouseover(function () {
+
+        //    $(this).attr('title', $(this).text());
+        //});
+        $("#VendorKeyWordGrid .t-status .t-icon.t-refresh").attr("style", "display:none");
+        onCreativeVendorKeywordRowDataBound();
+        jQuery("#CreativeVendorDuplicated").dialog({
+            autoOpen: false,
+            //height: 280,
+            width: 140,
+            modal: true,
+            resizable: false,
+            buttons: [
+          {
+              text: close,
+              click: function () {
+                  
+
+                  $(this).dialog("close");
+
+              }
+          }]
+        });
+
+    
+    });
+    function onCreativeVendorKeywordRowDataBound(e) {
+        $('#VendorKeyWordGrid').find("td:not(.t-last)").click(function (e) {
+            e.stopPropagation();
+            return true;
+        });
+    }
+    function deleteCreativeVendor(elem) {
+        var grid = $("#VendorKeyWordGrid").data("kendoGrid");
+        var tr = $(elem).parents('tr');
+        // delete the row
+        grid.removeRow(tr);
+    }
+
+   
+    function deleteKeywordVendor(elem) {
+        var grid = $("#VendorKeyWordGrid").data("kendoGrid");
+        var tr = $(elem).parents('tr');
+        // delete the row
+        grid.removeRow(tr);
+        CollectKeyWords();
+    }
+    function CollectKeyWords() {
+
+        var grid = $('#VendorKeyWordGrid').data("tGrid");
+        var IpList = [];
+        if (grid == null)
+            return null;
+
+       /* for (var i = 0; i < grid.changeLog.inserted.length; i++)
+            if (typeof (grid.changeLog.inserted[i]) != "undefined")
+                IpList.push(grid.changeLog.inserted[i].Keyword);
+
+        jQuery('[id="InsertedKeyWords"]').val(IpList);
+
+        IpList = [];
+
+        for (var i = 0; i < grid.changeLog.deleted.length; i++)
+            if (typeof (grid.changeLog.deleted[i]) != "undefined")
+                IpList.push(grid.changeLog.deleted[i].Keyword);
+
+        jQuery('[id="DeletedKeyWords"]').val(IpList);
+        */
+
+
+        var inserted = new Array();
+        var deletedIPRangeIds = '';
+
+        var data = grid.dataSource.data();
+        var datads = grid.dataSource._destroyed;
+        var InsertedIds = '';
+        var inserted = [];
+        for (var idx = 0; idx < data.length; idx++) {
+            if (data[idx].isNew() || data[idx].dirty) {
+
+                inserted[inserted.length] = data[idx].Keyword;
+               // InsertedIds += ',' + data[idx].ID;
+
+            }
+        }
+        var insertedD = [];
+        for (var idx = 0; idx < datads.length; idx++) {
+            insertedD[insertedD.length] = datads[idx].Keyword;
+            //deletedIPRangeIds += '&' + datads[idx].ID;
+
+        }
+
+
+
+        $('[id="PartyDto_insertedIps"]').val(inserted);
+
+        $('[id="PartyDto_deletedIps"]').val(insertedD);
+
+    }
+    function save_handler(e) {
+
+        $(e.form).find("input").val(e.values.Keyword);
+        if (checkCreativeVendorDuplicated(e.values.Keyword)) {
+            e.preventDefault();
+            //  showErrorMessage(Duplicated, false);
+
+            showDialog("CreativeVendorDuplicated");
+
+        } else {
+            e.dataItem.Keyword = e.values.Keyword;
+
+        }
+
+
+    }
+
+    function checkCreativeVendorDuplicated(keyword) {
+        var grid = $('#VendorKeyWordGrid').data("tGrid");
+
+        if (grid == null)
+            return false;
+        
+        for (var i = 0; i < grid.changeLog.inserted.length; i++)
+            if (typeof (grid.changeLog.inserted[i]) != "undefined") {
+                if (grid.changeLog.inserted[i].Keyword == keyword.trim()) {
+                    return true;
+                }
+            }
+
+        array = $("#VendorKeyWordGrid tbody tr");
+        for (var i = 0; i < array.length; i++) {
+
+            dataItem = grid.dataItem(array[i]);
+            if (dataItem != undefined) {
+                if (dataItem.Keyword == keyword.trim()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+
+    }
+
+</script>
+
+@Html.HiddenFor(M => M.InsertedKeyWords)
+@Html.HiddenFor(M => M.DeletedKeyWords)
+<div class="small-grid ip-Range-Section" style="width: 481px;">
+    @(Html.Kendo().Grid((Model != null && Model.VendorKeyWord != null) ? Model.VendorKeyWord : new List<CreativeVendorKeywordDto>()).Name("VendorKeyWordGrid")
+                                                  // .NoRecordsTemplate("&nbsp;").TableHtmlAttributes(new { width = "400px;", height = "0px;" }) 
+                                                  //.DataKeys(keys => keys.Add(p => p.ID))
+                                                  .DataSource(dataBinding =>
+                                                  {
+                                                      dataBinding.Ajax().Read("DummySelect", "Lookup", new { @id = Model.LookupDto.ID })
+                                                      .Update("DummySelect", "Lookup", new { @id = Model.LookupDto.ID })
+                                                      .Events(e => e.Error("Grid_onError"));
+                                                  })
+                                                  .EnableCustomBinding(false)
+                                                  //.Editable(ed => ed.Mode(GridEditMode.InCell).DisplayDeleteConfirmation(false)
+                                                  //.DefaultDataItem(new ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.CreativeVendorKeywordDto()))
+                                                  //.ToolBar(commands => commands.Insert().ButtonType(GridButtonType.BareImage))
+                                                  .Columns(columns =>
+                                                  {
+                                                      columns.Bound(o => o.ID).HtmlAttributes(new { id = "ID" }).Hidden();
+                                                      columns.Bound(o => o.VendorId).HtmlAttributes(new { id = "VendorId" }).Hidden();
+
+
+                                                      columns.Bound(o => o.Keyword).EditorTemplateName("TextBox").Title(Html.GetResource("Keyword", "Campaign")).Width(50).HtmlAttributes(new { @Id = "StartIPRange", @class = "go-center ip-targeting-width", @onchange = "CollectKeyWords()" });
+
+
+                                                      columns.Template("<div><a class='t-button t-button-icon t-button-bare t-grid-delete t-ip-Range-Section-delete-button' type='button' onclick='deleteKeywordVendor(this);'><span class='t-icon t-delete t-ip-Range-Section-delete-button'></span></button></div>").Width(10).HtmlAttributes(new { @class = "ip-targeting-width-small" });
+                                                      //columns.Command(o => o.Delete().ButtonType(GridButtonType.BareImage));.Width(25);
+                                                  })
+                              .Scrollable(scrolling => scrolling.Enabled(true))
+                              .Events(events => { events.Save("save_handler"); })
+    )
+    @*@(Html.Telerik().Grid((Model != null && Model.VendorKeyWord != null) ? Model.VendorKeyWord : new List<CreativeVendorKeywordDto>()).Name("VendorKeyWordGrid").NoRecordsTemplate("&nbsp;").TableHtmlAttributes(new { width = "400px;", height = "0px;" }) AhmadComment
+                                                  .DataKeys(keys => keys.Add(p => p.ID))
+                                                  .DataBinding(dataBinding =>
+                                                  {
+                                                      dataBinding.Ajax().Select("DummySelect", "Lookup", new { @id = Model.LookupDto.ID }).Update("DummySelect", "Lookup", new { @id = Model.LookupDto.ID });
+                                                  })
+                                                  .EnableCustomBinding(false)
+                                                  .Editable(ed => ed.Mode(GridEditMode.InCell).DisplayDeleteConfirmation(false)
+                                                                    .DefaultDataItem(new ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.CreativeVendorKeywordDto()))
+                                                  .ToolBar(commands => commands.Insert().ButtonType(GridButtonType.BareImage))
+                                                  .Columns(columns =>
+                                                  {
+                                                      columns.Bound(o => o.ID).HtmlAttributes(new { id = "ID" }).Hidden();
+                                                      columns.Bound(o => o.VendorId).HtmlAttributes(new { id = "VendorId" }).Hidden();
+
+
+                                                      columns.Bound(o => o.Keyword).EditorTemplateName("TextBox").Title(Html.GetResource("Keyword", "Campaign")).Width(50).HtmlAttributes(new { @Id = "StartIPRange", @class = "go-center ip-targeting-width", @onchange = "CollectKeyWords()" });
+
+
+                                                      columns.Template(@<text>
+        <div><a class='t-button t-button-icon t-button-bare t-grid-delete t-ip-Range-Section-delete-button' onclick='deleteKeywordVendor(this);'><span class='t-icon t-delete t-ip-Range-Section-delete-button'></span></a></div></text>)
+                                                                 .ClientTemplate("<div><a class='t-button t-button-icon t-button-bare t-grid-delete t-ip-Range-Section-delete-button' type='button' onclick='deleteKeywordVendor(this);'><span class='t-icon t-delete t-ip-Range-Section-delete-button'></span></button></div>").Width(10).HtmlAttributes(new { @class = "ip-targeting-width-small" });
+                                                      //columns.Command(o => o.Delete().ButtonType(GridButtonType.BareImage));.Width(25);
+                                                  })
+                              .Scrollable(scrolling => scrolling.Enabled(true)).Footer(true)
+                              .ClientEvents(events => { events.OnError("Grid_onError"); events.OnSave("save_handler"); })
+    )*@
+</div>
+
+<div id="CreativeVendorDuplicated" style="display:none;">
+    <span>
+        @Html.GetResource("Duplicated", "Global")
+    </span>
+</div>
+
+

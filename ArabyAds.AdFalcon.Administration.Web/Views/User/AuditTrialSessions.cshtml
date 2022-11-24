@@ -1,0 +1,365 @@
+﻿
+@model ArabyAds.AdFalcon.Web.Controllers.Model.User.TrialListViewModel
+@{
+    string returnUrl = ViewData["returnUrl"] != null ? ViewData["returnUrl"].ToString() : string.Empty;
+    //ViewBag.Title = Html.GetResource("Header", "Audittrial");
+    ViewBag.Title = string.Format("{0} : {1} - {2}", ViewData["AuditTrialSessionType"].ToString(), ViewData["AuditTrialSession"].ToString(), Html.GetResource("Header", "Audittrial"));
+}
+<script language="javascript" type="text/javascript">
+    var ViewName = "AuditTrialSessions";
+    var gridName = "TrialSessionsGrid";
+    function generateTrialSessionsGrid() {
+        var grid = $("#TrialSessionsGrid").data("tGrid");
+        grid.rebind();
+    }
+
+
+    function localInitilizeDateCaleander() {
+        jQuery('input[data-date="true"]')
+            .daterangepicker({ dateFormat: '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat' });
+    };
+    $(document).ready(function () {
+
+        @*jQuery('input[id="TrialSessionsGrid-ToDate"]')
+           .daterangepicker({ dateFormat: '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat' });
+
+        jQuery('input[id="TrialSessionsGrid-FromDate"]')
+       .daterangepicker({
+           dateFormat: '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat'
+       });*@
+
+        if (jQuery('input[data-dateC="true"]').length > 0) {
+            jQuery('input[data-dateC="true"]')
+               .daterangepicker({ dateFormat: '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat' });
+            jQuery('input[data-dateC="true"]').bind('click', function (e) {
+                var modalZindex = jQuery(e.target).closest('.modal').css('z-index');
+                //
+                jQuery('.ui-daterangepickercontain').css('z-index', 5000000000000);
+            });
+        }
+
+        localInitilizeDateCaleander();
+        jQuery("#DetailsDialog").dialog({
+            autoOpen: false,
+            //height: 450,
+            title: '@Html.GetResource("Details", "Audittrial")',
+            width: 650,
+            // height: 500,
+            // position: { my: "top top", at: "top top", of: target },
+            modal: true,
+            resizable: false,
+            draggable: false,
+            open: function () {
+
+
+
+            },
+            close: function () {
+
+
+                // GridReset();
+
+            }
+        });
+    });
+
+    function generateAudittrialGrid() {
+        var grid = $("#TrialSessionsGrid").data("tGrid");
+        grid.rebind();
+    };
+    function generateAuditTrialSessionsGrid() {
+
+        var grid = $("#TrialSessionsGrid").data("tGrid");
+        RefrashGrid('TrialSessionsGrid');
+        //if ((grid.data.length == 0) ) {
+        //    e.preventDefault();
+        //    grid.pageTo(1);
+        //}
+    };
+    function SessionGridDataBinding(args) {
+        args.data = $.extend(args.data,
+{
+    FromDate: $('#FromDate').val(),
+    ToDate: $('#ToDate').val(),
+    UserName: $('#UserNameSearch').val()
+});
+
+    };
+    function SessionGridDataBound(e) {
+        var grid = $("#TrialSessionsGrid").data("tGrid");
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(1);
+        }
+    };
+
+    function onRowDataBoundChild(e) {
+        //
+        var grid = $(this).data('tGrid');
+        // Expand the first row only
+        if (grid.$rows().index(e.row) == 0) {
+            grid.expandRow(e.row);
+        }
+    }
+    function OnDetailViewExpand(e) {
+        //
+        //var grid = $(this).data('tGrid');
+        //if (e.masterRow.childNodes[4].innerText  == "Insert") {
+        //    grid.collapseRow(e.masterRow);
+        //}
+    }
+
+
+    function onRowDataBound(e) {
+        //
+        var grid = $(this).data('tGrid');
+        // Expand the first row only
+        if (grid.$rows().index(e.row) == 0) {
+            grid.expandRow(e.row);
+        }
+    }
+    function showXML(element) {
+
+        var tr = $(element).parent().parent().parent();
+        var Details = $(tr.find("td"))[0].innerText;
+
+        $("#DetailsDialog").find("#Details").text(Details);
+
+        showDialog('DetailsDialog');
+
+    }
+    function showfilter() {
+
+        if ($("#advfilterAudit").hasClass('maximize')) {
+
+            $("#advfilterAudit").attr("class", "minimize AdvanceFilterIcon");
+        }
+        else {
+
+            $("#advfilterAudit").attr("class", "maximize AdvanceFilterIcon");
+        }
+    }
+</script>
+
+
+@{
+    if (!string.IsNullOrEmpty(returnUrl))
+    {
+        <input type="button" onclick="return window.location.replace('@returnUrl')" class="back-button" />
+    }
+}
+@using (Html.BeginForm())
+{
+    <div class="data-row section-container">
+        <div class="data-row">
+            <div class="col-sm-7" style="padding: 0px;">
+
+
+            </div>
+
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-4 col-sm-push-1">
+
+                <table class="special-content">
+                    <tr>
+                        <td>
+                            <span class="go-bold">@Html.GetResource("From", "Global")</span>
+                        </td>
+                        <td style="width: 110px;">
+                            <input type="text" readonly="readonly" data-date="true" id="FromDate" name="FromDate"
+                                   class="text-box range-date-cntl" />
+                        </td>
+                        <td>
+                            <span class="go-bold">@Html.GetResource("To", "Global")</span>
+                        </td>
+                        <td style="width: 110px;">
+                            <input type="text" readonly="readonly" data-date="true" id="ToDate" name='ToDate'
+                                   class="text-box range-date-cntl left-range-cntrl" onchange="generateAudittrialGrid()" />
+                        </td>
+                        <td>
+                            <div class="field-container dropdown-toggle" data-toggle="collapse" data-target="#AuditFilterCollapse" aria-expanded="false" onclick="showfilter()">
+                                &nbsp;&nbsp;<a href="javaScript:void(0);" class="maximize AdvanceFilterIcon" onclick="" style="margin-top:0px" id="advfilterAudit"></a>
+
+                            </div>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+        <div class="data-row" style="overflow:visible">
+            <div class="col-sm-7 col-sm-push-3 customDealsFilterShiftRight floating-right" style="padding: 0px;">
+                @Html.Partial("AuditTrialFilter", Model)
+            </div>
+        </div>
+        <div class="grid-container">
+            @(Html.Telerik().Grid(Model.Items).DataKeys(keys => keys.Add(k =>
+        k.SessionId))
+                            .Name("TrialSessionsGrid")
+                    .Columns(columns =>
+                    {
+                        columns.Bound(o => o.ActionTimeString).Title(Html.GetResource("ActionTime", "Audittrial")).Format("{0:" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(220).HtmlAttributes(new { @class = "go-center" });
+                        columns.Bound(o => o.SessionId).Title(Html.GetResource("SessionId", "Audittrial"));
+
+                        columns.Bound(o => o.UserName).Title(Html.GetResource("UserName", "AuditTrial")).HtmlAttributes(new { @class = "go-center" });
+
+                    }).DetailView(detailView => detailView.Template(
+                @<text>
+                    @(Html.Telerik().Grid(item.Childs).Name("Sessions_" + item.SessionId)
+                .Columns(columns =>
+                {
+                    columns.Bound(o => o.Details).HtmlAttributes(new { id = "Details" }).Hidden();
+
+                    columns.Bound(o => o.ObjectId).Title(Html.GetResource("ObjectId", "Audittrial"));
+                    columns.Bound(o => o.Type).Title(Html.GetResource("Type"));
+
+                    columns.Bound(o => o.ObjectActionString).Title(Html.GetResource("ObjectAction", "Audittrial"));
+                }
+                                    )
+
+
+                                                                                                                                                                                                                          .Footer(false)
+                    )
+                </text>
+).ClientTemplate(
+
+                // Define a grid bound to the Order object
+                Html.Telerik().Grid<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Account.TrialDto>()
+                     //Ensure the Name of each grid is unique
+                     .Name("Sessions_<#= SessionId #>")
+                     .DataBinding(dataBinding => dataBinding.Ajax()
+
+                     .Select("_AuditTrialSession", "User", new { Id = "<#= SessionId #>" })).EnableCustomBinding(true)
+                     .Columns(columns =>
+                     {
+
+                     columns.Bound(o => o.ObjectId).Title(Html.GetResource("ObjectId", "Audittrial"));
+                     columns.Bound(o => o.Type).Title(Html.GetResource("Type"));
+                     //columns.Bound(o => o.ObjectName).Title(Html.GetResource("Type"));
+                     columns.Bound(o => o.PropertyName).Template(
+                @<text><div class="grid-title-container floating-left">
+                        <span class="trimed-span" title="@item.ObjectName">
+
+                            @item.ObjectName
+
+                        </span>
+                    </div>
+                </text> ).ClientTemplate("<div class='grid-title-container floating-left'> <span class='trimed-span' title='<#=ObjectName#>'> <#=ObjectName#></span></div>").Title(Html.GetResource("Name", "Global")).Width(100).HtmlAttributes(new { @class = "go -center" });
+
+                         columns.Bound(o => o.ObjectActionString).Title(Html.GetResource("ObjectAction", "Audittrial"));
+
+
+                     }).ClientEvents(events => events.OnRowDataBound("onRowDataBoundChild").OnDetailViewExpand("OnDetailViewExpand")).
+                     Pageable(paging =>
+                                                                   paging.Enabled(false)).DetailView(M => M.ClientTemplate(
+
+                  "<# if (ObjectActionConstantString != 'Delete') { #>" +
+
+
+    "<# if (ObjectActionConstantString == 'Insert' || ObjectActionConstantString == 'Update') { #>" +
+
+                     Html.Telerik().Grid<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Account.TrialDto>()
+//Ensure the Name of each grid is unique
+.Name("Sessions_<#= ID #>")
+.DataBinding(dataBinding => dataBinding.Ajax()
+
+.Select("_AuditTrialSessionDetails", "User", new { Id = "<#= ID #>" })).EnableCustomBinding(true)
+
+.Columns(columns =>
+{
+
+columns.Bound(o => o.PropertyName).Template(
+                @<text><div class="grid-title-container floating-left">
+                        <span class="trimed-span" title="@item.PropertyName">
+
+                            @item.PropertyName
+
+                        </span>
+                    </div>
+                </text> ).ClientTemplate("<div class='grid-title-container floating-left'> <span class='trimed-span' title='<#=PropertyName#>'> <#=PropertyName#></span></div>").Title(Html.GetResource("PropertyName", "Audittrial"));
+
+    columns.Bound(o => o.NewValue).Template(
+                @<text><div class="grid-title-container floating-left">
+                        <span class="trimed-span" title="@item.NewValue">
+
+                            @item.NewValue
+
+                        </span>
+                    </div>
+                </text> ).ClientTemplate("<div class='grid-title-container floating-left'> <span class='trimed-span' title='<#=NewValue#>'> <#=NewValue#></span></div>").Title(Html.GetResource("NewValue", "Audittrial"));
+
+
+    columns.Bound(o => o.OldValue).Template(
+                @<text><div class="grid-title-container floating-left">
+                        <span class="trimed-span" title="@item.OldValue">
+
+                            @item.OldValue
+
+                        </span>
+                    </div>
+                </text> ).ClientTemplate("<div class='grid-title-container floating-left'> <span class='trimed-span' title='<#=OldValue#>'> <#=OldValue#></span></div>").Title(Html.GetResource("OldValue", "Audittrial"));
+
+
+
+
+
+}).
+Pageable(paging =>
+paging.Enabled(false)).NoRecordsTemplate(@Html.GetResource("NoInfo", "Global")).ToHtmlString() +
+
+
+    "<# } else { #>" +
+         "<div>" + @Html.GetResource("NoInfo", "Global") + " </div>" +
+    "<# } } #>"
+
+                                                                       ))
+                     // The client detail view template requires a string so we are using the ToHtmlString method
+                     .ToHtmlString()
+
+            ))
+            // Handle the OnRowDataBound event in order to expand certain rows
+            .ClientEvents(events => events.OnRowDataBound("onRowDataBoundChild")
+
+
+
+            ).RowAction(row =>
+            {
+                if (row.Index == 0)
+                {
+                    row.DetailRow.Expanded = true;
+                }
+                else
+                {
+                    var requestKeys = Request.QueryString.Keys.Cast<string>();
+                    var expanded =
+                        requestKeys.Any(key => key.StartsWith("Sessions_" + row.DataItem.SessionId));
+                    row.DetailRow.Expanded = expanded;
+                }
+            })
+
+
+         .DataBinding(dataBinding => dataBinding.Ajax().Select("_AuditTrialSessions", "User", new { objectRootId = Model.RootId, objectRootTypeId = Model.ObjectRootTypeId })).EnableCustomBinding(true)
+                        .ClientEvents(clientEvents => clientEvents.OnRowDataBound("onRowDataBound").OnDataBinding("SessionGridDataBinding").OnDataBound("SessionGridDataBound").OnRowDataBound("onRowDataBound"))
+
+                        .Scrollable(scrolling => scrolling.Enabled(false))
+                        .Selectable()
+                                .Pageable(paging => paging.PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total(int.Parse(ViewData["Total"].ToString())).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+                        .Filterable(filtering => filtering.Enabled(false))
+                        .Groupable(grouping => grouping.Enabled(false)).Footer(true))
+
+            <br />
+        </div>
+
+    </div>
+}
+
+
+
+
+
+<div id="DetailsDialog" title="@Html.GetResource("Details", "Audittrial")" style="display: none; width:100%;height:100%;">
+    <pre id="Details" style="text-align:left;width:100%;height:100%; " lang="xml"></pre>
+</div>

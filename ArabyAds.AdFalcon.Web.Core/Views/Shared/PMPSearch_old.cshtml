@@ -1,0 +1,379 @@
+﻿
+@model ArabyAds.AdFalcon.Web.Controllers.Model.PMPDeal.PMPDealListViewModel
+@await Html.PartialAsync("GridToolTop", Model.ToolTips)
+
+
+@*@using ArabyAds.Framework.DomainServices*@
+
+<script language="javascript">
+    $(document).ready(function () {
+
+
+        localInitilizePMPS();
+
+        onAdFormatChange();
+		generatePartyGridPMP();
+    });
+
+    var result = false;
+    var ischecked = false;
+    var yesbtn = "@Html.GetResource("Yes", "Global")";
+    var nobtn = "@Html.GetResource("No", "Global")";
+    //var Confirmation = "@Html.GetResource("Send", "Confirmation")";
+    var ConfriamtionBoxTitle = "@Html.GetResource("Confirm")";
+    var close = "@Html.GetResource("Close","Commands")";
+    var rename = "@Html.GetResource("Rename", "Commands")";
+    var selectedName = "";
+    var selectednumber = 0;
+    var text;
+    var direction = "left";
+
+    function onAdFormatChange() {
+        var types = '';
+        var checked = false;
+        if (typeof ($("#AdFormatBanner").attr("checked")) != 'undefined' && $("#AdFormatBanner").attr("checked") == "checked") {
+            types += '@Convert.ToInt32(ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.Banner)' + ",";
+            checked = true;
+        }
+
+        if (typeof ($("#AdFormatNative").attr("checked")) != 'undefined' && $("#AdFormatNative").attr("checked") == "checked") {
+            types += '@Convert.ToInt32(ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.Native)' + ",";
+
+            checked = true;
+        }
+
+        if (typeof ($("#AdFormatInStream").attr("checked")) != 'undefined' && $("#AdFormatInStream").attr("checked") == "checked") {
+            types += '@Convert.ToInt32(ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.InStream)';
+            checked = true;
+
+        }
+
+
+
+        if (checked) {
+            $('#PMPTargetingSaveDto_AdSizes').select2("enable", 'true');
+
+
+        } else {
+
+            $('#PMPTargetingSaveDto_AdSizes').select2("enable", false);
+
+        }
+        $("#PMPTargetingSaveDto_RawAdFormats").val(types);
+        fillTree(types);
+
+
+    }
+
+
+
+
+
+
+    var gridItemId = 0;
+    var ok_text = '@Html.GetResource("Ok", "Commands")';
+    var service_url = null;
+    var service_callback = null;
+
+
+    function refreshPMPGrid() {
+        RefrashGrid('DealsGrid');
+    }
+    function generatePMPGrid() {
+        var grid = $("#DealsGrid").data("kendoGrid");
+        if (typeof (grid) != "undefined") {
+            grid.dataSource.read();
+            grid.refresh();
+
+        }    
+    };
+    function DealsItemGridData(){
+
+        var dataSample =
+        {
+            FromDateFilter: $('#FromDateFilterPMP').val(),
+            ToDatefilter: $('#ToDatefilterPMP').val(),
+            ExchangeId: $("#ExchangeId").val(),
+            PublisherName: $("#PublisherName").val(),
+            DealName: $("#DealName").val(),
+            AdFormat: getAdFormat(),
+            showArchived: typeof ($("#showArchived").attr("checked")) != "undefined" && $("#showArchived").attr("checked") == "checked",
+            IsGlobal: typeof ($("#IsGlobal").attr("checked")) != "undefined" && $("#IsGlobal").attr("checked") == "checked",
+
+            Countries: getStringList($("#PMPTargetingSaveDto_Geographies").data("select2") ? $("#PMPTargetingSaveDto_Geographies").select2("val") : ""),
+            AdSize: getStringList($("#PMPTargetingSaveDto_AdSizes").data("select2") ? $("#PMPTargetingSaveDto_AdSizes").select2("val") : ""),
+            SSPCheckedIDs: SSPCheckedIDs
+
+        };
+        return dataSample
+
+    }
+    function PMPGridDataBinding(args) {
+        //$('.multiselect2jq').select2();
+       
+    };
+ 
+    function getStringList(array) {
+        var string = "";
+        for (var i = 0 ; i < array.length ; i++) {
+            string += array[i] + ",";
+        }
+        return string;
+    }
+
+    function getAdFormat() {
+        var types = "";
+        if (typeof ($("#AdFormatBanner").attr("checked")) != "undefined" && $("#AdFormatBanner").attr("checked") == "checked") {
+            types += '@Convert.ToInt32(ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.Banner)' + ",";
+        }
+
+        if (typeof ($("#AdFormatNative").attr("checked")) != "undefined" && $("#AdFormatNative").attr("checked") == "checked") {
+            types += '@Convert.ToInt32(ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.Native)' + ",";
+        }
+        if (typeof ($("#AdFormatInStream").attr("checked")) != "undefined" && $("#AdFormatInStream").attr("checked") == "checked") {
+            types += '@Convert.ToInt32(ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.InStream)';
+        }
+        return types;
+    }
+    function changePartyExchange(partytId, partyDesc) {
+
+        if ((typeof (partytId) != "undefined") && (typeof (partyDesc) != "undefined")) {
+            jQuery('#ExchangeName').text(partyDesc);
+            jQuery('#ExchangeNameSpan').text(partyDesc);
+            jQuery('#ExchangeNameSpan').val(partyDesc);
+            jQuery('[name="ExchangeId"]').val(partytId);
+            jQuery('[name="ExchangeName"]').val(partyDesc);
+            jQuery('#deleteExchangeName').show();
+        }
+        jQuery('#PMPparty-search-dialog-form').dialog('close');
+    }
+    function changeAccount(accpartytId, accpartyDesc) {
+
+        if ((typeof (accpartytId) != "undefined") && (typeof (accpartyDesc) != "undefined")) {
+            jQuery('#PublisherName').text(accpartyDesc);
+            jQuery('#PublisherNameSpan').text(accpartyDesc);
+            jQuery('#PublisherNameSpan').val(accpartyDesc);
+            jQuery('[name="PublisherId"]').val(accpartytId);
+            jQuery('[name="PublisherName"]').val(accpartytId);
+
+            jQuery('#deletePublisherName').show();
+        }
+        jQuery('#PMPaccount-search-dialog-form').dialog('close');
+    }
+    function PMPGridDataBound(e) {
+
+        var grid = $("#DealsGrid").data("kendoGrid");
+        //if not first page and the no data then try load first page
+        if ((grid._data.length == 0) && (grid.dataSource.page() > 1)) {
+            e.preventDefault();
+            if (grid.dataSource.page() != 1) {
+                grid.dataSource.page(1);
+            }
+
+        }
+
+
+    };
+
+    function showAccountSearchDialogPMP() {
+        //AccountDialogInitilize();
+        //refreshAccountGrid();
+        generateUsersGridForPuplisher();
+        showDialog('PMPaccount-search-dialog-form');
+    }
+
+
+    function localInitilizePMPS() {
+        $("#PMPaccount-search-dialog-form").dialog({
+            autoOpen: false,
+            //height: 460,
+            width: 900,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            open: function () {
+
+
+
+            },
+            close: function () {
+
+                $("#PMPaccount-search-dialog-form ,#AccountSearchName ,#CompanyName,#Email").val('');
+                // generateUsersGrid();
+
+            }
+        });
+       if (jQuery('input[id="FromDateFilterPMP"],[id="ToDatefilterPMP"]').length > 0) {
+            jQuery('input[id="FromDateFilterPMP"],[id="ToDatefilterPMP"]')
+               .daterangepicker({ dateFormat: '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat', posX: 295, posY:150 });
+            jQuery('input[id="FromDateFilterPMP"],[id="ToDatefilterPMP"]').bind('click', function (e) {
+                var modalZindex = jQuery(e.target).closest('.modal').css('z-index');
+                //
+                jQuery('.ui-daterangepickercontain').css('z-index', 5000000000000);
+            });
+        }
+       @*jQuery('input[data-date="true"]')
+          .daterangepicker({ dateFormat: '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat' });*@
+
+        jQuery("#PMPparty-search-dialog-form").dialog({
+            autoOpen: false,
+            //height: 450,
+            width: 700,
+            modal: true,
+            resizable: false,
+            draggable: false,
+
+        });
+
+    }
+
+
+    function showPartySearchDialogPMP() {
+
+        //  refreshPartyGrid();
+
+        showDialog('PMPparty-search-dialog-form');
+        $("#SSPPartyName").val('');
+        generatePartyGridPMP();
+
+    }
+    function showfilter() {
+
+
+        //$("#filterdiv").toggle();
+
+        if ($("#advfilterPMP").hasClass('maximize')) {
+            $("#advfilterPMP").attr("class", "minimize AdvanceFilterIcon");
+
+        }
+        else {
+
+            $("#advfilterPMP").attr("class", "maximize AdvanceFilterIcon");
+        }
+
+
+    }
+
+
+</script>
+
+<div id="PMPaccount-search-dialog-form" style="display: none;" title="@Html.GetResource("Publisher", "Menu")">
+
+    @*@Html.RenderAction("nohttpsPublisherAccountSearch", "User")*@
+
+
+    @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.User.nohttpsPublisherAccountSearch))
+
+</div>
+<div id="PMPparty-search-dialog-form" title="@Html.GetResource("Exchange", "PMPDeal")" style="display: none; ">
+
+    @*@Html.RenderAction("SSPSearch", "Party")*@
+
+    @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.Party.SSPSearch))
+</div>
+
+<div class="data-row go-center" style="overflow:visible;">
+
+	<div class="data-row section-container" style="overflow:visible">
+		<div class="data-row">
+
+			<div class="col-sm-4 col-sm-push-6">
+
+				<table class="special-content">
+					<tr>
+
+
+						<td>
+							<span class="go-bold">@Html.GetResource("From", "Global")</span>
+						</td>
+						<td style="width: 110px;">
+							<input type="text" readonly="readonly" id="FromDateFilterPMP" name='FromDateFilterPMP'
+								   class="text-box range-date-cntl left-range-cntrl rangeDateFromC CustomMultiDateRange" />
+						</td>
+						<td>
+							<span class="go-bold">@Html.GetResource("To", "Global")</span>
+						</td>
+						<td style="width: 110px;">
+							<input type="text" readonly="readonly" id="ToDatefilterPMP" name='ToDatefilterPMP'
+								   class="text-box range-date-cntl left-range-cntrl rangeDateFromC CustomMultiDateRange" onchange="generatePMPGrid()" />
+						</td>
+						<td>
+
+							<div class="field-container dropdown-toggle" data-toggle="collapse" data-target="#DealsFilterCollapse" aria-expanded="false" onclick="showfilter()">
+								&nbsp;&nbsp;<a href="javaScript:void(0);" class="maximize AdvanceFilterIcon" onclick="" style="margin-top:0px" id="advfilterPMP"></a>
+
+							</div>
+						</td>
+
+					</tr>
+				</table>
+
+
+			</div>
+
+
+		</div>
+		<div class="data-row" style="overflow:visible">
+			<div class="col-sm-5 col-sm-push-5 " style="padding: 0px;">
+				@await Html.PartialAsync("Deals/PMPFilter", Model)
+			</div>
+		</div>
+
+
+	</div>
+
+</div>
+
+<div class="grid-container">
+	@(Html.Kendo().Grid<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Account.PMP.PMPDealDto>()
+                               .Name("DealsGrid").Selectable(P=>P.Mode(GridSelectionMode.Single).Type(GridSelectionType.Row))
+                               .Columns(columns =>
+                               {
+                                   columns.Bound(o => o.ID).Hidden();
+                                   columns.Bound(o => o.DealID).Title("#").Width(100).HtmlAttributes(new { @class = "go-center" });
+
+
+
+                                   columns.Bound(o => o.Name).Width(80).Visible(true).Title(Html.GetResource("Name", "Global"))
+                                .ClientTemplate("<div class='grid-title-container floating-left'><span  style='text-align:left' class='go-center trimed-span' title='#= Name#' id='DealName'><i class='#= ScopeString#' style='padding-left:2px;padding-right:2px' aria-hidden='true'></i>#= Name#</span></div>").Title(Html.GetResource("Name", "Global"));
+                                   columns.Bound(o => o.StartDateString).Title(Html.GetResource("StartDate", "Campaign")).Format("{0:" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(80).HtmlAttributes(new { @class = "go-center" });
+                                   columns.Bound(o => o.EndDateString).Title(Html.GetResource("EndDate", "Campaign")).Format("{0:" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(80).HtmlAttributes(new { @class = "go-center" });
+
+                                   columns.Bound(o => o.PriceString).Title(Html.GetResource("Price", "SSPFloorPrices")).Width(30).HtmlAttributes(new { @class = "go-center" })
+                                           ;
+                                   columns.Bound(o => o.ExchangeName).Title(Html.GetResource("ExchangeName", "PMPDeals")).Width(80).HtmlAttributes(new { @class = "go-center" });
+                                   columns.Bound(o => o.PublisherName).Title(Html.GetResource("PublisherName", "PMPDeals")).Width(80).HtmlAttributes(new { @class = "go-center" });
+
+
+                                   columns.Bound(o => o.DealTypeString).Title(Html.GetResource("Type")).Width(100).HtmlAttributes(new { @class = "go-center" });
+                                   columns.Bound(o => o.StatusDescription).Title(Html.GetResource("Status")).Width(100).HtmlAttributes(new { @class = "go-center" });
+
+
+
+
+                               })
+                                                                                                    .DataSource(dataBinding =>
+                                                                                                    {
+                                                                                                       // dataBinding.Ajax().Select("_PMPSearch", "Deals");
+                                                                                                        dataBinding.Ajax().Read(read => read.Action("_PMPSearch", "Deals", new { id = @Html.ViewContext.RouteData.Values["id"] }).Data("DealsItemGridData")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+                                                                                                    })
+                                                                                            .Events(clientEvents => clientEvents.DataBinding("PMPGridDataBinding").DataBound("PMPGridDataBound").Change("onPMPRowSelected"))
+                                                                                            .Scrollable(scrolling => scrolling.Enabled(false))
+                                                                                           .Pageable(paging => paging
+
+
+            .Input(false)
+            .Numeric(true)
+            .Info(true)
+            .PreviousNext(true)
+            .Refresh(true)
+
+                                                                     .Position(GridPagerPosition.Bottom))
+                                                                                            
+                                                                                            .Groupable(grouping => grouping.Enabled(false)))
+
+
+
+
+</div>

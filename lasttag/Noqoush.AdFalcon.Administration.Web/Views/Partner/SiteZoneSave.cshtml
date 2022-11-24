@@ -1,0 +1,77 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.BusinessPartners.SitesZoneListViewModel
+
+@{
+    if (ViewContext.FormContext == null)
+    {
+        ViewContext.FormContext = new FormContext();
+    }
+    //ViewData.TemplateInfo.HtmlFieldPrefix = "SaveDto";
+}
+@Html.Hidden("SaveDto.ID", Model.SaveDto == null ? "" : "" + Model.SaveDto.ID, new { @class = "ValdationIgnored" })
+@Html.Hidden("SaveDto.PartnerID", Model.BusinessId)
+
+@Html.Hidden("SaveDto.SiteID", Model.SiteId)
+<script language="javascript">
+
+
+    var DialogTitle_Form = '@Model.DialogTitle';
+    var DialogWidth_Form = @Model.DialogWidth;
+    var DialogHeight_Form =  @Model.DialogHeight;
+</script>
+<div class="section-form-inner-container" id="firstdiv">
+    <div class="data-row data-container">
+        <div class="label-container3">
+            <span class="field-title required-field">@Html.GetResource("ZoneID", "SSPSiteZones")</span>
+        </div>
+        <div class="adfalcon-dialog2 field-container">
+            @Html.AdFalconTextBoxFor(p => p.SaveDto.ZoneID, new { @maxlength = "50" })
+            @Html.AdFalconValidationMessageFor(p => p.SaveDto.ZoneID)
+        </div>
+
+    </div>
+    @*<div class="data-row data-container" style="display:none">
+        <div class="label-container3">
+            <span class="field-title required-field">@Html.GetResource("Name", "SSPSites")</span>
+        </div>
+        <div class="adfalcon-dialog2 field-container">
+            @Html.AdFalconTextBoxFor(p=>p.SiteName, new {  @readonly = "readonly" ,  @maxlength = "200" })
+
+
+        </div>
+
+     
+
+    </div>*@
+
+    <div class="data-row data-container">
+        <div class="label-container3">
+            <span class="field-title required-field">@Html.GetResource("Name", "SSPSiteZones")</span>
+        </div>
+        <div class="adfalcon-dialog2 field-container">
+            @Html.AdFalconTextBoxFor(p => p.SaveDto.ZoneName, new { @maxlength = "200" })
+
+
+        </div>
+
+        @Html.AdFalconValidationMessageFor(p => p.SaveDto.ZoneName)
+
+    </div>
+
+
+    <div class="data-row data-container">
+        <div class="label-container3">
+            <span class="field-title">
+                @Html.GetResource("Description", "Campaign")
+            </span>
+        </div>
+        <div class="adfalcon-dialog2 field-container  required-field iea-text-calender-margin">
+            @Html.TextAreaFor(p => p.SaveDto.Description, new { @class = "text-box ValdationIgnored", rows = 3, cols = 5 })
+        </div>
+
+    </div>
+
+</div>
+
+@*<div class="data-row button-container">
+    <input type="button" value="@Html.GetResource("Save", "Commands")" class="primary-btn" onclick="callSave();" />
+</div>*@

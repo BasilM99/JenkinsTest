@@ -1,0 +1,36 @@
+﻿@model  ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeSummaryDto
+<div id="urlDetailsContainer">
+
+
+    @{
+        if (Model.CreativeUnitsContent != null && Model.CreativeUnitsContent.Where(x => x.InStreamVideoCreativeUnit.ImpressionTrackerRedirectList != null && x.InStreamVideoCreativeUnit.ImpressionTrackerRedirectList.Count() > 0).Count() > 0)
+        {
+            <div class="data-row data-container">
+                <h2>
+                    @Html.GetResource("InsteamVideoTracker", "Campaign")
+                </h2>
+            </div>
+        }
+
+        foreach (var creativeUnit in Model.CreativeUnitsContent)
+        {
+            foreach (var item in creativeUnit.InStreamVideoCreativeUnit.ImpressionTrackerRedirectList)
+            {
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">
+
+                        </span>
+                    </div>
+                    <div class="field-container">
+                        @Html.Partial("Summary/AdAction/AdActionValueTracker/InstreamVideoTracker", item)
+
+                    </div>
+                </div>
+            }
+        }
+
+
+    }
+
+</div>

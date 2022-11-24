@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <facilities>
+    <facility id="wcf"
+							type="Castle.Facilities.WcfIntegration.WcfFacility,
+										Castle.Facilities.WcfIntegration" />
+
+    <facility id="RegistrationFacility"
+							type="Noqoush.Framework.WCF.IOC.RegistrationFacility,
+										Noqoush.Framework.WCF">
+      <assemblies>
+        <assembly id="ServiceInterfaces" value="Noqoush.AdFalcon.Services.Interfaces"/>
+      </assemblies>
+      <Mapping>
+        <Map id="Services" Suffix="Service" LifeStyle="Singleton">
+          <interceptors >
+            <interceptor id="BehaviorInvoker" value="Noqoush.Framework.Behaviors.BehaviorInvoker,Noqoush.Framework"/>
+            <interceptor id="Interceptor" value="Noqoush.Framework.WCF.ClientAdapter, Noqoush.Framework.WCF"/>
+          </interceptors>
+        </Map>
+      </Mapping>
+    </facility>
+  </facilities>
+  <components>
+    <component id="FrameworkBehaviorInvoker" service="Noqoush.Framework.Behaviors.BehaviorInvoker, Noqoush.Framework"
+ type="Noqoush.Framework.Behaviors.BehaviorInvoker, Noqoush.Framework"
+ lifestyle="transient" />
+    <component id="ResourceManager"
+			 service="Noqoush.Framework.Resources.IResourceManager,Noqoush.Framework"
+		 type="Noqoush.Framework.Resources.ResourceManager,Noqoush.Framework"  lifestyle="transient">
+    </component>
+    <component id="UserInfoStorage"
+			service="Noqoush.Framework.Storage.IStorage,Noqoush.Framework"
+		type="Noqoush.Framework.Web.Storage.WebStorage,Noqoush.Framework.Web"  lifestyle="transient">
+    </component>
+    <component id="UserInfoProvider"
+     service="Noqoush.Framework.UserInfo.IUserInfoProvider,Noqoush.Framework"
+   type="Noqoush.AdFalcon.Common.Web.UserInfo.AdFalconUserInfoProvider,Noqoush.AdFalcon.Common.Web"  lifestyle="transient">
+    </component>
+    <component id="SecurityContent"
+			service="Noqoush.Framework.Security.ISecurityContext,Noqoush.Framework"
+		type="Noqoush.Framework.WCF.Context.WcfSecurityContext,Noqoush.Framework.WCF"  lifestyle="transient">
+    </component>
+    <component id="STSService"
+					type="Noqoush.Framework.Security.ISecurityService,Noqoush.Framework"
+					wcfEndpointConfiguration="STSClient">
+    </component>
+    <component id="ConfigurationSettings"
+      type="Noqoush.Framework.ConfigurationSetting.IConfigurationSettingService,Noqoush.Framework"
+      wcfEndpointConfiguration="ConfigurationSettingService">
+    </component>
+
+    <component id="ConfigurationManager"
+  service="Noqoush.Framework.ConfigurationSetting.IConfigurationManager,Noqoush.Framework"
+  type="Noqoush.Framework.ConfigurationSetting.ConfigurationManager,Noqoush.Framework"></component>
+
+    <component id="MailSender"
+            service="Noqoush.Framework.Utilities.EmailsSender.IMailSender,Noqoush.Framework"
+           		type="Noqoush.Framework.Utilities.EmailsSender.MailSender,Noqoush.Framework"  lifestyle="transient" >
+    </component>
+
+    <component id="ClientInterceptor" service="Noqoush.Framework.WCF.ClientAdapter, Noqoush.Framework.WCF"
+						 type="Noqoush.Framework.WCF.ClientAdapter, Noqoush.Framework.WCF"
+						 lifestyle="transient" />
+
+    <component id="ClientOperationContextPolicy" service="Noqoush.Framework.WCF.ClientOperationContextPolicy, Noqoush.Framework.WCF"
+			type="Noqoush.Framework.WCF.ClientOperationContextPolicy, Noqoush.Framework.WCF"
+			lifestyle="transient" />
+    <component id="ClientInterceptor" service="Noqoush.Framework.WCF.ClientAdapter, Noqoush.Framework.WCF"
+						 type="Noqoush.Framework.WCF.ClientAdapter, Noqoush.Framework.WCF"
+						 lifestyle="transient" />
+    <component id="ResourceService"
+									type="Noqoush.Framework.Resources.IResourceService,Noqoush.Framework"
+									wcfEndpointConfiguration="ResourceService">
+    </component>
+    <component id="CallContext"
+						 service="Noqoush.Framework.ICallContext,Noqoush.Framework"
+						 type="Noqoush.Framework.Web.WebCallContext,Noqoush.Framework.Web"
+						 lifestyle="transient">
+    </component>
+  </components>
+</configuration>

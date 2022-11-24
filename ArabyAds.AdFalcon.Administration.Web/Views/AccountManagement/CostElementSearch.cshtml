@@ -1,0 +1,85 @@
+﻿<script language="javascript" type="text/javascript">
+    function generateCostElementGrid() {
+        var grid = $("#SearchCostElement").data("tGrid");
+        grid.rebind();
+
+    };
+    function costElementGridDataBinding(args) {
+        args.data = $.extend(args.data,
+            {
+               
+                Name: $('#NameCostElementSearch').val(),
+                LookupId: '@Html.ViewContext.RouteData.Values["LookupId"]'
+
+            });
+    };
+
+    function costElemenGridDataBound(e) {
+        var grid = $("#SearchCostElement").data("tGrid");
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(1);
+        }
+    };
+    var costElementID, costElementName;
+    function onRowCostElementSelected(e) {
+     
+        costElementID = jQuery(e.row.cells[0]).text();
+        costElementName = jQuery(e.row.cells[1]).text();
+        costElementScope = jQuery(e.row.cells[2]).text();
+        selectCostElement();
+    }
+    function selectCostElement() {
+        AddCostElement(costElementID, costElementName, costElementScope);
+    }
+
+
+</script>
+
+
+<div>
+    <div class="data-row go-center">
+        <div class="blue-filter-container">
+            <table class="special-content">
+                <tr>
+                    <td>
+                        <span class="go-bold">@Html.GetResource("Name", "Global")</span>
+                    </td>
+                    <td style="width: 110px;">
+                        <input type="text" id="NameCostElementSearch" name="NameCostElementSearch" class="text-box " />
+                    </td>
+
+                    <td>
+                        <input type="button" onclick="generateCostElementGrid()" value='@Html.GetResource("Filter")' class="btn filter-button " />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="tail">
+        </div>
+    </div>
+
+
+    @*@Html.Partial(Model.FilterView)*@
+    @model ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core.CostElementResultDto
+    <div class="grid-container">
+        @(Html.Telerik().Grid(Model.Items)
+                            .Name("SearchCostElement")
+                    .Columns(columns =>
+                    {
+                        columns.Bound(o => o.ID);
+                        columns.Bound(o => o.Name.Value).ClientTemplate("<div class='grid-title-container floating-left'><span><#= Name.Value#></span> </div>").Title(Html.GetResource("Name"));
+                        columns.Bound(o => o.Scope).Hidden().HtmlAttributes(new {@id = "Scope" });
+
+                    })
+                                                                            .DataBinding(dataBinding => dataBinding.Ajax().Select("CostElemetntPage", "Lookup")).EnableCustomBinding(true)
+                        .ClientEvents(clientEvents => clientEvents.OnRowDataBound("onRowDataBound").OnDataBinding("costElementGridDataBinding").OnDataBound("costElemenGridDataBound").OnRowDataBound("onRowDataBound").OnRowSelect("onRowCostElementSelected"))
+                        .Scrollable(scrolling => scrolling.Enabled(false))
+                        .Selectable()
+                                .Pageable(paging => paging.PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total(int.Parse(ViewData["total"].ToString())).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+                        .Filterable(filtering => filtering.Enabled(false))
+                        .Groupable(grouping => grouping.Enabled(true)).Footer(true))
+    </div>
+
+</div>

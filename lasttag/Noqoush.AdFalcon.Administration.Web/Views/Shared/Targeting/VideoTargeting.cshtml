@@ -1,0 +1,275 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.Campaign.TargetingViewModel
+@using Noqoush.AdFalcon.Domain.Common.Model.Core.Video;
+<div class="section-form-inner-container info-container tab-pane fade in" tabsection="25" id="VideoSection" style="display:none;">
+
+    <div class="data-row section-container">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="videoTargeting">
+                        <div class="header open" id="PlacementTypeTargDiv" onclick="collapse(this, 'PlacementTypesd')">
+                            <h4>@Html.GetResource("PlacementType", "Campaign")</h4>
+                        </div>
+
+
+                        <div id="PlacementTypesd" class="container" style="display: none;">
+
+                            <div class="data-row section-container">
+                                <div class="data-row data-container">
+
+                                    <div class="field-container">
+                                        @Html.GetCheckBox("PlacementType_InStream", Html.GetLocalizedString(((int)PlacementTypeEnum.InStream).ToString(), "placementtype"), (Model != null ? Model.PlacementType_InStream : true), onChange: "")
+
+                                        @Html.GetCheckBox("PlacementType_OutStream", Html.GetLocalizedString(((int)PlacementTypeEnum.OutStream).ToString(), "placementtype"), (Model != null ? Model.PlacementType_OutStream : true), onChange: "")
+
+                                        @Html.GetCheckBox("PlacementType_Interstitial", Html.GetLocalizedString(((int)PlacementTypeEnum.Interstitial).ToString(), "placementtype"), (Model != null ? Model.PlacementType_Interstitial : true), onChange: "")
+
+                                        @Html.GetCheckBox("PlacementType_Undetermined", Html.GetLocalizedString(((int)PlacementTypeEnum.Undetermined).ToString(), "placementtype"), (Model != null ? Model.PlacementType_Undetermined : true), onChange: "")
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+
+
+
+                    <div class="videoTargeting">
+                        <div class="header open" id="InStreamPositiondTargDiv" onclick="collapse(this, 'InStreamPositiond')">
+                            <h4>@Html.GetResource("InStreamPosition", "Campaign")</h4>
+                        </div>
+
+
+                        <div id="InStreamPositiond" class="container" style="display: none;">
+
+                            <div class="data-row section-container">
+                                <div class="data-row data-container">
+
+                                    <div class="field-container">
+
+                                        @Html.GetCheckBox("InStreamPosition_PreRoll", Html.GetLocalizedString(((int)InStreamPositionEnum.PreRoll).ToString(), "instreamposition"), (Model != null ? Model.InStreamPosition_PreRoll : true), onChange: "")
+
+                                        @Html.GetCheckBox("InStreamPosition_MidRoll", Html.GetLocalizedString(((int)InStreamPositionEnum.MidRoll).ToString(), "instreamposition"), (Model != null ? Model.InStreamPosition_MidRoll : true), onChange: "")
+
+                                        @Html.GetCheckBox("InStreamPosition_PostRoll", Html.GetLocalizedString(((int)InStreamPositionEnum.PostRoll).ToString(), "instreamposition"), (Model != null ? Model.InStreamPosition_PostRoll : true), onChange: "")
+
+                                        @Html.GetCheckBox("InStreamPosition_Undetermined", Html.GetLocalizedString(((int)InStreamPositionEnum.Undetermined).ToString(), "instreamposition"), (Model != null ? Model.InStreamPosition_Undetermined : true), onChange: "")
+
+
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="videoTargeting">
+                        <div class="header open" id="SkippableAdsdTargDiv" onclick="collapse(this, 'SkippableAdsd')">
+                            <h4>@Html.GetResource("SkippableAds", "Campaign")</h4>
+                        </div>
+
+
+                        <div id="SkippableAdsd" class="container" style="display: none;">
+
+                            <div class="data-row section-container">
+                                <div class="data-row data-container">
+
+                                    <div class="field-container">
+                                        @Html.GetCheckBox("SkippableAds_SkippableAdSpaces", Html.GetLocalizedString(((int)SkippableAdsEnum.SkippableAdSpaces).ToString(), "skippableads"), (Model != null ? Model.SkippableAds_SkippableAdSpaces : true), onChange: "")
+
+                                        @Html.GetCheckBox("SkippableAds_NonSkippableAdSpaces", Html.GetLocalizedString(((int)SkippableAdsEnum.NonSkippableAdSpaces).ToString(), "skippableads"), (Model != null ? Model.SkippableAds_NonSkippableAdSpaces : true), onChange: "")
+
+                                        @Html.GetCheckBox("SkippableAds_Undetermined", Html.GetLocalizedString(((int)SkippableAdsEnum.Undetermined).ToString(), "skippableads"), (Model != null ? Model.SkippableAds_Undetermined : true), onChange: "")
+
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+
+
+
+                    <div class="videoTargeting">
+                        <div class="header open" id="PlaybackMethodsdsTargDiv" onclick="collapse(this, 'PlaybackMethodsd')">
+                            <h4>@Html.GetResource("PlaybackMethods", "Campaign")</h4>
+                        </div>
+
+
+                        <div id="PlaybackMethodsd" class="container" style="display: none;">
+
+                            <div class="data-row section-container">
+                                <div class="data-row data-container">
+
+                                    <div class="field-container">
+
+                                        @Html.GetCheckBox("Playback_AutoPlaySoundOn", Html.GetLocalizedString(((int)PlaybackMethodsEnum.AutoPlaywithSoundOn).ToString(), "playbackmethods"), (Model != null ? Model.Playback_AutoPlaySoundOn : true), onChange: "")
+
+                                        @Html.GetCheckBox("Playback_AutoPlaySoundOff", Html.GetLocalizedString(((int)PlaybackMethodsEnum.AutoPlaywithSoundOff).ToString(), "playbackmethods"), (Model != null ? Model.Playback_AutoPlaySoundOff : true), onChange: "")
+
+                                        @Html.GetCheckBox("Playback_ClickToPlay", Html.GetLocalizedString(((int)PlaybackMethodsEnum.ClicktoPlay).ToString(), "playbackmethods"), (Model != null ? Model.Playback_ClickToPlay : true), onChange: "")
+                                        @Html.GetCheckBox("Playback_Undetermined", Html.GetLocalizedString(((int)PlaybackMethodsEnum.Undetermined).ToString(), "playbackmethods"), (Model != null ? Model.Playback_Undetermined : true), onChange: "")
+
+
+
+
+
+
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="videoTargeting">
+                        <div class="header open" id="RewardedAdsdTargDiv" onclick="collapse(this, 'RewardedAdsd')">
+                            <h4>@Html.GetResource("RewardedAds", "Campaign")</h4>
+                        </div>
+
+
+						<div id="RewardedAdsd" class="container" style="display: none;">
+
+							<div class="data-row section-container">
+								<div class="data-row data-container">
+
+									<div class="">
+										<div class="col-sm-1" style="margin-left:-1%">
+											@Html.GetRadioButton("Video_RewardedAds", Html.GetResource("On"), (Model != null ? Model.Video_RewardedAds : true), "", value: "True", onChange: "Video_RewardedAdsChanged", Id: "RewardedAdsOn")
+											@Html.GetRadioButton("Video_RewardedAds", Html.GetResource("Off"), (Model != null ? !Model.Video_RewardedAds : false), "", value: "False", onChange: "Video_RewardedAdsChanged", Id: "RewardedAdsOff")
+
+
+										</div>
+											<div class="col-sm-9" id="RewardedAdOnlyDivCh" style="margin-left:-2%">
+												@Html.GetCheckBox("RewardedAdOnly", Html.GetResource("RewardedAdOnly"), (Model != null ? Model.RewardedAdOnly : false), onChange: "")
+											</div>
+										
+
+
+
+
+										</div>
+									</div>
+							</div>
+
+
+							<script>
+
+								$(document).ready(function () {
+									Video_RewardedAdsChanged();
+
+								});
+								function Video_RewardedAdsChanged() {
+         
+									var Value = getCheckRadioValue($("input[name='Video_RewardedAds']"));
+									if (Value == 'True') {
+										$("#RewardedAdOnlyDivCh").show();
+             
+
+            } else {
+										$("#RewardedAdOnlyDivCh").hide();
+
+            }
+        }
+
+							</script>
+	
+						</div>
+
+
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+
+
+
+                    <div class="videoTargeting">
+                        <div class="header open" id="MatchOrientationdTargDiv" onclick="collapse(this, 'MatchOrientationd')">
+                            <h4>@Html.GetResource("MatchDeviceOrientation", "Campaign")</h4>
+                        </div>
+
+
+                        <div id="MatchOrientationd" class="container" style="display: none;">
+
+                            <div class="data-row section-container">
+                                <div class="data-row data-container">
+
+                                    <div class="field-container">
+                                        @Html.GetRadioButton("Video_MatchOrientation", Html.GetResource("On"), (Model != null ? Model.Video_MatchOrientation : true), "", value: "True", onChange: "", Id: "MatchDeviceOrientationOn")
+                                        @Html.GetRadioButton("Video_MatchOrientation", Html.GetResource("Off"), (Model != null ? !Model.Video_MatchOrientation : false), "", value: "False", onChange: "", Id: "MatchDeviceOrientationOff")
+
+
+
+
+
+
+
+
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+    </div>
+
+
+
+</div>
+
+

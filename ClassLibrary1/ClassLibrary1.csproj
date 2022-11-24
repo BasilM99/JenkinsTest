@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+
+    <PackageReference Include="MaxMind.Db" Version="2.6.1" />
+
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NReco.VideoConverter.LT" Version="1.1.4" />
+    <PackageReference Include="NReco.VideoInfo.LT" Version="1.1.0" />
+    <PackageReference Include="RestSharp" Version="106.11.4" />
+    <PackageReference Include="System.Collections" Version="4.3.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.6.0" />
+    <PackageReference Include="System.IO.Compression" Version="4.3.0" />
+    <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
+    <PackageReference Include="System.Linq" Version="4.3.0" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Xml.Linq" Version="3.5.21022.801" />
+    <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Noqoush.Framework\Noqoush.Framework.Grpc\Noqoush.Framework.Grpc.csproj" />
+    <ProjectReference Include="..\..\..\Noqoush.Framework\Noqoush.Framework.Web\Noqoush.Framework.Web.csproj" />
+    <ProjectReference Include="..\..\..\Noqoush.Framework\Noqoush.Framework\Noqoush.Framework.csproj" />
+    <ProjectReference Include="..\Noqoush.AdFalcon.Base\Noqoush.AdFalcon.Base.csproj" />
+    <ProjectReference Include="..\Noqoush.AdFalcon.Common.Web\Noqoush.AdFalcon.Common.Web.csproj" />
+    <ProjectReference Include="..\Noqoush.AdFalcon.Common\Noqoush.AdFalcon.Common.csproj" />
+    <ProjectReference Include="..\Noqoush.AdFalcon.Domain.Common\Noqoush.AdFalcon.Domain.Common.csproj" />
+    <ProjectReference Include="..\Noqoush.AdFalcon.Domain.Exceptions\Noqoush.AdFalcon.Exceptions.csproj" />
+    <ProjectReference Include="..\Noqoush.AdFalcon.Services.Interfaces\Noqoush.AdFalcon.Services.Interfaces.csproj" />
+  </ItemGroup>
+
+
+
+</Project>

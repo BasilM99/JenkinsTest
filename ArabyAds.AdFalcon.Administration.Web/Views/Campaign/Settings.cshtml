@@ -1,0 +1,564 @@
+﻿@{
+	ViewBag.Title = Html.GetResource("CampaignSettings", "Titles");
+}
+@model ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.CampaignSettingsDto
+<script language="javascript" type="text/javascript">
+    var startDateBeforeNowBRMsg = '@Html.GetResource("CampaignStartDateBeforeNowBR")';
+    var endDateBeforeNowBRMsg = '@Html.GetResource("CampaignEndDateBR")';
+    var endDateBeforeStartDateBRMsg = '@Html.GetResource("CampaignEndDateBeforeEndDateBR")';
+    var startDateChanged = false;
+    @*GlobalAdvertiserId = '@Model.AdvertiserId';*@
+
+    $(document).ready(function () {
+        $("#Advertiser_DomainURL").val("ignore.html");
+
+
+            SetSelectedTap("ListMenuAdvertiser");
+		var setting = $.data($("form:not(#SwitchAccountForm)")[0], 'validator').settings;
+
+        setting.ignore = '';
+    });
+    function changeUseHttpCriteria(item, value) {
+        if (value == "all")
+            $("#advancedCriteria").hide(); else $("#advancedCriteria").show();
+
+        TrackConversionsChanged()
+    }
+    function ShowTrackingPart() {
+
+        if (!$("#TrackingPartdiv").is(":visible")) {
+            $("#adv").attr("class", "minimize");
+
+
+            $("#TrackingPartdiv").show();
+
+        } else {
+            $("#adv").attr("class", "maximize");
+
+            $("#TrackingPartdiv").hide();
+
+        }
+
+    }
+    function CopyTrackingUrl() {
+
+        var copyTextarea = $('#TrackingUrlss');
+        //
+        copyTextarea.focus();
+        copyTextarea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+
+
+    }
+    function TrackConversionsChanged() {
+        if ($("#UseHttpRadio").is(":checked")) {
+            $("#TrackingUrlss").val($("#TrackConversionsUrlHttp").val());
+
+        }
+        else
+            if ($("#UseHttpsRadio").is(":checked")) {
+                $("#TrackingUrlss").val($("#TrackConversionsUrlHttps").val());
+
+            } else {
+                $("#TrackingUrlss").val('');
+            }
+
+    }
+
+    function costModelChanged() {
+        var val = parseInt($('#CostModelWrapper').val());
+        if (!isNaN(val)) {
+            $('#fixedType').slideDown();
+        } else {
+            $('#fixedType').slideUp();
+            //$('input[name="Discount.TypeId"][value=2]').attr("checked", "checked");
+            var elem = $('input[name="Discount.TypeId"][value=1]').parents('[name="Discount.TypeIdcontainer"]')[0];
+            radioBox(elem);
+        }
+
+    }
+    function localInitilize() {
+        jQuery('#Kewords_Name').addClass('required');
+        /*jQuery('#DomainURL').change(function () {
+            if (hasValue($('#DomainURL').val())) {
+                ValidateUrl($('#DomainURL'));
+            }
+        });*/
+        $('#CostModelWrapper').change(costModelChanged);
+        var dates = $("#Discount_ToDate").datepicker({
+            changeMonth: true,
+            showButtonPanel: true,
+            showOn: 'both',
+            minDate: 1,
+            buttonImageOnly: true,
+            dateFormat: '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat',
+            buttonImage: '@(Url.GetImagePath("Calendar-icon.png"))',
+            onSelect: function (selectedDate) {
+                /*if (this.id == "Discount_FromDate") {
+                startDateChanged = true;
+                }
+                var option = this.id == "Discount_FromDate" ? "minDate" : "maxDate",
+                instance = $(this).data("datepicker"),
+                date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+                dates.not(this).datepicker("option", option, date);*/
+            }
+        });
+        costModelChanged();
+    };
+
+    function customBannerValidate() {
+        var result = true;
+        clearErrorMessage();
+		$("form:not(#SwitchAccountForm)").valid();
+        //result = validateDate() && result;
+        return result;
+    };
+    function validateDate() {
+        var result = true;
+        var startDate = tempDate = jQuery("#Discount_FromDate").datepicker('getDate');
+        var endDate = jQuery("#Discount_ToDate").datepicker('getDate');
+        var now = new Date();
+        now.setHours(0, 0, 0, 0);
+        //reset dates
+        if (startDate != null) {
+            startDate.setHours(0, 0, 0, 0);
+        }
+        if (endDate != null) {
+            endDate.setHours(23, 59, 59, 0);
+        }
+        //check if the client changed the start date
+        //check is start date is less than the current date
+        if ((startDateChanged) && (startDate != null) && (startDate < now)) {
+            showErrorMessage(startDateBeforeNowBRMsg, true);
+            result = false;
+        }
+        //check is end date is less than the current date
+        if ((endDate != null) && (endDate < now)) {
+            showErrorMessage(endDateBeforeNowBRMsg, true);
+            result = false;
+        }
+
+        //check is end date is less than the start date
+        if ((endDate != null) && (startDate > endDate)) {
+            showErrorMessage(endDateBeforeStartDateBRMsg, true);
+            result = false;
+        }
+        return result;
+    };
+    function KewordChanged(event, item) {
+        if ((typeof (item) != "undefined") && (item != null)) {
+
+            $('[name="Keyword.ID"]').val(item.ID);
+        }
+        else {
+            $('[name="Keyword.ID"]').val('');
+        }
+		$("form:not(#SwitchAccountForm)").validate().form();
+    }
+    function AdvertisersChanged(c) {
+
+        if ((typeof (item) != "undefined") && (item != null)) {
+
+            $('[name="Advertiser.ID"]').val(item.ID);
+        }
+        else {
+            $('[name="Advertiser.ID"]').val('');
+        }
+		$("form:not(#SwitchAccountForm)").validate().form();
+    }
+    function show_discount_value_msg(flag) {
+        if (flag) {
+            $('#displayValueErrorMsg').show();
+        } else {
+            $('#displayValueErrorMsg').hide();
+        }
+	}
+
+	function ChangePacingPoliciesValue(item, value) {
+
+		$("#PacingPoliciesValue").val(value);
+
+	}
+    function validate_discount_value(item) {
+        var result = true;
+        var value = parseFloat($('[name="Discount.Value"]').val());
+        var percentage_checked = $("[name='Discount.TypeId'][value='1']").is(':checked');
+        if ((!isNaN(value)) && percentage_checked && (value < 1 || value > 100)) {
+            result = false;
+        }
+        show_discount_value_msg(!result);
+        onbidchange(item);
+        return result;
+    }
+    function discountTypeChanged(elem, value) {
+
+        var desc = '$';
+        var maskType = 'decimal';
+        switch (parseInt(value)) {
+            case 1: //Percentage
+                desc = '%';
+                maskType = 'percentage';
+                $("#Discount_TypeId").val(1);
+                break;
+            case 2: //Fixed
+                desc = '$';
+                maskType = 'decimal';
+                $("#Discount_TypeId").val(2);
+                break;
+
+            default:
+        }
+        $('[name=value_type_desc]').text(desc);
+        validate_discount_value();
+        //$('[maskType]').attr('maskType', maskType);
+    }
+    function show_to_date(item, value) {
+        if (item.find('input[type=checkbox]:checked').length > 0) {
+            $("[name='to_date_div']").hide();
+            jQuery("#Discount_ToDate").datepicker("setDate", null);
+        } else {
+            $("[name='to_date_div']").show();
+        }
+    }
+</script>
+@Html.HiddenFor(m => m.TrackConversionsUrlHttp)
+@Html.HiddenFor(m => m.TrackConversionsUrlHttps)
+@using (Html.BeginForm("Create"))
+{
+	@Html.HiddenFor(m => m.ValidCostModelWrapper)
+	@Html.HiddenFor(m => m.Keyword.ID);
+
+	@Html.HiddenFor(m => m.Advertiser.ID);
+	@Html.HiddenFor(m => m.Advertiser.DomainURL);
+	@Html.HiddenFor(m => m.Discount.TypeId);
+	@Html.HiddenFor(m => m.PacingPoliciesValue);
+
+	@Html.Hidden("returnUrl", Request.QueryString["returnUrl"])
+
+	<div class="data-row section-container">
+		<div class="data-row section-container">
+			@{
+				var tabs = new List<ArabyAds.AdFalcon.Web.Controllers.Model.Tab>
+							   {
+								   new ArabyAds.AdFalcon.Web.Controllers.Model.Tab
+									   {
+										   IsSelected = false,
+										   Action = new ArabyAds.AdFalcon.Web.Controllers.Model.Action()
+														{
+															DisplayText = Html.GetResource("Campaigninfo", "Titles"),
+															ActionName = "Create",
+															ExtraPrams = ViewData["AdvertiserAccountIdForTab"]+"/"+ViewContext.RouteData.Values["id"],
+															IsSelected = true
+														}
+									   },
+								   new ArabyAds.AdFalcon.Web.Controllers.Model.Tab
+									   {
+										   IsSelected = true,
+										   Action = new ArabyAds.AdFalcon.Web.Controllers.Model.Action()
+														{
+															DisplayText = Html.GetResource("Settings", "Commands"),
+															ActionName = "Settings",
+															IsSelected = true
+														}
+									   },
+										new ArabyAds.AdFalcon.Web.Controllers.Model.Tab
+									   {
+										   IsSelected = false,
+										   Action = new ArabyAds.AdFalcon.Web.Controllers.Model.Action()
+														{
+															DisplayText = Html.GetResource("AdvancedSettings", "Commands"),
+															ActionName = "ServerSetting",
+															ExtraPrams = ViewContext.RouteData.Values["id"],
+															IsSelected = true
+														}
+									   }
+										  ,
+										  new ArabyAds.AdFalcon.Web.Controllers.Model.Tab
+													   {
+														   IsSelected = false,
+														   Action = new ArabyAds.AdFalcon.Web.Controllers.Model.Action()
+																		{
+														  DisplayText =Html.GetResource("CampaignAssignAppsites", "Commands"),
+															ActionName = "CampaignAssignAppsites",
+															ExtraPrams = ViewContext.RouteData.Values["id"],
+															IsSelected = true,
+																		}
+													   }
+
+													   };
+				var costModels = ViewBag.CostModels as List<SelectListItem>;
+			}
+			@Html.Partial("Tabs", tabs)
+			<input id="ID" name="ID" value="@Model.ID" type="hidden" />
+			<div class="section-form-container">
+				<div class="info-container data-row">
+					<h2>@Html.GetResource("Basic", "CampaignSettings")</h2>
+					<br />
+					
+					@if (ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+						().AccountRole != (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP)
+						{
+					<text>
+						<div class="data-row data-container">
+							<div class="label-container">
+								<span class="field-title required-field">&nbsp;</span>
+							</div>
+							<div class="field-container">
+								@Html.GetCheckBox("IsProgrammaticGuaranteed", "Is Programmatic Guaranteed", Model.IsProgrammaticGuaranteed)
+							</div>
+						</div>
+					</text>
+					}
+						<div class="data-row data-container">
+							<div class="label-container">
+								<span class="field-title required-field">&nbsp;</span>
+							</div>
+							<div class="field-container">
+								@Html.GetCheckBox("IsClientLocked", Html.GetResource("LockClientChanges", "CampaignSettings"), Model.IsClientLocked)
+							</div>
+						</div>
+						<div class="data-row data-container">
+							<div class="label-container">
+								<span class="field-title required-field">&nbsp;</span>
+							</div>
+							<div class="field-container">
+								@Html.GetCheckBox("LogAdMarkup", "Log Ad Markup", Model.LogAdMarkup)
+							</div>
+						</div>
+						<div class="data-row data-container">
+							<div class="label-container ">
+								<span class="field-title required-field">@Html.GetResource("PriceMode", "Global")</span>
+							</div>
+
+							<div class="field-container">
+								<div class="radio-button-container floating-left iea-rbtn-width-a">
+									@Html.GetRadioButton("PriceMode", Html.GetResource("FixedType", "CampaignSettings"), (int)Model.PriceMode == 1, "", "", "1", Id: "PriceModeRadio")
+								</div>
+
+								<div class="radio-button-container floating-left">
+									@Html.GetRadioButton("PriceMode", Html.GetResource("Dynamic", "Global"), (int)Model.PriceMode == 2, "", "", "2", Id: "PriceModeRadio")
+								</div>
+							</div>
+						</div>
+
+
+
+						@*<div class="data-row data-container">
+								<div class="label-container">
+									<span class="field-title required-field">@Html.GetResource("Advertiser", "Global")</span>
+								</div>
+								<div class="field-container">
+									@{
+			var AdvertiserAutoComplete = ViewBag.AdvertiserAutoComplete as ArabyAds.AdFalcon.Web.Controllers.Model.AutoComplete;
+			@Html.Partial("Autocomplete", AdvertiserAutoComplete)
+										@Html.Partial("MoreInfo", "DomainURLMoreInfo")
+									}
+								</div>
+								@Html.AdFalconValidationMessageFor(m => m.Advertiser.ID)
+							</div>*@
+
+						<div class="data-row data-container">
+							<div class="label-container">
+								<span class="field-title required-field">@Html.GetResource("Keyword", "Campaign")</span>
+							</div>
+							<div class="field-container">
+								@{
+									var autoComplete = ViewBag.KeywordAutoComplete as ArabyAds.AdFalcon.Web.Controllers.Model.AutoComplete;
+									@Html.Partial("Autocomplete", autoComplete)
+									@Html.Partial("MoreInfo", "KeywordInfo")
+								}
+							</div>
+							@Html.AdFalconValidationMessageFor(m => m.Keyword.ID)
+						</div>
+						<div class="data-row data-container">
+							<div class="label-container">
+								<span class="field-title required-field">@Html.GetResource("CPMValue", "Campaign")</span>
+							</div>
+							<div class="field-container">
+								<span class="small-big-field">
+									@Html.AdFalconTextBox("CPMValue", Model.CPMValue != null ? Model.CPMValue.Value.ToString("F2") : null, new { maskType = "decimal", onchange = "onbidchange(this)", onkeypress = "onbidpress(event,this)" })
+								</span>
+								<span class="side-text">$</span> @Html.AdFalconValidationMessageFor(p => p.CPMValue)
+
+							</div>
+						</div>
+
+
+
+						<div class="data-row data-container">
+							<div class="label-container ">
+								<span class="field-title required-field">@Html.GetResource("PacingPolicies", "Campaign")</span>
+							</div>
+
+							<div class="field-container">
+								<div class="radio-button-container floating-left iea-rbtn-width-a">
+									@Html.GetRadioButton("PacingPoliciesValueR", Html.GetResource("FastSpend", "Campaign"), Model.PacingPoliciesValue == 0, "", "ChangePacingPoliciesValue", "0", Id: "PacingPoliciesValueRadio")
+								</div>
+
+								<div class="radio-button-container floating-left">
+									@Html.GetRadioButton("PacingPoliciesValueR", Html.GetResource("EvenDistribution", "Campaign"), Model.PacingPoliciesValue == 1, "", "ChangePacingPoliciesValue", "1", Id: "PacingPoliciesValueRadio")
+								</div>
+							</div>
+						</div>
+
+
+				</div>
+			</div>
+			<div class="section-form-container">
+				<div class="info-container data-row">
+					<h2>
+						<div class='grid-title-container floating-left'><span class='trimed-span'>@Html.GetResource("TrackConversions", "Campaign")</span></div><div class='grid-cogwheel-container floating-right go-right'><a name='iconImage' onclick='ShowTrackingPart()' id='adv' class='maximize' style='display: inline; margin-right: 5px; margin-top: 10px;'></a></div>
+
+					</h2>
+					<div class="data-row" style="display:none" id="TrackingPartdiv">
+						<br />
+						<div class="data-row data-container">
+							<div class="label-container">
+								<span class="field-title required-field">&nbsp;</span>
+							</div>
+							<div class="field-container">
+								@Html.GetCheckBox("TrackConversions", @Html.GetResource("TrackConversions", "Campaign"), Model.TrackConversions, onChange: "changeUseHttpCriteria")
+							</div>
+						</div>
+						<div class="data-row data-container">
+							<div class="label-container ">
+								<span class="field-title required-field">&nbsp;</span>
+							</div>
+
+							<div class="field-container">
+								<div class="radio-button-container floating-left iea-rbtn-width-a">
+									@Html.GetRadioButton("TrackConversionsUseHttp", Html.GetResource("UseHttp", "Global"), Model.TrackConversionsUseHttp, "", "changeUseHttpCriteria", "true", Id: "UseHttpRadio")
+								</div>
+								<div class="radio-button-container floating-left">
+									@Html.GetRadioButton("TrackConversionsUseHttp", Html.GetResource("UseHttps", "Global"), Model.TrackConversionsUseHttps, "", "changeUseHttpCriteria", "false", Id: "UseHttpsRadio")
+								</div>
+							</div>
+						</div>
+						<div class="data-row data-container">
+							<div class="label-container">
+								<span class="field-title required-field">@Html.GetResource("NameId", "Campaign")</span>
+							</div>
+							<div class="field-container">
+								<span class="side-text">@Model.UniqueId</span>
+							</div>
+						</div>
+						<div id="TrackerUrl" class="data-row data-container">
+							<div class="label-container">
+								<span class="field-title required-field">@Html.GetResource("TrackConversionsUrl", "Campaign")</span>
+							</div>
+							<div class="field-container">
+								<textarea class="text-box valid" style="width:590px" cols="20" id="TrackingUrlss" name="TrackingUrlss" readonly="readonly" rows="10"></textarea>
+								@*@Html.AdFalconTextBox("ClickTrackerUrl", Model.AdCreativeDto.ClickTrackerUrl, new { @readonly = "readonly" })*@
+
+								<img name="iconImage" onclick="CopyTrackingUrl();" title="@Html.GetResource("Copy_1", "Commands")" class="copyicon" style="display: inline;">
+							</div>
+						</div>
+
+
+					</div>
+				</div>
+			</div>
+
+			<div class="section-form-container">
+				<h2>@Html.GetResource("Discount", "CampaignSettings")</h2>
+				<div class="info-container data-row">
+					<br />
+					<div class="data-row data-container">
+						<div class="label-container">
+							<span class="field-title required-field">@Html.GetResource("CostModel")</span>
+						</div>
+						<div class="field-container">
+							<span class="cost-model-container">@Html.DropDownList("CostModelWrapper", costModels)</span>
+						</div>
+					</div>
+					<div class="data-row data-container" id="fixedType">
+						<div class="label-container">
+							<span class="field-title required-field">@Html.GetResource("Type", "CampaignSettings")</span>
+						</div>
+						<div class="field-container">
+							@{
+								bool selected = Model == null || Model.Discount == null || Model.Discount.TypeId == 2;
+								bool isFixed = selected;
+							}
+							@Html.GetRadioButton("Discount.TypeId", Html.GetResource("FixedType", "CampaignSettings"), selected, value: "2", onChange: "discountTypeChanged")
+						</div>
+					</div>
+					<div class="data-row data-container">
+						<div class="label-container">
+							<span class="field-title required-field">&nbsp;</span>
+						</div>
+						<div class="field-container">
+							@{
+								selected = !selected;
+							}
+							@Html.GetRadioButton("Discount.TypeId", Html.GetResource("PercentageType", "CampaignSettings"), selected, value: "1", onChange: "discountTypeChanged")
+						</div>
+					</div>
+					<div class="data-row data-container">
+						<div class="label-container required-field">
+							<span class="field-title ">@Html.GetResource("Discount", "CampaignSettings")</span>
+						</div>
+						<div class="field-container">
+							@Html.AdFalconTextBox("Discount.Value", Model == null || Model.Discount == null || !Model.Discount.Value.HasValue ? string.Empty : Model.Discount.Value.Value.ToString("F3"), new { maskType = "decimal", onchange = "validate_discount_value(this);", onkeypress = "onbidpress(event,this)" })
+							<span name="value_type_desc" class="side-text">@(isFixed ? "$" : "%")</span><span style="display: inline-block; margin-left: 17px; margin-right: 17px;">
+								@Html.AdFalconValidationMessageFor(p => p.Discount.Value)
+								<span id="displayValueErrorMsg" class="validation-arrow field-validation-error" style="display: none;">
+									<span class="">@(string.Format(Html.GetResource("RangeMessage", "ResourceSet"), 1, 100))</span>
+								</span>
+							</span>
+						</div>
+					</div>
+					@* <div class="data-row data-container">
+							<div class="label-container">
+								<span class="field-title required-field">@Html.GetResource("FromDate", "CampaignSettings")
+								</span>
+							</div>
+							<div class="field-container  required-field iea-text-calender-margin">
+								@Html.AdFalconTextBox("Discount.FromDate", Model != null && Model.Discount != null && Model.Discount.FromDate.HasValue ? Model.Discount.FromDate.Value.ToString(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat) : "", new { @readonly = "readonly" })
+							</div>
+							@Html.AdFalconValidationMessageFor(p => p.Discount.FromDate)
+						</div>*@
+					<div class="data-row data-container">
+						<div class="label-container">
+							<span class="field-title">&nbsp;</span>
+						</div>
+						<div class="field-container">
+							@{
+								var hasToDate = Model != null && Model.Discount != null && Model.Discount.ToDate.HasValue;
+								var toDateStyle = "";
+								if (!hasToDate)
+								{
+									toDateStyle = "display: none;";
+								}
+							}
+							@Html.GetCheckBox("is_show_to_date", @Html.GetResource("ToDateMessage", "CampaignSettings"), !hasToDate, onChange: "show_to_date")
+						</div>
+					</div>
+					<div class="data-row data-container" name="to_date_div" style="@toDateStyle">
+						<div class="label-container">
+							<span class="field-title">@Html.GetResource("ToDate", "CampaignSettings")</span>
+						</div>
+						<div class="field-container">
+							@Html.AdFalconTextBox("Discount.ToDate", hasToDate ? Model.Discount.ToDate.Value.ToString(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat) : "", new { @readonly = "readonly" })
+						</div>
+					</div>
+					<input type="submit" name="Remove" value='@Html.GetResource("Remove", "Commands")' class="btn" />
+				</div>
+				<br />
+			</div>
+			<div class="section-footer">
+			</div>
+		</div>
+		<div class="data-row button-container">
+			<input type="submit" name="Settings" value='@Html.GetResource("Save", "Commands")' onclick="return validate_discount_value();" class="primary-btn" />
+			<input type="button" value='@Html.GetResource("Close", "Commands")' class="btn" onclick="redirect('@(string.IsNullOrWhiteSpace(Request.QueryString["returnUrl"]) ? Url.Action("Index", "Campaign") : Request.QueryString["returnUrl"])')" />
+		</div>
+	</div>
+}

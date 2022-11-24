@@ -1,0 +1,249 @@
+/* Boxed Layout
+================================================== */
+
+    .bg-cover {
+        background-attachment: fixed;
+        background-position: 50% 50%;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+    body {
+        background: url(../images/backgrounds/bg_img01.jpg);
+    }
+    #body-wrapper {
+        left: 50%;
+        margin-left: -560px;
+        padding: 0 70px;
+        width: 980px;
+        -webkit-box-shadow: 0 0 4px rgba(0,0,0,.3);
+                box-shadow: 0 0 4px rgba(0,0,0,.3);
+    }
+
+#header {
+	width: 1120px;
+	margin-left:-70px;
+}
+.fixed#header {
+		width: 1120px;
+		left: 24.2%;
+	}
+
+.revslider-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: 650px;
+	background:#fff!important;
+}
+
+.tp-simpleresponsive img {
+    max-width: none;
+	max-height: 550px!important;
+	
+}
+.tp-rightarrow.large {
+    right: 2% !important;
+    left: auto !important;
+}
+
+.tp-leftarrow.large, .tp-rightarrow.large {
+   
+    left: 2%!important;
+   
+}
+
+.ls-inner, .ls-layer {
+	width: 1120px!important;
+	margin-left:-35px!important;
+}
+
+
+.ei-slider{
+	position: relative;
+	width: 1180px!important;
+	margin-left:-70px!important;
+}
+
+
+
+
+
+#testimonials .container {
+	margin:0px !important;
+	
+}
+.portfolio-detail-view,
+.portfolio-detail-view-remove {
+  
+    width: 1120px;
+
+	
+}
+
+.portfolio-detail-content-container .content {
+   
+	left:6%;
+}
+.item-details {
+  
+	right:6.5%;
+}
+#inner_banner{
+	width: 1120px;
+	margin-left:-70px;
+	
+}
+.bg_page_nav {
+	
+	top:10px;
+	
+}
+.hero {
+	width: 1120px!important;
+	margin-left:-70px;
+	
+	
+}
+
+.hr-full .hr-inner {
+	width:1120px;
+	left:-70px;
+}
+#parallax{
+	width: 1120px;
+	margin-left:-70px;
+}
+#static_banner{
+	width: 1120px;
+	margin-left:-70px;
+	height: 450px!important;
+}
+.bg_static_banner {
+		
+		background-size: 130%;
+	}
+
+#landing_banner{
+	width: 1120px;
+	margin-left:-70px;
+	
+}
+	
+.bg_landing_banner {
+		
+		background-size: 200%!important;
+	}	
+/* ------------------------------------------------------------------------------- */
+/*  Media Queries
+/* ------------------------------------------------------------------------------- */
+
+
+/* Standard 960 or larger (browsers) */
+@media only screen and (min-width: 960px) {
+
+}
+
+
+
+/* Smaller than standard 960 (devices and browsers) */
+@media only screen and (max-width: 979px) {
+
+    #body-wrapper {
+        margin-left: -404px;
+        width: 708px;
+        padding: 0 50px;
+    }
+    .fullwidth {
+        margin-right: -50px !important;
+        margin-left: -50px !important;
+    }
+    .fullwidth-padding {
+        margin-right: -50px !important;
+        margin-left: -50px !important;
+        padding-right: 50px !important;
+        padding-left: 50px !important;
+    }
+
+}
+
+
+
+/* Tablet Portrait size to standard 960 (devices and browsers) */
+@media only screen and (min-width: 768px) and (max-width: 959px) {
+
+}
+
+
+
+/* All Mobile Sizes (devices and browser) */
+@media only screen and (max-width: 767px) { 
+
+    #body-wrapper {
+        margin-left: -250px;
+        width: 440px;
+        padding: 0 30px;
+    }
+    .fullwidth {
+        margin-right: -30px !important;
+        margin-left: -30px !important;
+    }
+    .fullwidth-padding {
+        margin-right: -30px !important;
+        margin-left: -30px !important;
+        padding-right: 30px !important;
+        padding-left: 30px !important;
+    }
+
+}
+
+
+
+/* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+
+}
+
+
+
+/* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
+@media only screen and (max-width: 479px) {
+
+    #body-wrapper {
+        margin-left: -165px;
+        width: 280px;
+        padding: 0 25px;
+    }
+    .fullwidth {
+        margin-right: -25px !important;
+        margin-left: -25px !important;
+    }
+    .fullwidth-padding {
+        margin-right: -25px !important;
+        margin-left: -25px !important;
+        padding-right: 25px !important;
+        padding-left: 25px !important;
+    }
+	.selectnav {
+        margin-left: 5px!important;
+    }
+	
+	#header {
+	width: 390px!important;
+	margin-bottom:60px!important;
+	margin-left: -80px;
+}
+#inner_banner{
+	width: 380px!important;
+	background-size: 300%!important;
+}
+	
+.bg_landing_banner {
+		
+		background-size: 500%;
+	}
+	
+
+}
+
+
+
+

@@ -1,0 +1,13 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Advertiser.MasterAppSiteItemListViewModel
+@{
+    //ViewBag.Title = Html.GetResource("Advertisers", "Global");
+    ViewBag.Title = Model.ListName + " : " + Html.GetResource("ContentAppSiteItems", "Global");
+
+    Layout = "~/Views/Campaign/MasterAppSite/IndexMaster.cshtml";
+    string DeteleCheckBox = Model.PreventEdit ? "<input type = 'checkbox' name = 'checkedRecords' value = '#= Id #' disabled />" : "<input type = 'checkbox' name = 'checkedRecords' value = '#= Id #' />";
+
+
+}
+<div id="APP-Root">
+</div>
+<script src="~/ClientReactJs/Dashboard.js.gz" asp-append-version="true"></script>

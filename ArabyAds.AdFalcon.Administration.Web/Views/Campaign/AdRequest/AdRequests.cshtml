@@ -1,0 +1,172 @@
+﻿@model ArabyAds.AdFalcon.Administration.Web.Controllers.Model.Campaign.AdRequestViewModel
+<script language="javascript" type="text/javascript">
+    @{ long numberOfRecordes = Model.AllItems.TotalCount;}
+    var DeleteUrl = '@Url.Action("DeleteAdRequest", "Campaign")'
+    var Duplicated = '@Html.GetResource("Duplicated", "Global")';
+    function ShowAddAdRequest() {
+
+        $("#AdRequestTypes").val('-1');
+        $("#AdRequestPlatforms").val('-1');
+
+
+        $("#AdRequestTypes").val('1');
+
+
+
+        $("#AdRequestVersions").val('1');
+        callServicetoFillDropDownAdRequestsTypes();
+        //$("#AdRequestPlatforms").val('1');
+        showDialog('AdRequest-add-dialog-form');
+    }
+
+    function localInitilize_AdRequests() {
+        jQuery("#AdRequest-add-dialog-form").dialog({
+            autoOpen: false,
+            //height: 230,
+            width: 370,
+            resizable: false,
+            draggable: false,
+            modal: true,
+            buttons: [{
+                text: '@Html.GetResource("Save", "Commands")',
+                click: function () {
+                    if (IsNotDuplicated()) {
+
+                        showErrorMessage(Duplicated, false);
+
+                    } else {
+                        AddAdRequest();
+                    }
+                    jQuery(this).dialog("close");
+                },
+                "class": 'primary-btn',
+
+            }],
+        });
+
+        jQuery("#AdRequest-Duplicated-add-dialog-form").dialog({
+            autoOpen: false,
+            //height: 230,
+            width: 300,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            buttons: {
+                '@Html.GetResource("Ok", "Commands")': function () {
+                    jQuery(this).dialog("close");
+                }
+            },
+        });
+
+        jQuery("#AdRequest-Success-add-dialog-form").dialog({
+            autoOpen: false,
+            //height: 230,
+            width: 300,
+            modal: true,
+            resizable: false,
+            buttons: {
+                '@Html.GetResource("Ok", "Commands")': function () {
+                    jQuery(this).dialog("close");
+                }
+            },
+        });
+    }
+    function AdRequestsGridDataBound() {
+        var grid = $("#AdRequestGrid").data("tGrid");
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(currentPage);
+        }
+        $("#AdRequestGrid #DeleteAdrequestIcon").removeClass("t-last");
+        $(".t-no-data").addClass("go-center");
+    }
+    function generateAdRequestGrid() {
+        var grid = $("#AdRequestGrid").data("tGrid");
+        grid.rebind();
+    };
+    function DeleteAdRequest(element) {
+
+        var tr = $(element).parents('tr');
+        var id = $(tr).find("#IdAdRequest").text();
+        if (id != "" && id != "undefined") {
+            jQuery.ajax(
+               {
+                   dataType: "json",
+                   contentType: 'application/json; charset=utf-8',
+                   type: "GET",
+                   url: DeleteUrl + "?id=" + id,
+                   success: function (result) {
+
+                       if (result.Success) {
+                           generateAdRequestGrid();
+                           showSuccessfullyMessage(result.Message, false);
+                       }
+                       else {
+                           showErrorMessage(result.ErrorMessage, false);
+                       }
+                   },
+                   error: function (error) {
+
+                       alert("Somthing Went Worng Please contact the admin");
+                   }
+               });
+        }
+    }
+</script>
+<div class="section-form-inner-container">
+    <div class=" go-left floating-left">
+        @*<h3>@Html.GetResource("CostElements", "Titles")</h3>*@
+
+        <a class="primary-btn" href="javascript:void(0)" onclick="ShowAddAdRequest()">@Html.GetResource("AddAdRequests", "Global")</a>
+    </div>
+    <div class="data-row data-container">
+        <div>
+            <div class="grid-container">
+                &nbsp;
+                @*<div>
+                        <div class="t-toolbar t-grid-toolbar t-grid-top">
+                            <a class="t-button t-button-icon t-button-bare t-grid-add" href="javascript:void(0)"
+                               onclick="ShowAddAdRequest()"><span class="t-icon t-add"></span></a>
+                        </div>
+                    </div>*@
+                @(Html.Telerik().Grid(Model.AllItems.Items)
+                          .DataKeys(p => p.Add(o => o.ID))
+                          .Editable(ed => ed.Mode(GridEditMode.InCell).DisplayDeleteConfirmation(false)
+                          .DefaultDataItem(new ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.Targeting.AdRequestTargetingDto()))
+                          .ToolBar(commands => commands.Insert().ButtonType(GridButtonType.BareImage))
+                          .Name("AdRequestGrid").Columns(columns =>
+                              {
+                                  columns.Bound(o => o.ID).Hidden().HtmlAttributes(new { @id = "IdAdRequest" });
+                                  columns.Bound(o => o.AdRequestType.Name.Value).Title(@Html.GetResource("Type", "AppSite")).Width("300px").ReadOnly().HtmlAttributes(new { @class = "go-center", @id = "AdRequestLable" });
+                                  columns.Bound(o => o.AdRequestPlatform.Name.Value).Title(@Html.GetResource("Platform", "Targeting")).Width("150px").HtmlAttributes(new { @class = "go-center", @id = "AdRequestPlatformLable" }).ReadOnly();
+                                  columns.Bound(o => o.MinimumVersion).Title(@Html.GetResource("MinimumVersion", "Targeting")).Width("150px").HtmlAttributes(new { @class = "go-center", @id = "MinimumVersionLable" }).ReadOnly();
+                                  columns.Template(@<text>
+                    <div><a class='t-button t-button-icon t-button-bare t-grid-delete' onclick='DeleteAdRequest(this);'><span class='t-icon t-delete t-ip-Range-Section-delete-button'></span></a></div></text>).HtmlAttributes(new { @class = "go-center", @id = "DeleteAdrequestIcon" })
+                                 .ClientTemplate("<div><a class='t-button t-button-icon t-button-bare' type='button' onclick='DeleteAdRequest(this);'><span class='t-icon t-delete t-ip-Range-Section-delete-button'></span></button></div>").Width(45).HtmlAttributes(new { @class = "go-center", @id = "DeleteAdrequestIcon" });
+                              })
+
+                                                                         .DataBinding(dataBinding =>
+                                                                        {
+                                                                            dataBinding.Ajax().Select("_AdRequest", "Campaign");
+                                                                            dataBinding.Ajax().Insert("_AdRequest", "Campaign");
+
+                                                                        }).EnableCustomBinding(true)
+                                                                        .ClientEvents(clientEvents => clientEvents.OnDataBound("AdRequestsGridDataBound"))
+
+                                                                         .Scrollable(scrolling => scrolling.Enabled(false))
+                                                                        .Pageable(paging => paging.PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total((int)numberOfRecordes).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+                                                                                                         .Footer(true))
+            </div>
+        </div>
+    </div>
+
+</div>
+<div id="AdRequest-add-dialog-form" class="adfalcon-dialog" title="@Html.GetResource("AdRequestsVersion", "Targeting")" style="display: none; ">
+    <div id="AdRequestDialogEntityDetails" class="data-row data-container">
+        @Html.Partial("AdRequest/AdRequest", Model.AdRequestDialog)
+    </div>
+</div>
+
+
+

@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="file:///C:/Program Files (x86)/Microsoft Visual Studio 10.0/Common7/IDE/Extensions/Microsoft/Visualization and Modeling Feature Pack/2.0/Logging/CodeGenLog.xslt"?>
+<Log xmlns="http://schemas.microsoft.com/VisualStudio/2010/CodeGen.RE.Log">
+  <Message Timestamp="2011-12-14T17:17:42" Importance="High" Text="Code generation or text transformation started." />
+  <Message Timestamp="2011-12-14T17:17:42" Importance="Diagnostic" Text="Name = ClassTemplate" />
+  <Message Timestamp="2011-12-14T17:17:42" Importance="Diagnostic" Text="Overwrite = True" />
+  <Message Timestamp="2011-12-14T17:17:42" Importance="Diagnostic" Text="ProjectPath = ..\..\..\Noqoush.Framework\Noqoush.Framework\Noqoush.Framework.csproj" />
+  <Message Timestamp="2011-12-14T17:17:42" Importance="Diagnostic" Text="TargetDirectory = GeneratedCode\{PackageStructure}" />
+  <Message Timestamp="2011-12-14T17:17:42" Importance="Diagnostic" Text="TargetName = {Name}" />
+  <Message Timestamp="2011-12-14T17:17:42" Importance="Diagnostic" Text="TemplateFilePath = c:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\Extensions\Microsoft\Visualization and Modeling Feature Pack\2.0\Templates\Text\ClassTemplate.t4" />
+  <Message Timestamp="2011-12-14T17:17:42" Importance="Diagnostic" Text="ResolvedTemplateFilePath = c:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\Extensions\Microsoft\Visualization and Modeling Feature Pack\2.0\Templates\Text\ClassTemplate.t4" />
+  <Message Timestamp="2011-12-14T17:17:42" Importance="Medium" Text="Noqoush.AdFalcon.Modeling's Text Template Binding: 'ClassTemplate' will apply ClassTemplate.t4 to: 'Noqoush.AdFalcon.Modeling::EventArgsBase' -  (Class) " />
+  <Message Timestamp="2011-12-14T17:17:43" Importance="Medium" Text="'Noqoush.AdFalcon.Modeling::EventArgsBase' -  (Class) : success (file replaced) - E:\NoqoushWork\adfalcon\src\Noqoush.Framework\Noqoush.Framework\GeneratedCode\EventArgsBase_T.cs" />
+  <Message Timestamp="2011-12-14T17:17:43" Importance="Diagnostic" Text="Name = InterfaceTemplate" />
+  <Message Timestamp="2011-12-14T17:17:43" Importance="Diagnostic" Text="Overwrite = True" />
+  <Message Timestamp="2011-12-14T17:17:43" Importance="Diagnostic" Text="ProjectPath = ..\..\..\Noqoush.Framework\Noqoush.Framework\Noqoush.Framework.csproj" />
+  <Message Timestamp="2011-12-14T17:17:43" Importance="Diagnostic" Text="TargetDirectory = GeneratedCode\{PackageStructure}" />
+  <Message Timestamp="2011-12-14T17:17:43" Importance="Diagnostic" Text="TargetName = {Name}" />
+  <Message Timestamp="2011-12-14T17:17:43" Importance="Diagnostic" Text="TemplateFilePath = c:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\Extensions\Microsoft\Visualization and Modeling Feature Pack\2.0\Templates\Text\InterfaceTemplate.t4" />
+  <Message Timestamp="2011-12-14T17:17:43" Importance="Diagnostic" Text="ResolvedTemplateFilePath = c:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\Extensions\Microsoft\Visualization and Modeling Feature Pack\2.0\Templates\Text\InterfaceTemplate.t4" />
+  <Message Timestamp="2011-12-14T17:17:43" Importance="Medium" Text="Noqoush.AdFalcon.Modeling's Text Template Binding: 'InterfaceTemplate' will apply InterfaceTemplate.t4 to: 'Noqoush.AdFalcon.Modeling::ISubscriberHandler' -  (Interface), 'Noqoush.AdFalcon.Modeling::IEvent' -  (Interface), 'Noqoush.AdFalcon.Modeling::IEventBroker' -  (Interface), 'Noqoush.AdFalcon.Modeling::ISubscriber' -  (Interface), 'Noqoush.AdFalcon.Modeling::ISubscription' -  (Interface) " />
+  <Message Timestamp="2011-12-14T17:17:43" Importance="Medium" Text="'Noqoush.AdFalcon.Modeling::ISubscriberHandler' -  (Interface) : success (file created) - E:\NoqoushWork\adfalcon\src\Noqoush.Framework\Noqoush.Framework\GeneratedCode\ISubscriberHandler.cs" />
+  <Message Timestamp="2011-12-14T17:17:44" Importance="Medium" Text="'Noqoush.AdFalcon.Modeling::IEvent' -  (Interface) : success (file created) - E:\NoqoushWork\adfalcon\src\Noqoush.Framework\Noqoush.Framework\GeneratedCode\IEvent.cs" />
+  <Message Timestamp="2011-12-14T17:17:44" Importance="Medium" Text="'Noqoush.AdFalcon.Modeling::IEventBroker' -  (Interface) : success (file created) - E:\NoqoushWork\adfalcon\src\Noqoush.Framework\Noqoush.Framework\GeneratedCode\IEventBroker.cs" />
+  <Message Timestamp="2011-12-14T17:17:45" Importance="Medium" Text="'Noqoush.AdFalcon.Modeling::ISubscriber' -  (Interface) : success (file created) - E:\NoqoushWork\adfalcon\src\Noqoush.Framework\Noqoush.Framework\GeneratedCode\ISubscriber.cs" />
+  <Message Timestamp="2011-12-14T17:17:46" Importance="Medium" Text="'Noqoush.AdFalcon.Modeling::ISubscription' -  (Interface) : success (file created) - E:\NoqoushWork\adfalcon\src\Noqoush.Framework\Noqoush.Framework\GeneratedCode\ISubscription.cs" />
+  <Message Timestamp="2011-12-14T17:17:46" Importance="Diagnostic" Text="Name = StructTemplate" />
+  <Message Timestamp="2011-12-14T17:17:46" Importance="Diagnostic" Text="Overwrite = True" />
+  <Message Timestamp="2011-12-14T17:17:46" Importance="Diagnostic" Text="ProjectPath = ..\..\..\Noqoush.Framework\Noqoush.Framework\Noqoush.Framework.csproj" />
+  <Message Timestamp="2011-12-14T17:17:46" Importance="Diagnostic" Text="TargetDirectory = GeneratedCode\{PackageStructure}" />
+  <Message Timestamp="2011-12-14T17:17:46" Importance="Diagnostic" Text="TargetName = {Name}" />
+  <Message Timestamp="2011-12-14T17:17:46" Importance="Diagnostic" Text="TemplateFilePath = c:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\Extensions\Microsoft\Visualization and Modeling Feature Pack\2.0\Templates\Text\StructTemplate.t4" />
+  <Message Timestamp="2011-12-14T17:17:46" Importance="Diagnostic" Text="ResolvedTemplateFilePath = c:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\Extensions\Microsoft\Visualization and Modeling Feature Pack\2.0\Templates\Text\StructTemplate.t4" />
+  <Message Timestamp="2011-12-14T17:17:46" Importance="Medium" Text="Noqoush.AdFalcon.Modeling's Text Template Binding: 'StructTemplate' will apply StructTemplate.t4 to: 'Noqoush.AdFalcon.Modeling::EventArgsBase' -  (Class) " />
+  <Message Timestamp="2011-12-14T17:17:46" Importance="Diagnostic" Text="'Noqoush.AdFalcon.Modeling::EventArgsBase' -  (Class): no file generated because the 'AppliesToElement' method of the template 'StructTemplate.t4' evaluated to false." />
+  <Message Timestamp="2011-12-14T17:17:47" Importance="High" Text="Code generation complete. Errors: 0. Warnings: 0." />
+</Log>

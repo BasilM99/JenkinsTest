@@ -1,0 +1,25 @@
+﻿<script language="javascript" type="text/javascript">
+    function localInitilize() {
+        jQuery('input[data-date="true"]').daterangepicker({ dateFormat: '@Noqoush.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat' });
+    }
+</script>
+<div style="width: 320px; margin: auto;">
+    <table class="special-content" style="margin:inherit">
+        <tr>
+            <td>
+                <span class="go-bold">@Html.GetResource("From", "Global")</span>
+            </td>
+            <td style="width: 110px;">
+                <input type="text" readonly="readonly" data-date="true" id="FromDate" name="FromDate"
+                    class="required text-box range-date-cntl" />
+            </td>
+            <td>
+                <span class="go-bold">@Html.GetResource("To", "Global")</span>
+            </td>
+            <td style="width: 110px;">
+                <input type="text" readonly="readonly" data-date="true" id="ToDate" name='ToDate'
+                    class="required text-box range-date-cntl" />
+            </td>
+        </tr>
+    </table>
+</div>

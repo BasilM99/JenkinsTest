@@ -1,0 +1,51 @@
+﻿@{
+    ViewBag.Title = Html.DisplayFor(p => p.Title);
+}
+@model Noqoush.AdFalcon.Web.Controllers.Model.Pgw.ReceiptViewModel
+           <br />
+
+           <style>
+               #breadcrumb a.btn#BreadCrum1 {
+                   padding-left: 30px !important;
+               }
+           </style>
+<div class="data-row section-container">
+    <h2>@Html.DisplayFor(p => p.Title)</h2>
+    <div class="section-form-container">
+        @*<div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("TransactionDate", "AccountHistory")</span>
+        </div>
+        <div class="field-container">
+            @Html.DisplayFor(p => p.TransactionDate)
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("ReceiptNumber", "AccountHistory")</span>
+        </div>
+        <div class="field-container">
+            @Html.DisplayFor(p => p.ReceiptNo)
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("Amount", "AccountHistory")</span>
+        </div>
+        <div class="field-container">
+            @Html.DisplayFor(p => p.Amount)
+        </div>
+    </div>*@
+        <br />
+        <div class="data-row button-container">
+            <div class="go-left" style="margin: 13px;">
+              @Html.Raw(Model.Message)
+            </div>
+        </div>
+    </div>
+    <div class="section-footer">
+    </div>
+    <div class="data-row button-container">
+            <input  type="button" value='@Html.GetResource("PayAgain", "Commands")' class="primary-btn" onclick=" redirect('@Url.Action("adfundPGW", "User")')"/><input  type="button" value='@Html.GetResource("Close", "Commands")' class="btn" onclick=" redirect('@Url.Action("AccountHistory", "User")')"/>
+    </div>
+</div>

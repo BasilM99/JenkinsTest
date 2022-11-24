@@ -1,0 +1,234 @@
+@{
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+}
+<script language="javascript">
+    var inviteUrl = '@Url.Action("invite", "User")';
+	    var AdvaudieceListUrl = '@Url.Action("GetAccountAdvertisers", "Advertiser")';
+    function OpenInviteDialogDummy() {
+       if ($("#Email").val() != "") {
+            //if (isEmail($("#Email"), "validationErrorEmail")) {
+                if ($("#Email").val() != "") {
+
+                    $("#AdvertisersDialog").dialog("open");
+                }
+            //}
+        } else {
+
+            $("#validationError").show();
+            $("#validationErrorEmail").hide();
+
+        }
+	}
+
+	function sendInvite() {
+
+		    $.ajax({
+                        type: 'POST',
+                        url: inviteUrl + "?email=" + $("#Email").val() + "&Ids=" + $('#AdvertisersListDll').val().toString() + "&userType=" + $('#UserTypesDDL').val(),
+                        cache: false,
+                        async: false,
+                        dataType: 'json',
+
+                        success: function (data) {
+
+
+                            if (data.result == true) {
+                                //  jQuery('#dialog-form-Invited').dialog('open');
+                                refreshInvitationGrid();
+                                showSuccessfullyMessage('@Html.GetResource("Invited", "Global")');
+                                if ($('#UserTypesDDL').val() == "2")
+                                    showWarningMessage("@Html.GetResource("ReadOnlyWarningMessage", "Invitation")", true);
+								$("#Email").val('');
+								$("#AdvertisersDialog").dialog("close");
+                            } else {
+                                // $("#dialogText-warning").html(data.status);
+                                // jQuery('#dialog-form-warning').dialog('open');
+                                showErrorMessage(data.status);
+								$("#AdvertisersDialog").dialog("close");
+                            }
+
+                        },
+                        error: function (data) {
+                            alert(data);
+                        }
+
+                    });
+
+	}
+	function OpenInviteDialog() {
+    clearErrorMessage();
+        clearSuccessfullyMessage();
+        $("#validationError").hide();
+
+        if ($("#Email").val() != "") {
+           if (isEmail($("#Email"), "validationErrorEmail")) {
+                if ($("#Email").val() != "") {
+					$("#AdvertisersDialog").dialog("open");
+
+                
+                }
+            }
+        } else {
+
+            $("#validationError").show();
+            $("#validationErrorEmail").hide();
+
+        }
+    }
+
+    function EmailValidtionSMS() {
+        $("#validationError").hide();
+        $("#validationErrorEmail").hide();
+    }
+
+    $(document).ready(function () {
+        localInitilize();
+    });
+
+
+    function localInitilize() {
+        jQuery("[id^='dialog-form']").dialog({
+            autoOpen: false,
+          //  height: 150,
+            width: 400,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            buttons:
+                    {
+                        '@Html.GetResource("Ok", "Commands")': function () {
+                            jQuery(this).dialog("close");
+
+                        }
+                    },
+            close: function () {
+            }
+		});
+
+	
+        $("#AdvertisersDialog").dialog({
+			autoOpen: false,
+            width: 460,
+            height: 350,
+			modal: true,
+			resizable: false,
+			draggable: false,
+			open: function(){
+               
+				$('#UserTypesDDL').val("1");
+                $("#AdvertisersListDll").val(null).trigger('change');
+                $('#AdvertisersListDllDive').hide();
+                $('#email-text').val($("#Email").val());
+                //countcallAdv = 0;
+                //clearAudienceListSelect2();
+            },
+			//position: { my: "center top", at: "center top"},
+            buttons: [{
+
+                text: '@Html.GetResource("Send", "Commands")',
+                "class": 'primary-btn',
+
+                click: function () {
+					sendInvite();
+                }
+			},
+
+				{
+                text: '@Html.GetResource("Close", "Commands")',
+                click: function () {
+                  
+					jQuery(this).dialog("close");
+					
+                },
+					"class": 'delete-button',
+
+            }
+            ]
+		});
+		
+    }
+
+    function refreshInvitationGrid() {
+        RefrashGrid('Grid');
+    }
+    function generateInvitationGrid() {
+        var grid = $("#Grid").data("tGrid");
+        grid.rebind();
+    };
+    function InvitationGridDataBinding(args) {
+
+        args.data = $.extend(args.data,
+            {
+                FromDate: $('#FromDate').val(),
+                ToDate: $('#ToDate').val(),
+            });
+
+    };
+    function InvitationGridDataBound(e) {
+
+
+
+    };
+
+
+</script>
+
+
+@RenderSection("subheader")
+<div id="dialog-form-Invited" title="" style="display:none;">
+    <span id="dialogText">@Html.GetResource("Invited", "Global")</span>
+</div>
+<div id="dialog-form-warning" title="@Html.GetResource("Warning", "Global")" style="display:none;">
+    <span id="dialogText-warning"></span>
+</div>
+
+
+<div class="data-row section-container">
+    <br />
+    <div class="data-row go-center">
+        <div class="blue-filter-container">
+            <table class="special-content">
+                <tr>
+                    <td>
+                        <span class="go-bold">@Html.GetResource("email", "Global")</span>
+                    </td>
+                    <td style="width: 210px;">
+                        <input type="text" style="width: 180px;" id="Email" name="Email" onkeypress="EmailValidtionSMS()"
+                               class="text-box" />
+                    </td>
+                    <td>
+                        <span id="validationError" style="display: none; margin-left: 29px; margin-right: 29px;"><span class="validation-arrow field-validation-error" data-valmsg-for="Name" data-valmsg-replace="true"><span id="Name-error" class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span></span></span>
+                    </td>
+                    <td>
+                        <span id="validationErrorEmail" style="display: none; margin-left: 29px; margin-right: 29px;"><span class="validation-arrow field-validation-error" data-valmsg-for="Name" data-valmsg-replace="true"><span id="Name-error" class="">@Html.GetResource("EmailNotValid", "ResourceSet")</span></span></span>
+                    </td>
+                    <td>
+                        <input type="button" onclick="OpenInviteDialog()" value='@Html.GetResource("Send", "Commands")' class="btn filter-button " />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="tail">
+        </div>
+    </div>
+    <br />
+    @*@if (Model.TopActions != null)
+        {
+            Html.RenderPartial("PartialViews/Actions", Model.TopActions);
+        }*@
+    <div class="grid-container">
+        @RenderSection("Grid")
+    </div>
+    @*@if (Model.BelowAction != null)
+        {
+            Html.RenderPartial("PartialViews/Actions", Model.BelowAction);
+        }*@
+</div>
+<br>
+<br>
+@*if (Model.ToolTips != null)
+    {
+        @Html.Partial("GridToolTop", Model.ToolTips)
+    }*@
+
+@Html.Partial("AdvertisersDialog")

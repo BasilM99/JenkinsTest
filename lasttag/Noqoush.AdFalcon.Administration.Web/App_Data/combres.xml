@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  This file contains basic settings needed for most web apps.
+  For full Combres settings (with explanation), refer to the sample definition file: combres_full_with_annotation.xml
+  Also, refer to Combres' documentation: http://combres.codeplex.com/documentation	
+-->
+<combres xmlns='urn:combres'>
+  <filters>
+    <filter type="Combres.Filters.FixUrlsInCssFilter, Combres" />
+    <filter type="Combres.Filters.DotLessCssFilter, Combres" />
+  </filters>
+  <cssMinifiers>
+    <minifier name="yui" type="Combres.Minifiers.YuiCssMinifier, Combres">
+      <param name="CssCompressionType" type="string" value="StockYuiCompressor" />
+      <param name="ColumnWidth" type="int" value="-1" />
+    </minifier>
+    <minifier name="msajax" type="Combres.Minifiers.MSAjaxJSMinifier, Combres" binderType="Combres.Binders.SimpleObjectBinder, Combres">
+    </minifier>
+    <minifier name="local-closure" type="Combres.Minifiers.LocalClosureJSMinifier, Combres">
+      <param name="JavaExePath" type="string" value="" />
+      <param name="CompilationLevel" type="string" value="BASIC_OPTIMIZATIONS" />
+    </minifier>
+    <minifier name="closure" type="Combres.Minifiers.ClosureJSMinifier, Combres">
+      <param name="ApiUrl" type="string" value="http://closure-compiler.appspot.com/compile" />
+      <param name="CompilationLevel" type="string" value="BASIC_OPTIMIZATIONS" />
+    </minifier>
+  </cssMinifiers>
+  <jsMinifiers>
+    <minifier name="yui" type="Combres.Minifiers.YuiJSMinifier, Combres">
+      <param name="IsVerboseLogging" type="bool" value="false" />
+      <param name="IsObfuscateJavascript" type="bool" value="true" />
+      <param name="PreserveAllSemicolons" type="bool" value="false" />
+      <param name="DisableOptimizations" type="bool" value="false" />
+      <param name="LineBreakPosition" type="int" value="-1" />
+    </minifier>
+    <minifier name="msajax" type="Combres.Minifiers.MSAjaxJSMinifier, Combres" binderType="Combres.Binders.SimpleObjectBinder, Combres">
+      <param name="CollapseToLiteral" type="bool" value="true" />
+      <param name="EvalsAreSafe" type="bool" value="true" />
+      <param name="MacSafariQuirks" type="bool" value="true" />
+      <param name="CatchAsLocal" type="bool" value="true" />
+      <param name="LocalRenaming" type="string" value="KeepAll" />
+      <param name="OutputMode" type="string" value="SingleLine" />
+      <param name="RemoveUnneededCode" type="bool" value="true" />
+      <param name="StripDebugStatements" type="bool" value="true" />
+    </minifier>
+    <minifier name="closure" type="Combres.Minifiers.ClosureJSMinifier, Combres">
+      <param name="ApiUrl" type="string" value="http://closure-compiler.appspot.com/compile" />
+      <param name="CompilationLevel" type="string" value="ADVANCED_OPTIMIZATIONS" />
+    </minifier>
+    <!-- To use this minifier, make sure:
+         - You have the JRE installed in target machine
+         - Copy compiler.jar (in Libraries folder) into the bin folder of your application 
+    -->
+    <minifier name="local-closure" type="Combres.Minifiers.LocalClosureJSMinifier, Combres">
+      <param name="JavaExePath" type="string" value="" />
+      <param name="CompilationLevel" type="string" value="ADVANCED_OPTIMIZATIONS"  />
+      <!--value="BASIC_OPTIMIZATIONS"-->
+    </minifier>
+  </jsMinifiers>
+  <resourceSets url="~/combres.axd"
+                defaultDuration="1"
+                defaultVersion="auto"
+                defaultDebugEnabled="true"
+                defaultIgnorePipelineWhenDebug="true"
+                localChangeMonitorInterval="1"
+                remoteChangeMonitorInterval="1" defaultVersionGenerator=
+				"Combres.VersionGenerators.Sha512VersionGenerator"
+                >
+    <resourceSet name="en-magenta-siteCss" type="css"  >
+      <!--<resource path="~/Content/en/2011.2.712/telerik.default.min.css" />
+      <resource path="~/Content/en/2011.2.712/telerik.common.min.css" />
+      <resource path="~/Content/en/2011.2.712/telerik.rtl.min.css" />
+      <resource path="~/Content/en/2011.2.712/telerik.webblue.min.css" />-->
+      <resource path="~/Content/en/magenta/Style/style.less" />
+      <resource path="~/Content/en/magenta/Style/ui.daterangepicker.css" />
+
+      <resource path="~/Content/en/magenta/Style/jquery-ui-custom.css"  />
+      <!--<resource path="~/Content/en/magenta/Style/jquery-ui-1.8.16.custom.css" />-->
+    </resourceSet>
+    <resourceSet name="ar-magenta-siteCss" type="css" >
+      <!--<resource path="~/Content/ar/2011.2.712/telerik.default.min.css" />
+      <resource path="~/Content/ar/2011.2.712/telerik.common.min.css" />
+      <resource path="~/Content/ar/2011.2.712/telerik.webblue.min.css" />
+      <resource path="~/Content/ar/2011.2.712/telerik.rtl.min.css" />-->
+      <resource path="~/Content/ar/magenta/Style/style.less" />
+      <resource path="~/Content/ar/magenta/Style/ui.daterangepicker.css" />
+      <resource path="~/Content/ar/magenta/Style/jquery-ui-custom.css"  />
+
+      <resource path="~/Content_OverRide/ar/magenta/Style/tabs.css"  />
+      <resource path="~/Content_OverRide/ar/magenta/Style/tabstyles.css"  />
+      
+      
+      <!--<resource path="~/Content/ar/magenta/Style/jquery-ui-1.8.16.custom.css" />-->
+    </resourceSet>
+    <resourceSet name="en-magenta-siteCss_OverRide" type="css"  minifierRef="off" >
+        <resource path="~/Content_OverRide/en/magenta/Style/style_OverRide.less" />
+      <resource path="~/Content_OverRide/en/magenta/Style/ui.daterangepicker_OverRide.css" />
+      <resource path="~/Content_OverRide/en/magenta/Style/jquery-ui-custom_OverRide.css"  />
+      <resource path="~/Content/en/magenta/Style/jquery-ui-custom.css"  />
+
+      <resource path="~/Content_OverRide/en/magenta/Style/tabs.css"  />
+      <resource path="~/Content_OverRide/en/magenta/Style/tabstyles.css"  />
+
+      
+      <!--      
+      <resource path="~/Content/en/magenta/Style/bootoast.css"  />
+      
+      -->
+
+      <resource path="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css" mode="dynamic" />
+    </resourceSet>
+    <resourceSet name="ar-magenta-siteCss_OverRide" type="css" minifierRef="off">
+      <resource path="~/Content_OverRide/ar/magenta/Style/style_OverRide.less" />
+      <resource path="~/Content_OverRide/ar/magenta/Style/ui.daterangepicker_OverRide.css" />
+      <resource path="~/Content_OverRide/ar/magenta/Style/jquery-ui-custom_OverRide.css"  />
+      <!--
+      <resource  path="https://cdn.jsdelivr.net/npm/noty@3.2.0-beta/lib/themes/nest.css" mode="dynamic" />
+      <resource  path="https://cdn.jsdelivr.net/npm/noty@3.2.0-beta/lib/themes/mint.css" mode="dynamic" />
+    -->
+      <resource path="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css" mode="dynamic" />
+    </resourceSet>
+
+    <resourceSet name="FullsiteJs" type="js"  minifierRef="off">
+      <resource path="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.min.js" mode="dynamic" />
+      <resource path="https://ajax.aspnetcdn.com/ajax/jquery.migrate/jquery-migrate-3.0.0.min.js" mode="dynamic" />
+      <resource path="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js" mode="dynamic" />
+      <resource path="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular.min.js" mode="dynamic" />
+      <resource path="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular-sanitize.min.js" mode="dynamic" />
+      <resource path="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-touch.js" mode="dynamic" />
+      <resource path="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-animate.js" mode="dynamic" />
+      <resource path="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-grid/4.0.6/ui-grid.js" mode="dynamic" />
+      <resource path="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js" mode="dynamic" />
+      <resource path="http://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js" mode="dynamic" />
+      <resource path="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js" mode="dynamic" />
+    </resourceSet>
+    
+    <resourceSet name="siteJs" type="js"  minifierRef="off">
+      <resource path="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.12.1/jquery-ui.min.js" mode="dynamic" />
+      <resource path="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.1/jquery.validate.min.js" mode="dynamic" />
+      <resource path="https://ajax.aspnetcdn.com/ajax/mvc/5.0/jquery.validate.unobtrusive.min.js" mode="dynamic" />
+      <resource path="https://ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.min.js" mode="dynamic" />
+     
+      <resource path="~/scripts/jquery.sumoselect.min.js" ></resource>
+      <resource path="~/scripts/daterangepicker.jQuery.js" />
+      <resource path="~/scripts/jquery-actions.js" />
+      <resource path="~/scripts/jquery.ui.datepicker-Localization.js" />
+      <resource path="~/scripts/jquery.tree.js" />
+      <resource path="~/scripts/jquery.tree.checkbox.js" />
+      <resource path="~/scripts/jquery.json-2.2.min.js" />
+      <resource path="~/scripts/telerik.extensions.js" />
+      <resource path="~/scripts/cbpFWTabs.js" />
+      <resource path="~/scripts/modernizr.custom.js" />
+      <resource path="~/scripts/AdFalcon.js" minifierRef="off" />
+    </resourceSet>
+    <resourceSet name="targetingActionJs" type="js"  minifierRef="off">
+      <resource reference="siteJs"/>
+      <resource path="~/scripts/targeting.js" />
+    </resourceSet>
+    <resourceSet name="houseAdTargetingActionJs" type="js"  minifierRef="off">
+      <resource reference="siteJs"/>
+      <resource path="~/scripts/houseAd.targeting.js" />
+    </resourceSet>
+   <resourceSet name="adCreativeActionJs" type="js"  minifierRef="off">
+      <resource reference="siteJs"/>
+     <resource path="~/scripts/ad.creative.js" minifierRef="off"/>
+    </resourceSet>
+    <resourceSet name="adCreativeSummaryJs" type="js"  minifierRef="msajax">
+      <resource reference="siteJs"/>  
+     
+    </resourceSet>
+  </resourceSets>
+</combres>

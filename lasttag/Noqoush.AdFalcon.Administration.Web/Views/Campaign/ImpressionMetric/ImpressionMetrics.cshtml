@@ -1,0 +1,286 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.Campaign.ImpressionMetricViewModel
+<script language="javascript" type="text/javascript">
+    @{ long numberOfRecordes = Model.AllItems.TotalCount;}
+    var ImpressionDeleteUrl = '@Url.Action("DeleteImpressionMetric", "Campaign")';
+    var getImpressionMetricVendorsUrl = '@Url.Action("getImpressionMetricVendors", "Campaign")'
+
+    var Duplicated = '@Html.GetResource("Duplicated", "Global")';
+    $(document).ready(function () {
+
+        localInitilize_ImpressionMetric();
+    });
+
+    function ShowAddImpressionMetric(edit) {
+        
+        showDialog('ImpressionMetric-add-dialog-form');
+        clearErrorMessage("ImpressionMetric-divErrorMessages");
+
+        if (!edit) {
+            impressionMetricsTypeChanged();
+        }
+
+    }
+    function ShowImpressionMetric(element) {
+
+        var row = $(element).parent().parent().parent();
+        var MinValuePercantage = $(row).find("#MinValuePercantage").text();
+        var ImpressionMetricId = $(row).find("#ImpressionMetricId").text();
+
+        var ImpressionMetric_Type_Id = $(row).find("#ImpressionMetric_Type_Id").text();
+
+        var ImpressionMetric_Ignore = $(row).find("#ImpressionMetric_Ignore").text();
+
+        var MetricVendor_Type_Id = $(row).find("#MetricVendor_Type_Id").text();
+
+
+
+        $("#impression_metrics_types").val(ImpressionMetric_Type_Id);
+        $("#impression_metrics_value").val(parseFloat(MinValuePercantage) * 100);
+        $("#impression_metrics_id").val(ImpressionMetricId);
+
+        if (ImpressionMetric_Ignore.trim() == "True") {
+            check("impression_metrics_ignore");
+        } else {
+            uncheck("impression_metrics_ignore");
+
+        }
+        $("#MetricVendors_types").val(MetricVendor_Type_Id);
+
+        ShowAddImpressionMetric(true);
+        //impressionMetricsTypeChanged();
+
+    }
+    function ImpressionMetricGridDataBound() {
+        var grid = $("#ImpressionMetricGrid").data("tGrid");
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(currentPage);
+        }
+        $("#ImpressionMetricGrid #DeleteAdrequestIcon").removeClass("t-last");
+        $(".t-no-data").addClass("go-center");
+    }
+    function generateImpressionMetricGrid() {
+        var grid = $("#ImpressionMetricGrid").data("tGrid");
+        grid.rebind();
+    };
+    function localInitilize_ImpressionMetric() {
+        jQuery("#ImpressionMetric-add-dialog-form").dialog({
+            autoOpen: false,
+            //height: 230,
+            width: 802,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            showCloseButton: true,
+
+            buttons: [{
+                text: '@Html.GetResource("Save", "Commands")',
+                click: function () {
+                    if (validate()) {
+                        if (IsDuplicated_impression($("#impression_metrics_id").val())) {
+
+                            showErrorMessage(Duplicated, false, "ImpressionMetric-divErrorMessages");
+
+                        } else {
+                            AddImpressionMetric($("#impression_metrics_id").val());
+                        }
+                    }
+                },
+                "class": 'primary-btn',
+
+            }],
+            close: function () {
+                clear_impression();
+            },
+        });
+
+
+
+    }
+
+    function DeleteImpression(element) {
+
+        var tr = $(element).parents('tr');
+        var id = $(tr).find("#ImpressionMetricId").text();
+        if (id != "" && id != "undefined") {
+            jQuery.ajax(
+               {
+                   dataType: "json",
+                   contentType: 'application/json; charset=utf-8',
+                   type: "GET",
+                   url: ImpressionDeleteUrl + "?id=" + id,
+                   success: function (result) {
+
+                       if (result.Success) {
+                           generateImpressionMetricGrid();
+                           showSuccessfullyMessage(result.Message, false);
+                       }
+                       else {
+                           showErrorMessage(result.ErrorMessage, false, "ImpressionMetric-divErrorMessages");
+                       }
+                   },
+                   error: function (error) {
+
+                       alert("Somthing Went Worng Please contact the admin");
+                   }
+               });
+        }
+    }
+
+    function impressionMetricsTypeChanged() {
+        var typeid = $("#impression_metrics_types").val();
+
+        jQuery.ajax(
+               {
+                   dataType: "json",
+                   contentType: 'application/json; charset=utf-8',
+                   type: "GET",
+                   url: getImpressionMetricVendorsUrl + "?ImpressionMetricsId=" + typeid,
+                   success: function (result) {
+
+                       if (result.Success) {
+                           
+                           $("#MetricVendors_types").find("option").hide();
+                           $("#MetricVendors_types").find("option[value=0]").show();
+                           $("#MetricVendors_types").val("0");
+
+                           var MetricVendorIds = result.MetricVendorIds.split(',');
+                           for (var i = 0 ; i < MetricVendorIds.length; i++) {
+                               $("#MetricVendors_types").find("option[value=" + MetricVendorIds[i] + "]").show();
+                           }
+                       }
+                       else {
+                           showErrorMessage("somthing went worng ! please contact the admin.", false, "ImpressionMetric-divErrorMessages");
+                       }
+                   },
+                   error: function (error) {
+
+                       alert("Somthing Went Worng Please contact the admin");
+                   }
+               });
+
+    }
+
+</script>
+<div class="section-form-inner-container">
+
+
+    <div class=" go-left floating-left">
+        @*<h3>@Html.GetResource("CostElements", "Titles")</h3>*@
+
+        <a class="primary-btn" href="javascript:void(0)" onclick="ShowAddImpressionMetric()">@Html.GetResource("AddMetric", "Global")</a>
+    </div>
+    <div class="data-row data-container">
+        <div>
+            <div class="grid-container">
+                &nbsp;
+                @*<div>
+                        <div class="t-toolbar t-grid-toolbar t-grid-top">
+                            <a class="t-button t-button-icon t-button-bare t-grid-add" href="javascript:void(0)"
+                               onclick="ShowAddImpressionMetric()"><span class="t-icon t-add"></span></a>
+                        </div>
+                    </div>*@
+                @(Html.Telerik().Grid(Model.AllItems.Items)
+                          .DataKeys(p => p.Add(o => o.ID))
+                          .Editable(ed => ed.Mode(GridEditMode.InCell).DisplayDeleteConfirmation(false)
+                          .DefaultDataItem(new Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.Targeting.ImpressionMetricTargetingDto()))
+                          .ToolBar(commands => commands.Insert().ButtonType(GridButtonType.BareImage))
+                          .Name("ImpressionMetricGrid").Columns(columns =>
+                          {
+                          columns.Bound(o => o.ID).Hidden().HtmlAttributes(new { @class = "go-center", @id = "ImpressionMetricId" });
+                          columns.Bound(o => o.ImpressionMetric.ID).Hidden().HtmlAttributes(new { @class = "go-center", @id = "ImpressionMetric_Type_Id" }); ;
+                          columns.Bound(o => o.ImpressionMetric.Name.Value).Title(@Html.GetResource("Type", "AppSite")).Width("300px").ReadOnly().HtmlAttributes(new { @class = "go-center" });
+                          columns.Bound(o => o.MetricVendor.ID).Hidden().HtmlAttributes(new { @class = "go-center", @id = "MetricVendor_Type_Id" }); ;
+                          columns.Bound(o => o.MetricVendor.Name.Value).Title(@Html.GetResource("MetricVendor", "Targeting")).Width("300px").ReadOnly().HtmlAttributes(new { @class = "go-center" });
+                          columns.Bound(o => o.Ignore).HtmlAttributes(new { @class = "go-center", @id = "ImpressionMetric_Ignore" }).Template(
+                            @<text>
+
+                                @{if (item.Ignore)
+                                    {
+                                        <span class="trimed-span">
+                                            @Html.GetResource("True")
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="trimed-span">
+                                            @Html.GetResource("False")
+                                        </span>
+                                    }
+                                }
+
+
+
+                            </text>
+                                    ).Title(@Html.GetResource("Ignore", "Global")).Width("150px").HtmlAttributes(new { @class = "go-center" }).ReadOnly()
+                                                                                .ClientTemplate("<# if(Ignore) { #> <span>" + Html.GetResource("True") + "</span> <# } else { #> <span>" + Html.GetResource("False") + "</span> <# } #>");
+                                    columns.Bound(o => o.MinValue).Hidden().HtmlAttributes(new { @class = "go-center", @id = "MinValuePercantage" });
+
+                                    columns.Bound(o => o.MinValuePercantage).Title(@Html.GetResource("Value", "Lookup")).Width("150px").HtmlAttributes(new { @class = "go-center" }).ReadOnly();
+                                    columns.Template(@<text>
+                    <div><a class='t-button t-button-icon t-button-bare t-grid-delete' onclick='DeleteImpression(this);'><span class='t-icon t-delete t-ip-Range-Section-delete-button'></span></a></div></text>).HtmlAttributes(new { @class = "go-center", @id = "DeleteAdrequestIcon" })
+                                 .ClientTemplate("<div><a class='t-button t-button-icon t-button-bare' type='button' onclick='DeleteImpression(this);'><span class='t-icon t-delete t-ip-Range-Section-delete-button'></span></button></div>").Width(45).HtmlAttributes(new { @class = "go-center", @id = "DeleteAdrequestIcon" });
+                                    columns.Template(@<text>
+                    <div><a class='t-button t-grid-edit t-button-icon t-button-icon t-button-bare' onclick='ShowImpressionMetric(this);'><span class='t-icon t-edit'></span></a></div></text>).HtmlAttributes(new { @class = "go-center" })
+                              .ClientTemplate("<div><a class='t-button t-grid-edit t-button-icon t-button-icon t-button-bare' type='button' onclick=ShowImpressionMetric(this)><span class='t-icon t-edit'></span></button></div>").Width(40).HtmlAttributes(new { @class = "go-center" });
+
+                          })
+
+                                                                         .DataBinding(dataBinding =>
+                                                                         {
+                                                                             dataBinding.Ajax().Select("_ImpressionMetrics", "Campaign");
+                                                                             dataBinding.Ajax().Insert("_ImpressionMetrics", "Campaign");
+
+                                                                         }).EnableCustomBinding(true)
+                                                                        .ClientEvents(clientEvents => clientEvents.OnDataBound("ImpressionMetricGridDataBound"))
+
+                                                                         .Scrollable(scrolling => scrolling.Enabled(false))
+                                                                        .Pageable(paging => paging.PageSize(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total((int)numberOfRecordes).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+                                                                                                         .Footer(true))
+            </div>
+        </div>
+    </div>
+
+</div>
+<div id="ImpressionMetric-add-dialog-form" class="adfalcon-dialog" title="@Html.GetResource("ImpressionMetric", "Campaign")" style="display: none; ">
+    <div class="data-row red-box" style="display:none" id="ImpressionMetric-divErrorMessages">
+        @{
+
+            if (ViewBag.ErrorMessages != null)
+            {
+                foreach (var item in ViewBag.ErrorMessages)
+                {
+                    <div class="data-row">
+                        <span class="msg-img"></span><span>@Html.Raw(item)</span>
+                    </div>
+                }
+            }
+            if (TempData["TempErrorMessages"] != null)
+            {
+                var tempErrorMessages = TempData["TempErrorMessages"] as List<string>;
+                foreach (var item in tempErrorMessages)
+                {
+                    <div class="data-row">
+                        <span class="msg-img"></span><span>@Html.Raw(item)</span>
+                    </div>
+                }
+            }
+        }
+        @if (ViewData.ModelState != null && ViewData.ModelState.Where(p => p.Value.Errors.Count != 0).Count() != 0)
+        {
+
+            foreach (var item in ViewData.ModelState.Where(p => p.Value.Errors.Count != 0))
+            {
+                <div class="data-row">
+                    <span class="msg-img"></span><span>@Html.Raw(item.Value.Errors[0].ErrorMessage)</span>
+                </div>
+            }
+        }
+    </div>
+    <div id="ImpressionMetricDialogEntityDetails" class="data-row data-container">
+        @Html.Partial("ImpressionMetric/ImpressionMetric", Model.ImpressionMetricDialog)
+    </div>
+</div>
+
+

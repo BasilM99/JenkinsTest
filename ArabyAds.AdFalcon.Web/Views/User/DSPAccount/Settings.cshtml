@@ -1,0 +1,184 @@
+﻿@{
+
+	ViewBag.Title = Html.GetResource("ADMAccountSettings", "Global");
+}
+
+<script language="javascript" type="text/javascript">
+    var cityId = '@Model.Setting.StateId';
+
+
+    $(document).ready(function () {
+
+        UpdateCities("True");
+        $('#Setting_StateId').attr("disabled", true);
+        $('#Setting_CountryId').attr("disabled", true);
+
+    });
+
+    var GetCitiesByCountryUrl = '@Url.Action("GetCitiesByCountry", "User")';
+
+    function UpdateCities(first) {
+        $('#Setting_StateId').empty();
+
+        if ($("#Setting_CountryId").val() != "-1") {
+            $.ajax(
+               {
+                   url: GetCitiesByCountryUrl + "?countryId=" + $("#Setting_CountryId").val(),
+                   cache: false,
+                   success: function (data) {
+                       if (data.result.length > 0) {
+                           $(data.result).map(function () {
+                               $('#Setting_StateId').append($('<option>', {
+                                   value: this.Value,
+                                   text: this.Text
+                               }));
+                           })
+                           $("#CitiesDiv").show();
+                           if (typeof (first) != "undefined" && first == "True") {
+                               $('#Setting_StateId').val(cityId);
+
+                           }
+
+                       } else {
+                           $("#CitiesDiv").hide();
+                           $('#Setting_StateId').val("0");
+                       }
+                   },
+                   error: function (error) {
+                       $("#CitiesDiv").hide();
+                       $('#Setting_StateId').val("0");
+                   }
+               });
+        } else {
+
+            $("#CitiesDiv").hide();
+            $('#Setting_StateId').val("0");
+        }
+
+    }
+
+</script>
+@model Noqoush.AdFalcon.Web.Controllers.Model.AccountManagement.DSPAccountSettingsModel
+
+@using (Html.BeginForm())
+{
+
+    <div class="data-row section-container">
+        <br />
+        <div class="data-row section-container">
+
+
+            <h2>@Html.GetResource("General")</h2>
+
+            <div class="section-form-container">
+                <div class="section-form-inner-container">
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("Name", "Business")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.AdFalconTextBoxFor(p => p.Setting.BusinessName, new
+                       {
+
+                           @readonly = "readonly",
+                           @style = "background-color: rgb(235, 235, 228) !important;"
+                       })
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+            </div>
+
+            <h2>@Html.GetResource("Contact", "Billing")</h2>
+            <div class="section-form-container">
+                <div class="section-form-inner-container">
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("Name")</span>
+
+                        </div>
+                        <div class="field-container">
+                            @Html.AdFalconTextBoxFor(p => p.Setting.BillingContactName, new { @readonly = "readonly", @style = "background-color: rgb(235, 235, 228) !important;" })
+                        </div>
+                    </div>
+                    @{
+                        if (Model.Recipients != null && Model.Recipients.RecipientEmail != null && Model.Recipients.RecipientEmail.Count() > 0)
+
+                        {
+                            <div class="data-row data-container">
+                                @Html.Partial("EmailSummary", Model.Recipients)
+                            </div>
+                        }
+                    }
+
+                </div>
+            </div>
+
+            <h2>@Html.GetResource("Address", "Billing")</h2>
+            <div class="section-form-container">
+                <div class="section-form-inner-container">
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("Name")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.AdFalconTextBoxFor(p => p.Setting.BillToAddressPersonName, new { @readonly = "readonly", @style = "background-color: rgb(235, 235, 228) !important;" })
+                        </div>
+                    </div>
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("LineOne")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.AdFalconTextBoxFor(p => p.Setting.BillToAddress1, new { @readonly = "readonly", @style = "background-color: rgb(235, 235, 228) !important;" })
+                        </div>
+                    </div>
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("LineTwo")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.AdFalconTextBoxFor(p => p.Setting.BillToAddress2, new { @readonly = "readonly", @style = "background-color: rgb(235, 235, 228) !important;" })
+                        </div>
+                    </div>
+
+
+
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("Country")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.DropDownListFor(p => p.Setting.CountryId, Model.Countries, new { onchange = "UpdateCities()", @readonly = "readonly", @style = "background-color: rgb(235, 235, 228) !important;" })
+                        </div>
+                    </div>
+
+                    <div class="data-row data-container" id="CitiesDiv" style="display:none">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("City", "Register")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.DropDownListFor(p => p.Setting.StateId, Model.Cities, new { @readonly = "readonly", @style = "background-color: rgb(235, 235, 228) !important;" })
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+
+
+            <div class="section-footer">
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+                        }

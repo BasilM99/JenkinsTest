@@ -1,0 +1,372 @@
+﻿@using Noqoush.AdFalcon.Domain.Common.Model.Core
+@model Noqoush.AdFalcon.Web.Controllers.Model.Campaign.DeviceTargetingViewModel
+<script type="text/javascript" language="javascript">
+    var yes_text = '@Html.GetResource("Yes")';
+    var no_text = '@Html.GetResource("No")';
+    var selectedDeviceType = new Array();
+    $( document ).ready(function() {
+        hideVersion();
+    });
+
+    function hideVersion()
+    {
+   
+        $("#1divVersion").hide();
+        $("#2divVersion").hide();
+
+        $("#7divVersion").hide();
+
+        if($("#1platform").children().eq(0).hasClass( "checked" ))
+        {
+            $("#1divVersion").show();
+        }
+        if($("#2platform").children().eq(0).hasClass( "checked" ))
+        {
+            $("#2divVersion").show();
+        }
+        if($("#7platform").children().eq(0).hasClass( "checked" ))
+        {
+            $("#7divVersion").show();
+        }
+    }
+</script>
+
+
+<script type="text/javascript">
+
+    var ListOfDeviceLanguages = '@(Model != null && Model.LanguageType!=null && Model.LanguageType.Length > 0 ? string.Join(",", (int[])(Model).LanguageType) :string.Empty)';
+
+    var ElemnetID1 = "";
+
+    var LanguageTypeUrl = '@Url.Action("GetLanguages", "Misc")';
+    var selectElemnt1;
+    $(document).ready(function () {
+        //$('#tokenize').tokenize();
+
+        ElemnetID1 = "#" + "LanguageType";
+
+        selectElemnt1 = $(ElemnetID1);
+
+       // fillCountries();
+
+         $("#LanguageType").select2({
+            tags: true,
+            multiple: true,
+            tokenSeparators: [',', ' '],
+            //minimumInputLength: 2,
+            //minimumResultsForSearch: 10,
+            ajax: {
+                url: LanguageTypeUrl,
+                dataType: "json",
+                type: "GET",
+                data: function (params) {
+
+                    var queryParameters = {
+                        q: params.term
+                    }
+                    return queryParameters;
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                text: item.Name.Value,
+                                id: item.ID
+                            }
+                        })
+                    };
+                }
+
+
+
+            }
+
+        });
+        // $('#PMPTargetingSaveDto_Geographies').select2('data', arr);
+        var valuesBeforeAdvertiser = [];
+        selectElemnt1.on("select2:selecting", function (e) {
+
+            if ($("#LanguageType :selected").length > 3)
+            {
+                $("#DeviceLanguagesP").find("span.select2-selection").attr("style", "width: 200px;height:75px; overflow:auto;");
+
+            }
+            else
+            {
+                $("#DeviceLanguagesP").find("span.select2-selection").attr("style", "width: 200px;overflow:auto;");
+            
+            }
+        });
+
+
+       CustomInitSelect2();
+    });
+
+
+    function CustomInitSelect2() {
+
+            $.ajax({
+                type: 'GET',
+                url: LanguageTypeUrl + "?q=",
+                dataType: 'json'
+            }).then(function (data) {
+
+
+                var dataF = $.map(data, function (item) {
+                        return {
+                            text: item.Name.Value,
+                            id: item.ID
+                        }
+                    })
+                ;
+                selectElemnt1.select2({
+                    data: dataF
+                });
+                //
+                if (typeof (ListOfDeviceLanguages) != "undefined") {
+
+                    fillselect2multipe(ListOfDeviceLanguages, "#LanguageType");
+                }
+
+
+
+            });
+
+    }
+
+
+</script>
+@{
+    string isCollapsed = "none";
+    string isCollapsedLanguages = "none";
+    if (Model.DeviceTypeModel != null)
+    {
+        isCollapsed = Model.DeviceTypeModel.DeviceTypes.Where(p => p.Selected).Count() == Model.DeviceTypeModel.DeviceTypes.Count() ? "none" : "block";
+
+        isCollapsedLanguages = Model.LanguageType.Count() == 0 ?  "none":"block";
+
+
+    }
+}
+
+<div class="ad-filter-text go-left floating-left">
+    @Html.Raw(Html.GetResource("TargetingDesc", "Campaign"))
+</div>
+@{
+    <div class="ad-filter-data go-left floating-left campaign-right-container">
+        @if (Model.DeviceTypeModel != null)
+        {
+            <div class="deviceTypeTargeting"   id="deviceTypeTargeting">
+                <div id="confirmationDialogForm" title="@Html.GetResource("ClearModelConfirmationTitle", "DeviceTypeTargeting")" style="display: none; ">
+                    <div class="go-left data-row">
+                        @Html.GetResource("ClearModelConfirmationMessage", "DeviceTypeTargeting")
+                    </div>
+                </div>
+
+                <div class="header@(isCollapsed == "none" ? " open" : " close")" onclick="collapseDeviceTypes()">
+                    <h4>@Html.GetResource("DeviceTypeHeader", "DeviceTypeTargeting")</h4>
+                </div>
+                <div id="deviceTypes" readonlyToBe class="container" style="display:@isCollapsed;">
+
+                    @foreach (var item in Model.DeviceTypeModel.DeviceTypes)
+                    {
+                        <div class="items" title="@item.Text">
+                            <div title="@item.Text" onmouseout="removeClickedClass(this)" class="@item.Text.ToLower()@(item.Selected ? "enabled" : "disabled")" onclick="changeIcons(this,'@item.Text',@item.Value)"></div>
+
+                        </div>
+                    }
+                    <div style="display: none">
+                        @foreach (var item in Model.DeviceTypeModel.DeviceTypes)
+                        {
+                            <input id="DeviceType" name="DeviceType" customvalue="@item.Text" type="checkbox" class="check-box" @(item.Selected ? "checked='checked'" : "") value="@item.Value" />
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+        }
+        <div class="languageTypeTargeting"  id="languageTypeTargeting">
+            <div class="header@(isCollapsedLanguages == "none" ? " open" : " close")" onclick="collapseLanguageTypes()">
+                <h4>@Html.GetResource("DeviceLanguageTargeting", "Campaign")</h4>
+            </div>
+
+
+            <div id="LanguageTypes" readonlyToBe class="container" style="display:@isCollapsedLanguages;">
+
+                <div id="DeviceLanguagesDiv">
+                    <div id="DeviceLanguagesP">
+                        <select id="LanguageType" name="LanguageType" class="js-example-theme-multiple js-states form-control select2-hidden-accessible" style="width: 200px;" multiple="" tabindex="-1" aria-hidden="true"></select>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+
+        @if (Model.Devices != null)
+            {
+
+                var platforms = Model.Platforms.Where(p => p.IsSelected).ToArray();
+
+                foreach (var item in platforms)
+                {
+                    List<SelectListItem> selectListItems = (from versions in item.Versions
+                                                            select new SelectListItem()
+                                                            {
+                                                                Value = item.ID + "-" + versions.Code,
+                                                                Text = versions.Version,
+                                                                Selected = versions.IsSelected
+                                                            }).ToList();
+
+                    selectListItems.Insert(0, new SelectListItem() { Text = Html.GetResource("All"), Value = "" });
+
+                @Html.Hidden("Platforms", "")
+                @Html.Hidden("Manufacturers", "")
+
+                <div id="device-version-container" style="width:250px">
+                    <div class="text-description">@string.Format(Html.GetResource("MinVersionFormat", "Campaign"), item.Name) </div>
+                    <div>@Html.DropDownList("PlatformVersions", selectListItems)</div>
+                </div> }
+            @Html.Partial("Tree", Model.Devices)
+        }
+        else
+        {
+            <div class="data-row space-bottom-blue-filter">
+                <div class="blue-filter-container innerDeviceDiv">
+                    <a href="javascript:void(0)" tabindexdevice="0" onclick="changeTab(this, 'Device', 'DeviceTargetingTypeId', 'deviceTargetingInfo', true);"
+                       class="selected">@Html.GetResource("All")</a> <a href="javascript:void(0)" tabindexdevice="1" onclick=" changeTab(this, 'Device' , 'DeviceTargetingTypeId' ,'Platforms',false);">
+                        @Html.GetResource("PlatformOS", "Campaign")
+                    </a> <a href="javascript:void(0)" tabindexdevice="2" onclick="changeTab(this, 'Device', 'DeviceTargetingTypeId','@Model.Manufacturers.Name',false);">
+                        @Html.GetResource("Manufacturer", "Campaign")
+                    </a><a href="javascript:void(0)" tabindexdevice="3"
+                           onclick="changeTab(this, 'Device', 'DeviceTargetingTypeId', 'DevicesTreeInfo', false);">
+                        @Html.GetResource("Model", "Campaign")
+                    </a><a href="javascript:void(0)" tabindexdevice="5" onclick="changeTab(this, 'Device', 'DeviceTargetingTypeId', 'deviceCapabilities', false);">
+                        @Html.GetResource("DeviceCapabilities", "Campaign")
+                    </a>
+                </div>
+                <div class="tail">
+                </div>
+            </div>
+            <div tabsectiondevice="0" id="allSection" readonlyToBe>
+            </div>
+            <div tabsectiondevice="1" readonlyToBe  id="platformsSection" style="display: none;">
+                <div id="platformtargeting" class="text-box-like-container">
+                    <div class="container" id="divPlatformsContainer">
+                        <div class="internal-container">
+
+                            @foreach (var item in Model.Platforms)
+                            {
+
+                                List<SelectListItem> selectListItems = (from versions in item.Versions
+                                                                        select new SelectListItem()
+                                                                        {
+                                                                            Value = item.ID + "-" + versions.Code,
+                                                                            Text = versions.Version,
+                                                                            Selected = versions.IsSelected
+                                                                        }).ToList();
+                                selectListItems.Insert(0, new SelectListItem() { Text = Html.GetResource("All"), Value = "" });
+
+                                <div class="platform-version-item">
+                                    <div class="platform">
+                                        <label onclick="changePlatformStatus(this);hideVersion('@(item.ID)platform');" id="@(item.ID)platform" customvalue="@item.ID" class="@(item.IsSelected ? "checked" : "unchecked")">
+                                            <ins class="@(item.IsSelected ? "checked" : "unchecked")" customvalue="@item.ID"></ins>
+                                            @item.Name.ToString()
+                                        </label>
+                                    </div>
+                                    @if (selectListItems != null && selectListItems.Count != 1)
+                                    {
+                                        <div class="version" id="@(item.ID)divVersion">@Html.GetResource("MinVersion", "Campaign"): @Html.DropDownList("PlatformVersions", selectListItems, new { style = "width:70px;float:none;font-size:11px" })</div>
+                                    }
+                                </div>
+
+                            }
+
+                            @Html.Hidden("Platforms", "&" + string.Join("&", Model.Platforms.Where(p => p.IsSelected).Select(p => p.ID)))
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div tabsectiondevice="2" readonlyToBe id="manufacturersSection" style="display: none;">
+                @Html.Partial("Tree", Model.Manufacturers)
+            </div>
+            <div tabsectiondevice="3" readonlyToBe id="modelSection" style="display: none;">
+                <div class="search-container data-row">
+                    <span class="data-row guid-text go-left margin-span-campain">(@Html.GetResource("ModelSearch", "Campaign"))</span>
+                    <input id="modelSearchInput" type="text" class="text-box" cancelenter="true" />
+                    <a href="javascript:void(0)" onclick="modelSearch();" class="search-click"></a>
+                    <br />
+                    <div class="field-container">
+                        <div id="ModelInfo" class="cloud-area text-box-like-container">
+                            @{
+                                foreach (var modelObj in Model.DevicesTree.SelectedItems)
+                                {
+                                    <a ModelId=@modelObj.Id ManufacturerId=@modelObj.Info["ManufacturerId"] PlatformId=@modelObj.Info["PlatformId"] href='javaScript:void(0);'>
+                                        @modelObj.DispalValue<span onclick='RemoveCustomTargeting(this);'></span>
+                                        <input id='ModelId' name='ModelId' value='@modelObj.Id' type='hidden' />
+                                    </a>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div id="dialog-form" style="width:500px;height:500px;" title="@Html.GetResource("SearchDeviceModel", "Campaign")">
+                        @Html.Partial("Tree", Model.DevicesTree)
+                    </div>
+                </div>
+            </div>
+            <div tabsectiondevice="5"  readonlyToBe id="capabilitiesSection" style="display: none;">
+                <div class="field-container floating-clear">
+                    @foreach (var item in Model.DeviceCapabilities.Where(x => x.Type == (int)DeviceCapabilityType.Both || x.Type == (int)DeviceCapabilityType.Include))
+                    {
+                        @Html.GetCheckBox("DeviceCapability", item.Name, item.Selected && item.IsInclude, onChange: "updateDeviceCapabilitiesInfo", customValue: item.ID.ToString())
+                    }
+                </div>
+            </div>
+                                if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsShowAdminSection || Model.DeviceCapabilities.FirstOrDefault(x => x.Selected && !x.IsInclude) != null)
+                                {
+                                    <br />
+
+                                    <div class="exclude-device-capabilities">
+                                        <span>@Html.GetResource("ExcludeDeviceCapability", "Campaign")</span>
+                                        <div class="field-container">
+                                            @foreach (var item in Model.DeviceCapabilities.Where(x => x.Type == (int)DeviceCapabilityType.Both || x.Type == (int)DeviceCapabilityType.Exclude))
+                    {
+                                                @Html.GetCheckBox("ExcludeDeviceCapability", item.Name, item.Selected && !item.IsInclude, onChange: "getBid(false, true);", customValue: item.ID.ToString())
+                                            }
+                                        </div>
+                                    </div>
+                                    }
+
+                                }
+    </div>
+}
+
+@if (Model.DeviceTypeModel != null)
+{
+
+    if (Model.Devices != null)
+    {
+        string deviceUrls = System.Text.RegularExpressions.Regex.Replace(Model.Devices.Url.ToLower(), @"\&deviceconstraint=\-?\d", "");
+        string treeName = Model.Devices.Name;
+        <script type="text/javascript">
+    var deviceTreeFirstValue = @((Model.Devices.SelectedValues != null && Model.Devices.SelectedValues.Where(p => p.Key.ToLower() != "platforms").Count() > 0 ? "true" : "false").ToLower());
+        function defineDeviceVariables(){
+            deviceIsExist = true;
+            deviceTreeChanged = deviceTreeFirstValue;
+        }
+        function initiateDeviceTree() {
+            var finalDeviceUrl =  '@Html.Raw(@deviceUrls)' + "&DeviceConstraint=" + ($("input[name=DeviceType]:checked").length != 1 ? "" : $("input[name=DeviceType]:checked").val());
+        InitTree('@(treeName)', finalDeviceUrl ,function() {checkAll('@(treeName)');deviceTreeChanged = false; }, @(Model.Devices.IsSubLevel.ToString().ToLower()) );
+
+    }
+        </script>
+    }
+}

@@ -1,0 +1,95 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.Tree.TreeViewModel
+@{
+
+    if (ViewBag.ondblclick == null)
+    {
+        ViewBag.ondblclick = "";
+    }
+
+}
+<script type="text/javascript">
+
+
+    var falg = false;
+    var @(Model.Name)Loaded=false;
+    eval('var @(Model.Name)Items=null;');
+    function checkAll(treeName) {
+
+        var treeObj=jQuery.tree.reference("#"+treeName+"Tree");
+        //treeObj.open_all();
+        jQuery("#"+treeName+"Tree").find('li').each(function () {
+            jQuery.tree.plugins.checkbox.check(this);
+        });
+    }
+
+    $(window).on("load",function () {
+        InitTree('@(Model.Name)', '@Html.Raw(Model.Url)', function () {
+
+            var id = '@(Model.Name)'+"Tree";
+            var eventName = '@ViewBag.ondblclick';
+            if(eventName!="")
+                $("#"+id).find("li").find("a").attr("ondblclick",  '@ViewBag.ondblclick');
+
+            @(Model.Name)Loaded = true;
+
+
+            if (@Model.IsSelectAll.ToString().ToLower())
+                      checkAll('@(Model.Name)'),@(Model.IsSubLevel.ToString().ToLower());
+
+
+        });
+    });
+
+
+
+    function setSelected@(Model.Name)() {
+
+        @{
+             if (Model.SelectedValues != null)
+             {
+                 foreach (var selectedValue in Model.SelectedValues)
+                 {
+                     if (!string.IsNullOrWhiteSpace(selectedValue.Key))
+                     {
+                          <text>
+
+        match = jQuery("#@(Model.Name)Tree").find("li[id=@selectedValue.Id][key='@selectedValue.Key']");
+
+        match.each(function () {
+
+            jQuery.tree.plugins.checkbox.check(this,false);
+        });
+        </text>
+                     }
+                     else
+                     {
+                          <text>
+
+        match = jQuery("#@(Model.Name)Tree").find('li[id=@selectedValue.Id]');
+        match.each(function () {
+
+            jQuery.tree.plugins.checkbox.check(this,false);
+        });
+        </text>
+                     }
+                 }
+             }
+         }
+    }
+
+</script>
+
+@*<div class="search-container data-row">
+        <input id="treeSearch" type="text" class="text-box add-key-word-txtbox" />
+    </div>*@
+@Html.RegisterInternalStyleSheetLink("checkBoxStyle.css")
+@Html.RegisterInternalStyleSheetLinkOverRide("checkBoxStyle_OverRide.css")
+<div id="autoSuggestWrapper" class="search-container data-row large-auto-complete">
+    <input id="@(Model.Name)treeSearch" type="text" class="text-box" cancelEnter=true />
+    <a href="#" class="search-click"></a>
+</div>
+<div id="@(Model.Name)TreeContainer" class="text-box-like-container">
+    @Html.Hidden(Model.Name, "")
+    <div id="@(Model.Name)Tree" class="go-left" style="height: 230px; overflow:auto;">
+    </div>
+</div>

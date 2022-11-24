@@ -1,0 +1,85 @@
+﻿@using ArabyAds.AdFalcon.Domain.Common.Model.Campaign
+@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.AdCreativeFullSummaryViewModel
+@{
+    var adCreativeDto = Model.ViewSummary;
+    ViewBag.Title = "CreativesSettings";
+    string creativeSettingUnitName = string.Empty;
+    bool isBanner = adCreativeDto.TypeId == AdTypeIds.Banner ? true : false;
+}
+@switch (adCreativeDto.TypeId)
+{
+	case ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.Text:
+		{
+			creativeSettingUnitName = "Summary/CreativeSetting/TextCreativeSetting";
+			break;
+		}
+
+	case AdTypeIds.NativeAd:
+		{
+			creativeSettingUnitName = "Summary/CreativeSetting/NativeAdCreativeSetting";
+
+			break;
+		}
+	case ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.Banner:
+		{
+			creativeSettingUnitName = "Summary/CreativeSetting/BannerCreativeSetting";
+			break;
+		}
+	case ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.PlainHTML:
+		{
+			creativeSettingUnitName = "Summary/CreativeSetting/PlainHtmlCreativeSetting";
+			break;
+		}
+	case ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.TrackingAd:
+		{
+			creativeSettingUnitName = "Summary/CreativeSetting/TrackingAdCreativeSetting";
+			break;
+		}
+	case ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.RichMedia:
+		{
+			switch (adCreativeDto.AdSubType)
+			{
+
+
+				case AdSubTypes.HTML5Interstitial:
+
+
+				case AdSubTypes.HTML5RichMedia:
+					{
+						creativeSettingUnitName = "Summary/CreativeSetting/RichMedia/HTML5RichMediaCreativeSetting";
+						break;
+					}
+				case AdSubTypes.ExpandableRichMedia:
+					{
+						creativeSettingUnitName = "Summary/CreativeSetting/RichMedia/ExpandableRichMediaCreativeSetting";
+						break;
+					}
+				case AdSubTypes.ExternalUrlInterstitial:
+					{
+						creativeSettingUnitName = "Summary/CreativeSetting/RichMedia/ExternalUrlInterstitialCreativeSetting";
+						break;
+					}
+				case AdSubTypes.JavaScriptInterstitial:
+					{
+						creativeSettingUnitName = "Summary/CreativeSetting/RichMedia/JavaScriptInterstitialCreativeSetting";
+						break;
+					}
+				case AdSubTypes.JavaScriptRichMedia:
+					{
+						creativeSettingUnitName = "Summary/CreativeSetting/RichMedia/JavaScriptRichMediaCreativeSetting";
+						break;
+					}
+			}
+			break;
+		}
+	case ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.InStreamVideo:
+		{
+			creativeSettingUnitName = "Summary/CreativeSetting/InstreamVideoCreativeSetting";
+			break;
+		}
+
+}
+<div class="section-form-inner-container" style="overflow-x: scroll">
+    @Html.Partial(creativeSettingUnitName,Model)
+</div>

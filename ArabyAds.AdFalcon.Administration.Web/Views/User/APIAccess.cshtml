@@ -1,0 +1,63 @@
+﻿@model ArabyAds.AdFalcon.Services.Interfaces.DTOs.Account.AccountAPIAccessDto
+@{
+    ViewBag.Title = Html.GetResource("APIAccess", "Titles");
+}
+
+@using (Html.BeginForm())
+{
+  
+    <h2>
+        @Html.GetResource("Header", "APIAccess")
+    </h2>
+    <div class="section-form-container">
+        <div class="section-form-inner-container" id="api_access">
+
+            @if (Model.AllowAPIAccess)
+            {
+                <div class="section-form-inner-container info-container floating-left information" >
+                    <div class="data-row button-container">
+                        @if (string.IsNullOrEmpty(Model.APIClientId))
+                        {
+                            <input value="@Html.GetResource("GetAPIAccess", "APIAccess")" type="submit" name='GetAPI'   class="primary-btn" />
+                        }
+                        else
+                        {
+                            <div class="floating-left">
+                                <table>
+                                    <colgroup>
+                                        <col width="25%" />
+                                        <col width="3%" />
+                                        <col width="72%" />
+                                    </colgroup>
+                                    <tr>
+                                        <td class="label" style="font-size: smaller;">@Html.GetResource("APIClientId", "APIAccess"):</td>
+                                        <td>&nbsp;</td>
+                                        <td>@Model.APIClientId</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label" style="font-size: smaller;">@Html.GetResource("APISecretKey", "APIAccess"):</td>
+                                        <td>&nbsp;</td>
+                                        <td>@Model.APISecretKey</td>
+                                    </tr>
+                                </table>
+                            </div>
+            
+                        }
+                    </div>
+                </div>
+            }
+
+            <div class="ad-filter-text go-left floating-left help">
+                <h3>
+                    @Html.GetResource("HelpHeader", "APIAccess")
+                </h3>
+                
+               @Html.Raw(Html.GetResource("AccessInformationMessage","APIAccess"))
+
+            </div>
+        </div>
+    </div> <div class="section-footer"></div>
+}
+
+
+  

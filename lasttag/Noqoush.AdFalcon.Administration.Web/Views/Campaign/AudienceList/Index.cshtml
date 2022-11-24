@@ -1,0 +1,88 @@
+﻿@{
+	//ViewBag.Title = Html.GetResource("Advertisers", "Global");
+	ViewBag.Title = Html.GetResource("AudienceList", "Global");
+	Layout = "~/Views/Campaign/AudienceList/IndexMaster.cshtml";
+	string DeteleCheckBox = Model.PreventEdit ? "<input type = 'checkbox' name = 'checkedRecords' value = '<#= ID #>' disabled />" : "<input type = 'checkbox' name = 'checkedRecords' value = '<#= ID #>' />";
+
+
+}
+@*@using Noqoush.Framework.DomainServices*@
+@model Noqoush.AdFalcon.Web.Controllers.Model.Advertiser.AudienceListViewModel
+@*@Html.Partial("GridToolTop", Model.ToolTips)*@
+
+@section subheader
+   {
+}
+@section Grid2 {
+	@(Html.Telerik().Grid(Model.Items)
+							   .Name("Grid")
+							   .Columns(columns =>
+											{
+												columns.Template(
+													@<text>
+														@{
+																			if (Model.PreventEdit)
+																			{
+																<input name="checkedRecords" type="checkbox" value="@item.ID " disabled title="checkedRecords" />
+
+																			}
+																			else
+																			{
+																<input name="checkedRecords" type="checkbox" value="@item.ID " title="checkedRecords" />
+
+																			}
+
+														}
+													</text>)
+																			.Title("").Width(10).HtmlAttributes(new { style = "text-align:center" })
+																			.ClientTemplate(DeteleCheckBox);
+
+															columns.Bound(o => o.en).Template(
+									@<text><div class="grid-title-container floating-left">
+											<span class="trimed-span">
+
+												
+													@item.en
+
+											
+											</span>
+										</div><div class="floating-right go-right">
+												  <div class='cogwheel' item_extra_info="@item.en"  item_extra_info2="@item.ID" onclick="showGridToolTip(@item.ID,this)">
+												  	<a href='javaScript:void(0);'>&nbsp</a>
+												  </div>
+										</div>
+									</text>
+).Title(Html.GetResource("Name")).Width(65)
+.ClientTemplate("<div class='grid-title-container floating-left'><span class='trimed-span'><#= en#></span></div> <div class='grid-cogwheel-contrainer floating-right go-right'> <div class='cogwheel' item_extra_info2='<#= ID#>' item_extra_info='<#= en#>' onclick='showGridToolTip(<#= ID#>,this,undefined)'><a href='javaScript:void(0);' >&nbsp</a>&nbsp</a></div></div>");
+                                   //columns.Bound(o => o.Name).Title(Html.GetResource("Advertiser", "Menu") + " " + Html.GetResource("Name")).Width(60);
+                                   columns.Bound(o => o.Description).Title(Html.GetResource("Description", "Campaign")).Width(200);
+                                   columns.Bound(o => o.Performance.NoOfHits).Title(Html.GetResource("Hits", "AudienceList")).Width(65);
+                                   columns.Bound(o => o.Performance.UniqueUsers).Title(Html.GetResource("Users", "AudienceList")).Width(65);
+                                   columns.Bound(o => o.StatusString).Title(Html.GetResource("Status")).Width(65);
+
+                                   //columns.Bound(o => o.StatusString).Title(Html.GetResource("Status")).Width(60);
+                                   //columns.Bound(o => o.Impress).Format("{0:n0}").Title(Html.GetResource("Impressions", "Campaign")).Width(50).HtmlAttributes(new { @class = "go-center" });
+
+
+                                   //columns.Bound(o => o.Performance.Clicks).Format("{0:n0}").Title(Html.GetResource("Clicks", "Campaign")).Width(65).HtmlAttributes(new { @class = "go-center" });
+                                   //columns.Bound(o => o.Performance.CtrText).Title(Html.GetResource("CTR", "Campaign")).Width(45).HtmlAttributes(new { @class = "go-center" });
+                                   //columns.Bound(o => o.Performance.AvgCPCText).Title(Html.GetResource("AvgCPC", "Campaign")).Width(75).HtmlAttributes(new { @class = "go-center" });
+                                   //columns.Bound(o => o.Performance.SpendText).Title(Html.GetResource("Spend", "Campaign")).Width(65).HtmlAttributes(new { @class = "go-center" });
+
+                               }).EnableCustomBinding(true)
+                                                                    .DataBinding(dataBinding =>
+                                                                    {
+                                                                        dataBinding.Server().Select("AudienceList", "Campaign", new { ajax = true });
+                                                                        dataBinding.Ajax().Select("_AudienceList", "Campaign");
+
+                                                                    })
+                                                            .ClientEvents(clientEvents => clientEvents.OnDataBinding("AccountAdvertisersGridDataBinding").OnDataBound("AccountAdvertisersGridDataBound").OnRowDataBound("onRowDataBound"))
+                                                            .Scrollable(scrolling => scrolling.Enabled(false))
+                                                            .Selectable().Pageable(paging => paging.PageSize(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.PageSize)
+                                                                                    .Total(int.Parse(ViewData["total"].ToString()))
+                                                                                    .Style(GridPagerStyles.NextPreviousAndNumeric)
+                                                                                    .Position(GridPagerPosition.Bottom))
+                                                            .Filterable(filtering => filtering.Enabled(false))
+                                                            .Groupable(grouping => grouping.Enabled(true)).Footer(true))
+}
+

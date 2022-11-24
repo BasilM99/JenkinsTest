@@ -1,0 +1,285 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("IndexAppSite", "Titles");
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+}
+@Html.Hidden("AppSite", "App Sites")
+<script type="text/javascript">
+    String.prototype.format = function () {
+        var s = this,
+            i = arguments.length;
+
+        while (i--) {
+            s = s.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
+        }
+        return s;
+    };
+    var result = false;
+    var ischecked = false;
+    var yesbtn = "@Html.GetResource("Yes", "Global")";
+    var nobtn = "@Html.GetResource("No", "Global")";
+    var Confirmation = "@Html.GetResource("Delete", "Confirmation")";
+    var ConfriamtionBokTitle = "@Html.GetResource("Confirm")";
+    var close = "@Html.GetResource("Close","Commands")";
+    var pleasecelect = "@Html.GetResource("SelectConfirmation", "AppSite")";;
+    var selectedName = "";
+    var selectednumber = 0;
+    var text;
+    var direction = "left";
+
+    var filterTypeSelected = '';
+
+    jQuery(document).ready(function () {
+
+        SetSelectedTap("ListMenuPublisher");
+    });
+    function setFilterSelected(code) {
+
+        filterTypeSelected = code;
+        $("a[forAppSiteFilter='true']").removeClass('selected');
+        $("#" + code + "-filterType").addClass('selected');
+        generateAppSiteGrid();
+    }
+
+    function localInitilize() {
+        @*jQuery('input[data-date="true"]')
+            .daterangepicker({ dateFormat: '@Noqoush.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat' });*@
+    }
+
+    function generateAppSiteGrid() {
+        var grid = $("#Grid").data("tGrid");
+        grid.rebind();
+    };
+
+    function appSiteGridDataBinding(args) {
+        args.data = $.extend(args.data,
+            {
+                Name: $('#Name').val(),
+                FilterType: filterTypeSelected,
+            });
+
+
+        var url = args.currentTarget.baseURI.toLowerCase()
+        var data = $('#Grid table a[href*="AppSite"]');
+
+        for (var i = 0 ; i < data.length; i++) {
+
+            data[i].outerHTML = "<span class='trimed-span' style='width:200px !important;'><a href='" + data[i] + "' title='" + data[i].innerText + "'>" + data[i].innerText + "</a></span>";
+        }
+
+    };
+
+    function checked() {
+        $('input').each(function () {
+
+            if ($(this).is(':checked')) {
+                var name = $(this).eq(0).parent().parent().find(".grid-title-container.floating-left").children().text().trim();
+
+                if (name.length > 30)
+                    name = name.substring(0, 30) + "..";
+
+                ischecked = true;
+                @{
+                if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage=="ar")
+                {
+
+                    <text>
+
+                selectedName += "<span style='float:" + direction + ";'>" + name + "-</span><br>";
+
+                </text>
+
+                }else
+                {
+                    <text>
+                selectedName += "<span style='float:" + direction + ";'>" + "-" + name + "</span><br>";
+                </text>
+            }
+
+            }
+            }
+        });
+        return ischecked;
+    }
+
+
+    function popup(sender) {
+        selectedName = "";
+        selectednumber = 0;
+        if (checked()) {
+            if (!result) {
+                $('<div id ="ConfirmationDialog" title="' + ConfriamtionBokTitle + '"></div>').dialog({
+
+                    open: function () {
+                        text = Confirmation.format($("#AppSite").val()) + " <br><br> <div style='float: " + direction + ";'>" + selectedName + "</div>";
+                        $(this).html(text);
+
+                    },
+                    close: function () {
+                        $(this).remove();
+                    },
+                    resizable: false,
+                    draggable: false,
+                    showCloseButton: false,
+
+                    //  height: 200,
+                    modal: true,
+                    buttons: [
+                   {
+                       text: yesbtn,
+                       click: function () {
+                           $(this).dialog("close");
+                           result = true;
+                           $(sender).click();
+                       }//, "class": 'primary-btn',
+                   },
+                   {
+                       text: nobtn,
+                       click: function () {
+                           $(this).dialog('close');
+                           result = false;
+                       }//, "class": 'delete-button',
+
+                   }
+                    ]
+
+                });
+
+
+
+            }
+        } else {
+            $('<div id = "NoItemSelected"></div>').dialog({
+
+                open: function (event, ui) {
+                    $(this).html(pleasecelect);
+                },
+                close: function () {
+                    result = false;
+
+                    $(this).remove();
+                },
+                resizable: false,
+                draggable: false,
+                //height: 140,
+                modal: true,
+            });
+        }
+        ischecked = false;
+        return result;
+    }
+    function showfilter() {
+
+        if ($("#advfilterAppsite").hasClass('maximize')) {
+
+            $("#advfilterAppsite").attr("class", "minimize AdvanceFilterIcon");
+        }
+        else {
+
+            $("#advfilterAppsite").attr("class", "maximize AdvanceFilterIcon");
+        }
+    }
+
+</script>
+
+
+@model Noqoush.AdFalcon.Web.Controllers.Model.AppSite.ListViewModel
+
+@using (Html.BeginForm())
+{
+
+    <div class="data-row section-container">
+        <div class="data-row">
+            <div class="col-sm-7" style="padding: 0px;">
+
+                @if (Model.TopActions != null)
+                {
+                    Html.RenderPartial("PartialViews/Actions", Model.TopActions);
+                }
+            </div>
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-4 col-sm-push-4" >
+
+                <table class="special-content">
+
+                    <tr>
+                  
+                        <td>
+
+                            <div class="field-container dropdown-toggle" data-toggle="collapse" data-target="#AppSiteFilterCollapse" aria-expanded="false" onclick="showfilter()">
+                                &nbsp;&nbsp;<a href="javaScript:void(0);" class="maximize AdvanceFilterIcon" onclick="" style="margin-top:0px" id="advfilterAppsite"></a>
+
+                            </div>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+        <div class="data-row" style="overflow:visible">
+            <div class="col-sm-7 col-sm-push-3 customDealsFilterShiftRight floating-right" style="padding: 0px;">
+                @Html.Partial("AppsiteFilter", Model.FilterBar)
+            </div>
+        </div>
+
+        <div class="grid-container">
+            @(Html.Telerik().Grid(Model.Items)
+                    .Name("Grid")
+                    .Columns(columns =>
+                    {
+                        columns.Template(
+            @<text>
+                <input name="checkedRecords" type="checkbox" value="@item.Id " title="checkedRecords" />
+            </text>)
+                            .Title("").Width(36).HtmlAttributes(new { style = "text-align:center" })
+                            .ClientTemplate("<input type='checkbox' name='checkedRecords' value='<#= Id #>' />");
+                        columns.Bound(o => o.Name).Width(200).HtmlAttributes(new { @style = "max-width: 200px;" })
+                            .Template(
+            @<text><div class="grid-title-container floating-left">
+                    <span class="trimed-span" style="width:200px !important;">
+                        <a href='@Url.Action("Create", "AppSite", new { id = @item.Id }, null)' title='@item.Name'>
+                            @item.Name
+                        </a>
+                    </span>
+                </div>
+                <div class="grid-cogwheel-container floating-right go-right">
+                    <div class='cogwheel' onclick='showGridToolTip(@item.Id,this)'><a href='javaScript:void(0);'>&nbsp</a></div>
+                </div>
+            </text>
+                            ).ClientTemplate("<div class='grid-title-container floating-left'><a href=\"" + Url.Action("Create", "AppSite") + "/<#= Id#>\"><#= Name#></a> </div><div class='grid-cogwheel-container floating-right go-right'> <div class='cogwheel' onclick='showGridToolTip(<#= Id#>,this)'><a href='javaScript:void(0);' >&nbsp</a>&nbsp</a></div></div>").Title(Html.GetResource("Name", "AppSite"));
+                        columns.Bound(o => o.Type).Title(Html.GetResource("Type", "AppSite")).Width("70px");
+                        columns.Bound(o => o.RegistrationDate).Title(Html.GetResource("RegistrationDate", "AppSite")).Width("100px").Format("{0:" + Noqoush.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").HtmlAttributes(new { @class = "go-center" });
+                        columns.Bound(o => o.Status).Title(Html.GetResource("Status", "AppSite")).Width("80px");
+                        columns.Bound(o => o.Performance.AdImpress).Format("{0:n0}").Title(Html.GetResource("Impressions", "AppSite")).Width("85px").HtmlAttributes(new { @class = "go-center" });
+                        columns.Bound(o => o.Performance.AdClicks).Format("{0:n0}").Title(Html.GetResource("Clicks", "AppSite")).Width("70px").HtmlAttributes(new { @class = "go-center" });
+                        columns.Bound(o => o.Performance.CtrText).Title(Html.GetResource("CTR", "AppSite")).Width("40px").HtmlAttributes(new { @class = "go-center" });
+                        columns.Bound(o => o.Performance.FillRateText).Title(Html.GetResource("FillRate", "AppChart")).Width("50px").HtmlAttributes(new { @class = "go-center" });
+                        columns.Bound(o => o.Performance.RevenueText).Title(Html.GetResource("Revenue", "AppChart")).Width("70px").HtmlAttributes(new { @class = "go-center" });
+
+
+                    })
+
+.DataBinding(dataBinding =>
+{
+    dataBinding.Server().Select("Index", "AppSite", new { ajax = true });
+    dataBinding.Ajax().Select("_Index", "AppSite");
+
+}).EnableCustomBinding(true)
+.ClientEvents(clientEvents => clientEvents.OnRowDataBound("onRowDataBound").OnDataBinding("appSiteGridDataBinding").OnDataBound("appSiteGridDataBinding"))
+.Scrollable(scrolling => scrolling.Enabled(false))
+.Selectable()
+.Pageable(paging => paging.PageSize(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total(int.Parse(ViewData["total"].ToString())).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+.Filterable(filtering => filtering.Enabled(false))
+.Groupable(grouping => grouping.Enabled(true)).Footer(true))
+        </div>
+        @if (Model.BelowAction != null)
+        {
+            Html.RenderPartial("PartialViews/Actions", Model.BelowAction);
+        }
+    </div>
+    if (Model.ToolTips != null)
+    {
+        @Html.Partial("GridToolTop", Model.ToolTips)
+    }
+}

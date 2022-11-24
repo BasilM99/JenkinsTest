@@ -1,0 +1,349 @@
+﻿@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.AdGroupCostElementDto
+@{
+    if (ViewContext.FormContext == null)
+    {
+        ViewContext.FormContext = new FormContext();
+    }
+}
+<script language="javascript" type="text/javascript">
+        @{
+
+            var mindate = 0;
+            if (Model != null)
+            {
+                var date = Noqoush.Framework.Utilities.Environment.GetServerTime();
+                var snb = date.Subtract(Noqoush.Framework.Utilities.Environment.GetServerTime());
+                if (snb.TotalDays < 0)
+                {
+                    mindate = Convert.ToInt32(snb.TotalDays) - 1;
+                }
+            }
+        }
+    $( document ).ready(function() {
+
+        localInitilizeCostElement();
+
+        $('#CostElementDD').on('change', function () {
+            let CostElementDDVal = $('#CostElementDD').val();
+            let CostElementDDValID = CostElementDDVal.substr(0, CostElementDDVal.indexOf(':'));
+            if (CostElementDDValID[CostElementDDValID.length - 1] != 2) {
+                $("#confirmSelectCalculatedCostElementDialog").dialog("open");
+                //showWarningMessage("ADM account should only use cost elements based on net/media cost); such cost elements will be reflected on the billable cost. Are you sure you want to add this cost element?", true);
+            }
+        })
+    });
+    function localInitilizeCostElement() {
+
+        var dates = jQuery("#FromDate,#ToDate").datepicker({
+            changeMonth: true,
+            showButtonPanel: true,
+            showOn: 'both',
+            minDate: @mindate,
+            buttonImageOnly: true,
+            dateFormat: 'dd-mm-yy',
+            buttonImage: '@(Url.GetImagePath("Calendar-icon.png"))',
+            isRTL: false,
+            onSelect: function (selectedDate) {
+                if (this.id == "FromDate") {
+                    startDateChanged = true;
+                    $("#required_signFrom").hide();
+                }
+                var option = this.id == "FromDate" ? "minDate" : "maxDate",
+                    instance = $(this).data("datepicker"),
+                    date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+                dates.not(this).datepicker("option", option, date);
+            }
+
+        });
+
+        
+        $("#confirmSelectCalculatedCostElementDialog").dialog({
+				autoOpen: false,
+            //height: 150,
+            width: 400,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            showCloseButton: false,
+
+            buttons:
+
+			[{
+					text: '@Html.GetResource("Yes")',
+                    click: function () {
+						jQuery(this).dialog("close");
+						
+					}
+				},
+                {
+					text: '@Html.GetResource("No")',
+                    click: function () {
+						jQuery(this).dialog("close");
+                        $('#CostElementDD').val('0#1#0#1');
+					}
+				}]
+        });
+
+    };
+    function validationProvider() {
+        var result = true;
+        var result_Provider = true;
+        var scope = $("input[name=scope]").val();
+
+        if ($("#ProvidersList").val() == 0 && scope == 2) {
+            $("#required_sign_Providers").show();
+            result_Provider = false;
+            }
+            if(result_Provider)
+            {
+                result = true;
+            }else
+            {
+                result = false;
+            }
+
+            return result;
+
+    }
+    function validation ()
+    {
+        var result = true;
+        var result_CostElementDD = true;
+        var result_Value = true;
+        var result_FromDate = true;
+
+        if($("#CostElementDD").val()=='0#1#0#1')
+        {
+            $("#required_signCost").show();
+            result_CostElementDD =false;
+        }
+
+
+        if($("#Value").val()=='' || parseFloat($("#Value").val()) <= 0)
+        {
+            $("#required_signValue").show();
+            result_Value =false;
+        }
+        if($("#FromDate").val()=='')
+        {
+            $("#required_signFrom").show();
+            result_FromDate =false;
+        }
+
+        if(result_FromDate && result_Value &&  result_CostElementDD)
+        {
+            result = true;
+        }else
+        {
+            result = false;
+        }
+
+        return result;
+    }
+
+    function reset_cost_element() {
+        $("[name='required_sign']").hide();
+       $("#ShowProvider2").hide();
+        $("#required_sign_Providers").hide();
+        $('[name="CostElementDD"]').val('0#1#0#1');
+        $('#beneficiaryName').text('');
+		$('#ProvidersList').val('0');
+        $("#AdGruopCostElementID").val('');
+        try {
+            $('[name="BeneficiaryId"]').text('');
+            $('[name="BeneficiaryId"]').val('');
+
+        } catch (ex) {
+        }
+        try {
+            $('[name="Beneficiary"]').text('');
+            $('[name="Beneficiary"]').val('');
+        } catch (ex) {
+        }
+        try {
+            $('[name="Value"]').val('');
+            $('[name="Value"]').text('');
+        } catch (ex) {
+        }
+        try {
+            $('[name="CostElementId"]').val('');
+            $('[name="CostElementId"]').text('');
+        } catch (ex) {
+        }
+        try {
+            $('[name="cost_element_type_sign"]').text('$');
+        } catch (ex) {
+        }
+
+        try {
+            $('[name="FromDate"]').text('');
+            $('[name="FromDate"]').val('');
+        } catch (ex) {
+        }
+
+        try {
+            $('[name="ToDate"]').text('');
+            $('[name="ToDate"]').val('');
+        } catch (ex) {
+        }
+    }
+    function CostElementChanged(elem) {
+
+        $("#required_signCost").hide();
+       //$("#ShowProvider").hide();
+        $("#required_sign_Providers").hide();
+        var value = 0.0;
+        var segments = $(elem).val().split('#');
+        $('[name="CostElementId"]').val(segments[0]);
+        cost_element_type = parseInt(segments[2]);
+        //TODO:Osaleh to replace this code
+        //get the cost type
+        var selectedCostModel = parseInt($('#CostModelWrapper').val());
+        if (isNaN(selectedCostModel)) {
+            //toDO OSaleh to handle this issue
+            selectedCostModel = 1;
+        }
+
+        var keyValues = segments[3].split(",");
+
+        for (var i = 0; i < keyValues.length; i++) {
+            var keyValueItem = keyValues[i].split(":");
+            var costModelWrapperId = parseInt(keyValueItem[0]);
+            var costModelWrapperValue = parseFloat(keyValueItem[1]);
+
+            if (costModelWrapperId == selectedCostModel) {
+                value = costModelWrapperValue;
+            }
+        }
+
+        switch (cost_element_type) {
+            case 1: //percentage
+                $('[name="cost_element_type_sign"]').text('%');
+                break;
+            case 2: //fixed
+                $('[name="cost_element_type_sign"]').text('$');
+                break;
+            default:
+                $('[name="cost_element_type_sign"]').text('$');
+        }
+        $('[name="Value"]').val(value);
+        $("#required_signValue").hide();
+
+        var scope = segments[1];
+
+        $('[name="scope"]').val(scope);
+        if (scope == 2) {
+            $("#ShowProvider2").show();
+
+        } else {
+            $("#ShowProvider2").hide();
+
+        }
+
+    }
+    function datePress(e)
+    {
+
+        e.preventDefault();
+    }
+
+    function ProviderChanged(elem)
+    {
+        $('[id="ProviderId"]').val($(elem).val());
+
+    }
+</script>
+<div class="section-form-inner-container">
+    @Html.HiddenFor(x => x.CostElementId)
+    @Html.HiddenFor(x => x.ProviderId)
+    @Html.Hidden("AdGruopCostElementID")
+    @Html.Hidden("scope")
+    <div id="CostElementfrom">
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("CostElement", "CostElements")</span>
+            </div>
+            <div class="field-container">
+                @Html.AdFalconDropDownList("CostElementDD", (ViewData["CostElements"] as List<SelectListItem>), new { onchange = "CostElementChanged(this);", style = "    width: 230px;" })
+            </div>
+            <div class="field-container">
+                <span class="field-validation-error" data-valmsg-for="Code" data-valmsg-replace="true" style="display:none;padding-top:5px" name="required_sign" id="required_signCost">
+                    <span htmlfor="Code" generated="true" class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span>
+                </span>
+            </div>
+        </div>
+        <div class="data-row data-container" style="display: none" id="ShowProvider2">
+            <div class="label-container">
+                <span class="field-title required-field">Providers</span>
+            </div>
+            <div class="field-container">
+                @Html.AdFalconDropDownList("ProvidersList", (ViewData["Providers"] as List<SelectListItem>), new { onchange = "ProviderChanged(this);" })
+            </div>
+            <div class="field-container">
+                <span class="field-validation-error" data-valmsg-for="Code" data-valmsg-replace="true" style="display:none;padding-top:5px;" name="required_sign_Providers" id="required_sign_Providers">
+                    <span htmlfor="Code" generated="true" class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span>
+                </span>
+            </div>
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("Beneficiary", "CostElements")</span>
+            </div>
+            <div class="field-container">
+                <div onclick="showPartySearchDialog();" style="line-height: 24px;">
+                    <img class="find-icon" src='@Url.GetImagePath("find-icon.png")' />
+                    @Html.HiddenFor(p => p.BeneficiaryId)
+                    @Html.HiddenFor(p => p.Beneficiary)
+                    <span class="side-text" id="beneficiaryName" style="float: none;">@(Model != null ? Model.Beneficiary : string.Empty)</span>
+                </div>
+            </div>
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container required-field">
+                <span class="field-title ">@Html.GetResource("Value", "CostElements")</span>
+            </div>
+            <div class="field-container">
+                @Html.AdFalconTextBox("Value", Model == null ? string.Empty : Model.Value.ToString("F2"), new { maskType = "decimal", onkeypress = "onValuepress(event,this)", onchange = "onValueChange(this);", style = "    width: 230px;"  })
+                <span name="cost_element_type_sign" class="side-text">$</span>
+            </div>
+            <div class="field-container">
+                <span class="field-validation-error" data-valmsg-for="Code" data-valmsg-replace="true" style="display:none;padding-top:5px;" name="required_sign" id="required_signValue">
+                    <span htmlfor="Code" generated="true" class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span>
+                </span>
+            </div>
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container required-field">
+                <span class="field-title ">@Html.GetResource("FromDate", "CostElements")</span>
+            </div>
+            <div class="field-container">
+                <div class="field-container  required-field iea-text-calender-margin">
+                    @Html.AdFalconTextBox("FromDate", null, new { onkeypress = "datePress(event)", @readonly = "readonly", style = "    width: 230px;"  })
+                </div>
+            </div>
+            <div class="field-container">
+                <span class="field-validation-error" data-valmsg-for="Code" data-valmsg-replace="true" style="display:none;padding-top:5px;" name="required_sign" id="required_signFrom">
+                    <span htmlfor="Code" generated="true" class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span>
+                </span>
+            </div>
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container required-field">
+                <span class="field-title ">@Html.GetResource("ToDate", "CostElements")</span>
+            </div>
+            <div class="field-container">
+                <div class="field-container  required-field iea-text-calender-margin">
+                    @Html.AdFalconTextBox("ToDate", null, new { onkeypress = "datePress(event)", @readonly = "readonly", style = "    width: 230px;"  })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="confirmSelectCalculatedCostElementDialog" title="@Html.GetResource("Confirm")" style="display:none;">
+    <span id="confirmSelectCalculatedCostElementDialogText">
+        @Html.GetResource("confirmSelectCalculatedCostElement", "Targeting")
+    </span>
+</div>

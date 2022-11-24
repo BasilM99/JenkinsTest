@@ -1,0 +1,31 @@
+﻿@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign
+@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core
+<div class="data-row">
+    <div class="dashboard-left-side floating-left">
+        <div class="data-row data-container">
+            <div class="data-row">
+                <img id="chartImage"  class="chartImage"/>
+            </div>
+        </div>
+    </div>
+    <div class="report-right-side floating-left">
+        <div class="grid-container data-row">
+             @(Html.Telerik().Grid((ViewData["Metrics"] as List<MetricDto>))
+                            .Name("Metrics").Columns(columns =>
+                                 {
+                                     columns.Bound(p => p.Name).Template(p => Html.GetRadioButton("metric", "&nbsp;" + p.Name + "&nbsp;", false, "", "generateChartImage", p.Code)).Title(Html.GetResource("Name", "Global"));
+                                     columns.Bound("").Template(p => "<div class='colored-box' style='background-color:" + p.Color + "'></div>").Width(20);
+                                 })
+                                 .Footer(false))
+        </div>
+    </div>
+    @Html.RegisterScriptBlock(string.Format("var chartImageUrl='{0}'", Url.Action("GenerateAppChart", "reports")))
+    <script type="text/javascript">
+        $(document).ready(function () {
+            radioBox($("[name=metriccontainer]")[0]);
+            $("[name=metriccontainer]").click(generateChartImage);
+            SetSelectedTap("ListMenuPublisher");
+
+        });
+    </script>
+</div>

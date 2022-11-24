@@ -1,0 +1,79 @@
+﻿@model IEnumerable<ArabyAds.AdFalcon.Web.Controllers.Model.Action>
+<div class="data-row go-center">
+    <div class="blue-filter-container">
+        @{
+			string selected = "";
+			foreach (var action in Model)
+			{
+				int? ExtraParameter = null;
+
+				int? ExtraParameter2 = null;
+				if (action.ExtraPrams != null)
+				{
+					ExtraParameter = (int?)action.ExtraPrams;
+				}
+
+				if (action.ExtraPrams2 != null )
+				{
+					ExtraParameter2 = (int?)action.ExtraPrams2;
+				}
+				string filterUrl = string.Empty;
+				string adFilterUrl = string.Empty;
+				string label = string.Empty;
+				bool showGroupByName = false;
+				string groupByNameLabel = null;
+				if (action.IsSelected)
+				{
+					selected = "selected";
+				}
+				switch (action.Code.ToLower())
+				{
+					case "app":
+						adFilterUrl = Url.Action("GetAppsTree", "reports", new { type = "app" });
+						label = Html.GetResource("Specific", "Global") + " " + Html.GetResource("App", "AppReport");
+						break;
+					case "campaign":
+						showGroupByName = true;
+						adFilterUrl = Url.Action("GetAdvertiserItems", "reports", new { type = "campaign", id = ExtraParameter/*, AdvertiserId = ExtraParameter2*/ });
+						label = Html.GetResource("Specific", "Global") + " " + Html.GetResource("Campaign", "Global");
+						groupByNameLabel = Html.GetResource("Campaign", "Global");
+						break;
+					case "adgroup":
+						showGroupByName = true;
+						adFilterUrl = Url.Action("GetAdvertiserItems", "reports", new { type = "adgroup", id = ExtraParameter/*, AdvertiserId = ExtraParameter2 */});
+						label = Html.GetResource("Specific", "Global") + " " + Html.GetResource("AdGroup", "CampaignsReport");
+						groupByNameLabel = Html.GetResource("AdGroup", "CampaignsReport");
+						break;
+					case "ad":
+						showGroupByName = true;
+						adFilterUrl = Url.Action("GetAdvertiserItems", "reports", new { type = "ad", id = ExtraParameter/*, AdvertiserId= ExtraParameter2*/ });
+						label = Html.GetResource("Specific", "Global") + " " + Html.GetResource("Ad", "Global");
+						groupByNameLabel = Html.GetResource("Ad", "Global");
+						break;
+					case "operator":
+						filterUrl = Url.Action("GetTreeData", "operator");
+						break;
+					case "devicemodel":
+						filterUrl = Url.Action("GetTreeData", "platform");
+						break;
+					case "geolocation":
+						filterUrl = Url.Action("GetTreeData", "Country", new { allowRegion = false });
+						break;
+					case "audiancesegmentforadvertiser":
+						filterUrl = Url.Action("GetTreeDataAccount", "AudienceSegment", new { allowRegion = true, AccountId = ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().UserId.Value });
+						break;
+					case "SubAppSite":
+						filterUrl = Url.Action("GetTreeData", "Country", new { allowRegion = false });
+						break;
+					default:
+						filterUrl = Url.Action("GetTreeData", "Country", new { allowRegion = false });
+						break;
+				}
+                <a class="@selected" id="@("tab" + action.Code)" style="@action.style" href='javascript:void(0)' onclick="getFilters('@action.Code','@adFilterUrl','@filterUrl','@label','@showGroupByName.ToString().ToLower()','@groupByNameLabel')">@action.DisplayText</a>
+                selected = "";
+            }
+        }
+    </div>
+    <div class="tail">
+    </div>
+</div>

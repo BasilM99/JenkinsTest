@@ -1,0 +1,36 @@
+﻿@using ArabyAds.AdFalcon.Web.Controllers.Utilities
+@{
+	ViewBag.Title =  Html.GetResource("AdvertisersTerms", "Titles");
+}
+@using (Html.BeginForm())
+{
+    if ((ArabyAds.Framework.OperationContext.Current.UserInfo
+         <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+         ().AccountRole != (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP))
+    {
+    <p class="go-left" style="font-size: 14px;">
+        @if (DateTime.Now < ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.UserAgreementEffectiveDate)
+        {
+            @Html.Raw(string.Format(Html.GetResource("UserAgreementBeforeDescEffectiveDate", "UserAgreement"), Config.UserAgreementEffectiveDate.Value.ToShortDateString()))
+        }
+        else
+        {
+            @Html.Raw(Html.GetResource("UserAgreementAfterDescEffectiveDate", "UserAgreement"))
+        }
+    </p>
+    @Html.Partial(string.Format("UserAgreements/terms-{0}", Config.CurrentLanguage))
+    }
+    else
+    {
+        ViewBag.Title = Html.GetResource("DSPTerms", "Titles");
+        <p class="go-left" style="font-size: 14px;">
+            @if (DateTime.Now < ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.DSPUserAgreementEffectiveDate)
+            {
+                @Html.Raw(string.Format(Html.GetResource("DSPUserAgreementBeforeDescEffectiveDate", "UserAgreement"), Config.DSPUserAgreementEffectiveDate.Value.ToShortDateString()))
+            }
+           
+        </p>
+        @Html.Partial(string.Format("DSPUserAgreements/terms-{0}", Config.CurrentLanguage))
+
+    }
+}

@@ -1,0 +1,41 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.DemographicTargetingViewModel
+
+    <div class="ad-filter-text go-left floating-left">
+        @Html.Raw(Html.GetResource("DemographicDesc", "Campaign"))
+    </div>
+    <div class="ad-filter-data floating-left" readonlyToBe>
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("Gender")</span>
+            </div>
+            <div class="field-container">
+                @{
+                    var genderid = 0;
+                    var isSlected = true;
+                    if (
+                        (Model.DemographicTargeting != null) &&
+                        (Model.DemographicTargeting.Demographic != null) &&
+                        (Model.DemographicTargeting.Demographic.Gender != null))
+                    {
+                        genderid = Model.DemographicTargeting.Demographic.Gender.ID;
+                    }
+
+                    isSlected = (genderid == 0);
+                    <div class="floating-left iea-rbtn-width-a">@Html.GetRadioButton("Gender", Html.GetResource("both"), Checked: isSlected, value: "0", onChange: "updateDemographicsInfo")</div>
+                    isSlected = (genderid == 1);
+                    <div class="floating-left iea-rbtn-width-a">@Html.GetRadioButton("Gender", Html.GetResource("Male"), Checked: isSlected, value: "1", onChange: "updateDemographicsInfo")</div>
+                    isSlected = (genderid == 2);
+                    <div class="floating-left">@Html.GetRadioButton("Gender", Html.GetResource("Female"), Checked: isSlected, value: "2", onChange: "updateDemographicsInfo")</div>
+                }
+            </div>
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("AgeGroup")</span>
+            </div>
+            <div class="field-container">
+                @Html.DropDownList("AgeGroupId", Model.AgeGroups)
+            </div>
+        </div>
+    </div>
+

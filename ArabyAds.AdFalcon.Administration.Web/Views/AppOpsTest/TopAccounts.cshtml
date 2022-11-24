@@ -1,0 +1,47 @@
+﻿@model IEnumerable<ArabyAds.AdFalcon.Administration.Web.Controllers.Model.AppSite.Performance.BaseChartDashboardView>
+
+<script type="text/javascript">
+    function topAccountsGridBinding(args) {
+        args.data = $.extend(args.data,
+            {
+                FromDate: $('#DateFrom').val(),
+                ToDate: $('#DateTo').val(),
+                MetricValue: $('#metric').val()
+            });
+
+        if (loadingTopAccountsCounter == 0) {
+            args.preventDefault();
+            loadingTopAccountsCounter = 1;
+        }
+    };
+</script>
+<div id="topAppSitesGrid" class="floating-left" >
+    <br />
+    <br />
+     <br />
+    @(Html.Telerik().Grid(Model)
+                        .Name("TopAccountsGrid")
+                    .Columns(columns =>
+                                 {
+                                     columns.Bound(p => p.Name).Title(Html.GetResource("AccountName", "TopAccounts")).Width("200px").Sortable(false);
+                                     columns.Bound(p => p.MetricValueText).Title(Html.GetResource("MetricValue", "Global")).Width("160px").HtmlAttributes(new { style = "text-align:center !important" });
+                                 })
+                    .DataBinding(dataBinding =>
+                    {
+                        dataBinding.Server().Select("TopAccountsGrid", "AppOpsTest", new { ajax = true });
+                        dataBinding.Ajax().Select("TopAccountsGrid", "AppOpsTest");
+
+                    })
+                        .Scrollable(scrolling => scrolling.Enabled(false))
+                        .Sortable(sorting => sorting.Enabled(false))
+                        .EnableCustomBinding(true)
+                        .Pageable(paging => paging.Enabled(false))
+                        .Footer(true).ClientEvents(p => p.OnDataBound("topAccountsGridBinding").OnDataBinding("topAccountsGridBinding").OnError("gridReportError")))
+      <p style="clear:both">
+        @Html.ActionLink(@Html.GetResource("TopAccountsLink", "TopAccounts"), "AccountsPerformance", "AppOpsTest", new {id="accountsPerformanceLink" })
+    </p>
+</div>
+<div id="topAccountsChart" class="floating-right">
+
+  <div id="topAccountsChartContainer" class="chartContainer"></div>
+</div>

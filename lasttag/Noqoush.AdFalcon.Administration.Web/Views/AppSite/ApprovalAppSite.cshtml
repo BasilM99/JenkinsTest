@@ -1,0 +1,112 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("Approval", "Titles");
+
+}
+@model Noqoush.AdFalcon.Administration.Web.Controllers.Model.AppSite.AppSiteApprovalViewModel
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        fillkeywords();
+
+    });
+
+
+</script>
+@using (Html.BeginForm())
+{
+    @Html.Hidden("AppSiteId", Model.AppSite.ID);
+    <input id="Type_Id" name="Type.Id" value="3" type="hidden" />
+    <input id="Type_ViewName" name="Type.ViewName" value="CreateAppSite"
+           type="hidden" />
+    <div class="label-container">
+        &nbsp;
+    </div>
+    <div id="AppDetailsContiner" class="data-row section-container">
+        <h2>@Html.GetResource("Approval", "AppSite")</h2>
+        <div class="section-form-container">
+            <div class="data-row info-container">
+                <br />
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("AccountInfo", "AppSite")</span>
+                    </div>
+                    <div class="field-container">
+                        <span class="side-text"><b>@Html.GetResource("Name", "Global")</b>: @Model.AppSite.AccountInfo.AccountName &nbsp;&nbsp;&nbsp;  @(!string.IsNullOrEmpty(Model.AppSite.AccountInfo.AccountCompanyName) ? Html.Raw(string.Format("<b>{0}</b>: {1}", Html.GetResource("Company", "Global"), Model.AppSite.AccountInfo.AccountCompanyName)) : Html.Raw(string.Empty))</span>
+                        <br />
+                        <span class="side-text"><b>@Html.GetResource("email", "Global")</b>: @Model.AppSite.AccountInfo.AccountEmail &nbsp;&nbsp;&nbsp;  <b>@Html.GetResource("Country", "Global")</b>: @Model.AppSite.AccountInfo.Country.Name.ToString()</span>
+                    </div>
+                </div>
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("NameId", "AppSite")</span>
+                    </div>
+                    <div class="field-container">
+                        <span class="side-text">@Model.AppSite.PublisherId</span>
+                    </div>
+                </div>
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("SiteName", "AppSite")</span>
+                    </div>
+                    <div class="field-container">
+                        <span class="side-text" title="@Model.AppSite.Name">
+                            @{
+    if (Model.AppSite.Name.Length > 91)
+    {
+                        @Model.AppSite.Name.Substring(0, 89).Insert(89, "..");
+    }
+    else
+    {
+                        @Model.AppSite.Name;
+    }
+
+
+                            }
+                        </span>
+                    </div>
+                </div>
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("SiteURL", "AppSite")</span>
+                    </div>
+                    <div class="field-container" style="width:100px;">
+                        <a href="@Model.AppSite.URL">@Model.AppSite.URL</a>
+                    </div>
+                </div>
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("Status", "AppSite")</span>
+                    </div>
+                    <div class="field-container">
+                        <span class="side-text" id="Status">@Model.AppSite.CurrentStatus</span>
+                    </div>
+                </div>
+                <div class="data-row data-container">
+
+                    <div class="field-container">
+                        @Html.Partial("PartialViews/KeyWord", Model.KeywordViewModel)
+
+                    </div>
+                </div>
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("AccountLanguage", "Global")</span>
+                    </div>
+                    <div class="field-container">
+                        <span class="side-text">@Model.AppSite.AccountLanguage</span>
+                        @Html.Hidden("AccountLanguage", Model.AppSite.AccountLanguage)
+                    </div>
+                </div>
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("Comment", "Global")</span>
+                    </div>
+                    <div class="field-container">
+                        @Html.TextArea("Comments", Model.AppSite.AdminComment ?? string.Empty, new { @class = "text-box", rows = 5, cols = 5 })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}

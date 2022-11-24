@@ -1,0 +1,98 @@
+﻿@model Noqoush.AdFalcon.Services.Interfaces.DTOs.AppSite.AppSiteListResultDtoBase
+<script language="javascript" type="text/javascript">
+    function addAppSiteId(id, dispalValue, isOld) {
+        if (typeof (isOld) == "undefined") {
+            isOld = false;
+        }
+        var container = jQuery("#appSiteInfo");
+        if ((id == '0') || (!checkAppSite(container, id))) {
+            var html = "<a AppSiteId=" + id + "  href='javaScript:void(0);'>" + dispalValue + "<span  onclick='removeAppSite(this," + isOld + ");'></span><input name='appSiteId' value='" + id + "' type='hidden' /></a>";
+            container.append(html);
+        }
+    };
+    function removeAppSite(elemspan, isOld) {
+        var elem = jQuery(elemspan).parent();
+        //= elemspan.parentElement;
+        var id = elem.attr('AppSiteId');
+        if (isOld) {
+            jQuery("#deletedAppSites").append("<input id='deletedAppSiteId' name='deletedAppSiteId' value='" + id + "' type='hidden' />");
+        }
+
+
+        elem.remove();
+    }
+    function checkAppSite(elem, id) {
+        return elem.find('[AppSiteId="' + id + '"]').length > 0;
+    }
+
+    function generateAppSiteGrid() {
+        var grid = $("#Grid").data("tGrid");
+        grid.rebind();
+    };
+    function appSiteGridDataBinding(args) {
+        args.data = $.extend(args.data,
+            {
+                AppName: $('#AppName').val()
+            });
+    };
+    function appSiteGridDataBound(e) {
+        var grid = $("#Grid").data("tGrid");
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(1);
+        }
+    };
+</script>
+<br />
+<div class="data-row go-center">
+    <div class="blue-filter-container">
+        <table class="special-content">
+            <tr>
+                <td>
+                    <span class="go-bold">@Html.GetResource("AppName", "AppChart")</span>
+                </td>
+                <td class="go-left" colspan="4">
+                    <input type="text" data-date="true" id="AppName" name="AppName" class="text-box" />
+                </td>
+                <td class="go-right" colspan="5">
+                    <input type="button" onclick="generateAppSiteGrid()"  value='@Html.GetResource("Filter")' class="btn filter-button " />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="tail">
+    </div>
+</div>
+<br />
+<div class="floating-left" style="width: 59%; margin-top: 10px;">
+    @(Html.Telerik().Grid(Model.Items)
+           .Name("Grid")
+           .Columns(columns =>
+                        {
+                            columns.Template(@<text><input id="btnAddAppSite" type="button" value="@Html.GetResource("Select", "AppSite")"  class="btn" onclick="addAppSiteId(@item.Id, '@item.Name')"/></text>)
+                                .Title("").Width(36).HtmlAttributes(new { style = "text-align:center" })
+                                .ClientTemplate("<input id='btnAddAppSite' type='button'  value='" + Html.GetResource("Select", "AppSite") + "'  class='btn' onclick='addAppSiteId(<#= Id #>, \"<#=Name#>\")'/>");
+
+                            columns.Bound(o => o.Name).Title(Html.GetResource("Name", "AppSite"));
+                            columns.Bound(o => o.Type).Title(Html.GetResource("Type", "AppSite")).Width("90px").HtmlAttributes(new { @class = "go-center" });
+                        })
+           .DataBinding(dataBinding =>
+                            {
+                                dataBinding.Server().Select("AppSites", "AppSite", new { ajax = true });
+                                dataBinding.Ajax().Select("_AppSites", "AppSite");
+
+                            }).EnableCustomBinding(true)
+            .ClientEvents(clientEvents => clientEvents.OnDataBinding("appSiteGridDataBinding").OnDataBound("appSiteGridDataBound"))
+           .Scrollable(scrolling => scrolling.Enabled(false))
+           .Selectable()
+           .Pageable(paging => paging.PageSize(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total(int.Parse(ViewData["total"].ToString())).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+           .Filterable(filtering => filtering.Enabled(false))
+           .Groupable(grouping => grouping.Enabled(true)).Footer(true))
+</div>
+<div class="floating-left" style="width: 35%; padding: 0px 10px 0px  10px; padding: ">
+    <div id="deletedAppSites" style="display: none;">
+    </div>
+    <div id="appSiteInfo" class="cloud-area text-box-like-container" style="width: 350px;">
+    </div>
+</div>

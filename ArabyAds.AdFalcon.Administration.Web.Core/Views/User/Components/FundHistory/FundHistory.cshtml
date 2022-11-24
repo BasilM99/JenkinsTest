@@ -1,0 +1,38 @@
+﻿@using ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.User
+@model ArabyAds.AdFalcon.Services.Interfaces.DTOs.Account.FundResultDto
+@(Html.Kendo().Grid(Model.Items)
+                    .Name("Grid")
+                    .Columns(columns =>
+                    {
+                        columns.Bound(o => o.ID).Hidden();
+                        columns.Bound(o => o.NoqoushReceiptNumber).Title(Html.GetResource("ReceiptNumber", "AccountHistory")).Width(130);
+                        columns.Bound(o => o.FundTransType.Name.Value).Title(Html.GetResource("FundType", "AccountHistory")).Width(130);
+                        columns.Bound(o => o.TransactionDate).Title(Html.GetResource("Date", "AccountHistory")).Format("{0:" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "  hh:mm}").Width(110);
+                        columns.Bound(o => o.Amount).Title(Html.GetResource("FundedAmount")).Width(100);
+                        columns.Bound(o => o.Comment).Title(Html.GetResource("Comment", "Global")).Width(250);
+                        columns.Template("<a href=\"" + Url.Action("Receipt", "User") + "/#= ID#\">" + @Html.GetResource("Receipt", "AccountHistory") + "</a>")
+.Width(40).Title(Html.GetResource("ReceiptHeader", "AccountHistory"));
+
+                    })
+                                    .DataSource(dataBinding =>
+                                    {
+                                        //dataBinding.Ajax().Select("FundHistory", "user").Enabled(true);
+                                     //   dataBinding.Server().Select("FundHistory", "user", new { ajax = true });
+                                        dataBinding.Ajax().Read(read => read.Action("FundHistory", "user")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+                                    })
+                                    .Scrollable(scrolling => scrolling.Enabled(false))
+                                    .EnableCustomBinding(true)
+
+                                    .Pageable(paging => paging
+
+
+            .Input(false)
+            .Numeric(true)
+            .Info(true)
+            .PreviousNext(true)
+            .Refresh(true)
+
+                                                                     .Position(GridPagerPosition.Bottom))
+
+                                    .Groupable(grouping => grouping.Enabled(false)))

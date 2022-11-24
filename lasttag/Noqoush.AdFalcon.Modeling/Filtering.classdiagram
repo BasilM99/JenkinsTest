@@ -1,0 +1,250 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm5="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" dslVersion="1.0.0.0" Id="fe3fd10e-32fb-45fc-98c6-182dd105e8e4" name="Filtering" linkedPackageId="c16bd10d-bb14-4be5-a11b-3834f909e14a" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
+  <packagedElements>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="73ed6e67-72b2-487a-a270-2f6ddeb872a3" name="AppSiteFilter" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="b05e61cd-c81f-4ac4-9aa2-8a7ba484db8b" />
+        <ownedOperationsInternal>
+          <operation Id="3fb64d11-09ea-44b1-b581-ec19dd921960" name="IsMatch" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="6f7e9a9d-9893-49eb-b39e-427e49c4ff49" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="3e22ed60-ab85-441e-99c7-b07f2db98789" name="ad" direction="In" isUnique="false">
+                  <elementDefinition Id="17e66e9d-3a32-4d36-9909-5fd07716833d" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="d5b27584-7574-48e6-8aa1-94439a45f609" LastKnownName="Ad" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="22a59157-e2db-4b20-a83d-91998f0b569b" direction="Return">
+                  <elementDefinition Id="2d096213-a830-446b-bdf0-6fe27bbfffc5" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="4337f5a9-a26f-468f-b9d9-a81e564d029a" LastKnownName="Boolean" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="d5b27584-7574-48e6-8aa1-94439a45f609" name="Ad" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::Ad">
+        <elementDefinition Id="8826e59f-d7da-4598-b7af-ffdb65a7b627" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="4337f5a9-a26f-468f-b9d9-a81e564d029a" name="Boolean" isAbstract="false" isLeaf="false" cachedFullName="Boolean">
+        <elementDefinition Id="8943dc84-709e-4f62-b15a-a3273aa6f165" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="a7033b17-aa0e-45eb-a1d8-8b438c9cb610" name="AppSiteFilterSet" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="806265ec-829e-47ef-b227-39dfd4f55bc6" />
+        <targetEnds>
+          <association Id="cd9d1976-074b-481d-a61f-aef39da890b5" isDerived="false" sourceEndRoleName="AppSiteFilterSet" targetEndRoleName="AppSiteFilter" isLeaf="false" isAbstract="false">
+            <classMoniker Id="73ed6e67-72b2-487a-a270-2f6ddeb872a3" LastKnownName="AppSiteFilter" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="bcef10fe-0c98-43c1-bf73-95c16fbf0145" name="AppSiteFilterSet" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="d06acbe2-0a32-4cd5-94a5-47e5e0388375" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="ea22f4dc-dbe7-40cf-8f37-26d1ba8665fe" name="AppSiteFilter" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="843d2e8c-3112-4a72-a292-6df807a3fa72" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="8f88e9b1-b54a-477f-87a9-344dae637fd8" />
+          </association>
+        </targetEnds>
+        <ownedAttributesInternal>
+          <property Id="692f898b-5bc6-4c0a-8a75-4a1be0cd5036" name="Filters" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <lowerValueInternal>
+              <literalString Id="13e5e566-9951-45e8-b9e8-2099cf176b60" name="Lower" value="*">
+                <elementDefinition Id="e3e97e66-0ef9-4524-9d4b-4b2d644b138d" />
+              </literalString>
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString Id="d92ea761-08b6-4826-8d0c-80098f3cab0f" name="Upper" value="*">
+                <elementDefinition Id="e1e58975-3444-4c45-89dc-04eb546d710c" />
+              </literalString>
+            </upperValueInternal>
+            <elementDefinition Id="257e612f-917a-4b3b-ae91-2927c320746e" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="338a167d-ecf3-49cf-9a0a-3bc46953862c" LastKnownName="AppSiteFilter" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+        <ownedOperationsInternal>
+          <operation Id="862a3281-cc0c-4a5c-b84c-39ff9a4d6651" name="IsMatch" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="06d9dbbb-b70a-4b05-8eb1-90f1555b0246" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="ab7ba95f-fbc2-4c3d-8b23-a9ad010e0c66" direction="Return">
+                  <elementDefinition Id="1967b804-d3a8-45ed-b9d9-8cd058cebc2a" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="4337f5a9-a26f-468f-b9d9-a81e564d029a" LastKnownName="Boolean" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="a595f6af-23e5-4824-b769-ea8350f539f2" name="ad" direction="In">
+                  <elementDefinition Id="3c136ade-d7f9-4f6b-bec9-a4798ba858c0" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="d5b27584-7574-48e6-8aa1-94439a45f609" LastKnownName="Ad" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="338a167d-ecf3-49cf-9a0a-3bc46953862c" name="AppSiteFilter" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::AppSiteFilter">
+        <elementDefinition Id="b05e61cd-c81f-4ac4-9aa2-8a7ba484db8b" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="a62180ca-ee8e-4b3e-a289-3255833afccf" name="KeywordsFilter" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="93373ae7-5d8b-4497-a494-86ebb4c30c9c" />
+        <generalsInternal>
+          <generalization Id="5a7e7d11-0507-4206-b691-0fc75ecb9b99" isSubstitutable="false">
+            <classMoniker Id="73ed6e67-72b2-487a-a270-2f6ddeb872a3" LastKnownName="AppSiteFilter" />
+            <elementDefinition Id="c187caae-0bd6-4cc7-b9b0-3dcea6504f22" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributesInternal>
+          <property Id="62e483d2-634d-43e5-93dc-de25d5d84121" name="Keyword" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="075883c6-76e1-47df-8f6e-f7bbf0e43d3d" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="f4feb476-c84b-4bbf-9740-cfe24382a635" LastKnownName="Keyword" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="53ce0119-b706-47f9-be2c-4787f5b237d2" name="String" isAbstract="false" isLeaf="false" cachedFullName="String">
+        <elementDefinition Id="59259974-6d55-42c6-b7bd-763d77ac8ef9" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="c6bc1704-6ab5-4708-b079-0a6df237f488" name="LanguageFilter" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="f71d9773-6c05-458e-a1f2-f18a67249c97" />
+        <generalsInternal>
+          <generalization Id="1f543705-9311-48b1-b944-61f738742e47" isSubstitutable="false">
+            <classMoniker Id="73ed6e67-72b2-487a-a270-2f6ddeb872a3" LastKnownName="AppSiteFilter" />
+            <elementDefinition Id="a1b4a406-a207-4cd9-b10a-dd3ab2fc92ce" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributesInternal>
+          <property Id="0cd3900a-f1e2-4564-9460-d5378c762bb1" name="Language" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="bcb02374-e2dd-4a91-918c-7e77adb7bf90" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="6ab002a0-645c-4df0-92ae-225d8f45a8b1" LastKnownName="Languages" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="6ab002a0-645c-4df0-92ae-225d8f45a8b1" name="Languages" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::Languages">
+        <elementDefinition Id="f7701af3-960a-4bff-a03b-42993589d1ac" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="fb417a24-164e-4225-8421-9277aeaf445d" name="TextFilter" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="5dcef179-7f5d-4ca4-bbc3-0a2050b7b949" />
+        <generalsInternal>
+          <generalization Id="3d0ebe9c-75d9-41d1-b070-7f22cf2c2fd8" isSubstitutable="false">
+            <classMoniker Id="73ed6e67-72b2-487a-a270-2f6ddeb872a3" LastKnownName="AppSiteFilter" />
+            <elementDefinition Id="602e5c46-cf98-4e78-b316-5091cf176c2d" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributesInternal>
+          <property Id="f22bfd20-a1a8-4dc2-a167-4ebaa2522428" name="MatchType" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="fbc2375e-51cc-4120-a369-3a4d3c31c556" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="f40db057-42f5-45b9-b867-1fcff5d726e8" LastKnownName="MatchType" />
+            </type_NamedElement>
+          </property>
+          <property Id="c67da98a-f23d-4ac8-bcb8-96ac08c7e2ed" name="Text" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="9cf1a3e3-7930-468f-bd05-d4e1246967df" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="53ce0119-b706-47f9-be2c-4787f5b237d2" LastKnownName="String" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="f40db057-42f5-45b9-b867-1fcff5d726e8" name="MatchType" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::MatchType">
+        <elementDefinition Id="2d2791a9-b957-4181-95d8-10a77072e444" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="e70b6ab9-8ab8-4efd-9f23-458a3319e532" name="UrlFilter" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="6b7fcd24-67b3-447a-933e-13ecb830eff7" />
+        <generalsInternal>
+          <generalization Id="72039358-cda1-48e1-add5-e90d44c952f0" isSubstitutable="false">
+            <classMoniker Id="73ed6e67-72b2-487a-a270-2f6ddeb872a3" LastKnownName="AppSiteFilter" />
+            <elementDefinition Id="997171df-6250-4db9-a39a-2f4b95c350d2" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributesInternal>
+          <property Id="d562f7a7-f62f-4b03-b0a8-78df272994cf" name="URL" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="0713034e-3b54-4864-8eaa-7555249cf919" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="53ce0119-b706-47f9-be2c-4787f5b237d2" LastKnownName="String" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <enumeration Id="2a3bc4bf-2330-45eb-ac9d-0a5daf2a9e5f" name="AppSiteFilterType" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="c3e679e3-6968-4dbc-9f64-c59cbe5b7c00" />
+        <ownedLiterals>
+          <enumerationLiteral Id="6097599f-0d8e-4236-ad07-6af3134ec269" name="TextFilter">
+            <elementDefinition Id="a74781fd-5eb5-4722-b296-5871c8bebfbc" />
+          </enumerationLiteral>
+          <enumerationLiteral Id="7df2b5f8-bdeb-4af6-9030-22fabf4dc6d2" name="LanguageFilter">
+            <elementDefinition Id="35380a5f-f38f-4e6e-8fa1-91259b983d99" />
+          </enumerationLiteral>
+          <enumerationLiteral Id="1db3dbfb-5cd1-49a5-a5d6-698d739b8303" name="UrlFilter">
+            <elementDefinition Id="a23b4097-f7b7-4852-880c-894e9eda0b66" />
+          </enumerationLiteral>
+          <enumerationLiteral Id="3d1581c3-f43a-49dd-9445-a961ca6b4e0d" name="KeywordFilter">
+            <elementDefinition Id="e9730a3e-cbe5-46a3-a3f6-9692d12ebe1b" />
+          </enumerationLiteral>
+        </ownedLiterals>
+      </enumeration>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="f4feb476-c84b-4bbf-9740-cfe24382a635" name="Keyword" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::Keyword">
+        <elementDefinition Id="14835b36-8a71-4967-accb-a95c27ade5c3" />
+      </referencedType>
+    </packageHasNamedElement>
+  </packagedElements>
+  <package Id="c16bd10d-bb14-4be5-a11b-3834f909e14a" name="Noqoush.AdFalcon.Modeling">
+    <elementDefinition Id="279b6b6b-303f-4465-b086-4f3a45a723be" />
+    <profileInstances>
+      <packageHasProfileInstances Id="5d121805-0bd7-438d-89ff-7f731cb47ca4">
+        <profileInstance Id="80515807-2b5c-42ad-952c-7ade100c2eb2" name="StandardProfileL2">
+          <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+        </profileInstance>
+        <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+      </packageHasProfileInstances>
+      <packageHasProfileInstances Id="5db8ccc8-1d7a-4cad-93e9-3e627d5e2c88">
+        <profileInstance Id="569619b5-25a9-4dbc-86d5-8ea10f6d5e3b" name="StandardProfileL3">
+          <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+        </profileInstance>
+        <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+      </packageHasProfileInstances>
+    </profileInstances>
+  </package>
+</logicalClassDesignerModel>

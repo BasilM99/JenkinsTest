@@ -1,0 +1,219 @@
+﻿@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core
+@model ArabyAds.AdFalcon.Administration.Web.Controllers.Model.Lookup.AudienceSegmentViewModel
+<style>
+    .hide {
+        display: none;
+    }
+</style>
+<form id="AudienceSegmentSave">
+
+    <div class="data-row data-container">
+
+        @await Html.PartialAsync("~/Views/Lookup/EditorTemplates/LocalizedString.cshtml", Model.AudienceSegment.Name)
+
+
+    </div>
+    @Html.HiddenFor(p => (p.LookupDto as AudienceSegmentDto).ID, new { id = "AudienceID" })
+    @Html.HiddenFor(p => (p.LookupDto as AudienceSegmentDto).ParentId)
+
+
+
+    @*<div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("Advertiser", "Global")</span>
+            </div>
+            <div class="field-container">
+                <input type="text" id="AdvertiserId" name='AdvertiserId'
+                       style="display:none;" />
+                @{
+                    var AdvertiserAutoComplete = ViewBag.AdvertiserAutoComplete as ArabyAds.AdFalcon.Web.Controllers.Model.AutoComplete;
+                    @Html.Partial("Autocomplete", AdvertiserAutoComplete)
+                    <span class="floating-left">
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                    </span>
+                    @Html.Partial("MoreInfo", "Selectadvertiser", new ViewDataDictionary { { "Class_Tail", "tail-report" }, { "Style2", "width: 380px; float:none;" } })
+
+                }
+
+
+            </div>
+
+        </div>*@
+
+    @*------------------------------------------------------------------------------------------------*@
+
+    @*@{
+            var showSegmentParent = Model.AudienceSegment.ParentId == 0 ? "hide" : null;
+        }*@
+
+
+
+
+
+    <script>
+      
+    </script>
+
+
+
+
+
+
+    <div class="data-row data-container" id="showSegmentParent" >
+        <div class="label-container2">
+            <span class="field-title required-field">Segment Parent</span>
+        </div>
+        <div class="field-container">
+            <input type="text" id="AdvertiserId" name='AdvertiserId'
+                   style="display:none;" />
+            @{
+
+                ViewBag.AudienceSegmentAutoComplete = new ArabyAds.AdFalcon.Web.Controllers.Model.AutoComplete()
+                {
+                    Id = "Segments_Name",
+                    Name = "Segments.Name",
+                    ActionName = "GetAudienceSegmentsResult",
+                    ControllerName = "Lookup",
+                    LabelExpression = "item.Name",
+                    ValueExpression = "item.Id",
+                    IsAjax = true,
+                    IsRequired = false,
+                    UseValueId = true,
+                    ValueIdName = "LookupTypes",
+                    ChangeCallBack = "SegmentChanged",
+                    CurrentText = ""
+                };
+
+
+                var AudienceSegmentAutoComplete = ViewBag.AudienceSegmentAutoComplete as ArabyAds.AdFalcon.Web.Controllers.Model.AutoComplete;
+                @await Html.PartialAsync("Autocomplete", AudienceSegmentAutoComplete)
+                <span class="floating-left">
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                </span>
+
+
+            }
+            <span class="field-title required-field" id="ParentIdError" style="display:none; color: white;
+    background: #bd006b;
+    font-size: 10px;
+    padding: 5px 5px 5px 5px;
+    border-radius: 2px;
+    margin: 3px;">*You Can Not Remove Parent</span>
+
+        </div>
+
+    </div>
+
+    @*-------------------------------------------------------------------------------*@
+    <script>
+
+
+        function SegmentChanged(event, item) {
+           
+            if ((typeof (item) != "undefined") && (item != null)) {
+
+                $('#ParentIdError').css('display', 'none');
+                $('[name="ParentId"]').val(item.ID);
+
+            }
+            else {
+                //$('[name="ParentId"]').val('');
+                $('#ParentIdError').css('display', 'inline');
+                $('#Segments_Name').attr("required", "required");
+                return;
+            }
+            clearErrorMessage("party-divErrorMessages");
+            $('#ParentIdError').css('display', 'none');
+            $('input[id="CustomName"]').val($('input[id="Segments_Name"]').val());
+        }
+
+
+
+    </script>
+
+
+    <div class="data-row data-container">
+        <div class="label-container2">
+            <span class="field-title required-field">Segment Code</span>
+        </div>
+        <div class="field-container">
+            @Html.AdFalconTextBoxFor(p => (p.LookupDto as AudienceSegmentDto).CodeUQ)
+            @Html.ValidationMessageFor(p => (p.LookupDto as AudienceSegmentDto).CodeUQ)
+        </div>
+    </div>
+
+    <div class="data-row data-container">
+        <div class="label-container2">
+
+
+            <span class="field-title required-field">Operator Segment Code</span>
+        </div>
+
+        <div class="field-container">
+            @Html.AdFalconTextBoxFor(p => (p.LookupDto as AudienceSegmentDto).OperatorSegmentCode)
+            @Html.ValidationMessageFor(p => (p.LookupDto as AudienceSegmentDto).OperatorSegmentCode)
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container2">
+            <span class="field-title required-field">@Html.GetResource("Price", "SSPFloorPrices")</span>
+        </div>
+        <div class="field-container">
+            @Html.AdFalconTextBoxFor(p => (p.LookupDto as AudienceSegmentDto).Price, new { maskType = "decimal", onkeypress = "onbidpress(event,this); " })
+            @Html.ValidationMessageFor(p => (p.LookupDto as AudienceSegmentDto).Price)
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container2">
+            <span class="field-title">@Html.GetResource("Description", "Campaign")</span>
+        </div>
+        <div class="field-container">
+            @Html.TextAreaFor(p => (p.LookupDto as AudienceSegmentDto).Description, new { @class = "text-box", rows = 5, cols = 5, style = "width: 250px;" })
+            @Html.ValidationMessageFor(p => (p.LookupDto as AudienceSegmentDto).Description)
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container2">&nbsp;</div>
+        <div class="field-container go-center">
+            @Html.GetCheckBox("IsSelectedable", Html.GetResource("IsSelectedable", "Audience"), isChecked: Model.AudienceSegment.IsSelectedable)
+        </div>
+    </div>
+    <div class="data-row data-container" id="IsDeletedAudSeg" style="display:none">
+        <div class="label-container2">&nbsp;</div>
+        <div class="field-container go-center">
+            @Html.GetCheckBox("IsDeleted", Html.GetResource("Delete", "Commands"), isChecked: Model.AudienceSegment.IsDeleted)
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container2">&nbsp;</div>
+        <div class="field-container go-center">
+            @Html.GetCheckBox("IsPermissionNeed", Html.GetResource("IsPermissionNeed", "AudianceSegment"), isChecked: Model.AudienceSegment.IsPermissionNeed)
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container3">&nbsp;&nbsp;&nbsp;</div>
+
+        @*<div class="field-container">
+                <input type="button" value='@Html.GetResource("Save", "Commands")' class="primary-btn" onclick="save()" />
+            </div>*@
+    </div>
+
+
+
+</form>
+<script>
+    $(document).ready(function () {
+        
+        function ShowParentSegmetnt() {
+       
+            //if ($("#ParentId").val() == 0)
+            //{
+            //    $('#showSegmentParent').css('display', 'none');
+            //}
+            //else
+            //{
+            //    $('#showSegmentParent').css('display', 'inline-block');
+            //}
+        }
+    });
+</script>

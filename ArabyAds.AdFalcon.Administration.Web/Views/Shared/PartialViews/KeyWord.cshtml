@@ -1,0 +1,154 @@
+﻿@using ArabyAds.AdFalcon.Web.Controllers.Model
+@model ArabyAds.AdFalcon.Web.Controllers.Model.AppSite.KeywordViewModel
+<script>
+    var currentKeyword = null;
+    var allow_insert = @(Model.AllowInsert.ToString().ToLower());
+    $( document ).ready(function() {
+        $("#Keywords").find("a").each(function() {
+            var e = this;
+            $("#keywordTags").find("a").each(function () {
+                var x = this;
+                if(e.innerText.replace(/\s/g, '') == x.innerText.replace(/\s/g, ''))
+                {
+                    jQuery(x).hide();
+                }
+            });
+        });
+    });
+    function AddTag(elem, id, dispalValue) {
+        CheckIfItExists(id);
+        if ((CheckFoundText(dispalValue)) || (CheckFound(id))) {
+            return;
+        }
+        jQuery("#Keywords").append("<a keywordId=" + id + " href='javaScript:void(0);'>" + dispalValue + "<span  onclick='RemoveTag(this,false);'></span><input id='NewKeywords' name='@(Model.Prefix)NewKeywords' value='" + id + "' type='hidden' /></a>");
+        if (!elem)
+        {
+            jQuery("#keywordTags").find('[keywordId="' + id + '"]').hide();
+        }
+        else {
+            jQuery(elem).hide();
+        }
+        if (typeof (getBid) != 'undefined') {
+            keywordHnadler(dispalValue, true);
+            getBid();
+        }
+
+    }
+    function CheckIfItExists(id)
+    {
+
+        if(jQuery("#deletedKeywords").find('[value="' + id + '"]').length>0)
+        {
+            jQuery("#deletedKeywords").find('[value="' + id + '"]').remove();
+        }
+
+    }
+    function CheckFound(id) {
+        return jQuery("#Keywords").find('[keywordId="' + id + '"]').length > 0;
+    }
+
+    function RemoveTag(elemspan, isOld) {
+        var elem = jQuery(elemspan).parent();
+        var id = elem.attr('keywordId');
+        jQuery("#keywordTags").find('[keywordId="' + id + '"]').show();
+        elem.remove();
+        if (isOld) {
+            jQuery("#deletedKeywords").append("<input id='DeletedKeywords' name='@(Model.Prefix)DeletedKeywords' value='" + id + "' type='hidden' />");
+        }
+        if (typeof (getBid) != 'undefined') {
+            keywordHnadler(elem.text(), false);
+            getBid();
+
+        }
+    }
+    function CheckFound(id) {
+        return jQuery("#Keywords").find('[keywordId="' + id + '"]').length > 0;
+    }
+    function CheckFoundText(dispalValue) {
+        dispalValue=dispalValue.toLowerCase();
+        var items=$("#Keywords").children().filter(function (){
+            return $(this).text().toLowerCase() == dispalValue;
+        });
+        return items.length > 0;
+    }
+    function AddValue() {
+        if (currentKeyword) {
+            if (!CheckFound(currentKeyword.ID)) {
+                AddTag(null, currentKeyword.ID, currentKeyword.Name.Value);
+                currentKeyword = null;
+                jQuery("#@(Model.KewordAuto.Id)").val('');
+            }
+        }
+        else {
+            if(allow_insert)
+            {
+                var keywordName = jQuery("#@(Model.KewordAuto.Id)");
+                if (keywordName.val() != '') {
+                    AddTag(null, keywordName.val(), keywordName.val());
+                    keywordName.val('');
+                }
+            }
+        }
+    }
+    function KewordChanged(event, item) {
+        currentKeyword = item;
+    }
+    function getKeywords() {
+        var Keywords = new Array();
+        jQuery('#Keywords').find('a[keywordId]').each(function () {
+            var id = jQuery(this).attr('keywordId');
+            id = parseInt(id);
+            if (isNaN(id))
+                id = "-1";
+            Keywords[Keywords.length] = id;
+        });
+        return Keywords;
+    }
+
+    function getDeletedKeywords() {
+
+        var DeletedKeys = [];
+        var DeletedKeysDiv = document.getElementById('deletedKeywords').children;
+        for (var i = 0; i < DeletedKeysDiv.length; i++) {
+            DeletedKeys.push(DeletedKeysDiv[i].defaultValue);
+        }
+        return DeletedKeys;
+    }
+
+</script>
+<div id="deletedKeywords">
+</div>
+<div class="fields-nextto-cloud floating-left">
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("ContentCategories", "Global")</span>
+        </div>
+        <div class="field-container">
+            <div class="floating-left" style="width: 230px">
+                @Html.Partial("Autocomplete", Model.KewordAuto)
+            </div>
+            <a href="javaScript:void(0);" class="add-new-ketword" onclick="AddValue();">@Html.GetResource("Add", "Keywords")</a>
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title ">&nbsp;</span>
+        </div>
+        <div class="field-container">
+            <div id="Keywords" class="cloud-area">
+                @foreach (var keyword in Model.Keywords)
+                {
+                    <a keywordid=@keyword.ID href='javaScript:void(0);'>@keyword.Name<span onclick='RemoveTag(this,true);'></span></a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div id="keywordTags" class="word-cloud iea-go-right floating-left go-left ">
+    @foreach (var tagCloud in Model.KeywordTags)
+    {
+        <a href="javaScript:void(0);" keywordid='@tagCloud.Id' onclick="AddTag(this,@tagCloud.Id,'@tagCloud.DispalValue');">
+            <span class=fontSize@(tagCloud.Rank)>@tagCloud.DispalValue</span>
+        </a>
+    }
+</div>

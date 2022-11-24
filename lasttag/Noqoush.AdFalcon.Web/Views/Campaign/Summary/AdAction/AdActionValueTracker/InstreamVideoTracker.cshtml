@@ -1,0 +1,36 @@
+﻿@model   Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeUnitTrackerDto
+@{
+    Layout = null;
+}
+
+@{
+    if (Model.ImpressionURls != null)
+    {
+        int i = 0;
+        int counter = Model.ImpressionURls.Count();
+        foreach (var item in Model.ImpressionURls)
+        {
+            <div class="data-row info-container last-container" id="trackerContainer@(i)@(Model.AdGroupEventId)">
+                <div class="label-container">
+                    <span class="field-title required-field">
+                        @if (i == 0)
+                        {
+                            <text>@Model.AdGroupEventName</text>
+
+                        }
+                        else
+                        {
+                            <text>-</text>
+
+                        }
+                    </span>
+                </div>
+                <div class="field-container">
+                    <a class="side-text" href="@item.URL" target="_tab">@item.URL</a>
+                </div>
+            </div>
+                        {
+                            i++;
+                        }
+        }
+    }}

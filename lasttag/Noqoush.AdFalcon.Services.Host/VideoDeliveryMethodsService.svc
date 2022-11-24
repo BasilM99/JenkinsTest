@@ -1,0 +1,4 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="VideoDeliveryMethodsService" 
+Factory="Castle.Facilities.WcfIntegration.DefaultServiceHostFactory, Castle.Facilities.WcfIntegration" %>
+
+

@@ -1,0 +1,90 @@
+﻿
+@model Noqoush.AdFalcon.Web.Controllers.Model.Campaign.CreativeViewModel
+<h2>
+<div class="grid-title-container floating-left">
+    <span class="trimed-span">@Html.GetResource("ThirdpartyHeader", "Campaign")</span>
+</div>
+@*<div class="grid-cogwheel-container floating-right go-right">
+    <a name="iconImage" onclick="ShowAdvanceSetting()" id="adv" class="maximize" style="display: inline; margin-right: 5px; margin-top: 10px;"></a>
+</div>
+    *@
+</h2>
+<div class="section-form-inner-container" id="AdvanceSettingdiv" style="display:none;">
+    <div class="section-form-inner-container info-container">
+        <div class=" data-container">
+            <div class="label-container" style=" width: 150px;">
+                <span class="field-title required-field"> @Html.GetResource("EditUrlVideoCreative", "Creative")</span>
+            </div>
+            <div class="field-container">
+                <textarea class="text-box" style="width:590px;height: 50px;" cols="20" id="AdCreativeDto_WrapperContent" name="AdCreativeDto.WrapperContent" onchange="UrlVideoCreativeValidation()" rows="10">@Html.Raw(Model.AdCreativeDto.WrapperContent)</textarea>
+                @Html.Partial("MoreInfo", "ThirdTagURLDesc", new ViewDataDictionary { { "Class_Tail", "tail-report" }, { "Style2", "float:none;" } })
+                <span class="validation-arrow field-validation-error errorURLEnteredCTA" id="UrlVideoCreative-errorDiv"  style="display:none;">
+                    <span class=""></span>
+                </span>
+                @*<input class="save-button" name="Create1" onclick="openFirstDialog();" type="button" value="First Dialog" style="width: 150px;">*@
+            </div>
+            @*<div class="label-container" style="min-height:1px;width:20px;text-align:center">
+
+                @Html.Partial("MoreInfo", "ThirdTagURLDesc", new ViewDataDictionary { { "Class_Tail", "tail-report" }, { "Style2", "float:none;" } })
+
+
+
+            </div>*@
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    function ShowAdvanceSetting() {
+
+        if (!$("#AdvanceSettingdiv").is(":visible")) {
+            $("#adv").attr("class", "minimize");
+
+
+            $("#AdvanceSettingdiv").show();
+
+        } else {
+            $("#adv").attr("class", "maximize");
+
+            $("#AdvanceSettingdiv").hide();
+
+        }
+
+    }
+
+    function UrlVideoCreativeValidation() {
+        let UrlVideoCreativeVal = $('#AdCreativeDto_WrapperContent').val();
+        UrlVideoCreativeVal = UrlVideoCreativeVal.trim();
+        //let UrlVideoCreativeBool = (/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/.test(UrlVideoCreativeVal)) ? true : false;
+
+
+        let UrlVideoCreativeBool = ValidateUrl($('#AdCreativeDto_WrapperContent'), "UrlVideoCreative-errorDiv");
+
+
+        let ContainsVastTagUrl = UrlVideoCreativeVal.includes("{VAST_TAG_URL}");
+        if ((!UrlVideoCreativeBool) && UrlVideoCreativeVal != "" ) {
+            //showErrorMessage("The Url address is invalid.");
+            $('#lblUrl').css("width", "50")
+            $('#UrlVideoCreative-errorDiv').show();
+            $('#UrlVideoCreative-errorDiv > span')[0].textContent = "@Html.GetResource("UrlMsg", "Global")";
+            $('#UrlVideoCreative').val("");
+        } else if((UrlVideoCreativeBool && !ContainsVastTagUrl) && UrlVideoCreativeVal != "") {
+            $('#lblUrl').css("width", "50")
+            $('#UrlVideoCreative-errorDiv').show();
+            $('#UrlVideoCreative-errorDiv > span')[0].textContent = "@Html.GetResource("VastTagUrlMsg", "Global")";
+        }else {
+            $('#lblUrl').css("width", "200")
+            $('#UrlVideoCreative-errorDiv').hide();
+        }
+    }
+
+    jQuery(document).ready(function () {
+           $("#AdvanceSettingdiv").show();
+    });
+
+
+
+
+</script>

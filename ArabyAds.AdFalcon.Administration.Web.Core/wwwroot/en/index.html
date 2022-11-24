@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<!-- Favicon
+======================================================================== -->
+<link rel="icon" href="images/adfalcon.ico">
+<!-- Meta
+======================================================================== -->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Title
+======================================================================== -->
+<title>AdFalcon - The first mobile advertising network in the middle east</title>
+<!-- CSS Styles
+======================================================================== -->
+<link href="http://fonts.googleapis.com/css?family=Ubuntu:400,500" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="css/style.css" media="screen" />
+<link rel="stylesheet" href="css/colors/color-green.css" media="screen" id="colors" />
+<link rel="stylesheet" href="css/revslider.css" media="screen" />
+<link rel="stylesheet" href="css/font-awesome.css" media="screen" />
+<link rel="stylesheet" href="css/zocial.css" media="screen" />
+<link rel="stylesheet" href="css/responsive.css" media="screen" />
+<link rel="stylesheet" href="http://mobpages.adfalcon.com/files/override.css" media="screen" />
+
+<!-- JavaScript
+======================================================================== -->
+<script src="http://code.jquery.com/jquery-1.8.2.min.js" type="text/javascript"></script>
+<script>
+$(document).ready(function() {
+  var is_current = $('#advertise_btn').hasClass('current');
+
+  $('#menu_hook').mouseover(function() {
+    $('#flyout_menu1 ul').css('display', 'block');
+    $('#advertise_btn a').css('color', '#B11F57');
+    if (is_current === true) $('#advertise_btn a').css('color', '#fff');
+    $(this).css('cursor', 'pointer');
+  });
+  $('#menu_hook').click(function() {
+    var _href = $('#advertise_btn a').attr('href');
+    window.open(_href, '_self');
+  });
+  $('#flyout_menu1').mouseleave(function() {
+    $('#flyout_menu1 ul').css('display', 'none');
+    $('#advertise_btn a').css('color', '#333');
+    if (is_current === true) $('#advertise_btn a').css('color', '#fff');
+  });
+});
+</script>
+<script src="js/jquery.themepunch.plugins.min.js"></script>
+<script src="js/jquery.themepunch.revolution.min.js"></script>
+<script src="js/jquery.modernizr.js"></script>
+<script src="js/respond.min.js"></script>
+<script src="js/jquery.totemticker.js"></script>
+<script src="js/custom.js"></script>
+<script src="js/common.js"></script>
+<script src="js/jssor.slider.min.js"></script>
+
+<!-- Google Analytics Code
+======================================================================== -->
+<script>
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-25905897-1']);
+_gaq.push(['_setDomainName', 'adfalcon.com']);
+_gaq.push(['_trackPageLoadTime']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+    var ga = document.createElement('script');
+    ga.type = 'text/javascript';
+    ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(ga, s);
+})();
+</script>
+</head>
+
+<body>
+<!-- Body Wrapper -->
+<div id="body-wrapper">
+<!-- Header
+======================================================================== -->
+<div id="header">
+    <div class="container">
+        <div class="one-fifth ani" data-gen="fadeInLeft" data-gen-offset="bottom-in-view">
+            <div id="logo">
+                <a href="index.html"><img src="images/logo.png" alt="logo"></a>
+            </div>
+        </div>
+        <div class="four-fifth column-last ani" data-gen="fadeInRight" data-gen-offset="bottom-in-view">
+            <div class="top-line">
+                <div class="container">
+                    <div id="language-ar"><a href="../ar/index.html">&nbsp;</a></div>
+                    <div class="socials">
+                        <ul class="socials_list">
+                            <li>
+                                <a href="https://twitter.com/AdFalconMENA" title="twitter" class="black zocial twitter" target="_blank"></a>
+                            </li>
+                            <li>
+                                <a href="https://www.facebook.com/AdFalconMENA" title="facebook" class="black zocial facebook" target="_blank"></a>
+                            </li>
+                            <li>
+                                <a href="https://www.linkedin.com/company/adfalconmena/about/" title="linkedin" class="black zocial linkedin" target="_blank"></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="loginInfoContainer" class="desktop"></div>
+                </div>
+            </div>
+            <!-- .top_line -->
+            <!-- Logo -->
+            <!-- Main Menu-->
+            <ul id="navigation">
+                <li class="current"> <a href="index.html">Home</a> </li>
+                <li> <a href="monetize.html">Monetize</a> </li>
+                <li id='advertise_btn'>
+                  <a href="advertise.html">Advertise</a>
+                  <div id='flyout_menu1'>
+                    <div id='menu_hook'></div>
+                    <ul>
+                      <li><a href='advertise.html'>AdFalcon Network</a></li>
+                      <li><a href='adm/adm.html'>AdFalcon Demand Manager</a></li>
+                    </ul>
+                  </div>
+                </li>
+                <li> <a href="media-agencies.html">Agencies</a> </li>
+                <li> <a href="adm/main.html">Telcos</a> </li>
+                <li> <a href="adgallery.html">Ad Gallery</a></li>
+                <li> <a href="casestudies/casestudies.html">Case Studies</a></li>
+                <li> <a href="about.html">About Us</a> </li>
+                <li> <a class="navigation-last" href="contact.html">Contact</a> </li>
+            </ul>
+            <!-- Navigation / End -->
+
+            <!-- Mobile Navigation -->
+            <form id="mobile-nav" class="mobileonly">
+                <div>
+                    <select onChange="window.location.replace(this.options[this.selectedIndex].value)">
+                        <option value="">Navigation Menu ▼</option>
+                        <option value="index.html">Homepage</option>
+                        <option value="monetize.html">Monetize</option>
+                        <option value="advertise.html">Advertise</option>
+<option value="adm/adm.html">AdFalcon Demand Manager</option>
+                        <option value="media-agencies.html">Media Agencies</option>
+                        <option value="adm/main.html">Telcos</option>
+                        <option value="adgallery.html">Ad Gallery</option>
+                        <option value="casestudies/casestudies.html">Case Studies</option>
+                        <option value="about.html">About Us</option>
+                        <option value="contact.html">Contact</option>
+                    </select>
+                </div>
+            </form>
+            <!-- -->
+
+        </div>
+    </div>
+</div>
+<!-- Header / End -->
+<!-- Slider
+======================================================================== -->
+<div class="revslider-wrapper fullwidth">
+    <div class="revslider">
+        <ul>
+
+          <!-- DSP slide -->
+          <li data-masterspeed="400" data-slotamount="12" data-transition="fade">
+            <img src="images/slider/revslider/dsp_bg.jpg" height="550" alt="">
+              <div class="caption sfb" data-x="70" data-y="70" data-speed="1000" data-start="400" data-easing="easeOutExpo">
+                <h2 class="revslider-block color-black">AdFalcon’s next generation demand side platform</h2>
+                <br> <br>
+                <h4 class="revslider-block color-black">Intuitive functionality <br> with powerful bidding <br> and optimization infrastructure</h4>
+              </div>
+
+              <div class="caption lfb str start" data-x="70" data-y="300" data-speed="500" data-start="800" data-easing="easeOutExpo">
+                <a href="adm/adm.html" class="button big green-darkgray">More information</a>
+              </div>
+          </li>
+
+
+            <!-- AdFalconX slide -->
+            <li data-masterspeed="400" data-slotamount="12" data-transition="fade">
+              <img src="images/slider/revslider/adfalconxBg.jpg" height="550" alt="">
+                <div class="caption sfb" data-x="100" data-y="100" data-speed="1000" data-start="800" data-easing="easeOutExpo">
+                    <img src="images/slider/revslider/adfalconxTitle.png" alt="">
+                </div>
+
+                <div class="caption sfb" data-x="170" data-y="200" data-speed="1000" data-start="2200" data-easing="easeOutExpo">
+                    <img src="images/slider/revslider/adfalconxLogo.png" alt="">
+                </div>
+
+                <div class="caption lfb str start" data-x="420" data-y="400" data-speed="500" data-start="3000" data-easing="easeOutExpo">
+                  <a href="news/2016/march21.html" class="button big green-darkgray">Read more about AdFalconX</a>
+                </div>
+            </li>
+
+            <!-- App Booster slide -->
+            <li data-masterspeed="400" data-slotamount="12" data-transition="fade">
+              <img src="images/slider/revslider/appBoosterBg.png" height="550" alt="">
+              <div class="caption sfb" data-x="460" data-y="100" data-speed="1000" data-start="300" data-easing="easeOutExpo">
+                <img src="images/slider/revslider/appBoosterImg.png" alt="Image 1"> </div>
+              <div class="caption lfb" data-x="70" data-y="90" data-speed="800" data-start="300" data-easing="easeOutExpo">
+                  <h3 class="revslider-block color-white">Boost your way to</h3>
+                  <h3 class="revslider-block color-white">new heights!</h3>
+              </div>
+              <div class="caption small_black sfr" data-x="70" data-y="205" data-speed="800" data-start="600" data-easing="easeOutExpo">
+                <h4 class="color-white">with AdFalcon's</h4>
+              </div>
+              <div class="caption small_black sfr" data-x="70" data-y="225" data-speed="800" data-start="900" data-easing="easeOutExpo">
+                <h1 class="color-white">App Booster</h1>
+              </div>
+              <div class="caption lfb" data-x="70" data-y="320" data-speed="800" data-start="1500" data-easing="easeOutExpo">
+                <div class="revslider-block color-white">The leading app performance solution
+                <br /> in the Middle East
+                </div>
+              </div>
+              <div class="caption lfb str start" data-x="70" data-y="405" data-speed="500" data-start="3000" data-easing="easeOutExpo">
+                <a href="appbooster.html" class="button big green-darkgray">Learn more</a>
+              </div>
+            </li>
+
+            <!-- New Ad Formats slide -->
+            <li data-masterspeed="400" data-slotamount="4" data-transition="fade"> <img src="images/slider/revslider/slide5.jpg" height="550" alt="">
+                <div class="caption sfb" data-x="500" data-y="20" data-speed="1000" data-start="300" data-easing="easeOutExpo"><img src="images/adformats/homepage-slide.png" alt="Image 1"> </div>
+                <div class="caption small_black sfr" data-x="70" data-y="80" data-speed="800" data-start="500" data-easing="easeOutExpo">
+                    <h1 class="color-white">Exciting New <br/>Ad Formats</h1>
+                </div>
+                <div class="caption lfb" data-x="70" data-y="250" data-speed="800" data-start="800" data-easing="easeOutExpo">
+                    <div class="revslider-block color-white">Take a look at our newset ad fromats:
+                        <br /> Native ads, Geo Plus, &amp; Video Plus
+                        <br />
+                        <br /> The best has just got better!</div>
+                </div>
+                <div class="caption lfb str start" data-x="70" data-y="370" data-speed="500" data-start="1500" data-easing="easeOutExpo"><a href="adformats.html" class="button big green-darkgray">Check them out</a> </div>
+            </li>
+
+            <!-- Introductory Video Slide -->
+            <li data-masterspeed="400" data-slotamount="4" data-transition="fade"> <img src="images/slider/revslider/slide2.jpg" height="550" alt="">
+                <div class="caption sfb" data-x="400" data-y="60" data-speed="1000" data-start="300" data-easing="easeOutExpo">
+
+                    <iframe style="border-radius:5px;" src="http://player.vimeo.com/video/82613405?title=0&amp;byline=0&amp;portrait=0&amp;color=ff0179" width="650" height="366" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                </div>
+
+                <div class="caption lfb" data-x="70" data-y="110" data-speed="800" data-start="800" data-easing="easeOutExpo">
+                    <div class="revslider-block color-white">Welcome to</div>
+                </div>
+                <div class="caption small_black sfr" data-x="70" data-y="130" data-speed="800" data-start="500" data-easing="easeOutExpo">
+                    <h1 class="color-white"><span style="color:#cc0066">Ad</span>Falcon</h1>
+                </div>
+                <div class="caption lfb" data-x="70" data-y="240" data-speed="800" data-start="800" data-easing="easeOutExpo">
+                    <div class="revslider-block color-white">We are the first mobile advertising
+                        <br /> network in the Middle East.
+                        <br />
+                        <br /> Please watch our feature video
+                        <br /> to learn about the many ways
+                        <br /> we can serve you.</div>
+                </div>
+
+            </li>
+
+            <!-- Rich Media Slide -->
+            <li data-masterspeed="400" data-slotamount="4" data-transition="fade"> <img src="images/slider/revslider/slide1.jpg" height="550" alt="">
+                <div class="caption sfb" data-x="500" data-y="50" data-speed="1000" data-start="300" data-easing="easeOutExpo"><img src="images/richmedia-devices2.png" alt="Image 1"> </div>
+                <div class="caption small_black sfr" data-x="70" data-y="100" data-speed="800" data-start="500" data-easing="easeOutExpo">
+                    <h1 class="color-white">Rich Media</h1>
+                </div>
+                <div class="caption lfb" data-x="70" data-y="195" data-speed="800" data-start="800" data-easing="easeOutExpo">
+                    <div class="revslider-block color-white">Take a look at our rich media ads and see for yourself
+                        <br /> how interactive, fun and enticing they are.
+                        <br />
+                        <br /> Maximize your campaign’s objectives with our creative
+                        <br /> mobile ads.</div>
+                </div>
+                <div class="caption lfb str start" data-x="70" data-y="340" data-speed="500" data-start="1500" data-easing="easeOutExpo"><a href="adgallery.html" class="button big green-darkgray">Visit our Rich Media Gallery</a> </div>
+            </li>
+
+            <!-- Advertising Slide -->
+            <li data-masterspeed="400" data-slotamount="5" data-transition="fade"> <img src="images/slider/revslider/slide3.jpg" height="550" alt="">
+                <div class="caption sfb" data-x="600" data-y="20" data-speed="1000" data-start="300" data-easing="easeOutExpo"><img src="images/avertise.png" alt="Image 1"> </div>
+                <div class="caption small_black sfr" data-x="70" data-y="100" data-speed="800" data-start="500" data-easing="easeOutExpo">
+                    <h1 class="color-white">Advertise</h1>
+                </div>
+                <div class="caption lfb" data-x="70" data-y="195" data-speed="800" data-start="1000" data-easing="easeOutExpo">
+                    <div class="revslider-block color-white">Take advantage of the region’s first and biggest mobile
+                        <br /> advertising network and bring your clients cutting edge,
+                        <br /> efficient and creative advertising solutions.</div>
+                </div>
+                <div class="caption lfb str start" data-x="70" data-y="320" data-speed="500" data-start="1500" data-easing="easeOutExpo"><a href="advertise.html" class="button big green-darkgray">Start your campaign now</a> </div>
+            </li>
+
+            <!-- Monetizing Slide -->
+            <li data-masterspeed="400" data-slotamount="4" data-transition="fade"> <img src="images/slider/revslider/slide2.jpg" height="550" alt="">
+                <div class="caption sfb" data-x="550" data-y="50" data-speed="1000" data-start="300" data-easing="easeOutExpo"><img src="images/monetize.png" alt="Image 1"> </div>
+                <div class="caption small_black sfr" data-x="70" data-y="100" data-speed="800" data-start="500" data-easing="easeOutExpo">
+                    <h1 class="color-white">Monetize</h1>
+                </div>
+                <div class="caption lfb" data-x="70" data-y="195" data-speed="800" data-start="1000" data-easing="easeOutExpo">
+                    <div class="revslider-block color-white">Only two simple steps to start making the best out of your
+                        <br /> apps and maximizing your revenue. Join AdFalcon’s publishers
+                        <br /> network today and get the most competitive eCPM in the region.</div>
+                </div>
+                <div class="caption lfb str start" data-x="70" data-y="320" data-speed="500" data-start="1500" data-easing="easeOutExpo"><a href="monetize.html" class="button big green-darkgray">Learn more</a></div>
+            </li>
+
+            <!-- Advertise your apps Slide -->
+            <li data-masterspeed="400" data-slotamount="4" data-transition="fade"> <img src="images/slider/revslider/slide4.jpg" height="550" alt="">
+                <div class="caption sfb" data-x="650" data-y="105" data-speed="1000" data-start="300" data-easing="easeOutExpo"><img src="images/advertiseyourapps.png" alt="Image 1"> </div>
+                <div class="caption small_black sfr" data-x="70" data-y="100" data-speed="800" data-start="500" data-easing="easeOutExpo">
+                    <h1 class="color-black">Advertise your Apps</h1>
+                </div>
+                <div class="caption lfb" data-x="70" data-y="195" data-speed="800" data-start="1000" data-easing="easeOutExpo">
+                    <div class="revslider-block color-black">Increase traffic and downloads to your apps
+                        <br /> and improve your rankings in the app stores by advertising
+                        <br /> your apps on our network with a full tracking system
+                        <br /> from our partners HasOffers</div>
+                </div>
+                <div class="caption lfb str start" data-x="70" data-y="320" data-speed="500" data-start="1500" data-easing="easeOutExpo"><a href="advertiseyourapps.html" class="button big green-darkgray">Advertise now</a> </div>
+            </li>
+            -->
+        </ul>
+    </div>
+</div>
+<!-- Slider / End -->
+<!-- OS Logos & SDK Download links -->
+
+<div class="container">
+    <div id="os-logos"> <img class="left" src="images/os-logos-bg.png" />
+        <div id="sdk-download-bar">
+            <ul class="sdk-logos-bar">
+                <li><a href="download-sdk.html"><span style="color:white;">Download the SDK</span></a></li>
+                <li><a id="ios-sdk-download-icon" href="download-sdk.html">&nbsp;</a></li>
+                <li><a id="android-sdk-download-icon" href="download-sdk.html">&nbsp;</a></li>
+                <li>|</li>
+                <li><a href="download-sdk.html#sites"><span style="color:white;">View Publisher's Code</span></a></li>
+                <li><a id="code-download-icon" href="download-sdk.html#sites">&nbsp;</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- OS Logos End -->
+
+<hr class="sep40">
+<!-- Content
+======================================================================== -->
+
+<div class="container">
+    <div class="promo-block ani" data-gen="fadeInDown" data-gen-offset="bottom-in-view">
+        <h3 class="color-lightgray">AdFalcon -  the first mobile advertising and data platform in the MENA region</h3>
+        <h2>Reaching <span class="highlight">95%</span> of mobile internet consumers in the region</span>.</h2>
+    </div>
+</div>
+<div class='hr hr-short hr-center'><span class='hr-inner'><span class='hr-inner-style'></span></span>
+</div>
+<div class="container">
+    <!-- Services -->
+    <div class="box-wrapper ani" data-gen="fadeInUp" data-gen-offset="bottom-in-view">
+        <div class="one-half">
+            <a href="adgallery.html"><img src="images/rm-gallery-collage.jpg" /></a>
+        </div>
+        <div class="one-half column-last">
+            <h3>Ad Showcase</h3>
+            <h2 class="headline">Showcase of Rich Media Ads made by AdFalcon</h2>
+            <p>AdFalcon's Rich Media Ads bring unparalleled engagement and performance to your mobile advertising campaigns.</p>
+            <p>Our market leading platform provides amazing rich media units that can be used anywhere across your media buying list of companies.</p>
+            <a href="adgallery.html" class="button big green-darkgray">Visit our Ad Gallery</a> </div>
+    </div>
+</div>
+<div class="fullwidth box_border">
+    <hr class="sep20">
+    <div class="container">
+        <!-- Insights -->
+
+        <h2 class="center"><span class="highlight">Mobile Insights</span> about the Middle East Region</h2>
+        <ul id="vertical-ticker">
+            <!--<li class="center">“Mobile subscribers in the African and Middle East region will pass the one billion mark in the first quarter of 2013, overtaking developed markets.” <i>- Pyramid Research</i></li>-->
+            <!--<li class="center">More than 43,000,000 users access the internet from mobile phones in Middle East and North Africa</li>-->
+
+            <li class="center">Traffic in the Middle East and Africa grew 107% in 2014, Central and Eastern Europe 91%, Latin America 87%, Asia Pacific 69%, <br/>North America 63% and Western Europe 45%</li>
+            <li class="center">The Middle East and Africa will be the world's leading region in terms of mobile data traffic growth between 2014 and 2019. <br/><i>- According to a study by Cisco</i></li>
+            <li class="center">In 2015, 93% of internet users across Lebanon, Qatar, United Arab Emirates, Saudi Arabia, Tunisia and Egypt went online via mobile phone while only 73% did so via a desktop or laptop computer. <br/> <i>- Pan Arab Research Center</i></li>
+            <li class="center">AdFalcon’s monthly UU 53,000,000+</li>
+            <li class="center">AdFalcon's monthly impressions 8,700,000,000+</li>
+            <li class="center">Number of Local Sites and Apps on our network 2,000+</li>
+            <li class="center">Number of Global Sites and Apps we are accessing 40,000+</li>
+            <li class="center">340 Million Unique Mobile Subscribers</li>
+            <li class="center">110% Mobile Penetration Rate</li>
+            <li class="center">42% Mobile Broadband Connection</li>
+            <li class="center">MENA Smartphone Penetration 60%</li>
+            <li class="center">GCC Smartphone Penetration 77%</li>
+            <li class="center">10% of Mobile Base using 4G Network</li>
+            <li class="center">Mobile Data Growth will increase by sevenfold by 2020</li>
+            </li>
+        </ul>
+    </div>
+    <hr class="sep20">
+</div>
+<div class="container">
+    <div class='hr hr-short hr-center'><span class='hr-inner'><span class='hr-inner-style'></span></span>
+    </div>
+</div>
+
+<!-- Services / End -->
+
+<!-- Client Logos
+================================================================== -->
+
+<div class="container">
+    <div id="jssor_1" style="position: relative; margin: 0 auto; top: 0px; left: 0px; width: 980px; height: 100px; overflow: hidden; visibility: hidden;">
+
+        <div data-u="slides" style="cursor: default; position: relative; top: 0px; left: 0px; width: 980px; height: 100px; overflow: hidden;">
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/airfrance.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/almarai.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/audi.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/bank-albilad.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/bb.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/beinsports.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/bvlgari.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/chrysler.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/ck.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/cocacola.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/diesel.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/dodge.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/du.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/etisalat.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/ford.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/goody.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/hardees.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/hp.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/hsbc.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/htc.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/inTel.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/jaguar.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/jeep.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/johnsons.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/lg.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/loreal.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/lurpak.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/mango.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/marriot.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/mastercard.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/mercedes.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/mcdonalds.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/mobily.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/nestle.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/orange.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/panadol.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/pepsi.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/pg.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/qatar-airways.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/ralflauren.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/riyad-bank.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/samsung.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/sony.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/splash.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/stc.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/subway.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/swarovski.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/thinkflash.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/toyota.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/uber.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/visa.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/vodafone.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/zahra.png" />
+            </div>
+            <div style="display: none;">
+                <img data-u="image" src="images/logos/zain.png" />
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Client logos / End -->
+
+<div class="container">
+    <div class='hr hr-short hr-center'><span class='hr-inner'><span class='hr-inner-style'></span></span>
+    </div>
+    <div class="one-third ani" data-gen="fadeInUp" data-gen-offset="bottom-in-view">
+        <div class='hr hr-short'>
+            <h4 class="headline">Case Studies</h4>
+        </div>
+        <!-- Case studies -->
+        <div class="case_studies">
+            <ul>
+                <li><img src="images/casestudies/case_study_dopp.png" /> <a href="casestudies/casestudy-dubaione.html">• Dubai One - Peeta Planet <br/>
+    Promoting the 2nd season of the hit travel tv show “Peeta Planet”</a></li>
+                <li><img src="images/casestudies/case_study_tn1.png" /> <a href="casestudies/casestudy-ford.html">• Ford Explorer <br/>
+    A campaign to celebrate the arrival of the all new ford explorer</a></li>
+                <li><img src="images/casestudies/case_study_tn2.png" /> <a href="casestudies/casestudy-orange1.html">• Orange <br />
+    Orange introduced its exclusive series service to its subscribers</a></li>
+                <!-- <li><img src="images/casestudies/case_study_tn3.png" /> <a href="casestudies/casestudy-vw.html">• Nuqul Group VW Touareg <br />
+    Introducing the new and revamped Volkswagen Touareg</a></li> -->
+
+                <a href="casestudies/casestudy-dubaione.html" class="button small green-darkgray">Read more</a>
+            </ul>
+        </div>
+        <!-- Case studies / End -->
+    </div>
+    <div class="one-third ani" data-gen="fadeInUp" data-gen-offset="bottom-in-view">
+        <div class='hr hr-short'>
+            <h4 class="headline">News &amp; Updates</h4>
+        </div>
+        <!-- News -->
+        <ul class=hpage-news>
+
+          <li><a href="news/2017/feb23.html"><img src='adm\images\adm_logo_s.png' style="width: 200px;" />• ArabyAds to Launch AdFalcon Demand Manager</a></li>
+            <li><a href="news/2016/march21.html">• AdFalcon and Rubicon Project Join Forces to Launch the Largest Local Mobile Advertising Exchange in the MENA Region - AdFalconX</a></li>
+            <li><a href="news/2014/march27.html">• ArabyAds announces the introduction of 3 innovative technology assets to enrich its mobile advertising network, AdFalcon.</a></li>
+            <li><a href="news/2012/oct24.html">• AdFalcon officially part of Google AdMob’s Ad Network Mediation</a></li>
+            <!-- <li><a href="news/2012/news-d1.html">• ArabyAds joins the Mobile Marketing Association (MMA)</a></li> -->
+            <!--<li><a href="news/2012/news-d2.html">• ArabyAds signs Effective Measure for AdFalcon’s analysis</a></li>-->
+            <!-- <li><a href="news/2012/news-d3.html">• "ArabyAds" launches 1st mobile advertising network in the region</a></li> -->
+            <a href="news/2012/oct24.html" class="button small green-darkgray">Read more</a>
+        </ul>
+        <!-- News / End -->
+    </div>
+    <div class="one-third column-last ani" data-gen="fadeInDown" data-gen-offset="bottom-in-view">
+        <div class='hr hr-short'>
+            <h4 class="headline">Download our SDK</h4>
+        </div>
+        <!-- Download SDK -->
+        <p><a href="download-sdk.html"><span class="highlight">Download AdFalcon SDK</span></a> and add it to your applications, make sure to choose the correct SDK based on your application platform</p>
+        <img src="images/sdk-icons.png" />
+        <hr class="sep20">
+        <p>Contact <a href="mailto:developers@adfalcon.com"><span class="highlight">developers@adflacon.com</span></a> in order for us to assist you further.</p>
+        <a href="download-sdk.html" class="button small green-darkgray">Download SDK</a>
+        <!-- Download SDK / End -->
+    </div>
+</div>
+<hr class="sep40">
+
+<!-- Content End
+======================================================================== -->
+
+<!-- Footer
+======================================================================== -->
+<div id="footer" class="fullwidth">
+    <div class="container">
+        <!-- Contact info -->
+        <div class="one-third">
+            <div class="widget widget_text" style="background:url(images/map.png) no-repeat center 40px;">
+                <h3>Contact Info</h3>
+					<h4 style="color:#fff;">United Arab Emirates</h4> 511, CYS Management, Falak Street
+					<br> Dubai Media City
+					<br> P.O.Box 300285 Dubai, UAE
+					<br> Tel: +971 50 151 0639
+					<p> Email: &nbsp;&nbsp;<a href="mailto:info@adfalcon.com">info@adfalcon.com</a>
+                    <br>
+                    <h4 style="color:#fff;">Jordan</h4> Office No. 7, 1st Floor, Al-Husseini Building
+                    <br> 50 Abdullah Ghosheh main street
+                    <br> Amman, PO Box 142220, Jordan
+                    <p> Tel: &nbsp;&nbsp;&nbsp;<a href="tel:+96265885813">+962 6 5885813</a>
+                        <br> Email: &nbsp;&nbsp;<a href="mailto:info@adfalcon.com">info@adfalcon.com</a>
+                        <br>
+                        <ul class="social-links">
+                            <li style="padding-top:3px;">Social:</li>
+                            <li>
+                                <a href="https://twitter.com/AdFalconMENA" title="twitter" class="black zocial twitter"></a>
+                            </li>
+                            <li>
+                                <a href="https://www.facebook.com/AdFalconMENA" title="facebook" class="black zocial facebook"></a>
+                            </li>
+                            <li>
+                                <a href="https://www.linkedin.com/company/adfalconmena/about/" title="linkedin" class="black zocial linkedin"></a>
+                            </li>
+                        </ul>
+            </div>
+        </div>
+        <!-- Twitter feed -->
+        <div class="one-third">
+            <div class="widget widget_latest_posts">
+                <h3>Twitter Feed</h3>
+                <a class="twitter-timeline" href="https://twitter.com/AdFalconMENA" data-widget-id="379502165175189505" data-border-color="#222" height="310" data-chrome="noheader noscrollbar transparent">Tweets by @AdFalcon</a>
+                <script>
+                    ! function(d, s, id) {
+                        var js, fjs = d.getElementsByTagName(s)[0],
+                            p = /^http:/.test(d.location) ? 'http' : 'https';
+                        if (!d.getElementById(id)) {
+                            js = d.createElement(s);
+                            js.id = id;
+                            js.src = p + "://platform.twitter.com/widgets.js";
+                            fjs.parentNode.insertBefore(js, fjs);
+                        }
+                    }(document, "script", "twitter-wjs");
+                </script>
+            </div>
+        </div>
+        <!-- Categries & Tags -->
+        <div class="one-third column-last">
+            <div class="widget widget_latest_posts" style="margin-left:50px;">
+                <h3>Site map</h3>
+                <ul>
+                    <li>
+                        <h6><i class="icon-chevron-right"></i><a href="about.html">About AdFalcon</a></h6>
+                    </li>
+                    <li>
+                        <h6><i class="icon-chevron-right"></i><a href="monetize.html">Monetize</a></h6>
+                    </li>
+                    <li>
+                        <h6><i class="icon-chevron-right"></i><a href="advertise.html">Advertise</a></h6>
+                    </li>
+                    <li>
+                        <h6><i class="icon-chevron-right"></i><a href="media-agencies.html">Agencies</a></h6>
+                    </li>
+                    <li>
+                        <h6><i class="icon-chevron-right"></i><a href="adgallery.html">Ad Gallery</a></h6>
+                    </li>
+                    <li>
+                        <h6><i class="icon-chevron-right"></i><a href="casestudies/casestudies.html">Case Studies</a></h6>
+                    </li>
+                    <li>
+                        <h6><i class="icon-chevron-right"></i><a href="contact.html">Contact Us</a></h6>
+                    </li>
+                    <li>
+                        <h6></i><a href="#">&nbsp;</a></h6>
+                    </li>
+                    <li>
+                        <h6><i class="icon-chevron-right"></i><a href="http://www.adfalcon.com/en/news/2014/march27.html">News Archive</a></h6></li>
+                    </li>
+                    <li>
+                        <h6><i class="icon-chevron-right"></i><a href="download-sdk.html">SDK Tools</a></h6>
+                    </li>
+                    <li>
+                        <!--<h6><i class="icon-chevron-right"></i><a href="#">Developer Documents</a></h6>-->
+                    </li>
+                </ul>
+                <hr class="sep20">
+            </div>
+        </div>
+    </div>
+    <!-- Info -->
+    <div class="info">
+        <div class="container">
+            <div class="one-third">
+                <!-- Copyright -->
+                <ul class="copyright">
+                    <li>© 2017 AdFalcon - By <a href="http://www.arabyads.com">ArabyAds</a></li>
+                </ul>
+            </div>
+            <div class="two-thirds column-last">
+                <ul class="botnav">
+                    <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                    <li><a href="contact.html">Help &amp; Support</a></li>
+                    <li><a class="last" href="privacy.html">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Footer / End -->
+</div>
+<!-- Body Wrapper / End -->
+
+<!-- <div id="qr-tn" class="desktop"><img src="images/qr-small.png" /></div>
+<div id="qr" class="desktop"><img src="images/qr-large.png" /></div> -->
+
+<script>
+jssor_1_slider_init();
+</script>
+
+</body>
+
+</html>

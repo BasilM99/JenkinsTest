@@ -1,0 +1,263 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.Core.UploadViewModel
+@{
+	string UploadAction = "Save";
+	string RemoveAction = "Remove";
+	string onchnage = "";
+	string onClear = "";
+	if (ViewData["UploadAction"] != null)
+	{
+		UploadAction = ViewData["UploadAction"].ToString();
+
+	}
+	if (ViewData["RemoveAction"] != null)
+	{
+		RemoveAction = ViewData["RemoveAction"].ToString();
+
+	}
+	if (ViewData["onchnage"] != null)
+	{
+		onchnage = ViewData["onchnage"].ToString();
+
+	}
+	if (ViewData["onClear"] != null)
+	{
+		onClear = ViewData["onClear"].ToString();
+
+	}
+
+}
+
+
+<script type="text/javascript" language="javascript">
+    //var maxFileSize(Model.Name) = (Model.);
+	    var onchangeImageFunc;
+    var onClearedfuncName='@onClear'
+    var @(Model.Name)Formats = new Array();
+
+    var onchangefuncName ='@onchnage';
+
+    var @(Model.Name)Formats = new Array();
+    @{
+        if (Model.Formats != null)
+        {
+            foreach (var format in Model.Formats)
+            {
+                <text>
+    var format = new Object();
+    format.extension = "@(format.Format)";
+    format.maxSize = @(format.MaxSize);
+    @(Model.Name)Formats[@(Model.Name)Formats.length]=format;
+    </text>
+            }
+
+        }
+    } ;
+
+    @{
+           string formats = "";
+           foreach(var format in Model.Formats)
+           {
+               formats += format.Format + ",";
+           }
+
+
+       }
+    function onFileUpload_@(Model.Name)(e) {
+        var items = @(Model.Name)Formats ;
+        jQuery(e.files).each(function()
+        {
+            var isValid=checkFile(this, items);
+            if((typeof(isValid)== "undefined")|| !isValid) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                e.stopPropagation();
+                return false;
+            }
+        });
+    };
+	function onImageChanged() {
+
+		if (onchangefuncName != "")
+			executeFunctionByName(onchangefuncName, window, "");
+
+	};
+	function onImageCleared() {
+
+
+		if (onClearedfuncName != "")
+			executeFunctionByName(onClearedfuncName, window, "");
+
+    };
+
+    
+</script>
+<div class="card" orientationType="@((int)Model.OrientationType)" environmentType="@((int)Model.EnvironmentType)" orientationtypeid="0" style="border: unset;height: 400px;">
+	<div class="upload-item" style="border:1px solid rgba(0, 0, 0, 0.06);border-radius:0.25rem;">
+		<div id="banner_@(Model.TypeId)_@(Model.ParentId)" custom_name='@Model.Name' class="data-row data-container" bannertype='@(Model.TypeId)' RequiredType='@(Model.RequiredType)'>
+
+			<div class="label-container data-row ">
+				<span class="field-title required-field data-row">
+					@Model.DisplayText <span class="reverse-link">@(Model.Width)x@(Model.Height)</span> @Html.GetResource("px")
+					@{
+						switch (Model.RequiredType)
+						{
+							case 1:
+								{
+									<span class="reverse-link go-normal">(@Html.GetResource("Optional"))</span>
+									break;
+								}
+							case 2:
+								{
+									<span class="reverse-link go-normal">(@Html.GetResource("Required"))</span>
+									break;
+								}
+							case 3:
+								{
+									<span class="reverse-link go-normal">(@Html.GetResource("PartialRequired"))</span>
+									break;
+								}
+						}
+					}
+				</span>
+			</div>
+			<div class="data-row field-container" style="float:unset">
+				<div class="w-100">
+					<div style="width: @(Model.PreviewWidth)px; height:@(Model.PreviewHeight)px;" class="banner-size">
+						@{
+							if (Model.DocId.HasValue)
+							{
+								<img id="fileImage" src='@(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + Model.DocId.ToString())' width="@(Model.PreviewWidth)" height="@(Model.PreviewHeight)" />
+								<input Name="@Model.Name" id="docId" adtypeid="@Model.AdTypeId" custom_name="content" value='@Model.DocId.ToString()' parentId="@Model.ParentId" typeId="@Model.TypeId" type="hidden" />
+							}
+							else
+							{
+								<img id="fileImage" style="display: none;" width="@(Model.PreviewWidth)" height="@(Model.PreviewHeight)" />
+								<input Name="@Model.Name" id="docId" adtypeid="@Model.AdTypeId" custom_name="content" parentId="@Model.ParentId" typeId="@Model.TypeId" type="hidden" />
+							}
+						}
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+        <div class="data-row bottom-links">
+            @{
+
+                if (Model.DocId.HasValue)
+                {
+                    if (Model.ShowCopy)
+                    {
+                        <a id="copylnk" href="javascript:void(0)" class="clear-form copy-all" onclick="copyFile(this,'@Model.TypeId','@Model.ParentId')" class="floating-left">@Html.GetResource("CopyToAll")</a>
+                    }
+                    <a id="clearlnk" href="javascript:void(0);" onclick='clearUploadFile(this);' class="clear-form">@Html.GetResource("Clear")</a>
+                    <a id="previewlnk1" style="display: none;" href="javascript:void(0);" onclick='previewUploadFile(this);'
+                       class="preview-form">@Html.GetResource("Preview")</a>
+                 
+
+                }
+                else
+                {
+                    if (Model.ShowCopy)
+                    {
+                        <a id="copylnk" style="display: none;" class="clear-form copy-all" href="javascript:void(0)" onclick="copyFile(this,'@Model.TypeId','@Model.ParentId')" class="floating-left">@Html.GetResource("CopyToAll")</a>
+                    }
+                    <a id="clearlnk" style="display: none;" href="javascript:void(0);" onclick='clearUploadFile(this);'
+                       class="clear-form">@Html.GetResource("Clear")</a>
+                    <a id="previewlnk1" style="display: none;" href="javascript:void(0);" onclick='previewUploadFile(this);'
+                       class="preview-form">@Html.GetResource("Preview")</a>
+                 
+                }
+            }
+            <div class="floating-right uplaod-ctnl-special">
+                @(Html.Telerik().Upload().Name(Model.Name + "_upload").Multiple(false).ShowFileList(false)
+                                                                                                                         .Async(async => async.Save(UploadAction, "Document", new { parentId = Model.ParentId, typeId = Model.TypeId, AdSubTypeId = Model.AdSubTypeId }).Remove(RemoveAction, "Document")
+                                                                                                                                                                .AutoUpload(true)).ClientEvents(events => events.OnSuccess("onFileUploadSuccess").OnUpload("onFileUpload_" + Model.Name)).HtmlAttributes(new { accept = formats }))
+            </div>
+        </div>
+		@if (ViewData["ShowImpressionTracker"] != null && bool.Parse(ViewData["ShowImpressionTracker"].ToString()))
+        {
+
+            if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsAdministrationApp)
+            {
+
+		<div class="data-row bottom-links" @*style="display:none;"*@>
+			@Html.Hidden((string.Format("{0}-ImpressionTrackerJSRedirect", Model.Name)), Model.ImpressionTrackerJSRedirect)
+			<div class="data-row data-container" id="impressionTrackerRedirectContainer-@Model.Name" style="@(!Model.DocId.HasValue ? "display:none;" : "")float: @Noqoush.AdFalcon.Web.Controllers.Utilities.Config.CurrentFloat">
+				<div class="label-container3">
+					<span class="field-title required-field">@Html.GetResource("ImpressionTrackerRedirect", "CreativesSettings"):</span>
+				</div>
+                <div class="field-container2">
+
+
+                    @{
+
+                        if (Model.IsAllowedToSaveImpressionTracker)
+
+                        {
+                            @Html.AdFalconTextBox(string.Format("{0}-ImpressionTrackerRedirect", Model.Name), Model.ImpressionTrackerRedirect, new { @style = "margin-right:12px;" });
+                        }
+                        else
+                        {  @Html.AdFalconTextBox(string.Format("{0}-ImpressionTrackerRedirect", Model.Name), Model.ImpressionTrackerRedirect, new { @style = "margin-right:12px;", @readonly = "readonly",@Impdisabled = "Impdisabled" });
+
+                            }
+                    }
+
+
+                    <span id="@string.Format("{0}-ImpressionTrackerRedirect-URLErrorMsg2", Model.Name)" class="validation-arrow field-validation-error"
+                          style="display: none;padding-top:3px; padding-left:10px;padding-right:10px;margin-left:20px;margin-right:20px;"><span class="">@Html.GetResource("UrlMsg")</span></span>
+
+                    </div>
+                <div class="label-container2">
+                            <div class="Impression-Tracker-padding">
+                                <a id="dialoglnk" href="javascript:void(0)" impressiontrackerjsredirectname="@(string.Format("{0}-ImpressionTrackerJSRedirect", Model.Name))" class="clear-form impression-tracker-url Impression-Tracker-padding-right"  mo="" onclick="OpenImpressionTrackerDialog(this)"><span class="">@Html.GetResource("ImpressionTrackerScript")</span></a>
+                            </div>
+                        </div>
+					<div class="clear">
+						&nbsp;
+					</div>
+				</div>
+			</div>
+                        }
+                        else
+                        {
+					@Html.Hidden((string.Format("{0}-ImpressionTrackerJSRedirect", Model.Name)), Model.ImpressionTrackerJSRedirect)
+					<div class="data-row bottom-links" style="display:none;">
+						<div class="data-row data-container" id="impressionTrackerRedirectContainer-@Model.Name" style="@(!Model.DocId.HasValue ? "display:none;" : "")float: @Noqoush.AdFalcon.Web.Controllers.Utilities.Config.CurrentFloat">
+							<div class="label-container3">
+								<span class="field-title required-field">@Html.GetResource("ImpressionTrackerRedirect", "CreativesSettings"):</span>
+							</div>
+                            <div class="field-container2">
+
+                                @{
+
+                                    if (Model.IsAllowedToSaveImpressionTracker)
+                                    { @Html.AdFalconTextBox(string.Format("{0}-ImpressionTrackerRedirect", Model.Name), Model.ImpressionTrackerRedirect, new { @style = "margin-right:12px;" });
+                                    }
+                                    else { }
+                                        @Html.AdFalconTextBox(string.Format("{0}-ImpressionTrackerRedirect", Model.Name), Model.ImpressionTrackerRedirect, new
+                                        {
+                                            @style = "margin-right:12px;",
+                                            @readonly = "readonly",@Impdisabled = "Impdisabled"
+                                        });
+                                    }
+
+                                }
+                                <span id="@string.Format("{0}-ImpressionTrackerRedirect-URLErrorMsg2", Model.Name)" class="validation-arrow field-validation-error"
+                                      style="display: none;padding-top:3px; padding-left:10px;padding-right:10px;margin-left:20px;margin-right:20px;"><span class="">@Html.GetResource("UrlMsg")</span></span>
+
+                                </div>
+                            <div class="label-container2">
+                                <div style="float: left;padding-left: 30px;">
+                                    <a id="dialoglnk" href="javascript:void(0)" impressiontrackerjsredirectname="@(string.Format("{0}-ImpressionTrackerJSRedirect", Model.Name))" class="clear-form impression-tracker-url Impression-Tracker-padding-right"  mo="" onclick="OpenImpressionTrackerDialog(this)"><span class="">@Html.GetResource("ImpressionTrackerScript")</span></a>
+                                </div>
+                            </div>
+								<div class="clear">
+									&nbsp;
+								</div>
+							</div>
+						</div>
+					}
+				}
+	</div>
+</div>

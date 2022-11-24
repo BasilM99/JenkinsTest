@@ -1,0 +1,1357 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.Campaign.TargetingViewModel
+
+@Html.Hidden("changedAudiances", "")
+
+
+<div class="section-form-inner-container info-container tab-pane fade go-left" style="display:none;padding-top:0px;overflow-y: scroll; height:450px;" tabsection="22" id="AudienceSegmentSection">
+
+	<div class="">
+		<div class="data-row space-bottom-blue-filter">
+			<div class="blue-filter-container GeofenceInnerDiv customdivTab">
+				<a href="javascript:void(0)" tabindexAudiances="1" onclick="changeTab(this,'Audiances',undefined,undefined,true);"
+				   class="selected">@Html.GetResource("AudianceList")</a>
+
+				@{
+					if (Model.ExternalDataProvider != null && Model.ExternalDataProvider.Count() > 0)
+					{
+						<text>
+							<a href="javascript:void(0)" tabindexAudiances="2"
+							   onclick="changeTab(this,'Audiances',undefined,undefined,false);">@Html.GetResource("ImportedAudiance")</a>
+
+
+
+						</text>
+					}}
+
+				<div class="floating-right" style="vertical-align:middle ;margin-left:-60px">
+					<span id="AllAudiencePriceText" style="color:gray">
+						@(Html.GetResource("AllAudianceCPMPrice", "Global") + " : ")
+					</span>
+					<span class="field-title required-field" id="AllAudiencePrice">
+						@(!Model.MaxDataBid.HasValue || Model.Bid == Model.MaxDataBid ? "0.00 $" : "" + (Model.MaxDataBid.Value * 1000).ToString("F2") + " $")
+					</span>
+
+				</div>
+
+			</div>
+																		<div class="tail">
+																		</div>
+																		<div tabsectionAudiances="1" readonlyToBe>
+
+
+																			<div class="container" id="RulesAllContainer" ng-controller="QueryBuilderCtrl">
+
+
+																				<div class="data-row">
+																					<div id="Tree-dialog-form" class="floating-left" style="width:400px" title="@Html.GetResource("Audiences", "Audience")">
+																						<div class="data-row">
+																							<div id="AudiencesContainer" style="display:block!important;">
+																								@Html.Partial("~/Views/Shared/Tree.cshtml", Model.Audiences)
+																							</div>
+																						</div>
+																						<br>
+																						<div class="data-row go-center">
+																							<input type="button" onclick="TargetExclude(1)" name="@Html.GetResource("Target", "Audience")" value='@Html.GetResource("Target", "Audience")' class="btn filter-button " />
+																							<input type="button" onclick="TargetExclude(0)" name="@Html.GetResource("Exclude", "Audience")" value='@Html.GetResource("Exclude", "Audience")' class="btn filter-button " />
+																						</div>
+																					</div>
+																					<query-builder group="filter.group" style="width:555px;height:450px;" class="floating-left scrollbaradfac"></query-builder>
+																				</div>
+																			</div>
+
+
+
+
+																		</div>
+																		<div tabsectionAudiances="2" style="display: none;" id="AudiancesContainer" readonlyToBe>
+																			<div class="data-row data-container">
+																				<div class="label-container">
+																					<span class="field-title required-field">@Html.GetResource("Provider", "Audience")</span>
+																				</div>
+																				<div class="field-container">
+
+																					@Html.AdFalconDropDownList("DataProviderId", Model.ExternalDataProvider, new { onchange = "SetExternalProviderURL();" })
+																					<div class="field-container" style="margin-top:5px">
+
+																						<span id="MaxbidDataPriceForDb" style="color: #E40685;" class="data-row guid-text go-left iea-go-right"></span>
+
+																					</div>
+																				</div>
+																			</div>
+
+																			<div id="embedded"></div>
+																		</div>
+																	</div>
+																</div>
+
+
+															</div>
+
+															<script type="text/ng-template" id="/queryBuilderDirective.html">
+																<div class="alert alert-warning alert-group  maindiv customMarginAudiance " ng-class="SetGroupActiveCss()" style="border-color: silver!important;background-color:white!important;">
+
+
+																	<ul class="list-group query-builder">
+																		<li class="query-builder" style="list-style-type:none">
+																			<div class="form-inline" style="overflow:hidden">
+																				@*<select ng-options="o.name as o.name for o in operators" ng-model="group.operator" class="form-control input-sm"></select>*@
+
+																				<div class="input-group">
+																					<div id="radioBtn" class="btncustom-group">
+
+																						<a class="btncustom btncustom-primary btncustom-sm" ng-class="group.operator == 'AND' ? 'active':'notActive';" style="padding:2px;padding-top:3px;padding-left:5px;padding-right:5px;margin:0px;font-size:11px" data-toggle="happy" ng-model="group.operator" ng-click="changeOperator($event)" value="AND" data-title="Y">@Html.GetResource("AND", "Global")</a>
+																						<a class="btncustom btncustom-primary btncustom-sm" ng-class="group.operator == 'OR' ? 'active':'notActive';" style="padding:2px;padding-top:3px;padding-left:5px;padding-right:5px;margin:0px;font-size:11px" data-toggle="happy" ng-model="group.operator" ng-click="changeOperator($event)" value="OR" data-title="N">@Html.GetResource("OR", "Audience")</a>
+
+																					</div>
+																					<input type="hidden" ng-value="group.operator" name="happy" id="happy">
+																				</div>
+
+																				@*<button type="button" style="margin-left: 5px;margin-right: 5px" id="addCondition"   ng-show="!group.hasOwnProperty('isParent')" ng-shclass="btn btn-sm btn-success"><span style="padding-left:2px;padding-right:2px;" class="glyphicon glyphicon-plus-sign"></span>@Html.GetResource("AddCondition", "Audience")</button>*@
+																				<button type="button" style="margin-left: 5px;margin-right: 5px" ng-click="addGroup()" ng-if="group.hasOwnProperty('isParent')" ng-shclass="btn btn-sm btn-success"><span style="padding-left:2px;padding-right:2px;" class="glyphicon glyphicon-plus-sign"></span>@Html.GetResource("AddGroup", "Audience")</button>
+																				<button type="button" style="margin-left: 5px;margin-right: 5px" ng-click="removeGroup()" ng-if="!group.hasOwnProperty('isParent')" ng-shclass="btn btn-sm btn-danger"><span style="padding-left:2px;padding-right:2px;" class="glyphicon glyphicon-minus-sign"></span>@Html.GetResource("RemoveGroup", "Audience")</button>
+
+
+																				<div class="floating-right" style="vertical-align:middle" ng-if="group.hasOwnProperty('isParent')">
+																					<span id="AudiencePriceText">
+																						@(Html.GetResource("AudianceCPMPrice", "Global") + " : ")
+																					</span>
+																					<span ng-bind-html="" class="field-title required-field" id="AudiencePrice">
+																						0.00 $
+																					</span>
+
+																				</div>
+																			</div>
+
+																			<ul class="list-group query-builder customMarginAudianceSegment" id="{{ group.hasOwnProperty('isParent')? 'ParentAudianceSeg':'ChildAudianceSeg'}}" style="{{ group.hasOwnProperty('isParent')? 'height:400px;overflow-y:auto;overflow-x:hidden':''}}">
+
+
+
+																				<div class="group-conditions">
+																					<div ng-repeat="rule in group.rules track by $index" class="condition">
+																						<div ng-switch="rule.hasOwnProperty('group')">
+
+																							<div ng-switch-when="true">
+																								<ul class="list-group-item rules-list" ng-class="isLast($last)" ng-click="SetGroupActive($event)">
+
+																									<query-builder group="rule.group"></query-builder>
+
+																								</ul>
+
+																							</div>
+
+
+
+																							<div ng-switch-default="ng-switch-default" style="">
+																								<li class="list-group-item rules-list  gggg" ng-class="isLast($last)" style="padding:0px!important;width: 100%;">
+																									<div class="form-inline">
+																										<div class="container" style="padding:5px;border-radius: 10px;">
+																											<div style="display: flex; align-items: center;">
+																												<div class="col-sm-7" style=" padding-left:0px;padding-right:0px;">
+																													<span class="" style="white-space:normal; background-color: initial!important;font-size: 10px;color:gray"><span class="value-span" style="color:gray" title="{{rule.Name | trimparent }}">{{rule.Name | trimparent }}</span> </span>
+																													<br /><span class="" style="white-space:normal; background-color: initial!important;font-size: 10px;"><span class="value-span" title="{{rule.Name | trim}}">{{rule.Name | trim }}</span> </span>
+																												</div>
+																												<div class="customShifAudiancepush2 col-sm-1">
+																													<span ng-hide="rule.showrecency" class="label label-primary floating-left group-price" style="background-color: initial!important;font-size: 9px;line-height:5px;margin-top:10px;">@Html.GetResource("Price", "SSPFloorPrices"): <span class="value-span">{{(rule.Price*1000).toFixed(2)}}</span> </span>
+																													<span ng-show="rule.showrecency" class="label label-primary dropdownaudiancesegmentleftmax" style="background-color: initial!important;font-size: 9px;line-height:5px;display:block">@Html.GetResource("RecencyAudienceList", "Global"):</span>
+
+																													<select title="Recency" ng-options="obj.value as obj.name for obj in recencyList" ng-show="rule.showrecency" ng-model="rule.recency" class="form-control input-sm customShifAudiancepush5 dropdownaudiancesegment" style="font-size:10px;"></select>
+																												</div>
+																												<div class="customShifAudiancepush3 col-sm-5">
+																													<span class="label label-primary dropdownaudiancesegmentleft" style="background-color: initial!important;font-size: 9px;line-height:5px;display:block">@Html.GetResource("MatchTypeDropDownList", "TextFilters"):</span>
+																													<select title="Condition" ng-options="obj.value as obj.name for obj in conditions" ng-model="rule.condition" ng-change="RefreshPrice()" class="form-control input-sm dropdownaudiancesegment" style="font-size:10px;"></select>
+
+																													<button type="button" style="height:18px; margin-top:2px;" ng-click="removeCondition($index)" ng-shclass="btn btn-sm btn-danger"><span style="padding: 1px;" class="glyphicon glyphicon-minus-sign"></span></button>
+																												</div>
+
+																												@*<div class="col-sm-3">
+
+							</div>*@
+																											</div>
+
+																										</div>
+
+																									</div>
+																								</li>
+																							</div>
+
+
+
+
+																						</div>
+																					</div>
+																				</div>
+																			</ul>
+																		</li>
+																	</ul>
+																</div>
+															</script>
+															<script type="text/javascript">
+																/**
+																 * Request the use of the JSON object
+																 */
+																var CurrentAdvertiser = { Id: '@Model.AdvertiserAccountId', Name: '@Model.AdvertiserAccountName' };
+                                                                var listofExternalIds = "";
+
+                                                                var listofExternalIdsAct = "";
+																var ParentIdOfFirstParty = "@Model.ParentIdOfFirstParty";
+																var listofExternalIdsCount = '@(Model.CountExternalAudienceList)';
+																var listofExternalIdsDataBid = '@(Model.DataPriceAudienceSegment)';
+																$(document).ready(function () {
+
+																	if (parseInt(listofExternalIdsCount)>0)
+																	$("#MaxbidDataPriceForDb").text("Imported Audience Lists Count:" + listofExternalIdsCount + " with Total CPM:" + listofExternalIdsDataBid + "$");
+																});
+
+																easyXDM.DomHelper.requiresJSON("../json2.js");
+
+
+
+															</script>
+															<script type="text/javascript">
+																var remote = null;
+																var currentAdGrouid = '@Model.AdGroupId';
+																var transport = null;
+																window.ptransport = true;
+																var AdvertiserUrl = '@Url.Action("GetAccountAdvertisers", "Advertiser")';
+	 var AudienceListCounterUrl = '@Url.Action("GetAudienceListCounter", "Campaign")';
+
+																function setupeasyForAudianceList() {
+
+
+
+
+																	if (transport) {
+																		transport.destroy();
+																	}
+																	//if (window.remoteAdfalconChceck) {
+																	//	window.remoteAdfalconChceck.destroy();
+																	//	window.remoteAdfalconChceck = null;
+																	//}
+
+
+																	//  transport = new easyXDM.Socket(/** The configuration */{
+																	//	local: "~/scripts/EasyXDM/name.html",
+																	//	 swf: externalProviderURlSite + "/scripts/EasyXDM/easyxdm.swf",
+																	//	 remoteHelper: externalProviderURlSite + "/scripts/EasyXDM/name.html",
+
+																	//	 remote: externalProviderURlSite + "/remotetransport.html",
+																	//	// onMessage: function (message, origin) {
+																	//	//	/**
+																	//	//	 * If we want to do something once the transport is ready then we can place it here
+																	//	//	 */
+																	//	//	 if (message == "false") {
+																	//	//		 $("#DataProviderMenuRegister" + SiteProvidrId).show();
+																	//	//		 $("#DataProviderMenuLogin" + SiteProvidrId).show();
+																	//	//		 $("#DataProviderMenuForgetpassword" + SiteProvidrId).show();
+																	//	//	 }
+																	//	//	 else (message == "true")  {
+
+																	//	//		 $("#DataProviderMenuRegister" + SiteProvidrId).hide();
+																	//	//		 $("#DataProviderMenuLogin" + SiteProvidrId).hide();
+																	//	//		 $("#DataProviderMenuForgetpassword" + SiteProvidrId).hide();
+																	//	//	 }
+
+																	//	//}
+																	//});
+
+																	//transport.postMessage(LoggedInUserObject.CurrentLanguage + ";" + LoggedInUserObject.Email + ";" + LoggedInUserObject.Name + ";" + "/campaign-audiences-list" + ";" + LoggedInUserObject.Company + ";" + LoggedInUserObject.CurrentAccountId + ";" + LoggedInUserObject.FirstName + ";" + LoggedInUserObject.LastName);
+
+
+																	LoggedInUserObject.DefaultRedirect = "/campaign-audiences-list";
+																	LoggedInUserObject.AccountId = LoggedInUserObject.CurrentAccountId;
+
+
+
+																	return;
+																}
+
+																function setupRemote() {
+																	if (!SiteProviderURL) {
+																		return;
+																	}
+
+																	if (remote) {
+																		remote.destroy();
+																		remote = undefined;
+																	}
+
+																	remote = new easyXDM.Rpc(/** The channel configuration */{
+
+																		local: "~/scripts/EasyXDM/name.html",
+																		swf: externalProviderURlSite + "/scripts/EasyXDM/easyxdm.swf",
+																		remoteHelper: externalProviderURlSite + "/scripts/EasyXDM/name.html",
+
+																		remote: SiteProviderURL,
+
+																		/**
+																		 * Register the DOMElement that the generated IFrame should be inserted into
+																		 */
+																		container: "embedded",
+																		props: {
+																			style: {
+																				border: "solid 3px #45638f",
+
+																				height: "700px"
+																			}
+																		},
+																		onReady: function () {
+																			/**
+																			 * Call a method on the other side
+																			 */
+																			var isAuth = false;
+
+																			//remote.IsAuthenticated(function (result) {
+																			//	isAuth = result;
+
+																			//	if (isAuth) {
+																			//		$("#DataProviderMenuRegister" + $("#DataProviderId").val()).show();
+																			//		$("#DataProviderMenuLogin" + $("#DataProviderId").val()).show();
+																			//		$("#DataProviderMenuForgetpassword" + $("#DataProviderId").val()).show();
+																			//	}
+
+																			//});
+																			//remote.SendUserInformation(LoggedInUserObject);
+
+																			//remote.SetCurrentAdvertiser(CurrentAdvertiser);
+																		}
+																	}, /** The interface configuration */ {
+																			remote: {
+																				IsAuthenticated: {},
+																				fillAllAdvertisers: {},
+																				SendUserInformation: {},
+																				NotifyforError: {},
+																				NotifyforSucess: {},
+                                                                            handelLogOut: {},
+                                                                            setImpersonatedAccount: {},
+																				fillAudienceListCounter: {},
+																			},
+																			local: {
+																				alertMessage: function (msg) {
+																					alert(msg);
+																				},
+																				NotifyAuthenticate: function () {
+
+																					$("#DataProviderMenuRegister" +$("#DataProviderId").val()).hide();
+									$("#DataProviderMenuLogin" + $("#DataProviderId").val()).hide();
+									$("#DataProviderMenuForgetpassword" + $("#DataProviderId").val()).hide();
+																					$("#DataProviderMenuChangePassword" + $("#DataProviderId").val()).show();
+																					$("#DataProviderMenuAudiance" + $("#DataProviderId").val()).show();
+
+
+																				},
+
+
+																				RefreshLocation: function (source, title) {
+
+																			
+																					setTimeout(function () {
+																						var normalvalue = "?AudList=" + listofExternalIds + "&advertiserId=" + CurrentAdvertiser.Id +  "&AudListActv=" + listofExternalIdsAct +  "&lang=" + LoggedInUserObject.CurrentLanguage;
+																						if (source.includes("?")) {
+																							normalvalue = "&AudList=" + listofExternalIds + "&advertiserId=" + CurrentAdvertiser.Id + "&AudListActv=" + listofExternalIdsAct +  "&lang=" + LoggedInUserObject.CurrentLanguage;;
+																						}
+																					SiteProviderURL = externalProviderURlSite + source + normalvalue
+																						//$("#BreadCrum3").text(title);
+																						setupRemote();
+																					}, 500);
+																					return true;
+																				},
+																					 ReloadLocation: function () {
+																					window.location.reload(true);
+                                                                                },
+                                                                                        GetImpersonatedAccount: function () {
+                            remote.setImpersonatedAccount(LoggedInUserObject.ImpersonatedAccountId);
+                    },
+																				GetAudienceListCounter: function (filter) {
+																					jQuery.ajax({
+																						url: AudienceListCounterUrl + "?dpName=" + filter,
+																						dataType: "json",
+																						contentType: 'application/json; charset=utf-8',
+																						type: "GET",
+																						data: {
+
+																						}
+																						, success: function (data) {
+
+																							remote.fillAudienceListCounter(data.latestCounter);
+
+																						}
+																					}
+
+
+
+																					);
+																				},
+																				getAllAdvertisers: function (filter) {
+
+																				
+																					var items = [CurrentAdvertiser];
+																					remote.fillAllAdvertisers(items);
+
+
+
+
+
+
+
+																				},
+
+																				SaveExternalAudienceSegments: function (data) {
+
+																					SaveExternalAudienceSegments(data);
+
+                                                                                },
+                                                                                	SaveExternalAudienceSegmentDels: function (data) {
+
+																					SaveExternalAudienceSegmentDels(data);
+
+																				}
+																				, getUserInformation: function () {
+																					remote.SendUserInformation(LoggedInUserObject);
+
+																				}
+
+																			}
+
+
+																		});
+
+																}
+																function add(a, b) {
+																	remote.addNumbers(a, b, function (result) {
+																		alert(a + " + " + b + " = " + result);
+																	});
+																}
+
+																function multiply(a, b) {
+																	remote.multiplyNumbers(a, b, function (result) {
+																		alert(a + " x " + b + " = " + result);
+																	});
+																}
+																function HandleDataProviderMenuLogOut(dataPId) {
+																	if ((dataPId == ($("#DataProviderId").val()))) {
+
+																		remote.handelLogOut();
+																		setTimeout(function () {
+																			$("#DataProviderMenuRegister" + $("#DataProviderId").val()).show();
+																			$("#DataProviderMenuLogin" + $("#DataProviderId").val()).show();
+																			$("#DataProviderMenuForgetpassword" + $("#DataProviderId").val()).show();
+																			$("#DataProviderMenuChangePassword" + $("#DataProviderId").val()).hide();
+																			$("#DataProviderMenuAudiance" + + $("#DataProviderId").val()).hide();
+
+																			$("#DataProviderMenuLogOut" + $("#DataProviderId").val()).hide();
+																		}, 500);
+																	}
+																	else {
+
+																		return true;
+																	}
+																	return false;
+																}
+															</script>
+															<style type="text/css">
+
+
+																#embedded iframe {
+																	width: 100%;
+																	height: 100%;
+																	/*margin-top: 5px;
+																	padding-top: 4px;
+																	padding-left: 4px;
+																	padding-right: 4px;*/
+																}
+															</style>
+
+
+															<script language="javascript" type="text/javascript">
+
+
+
+
+    // window.loadedDependencies.push('queryBuilder');
+
+    // after all that, at the app definition:
+																var externalProviderURlSite = '';
+
+																var SiteProviderURL = null;
+
+																var BaseSiteProviderURL = null;
+	var GetExternalDPProviderURL = "@Url.Action("GetExternalDataProviderById", "DataProvider")";
+    var GetAudiencOjectsUrl = "@Url.Action("GetAudiencOjects", "Campaign")";
+    var CalculatePriceUrl = "@Url.Action("CalculateAudiancePrice", "Campaign")";
+    var WarningBoxTitle = "@Html.GetResource("Warning")";
+    var AudiancePleaseSelect = "@Html.GetResource("SelectConfirmation", "AudienceSegment")";
+    var close = "@Html.GetResource("Close","Commands")";
+
+    var Audiences;
+    var currentscope = null;
+    var OutPutAudiances;
+
+														var yesbtnAudiance = "@Html.GetResource("Yes", "Global")";
+var SegmentListSaveUrl = '@Url.Action("SaveExternalAudianceSegmentTargeting", "Campaign")';
+var SegmentListSaveWithDelUrl = '@Url.Action("SaveExternalAudianceSegmentTargetingWithDel", "Campaign")';
+function SaveExternalAudienceSegmentDels(Segments) {
+//var roots = "sadasdasdasd";
+//var en = "aaaa";
+//var ar = "ssss";
+//	var list = [];
+
+//	let data = {
+//		id: item.id,
+//		name: item.name,
+//		price: item.price
+//	}
+	var tempresult = "";
+	var list = [];
+	var listofid = [];
+	var totalPrice = 0;
+	var dpValue =$("#DataProviderId").val();
+	for (var i = 0; i < Segments.length; i++) {
+
+		list.push({ /*ar: Segments[i].name, en: Segments[i].name,*/ AdvertiserId: "" + CurrentAdvertiser.Id, IntegrationId: "" + Segments[i].id, ProviderId: "" + dpValue, IsSelectedable: true, Price: "" + Segments[i].price });
+		if (Segments[i].price > totalPrice)
+		totalPrice = Segments[i].price;
+		 listofid.push( Segments[i].id);
+	}
+	var tempresult = listofid.join(",");
+	var params = { AdGroupId: currentAdGrouid, DataProviderId: dpValue, AccAdvertiserId: CurrentAdvertiser.Id, Segments: list };
+
+
+	params =JSON.stringify(params);
+
+$.ajax({
+	type: 'POST',
+	contentType: 'application/json; charset=utf-8',
+	dataType: 'json',
+url: SegmentListSaveWithDelUrl,
+//traditional: true,
+	data: params ,
+	cache: false,
+success: function (data) {
+	if (data.Result) {
+//window.location = ReloadUrl + "?providerId=" + ProviderId + "&success=true";
+
+		listofExternalIds = tempresult;
+		listofExternalIdsCount = data.CountExternalAudienceList+"";
+		listofExternalIdsDataBid = data.DataPriceAudienceSegment + "";
+	
+		remote.NotifyforSucess(data.Message);
+//InitTree('ProviderTreeList', '' + TreeReloadUrl + "?providerId=" + ProviderId, selectTreeFunction);
+//$("#AddAudience").dialog("close");
+//alert("sssss");
+
+} else {
+// $("#AddAudience").dialog("close");
+		remote.NotifyforError(data.Message);
+}
+},
+error: function (data) {
+	remote.NotifyforError(data);
+}
+});
+
+                                                                }
+
+
+                                                                function SaveExternalAudienceSegments(Segments) {
+//var roots = "sadasdasdasd";
+//var en = "aaaa";
+//var ar = "ssss";
+//	var list = [];
+
+//	let data = {
+//		id: item.id,
+//		name: item.name,
+//		price: item.price
+//	}
+	var tempresult = "";
+	var list = [];
+	var listofid = [];
+	var totalPrice = 0;
+	var dpValue =$("#DataProviderId").val();
+	for (var i = 0; i < Segments.length; i++) {
+
+		list.push({ /*ar: Segments[i].name, en: Segments[i].name,*/ AdvertiserId: "" + CurrentAdvertiser.Id, IntegrationId: "" + Segments[i].id, ProviderId: "" + dpValue, IsSelectedable: true, Price: "" + Segments[i].price });
+		if (Segments[i].price > totalPrice)
+		totalPrice = Segments[i].price;
+		 listofid.push( Segments[i].id);
+	}
+	var tempresult = listofid.join(",");
+	var params = { AdGroupId: currentAdGrouid, DataProviderId: dpValue, AccAdvertiserId: CurrentAdvertiser.Id, Segments: list };
+
+
+	params =JSON.stringify(params);
+
+$.ajax({
+	type: 'POST',
+	contentType: 'application/json; charset=utf-8',
+	dataType: 'json',
+url: SegmentListSaveUrl,
+//traditional: true,
+	data: params ,
+	cache: false,
+success: function (data) {
+	if (data.Result) {
+//window.location = ReloadUrl + "?providerId=" + ProviderId + "&success=true";
+
+		listofExternalIds = tempresult;
+		listofExternalIdsCount = data.CountExternalAudienceList+"";
+		listofExternalIdsDataBid = data.DataPriceAudienceSegment + "";
+		if (parseInt(listofExternalIdsCount) > 0)
+			$("#MaxbidDataPriceForDb").text("Imported Audience Lists Count:" + listofExternalIdsCount + " with Total CPM:" + listofExternalIdsDataBid + "$");
+		else
+			$("#MaxbidDataPriceForDb").text("");
+		remote.NotifyforSucess(data.Message);
+//InitTree('ProviderTreeList', '' + TreeReloadUrl + "?providerId=" + ProviderId, selectTreeFunction);
+//$("#AddAudience").dialog("close");
+//alert("sssss");
+
+} else {
+// $("#AddAudience").dialog("close");
+		remote.NotifyforError(data.Message);
+}
+},
+error: function (data) {
+	remote.NotifyforError(data);
+}
+});
+
+}
+														function SetExternalProviderURL() {
+
+															if ($("#DataProviderId").val() == '' || $("#DataProviderId").val() == null) {
+																externalProviderURlSite = '';
+																//$("#MaxbidDataPriceForDb").text("");
+
+																if (remote) {
+																	remote.destroy();
+																	remote = undefined;
+																}
+
+																if (transport) {
+																	transport.destroy();
+																}
+																return;
+															}
+															//$("#MaxbidDataPriceForDb").text("");
+															jQuery.ajax(
+            {
+
+
+																	type: "GET",
+																	url: GetExternalDPProviderURL + "?Id=" + $("#DataProviderId").val() +"&adgroupId=" +"@Model.AdGroupId" + "&AdvAccountId=" + CurrentAdvertiser.Id,
+																	success: function (data)
+																	{
+																	
+																		var res = data.split(";");
+																		externalProviderURlSite = res[0];
+																		listofExternalIds = res[1];
+																		listofExternalIdsCount = res[2];
+                                                                        listofExternalIdsDataBid = res[3];
+                                                                              listofExternalIdsAct = res[4];
+																		//$("#MaxbidDataPriceForDb").text("Imported List Count:" + listofExternalIdsCount + " with Total Data Price:" + listofExternalIdsDataBid + "$");
+																		setupeasyForAudianceList();
+																		SiteProviderURL = externalProviderURlSite + "/campaign-audiences-list?AudList=" + listofExternalIds + "&advertiserId=" + CurrentAdvertiser.Id +"&AudListActv=" + listofExternalIdsAct + "&lang=" + LoggedInUserObject.CurrentLanguage;
+
+																		BaseSiteProviderURL = SiteProviderURL;
+																		setupRemote();
+																	}
+
+            });
+
+														}
+    $(document).ready(function () {
+        //
+        //TreeDialogInitilize();
+        FillJsonRules();
+        OutPutAudiances = angular.element($("#RulesAllContainer")).scope().output;
+        $("#DublicatedAud").dialog({
+            autoOpen: false,
+            width: 300,
+          //  height: 150,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            open: function () {
+
+                $(this).html('@Html.GetResource("Dublicated", "Audience")');
+
+            }
+        });
+
+        CalculatePrice();
+
+        updateAudianceSeqmenttab();
+		//updateConversiontab();	
+        $("#ParentAudianceSeg")
+    .scroll(function () {
+
+        if ($("#ParentAudianceSeg")[0].scrollHeight > $("#ParentAudianceSeg")[0].offsetHeight) {
+
+
+            scrollLock = true;
+        }
+        else {
+
+            scrollLock = false;
+        }
+
+    })
+    .mouseleave(function () {
+
+        scrollLock = false;
+    });
+
+
+
+        $("#AudiencesTree")
+.scroll(function () {
+
+    if ($("#AudiencesTree")[0].scrollHeight > $("#AudiencesTree")[0].offsetHeight) {
+
+        scrollLock = true;
+    }
+    else {
+        scrollLock = false;
+    }
+
+})
+.mouseleave(function () { scrollLock = false; });
+
+    });
+    var loadOperatorsFlag = false;
+    function TreeDialogInitilize() {
+        $("#Tree-dialog-form").dialog({
+            autoOpen: false,
+            //  height: 420,
+            width: 460,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            open: function () {
+
+
+
+            },
+            close: function () {
+
+
+            }
+        });
+
+    }
+    function showTree(scope) {
+
+        currentscope = scope;
+        // jQuery('#Tree-dialog-form').dialog('open');
+    }
+
+
+
+
+    function TargetExclude(type) {
+        var checkedlist = Audiences;
+        var input = '';
+
+        if (checkedlist) {
+            for (var i = 0 ; i < checkedlist.length; i++) {
+
+                input += checkedlist[i].id + ",";
+
+            }
+        }
+
+        if (input.length > 0) {
+            $.ajax({
+                type: 'POST',
+                url: GetAudiencOjectsUrl + "?ids=" + input,
+                success: function (data) {
+
+                    for (var i = 0 ; i < data.length; i++) {
+                        if (type == 1) {
+                            data[i].condition = "Target";
+                        }
+                        else {
+
+                            data[i].condition = "Exclude";
+                        }
+                        data[i].Name = data[i].Path;
+
+						if (data[i].recency && data[i].recency != '' && typeof (data[i].recency) != 'undefined') {
+
+							data[i].recency = "" + data[i].recency;
+
+							//data[i].ParentId = ParentIdOfFirstParty;
+
+						}
+                        if (currentscope != null) {
+                            currentscope.addRule(data[i]);
+                        } else {
+
+
+                            var scope = angular.element($("#RulesAllContainer")).scope();
+                            scope.$$childHead.addGroup();
+                            scope.$apply();
+
+                            //  warningDialog();
+                            currentscope.addRule(data[i]);
+
+
+                        }
+
+
+                    }
+
+
+                    var treeObj = jQuery.tree.reference("#AudiencesTree");
+
+
+                    var checkedItems = jQuery.tree.plugins.checkbox.get_checked(treeObj).filter(".leaf");
+                    checkedItems.each(function () {
+                        jQuery.tree.plugins.checkbox.uncheck(this);
+                    });
+
+                    //$('#Tree-dialog-form').dialog("close");
+                    currentscope.$apply();
+                    CalculatePrice();
+                },
+                error: function (data) {
+                    alert(data);
+                }
+            });
+        } else {
+            warningDialog();
+
+        }
+
+
+    }
+    function warningDialog() {
+
+
+        jQuery('<div id ="ConfirmationDialog" style="min-width: 200px;" title="' + WarningBoxTitle + '"></div>').dialog({
+
+            open: function () {
+                text = AudiancePleaseSelect;
+                $(this).html(text);
+
+            },
+            close: function () {
+                result = true;
+
+                $(this).remove();
+            },
+            resizable: false,
+            draggable: false,
+
+            modal: true,
+
+
+        });
+    }
+    var RulesClean = [];
+
+    function FillJsonRules() {
+
+        var stringrules = $("#groupAudianceString").val();
+        if (stringrules != "Not Set" && stringrules != "" && stringrules != null && stringrules != undefined) {
+
+
+
+            var objects = JSON.parse(stringrules)
+            if (typeof (angular.element($("#RulesAllContainer")).scope().filter) != "undefined") {
+                angular.element($("#RulesAllContainer")).scope().filter.group = objects;
+                angular.element($("#RulesAllContainer")).scope().filter.group.isParent = true;
+            }
+            angular.element($("#RulesAllContainer")).scope().$apply();
+        }
+    }
+
+    function getJsonRules() {
+
+        var scope = angular.element($("#RulesAllContainer")).scope();
+        var groupUpdated = removeEmptyGroups(scope.filter.group);
+
+        if (groupUpdated)
+            $("#groupAudianceString").val(JSON.stringify(groupUpdated));
+        else
+            $("#groupAudianceString").val("");
+        var currentOutput = angular.element($("#RulesAllContainer")).scope().output;
+        if (OutPutAudiances != currentOutput) {
+            $("#changedAudiances").val("true");
+
+        }
+    }
+    function CalculatePrice() {
+        getJsonRules();
+        var AudianceRulesJson = $("#groupAudianceString").val();
+        $.ajax({
+            type: 'POST',
+            url: CalculatePriceUrl,
+            datatype: "json",
+            traditional: true,
+            data: { AudianceRulesJson: AudianceRulesJson },
+            success: function (data) {
+                if (data.MinValue == data.MaxValue) {
+                    if (data.MinValue > 0) {
+                        $("#AudiencePrice").text( data.MinValue.toFixed(2) + " $");
+                    } else {
+                        $("#AudiencePrice").text("0.00 $");
+
+                    }
+
+                } else {
+                    $("#AudiencePrice").text(data.MinValue.toFixed(2) + " To " + data.MaxValue.toFixed(2) + " $");
+                }
+            },
+            error: function (data) {
+                alert(data);
+            }
+        });
+
+
+    }
+    function removeEmptyGroups(group) {
+        if (!group) return null;
+      var groupClone=  clone(group);
+        var foundrules = false;
+        for (var i = 0; i < groupClone.rules.length; i++) {
+            foundrules = true;
+
+            if (groupClone.rules[i].group) {
+                if (groupClone.rules[i].group.rules.length == 0) {
+
+                    groupClone.rules.splice(i, 1);
+                    i--;
+                }
+
+
+            }
+
+
+
+        }
+        if (groupClone.rules.length == 0) {
+            groupClone = null;
+
+        }
+        return groupClone;
+    }
+    app.filter('trimparent', function () {
+
+        return function (value) {
+            var n = value.lastIndexOf(">");
+            var res = value.substring(0, n+1);
+            if (!angular.isString(value)) {
+                return value;
+            }
+            return res; // you could use .trim, but it's not going to work in IE<9
+        };
+    });
+    app.filter('trim', function () {
+
+        return function (value) {
+            var n = value.lastIndexOf(">");
+            var res = value.substring(n+1);
+            if (!angular.isString(value)) {
+                return value;
+            }
+            return res; // you could use .trim, but it's not going to work in IE<9
+        };
+    });
+
+    //app = angular.module("app", ['queryBuilder']);
+
+    //app = angular.module("app", ['queryBuilder']);
+
+    app.controller('QueryBuilderCtrl', ['$scope', function ($scope) {
+        var data = '{"group": {"isSelected":"false","operator": "AND","rules": []}}';
+
+        function htmlEntities(str) {
+            return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function computed(group) {
+            if (!group) return "";
+
+            if (typeof (group.rules) != "undefined") {
+                for (var str = "(", i = 0; i < group.rules.length; i++) {
+                    i > 0 && (str += " <strong>" + getText(group.operator) + "</strong> ");
+                    str += group.rules[i].group ?
+                        computed(group.rules[i].group) :
+                        group.rules[i].Name + " " + htmlEntities(getText(group.rules[i].condition)) + " "+ getRecency(group.rules[i].recency) + " " + group.rules[i].Price;
+                }
+
+                return str + ")";
+            }
+            return "";
+        }
+	
+		function getRecency(recency){
+									
+											if(recency &&  recency!='' )
+											{
+																
+															return recency;	
+											}
+
+																return '0';
+																
+					}
+
+        function getText(text) {
+
+            @{   if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage == "ar")
+                {
+                    <text>
+            if (text == "AND") {
+                return '@Html.GetResource("AND", "Global")';
+            }
+            if (text == "OR") {
+                return '@Html.GetResource("OR", "Audience")';
+            }
+            if (text == "Exclude") {
+                return '@Html.GetResource("Exclude", "Audience")';
+            }
+            if (text == "Target") {
+                return '@Html.GetResource("Target", "Audience")';
+            }
+            </text>
+                }
+                else
+                {        <text>
+            return text;
+            </text>
+
+                }
+            }
+        }
+
+        $scope.json = null;
+        $scope.isParent = true;
+        $scope.filter = JSON.parse(data);
+        $scope.filter.group.isParent = true;
+        $scope.$watch('filter', function (newValue) {
+            $scope.json = JSON.stringify(newValue, null, 2);
+            $scope.output = computed(newValue.group);
+
+        }, true);
+    }]);
+
+
+    queryBuilder.directive('queryBuilder', ['$compile', function ($compile) {
+        return {
+            restrict: 'E',
+            scope: {
+                group: '='
+            },
+            templateUrl: '/queryBuilderDirective.html',
+            compile: function (element, attrs) {
+
+                var content, directive;
+                content = element.contents().remove();
+                return function (scope, element, attrs) {
+                    scope.operators = [
+                        { ID: 0, value: 'AND', name: '@Html.GetResource("AND", "Global")' },
+                        { ID: 1, value: 'OR', name: '@Html.GetResource("OR", "Audience")' }
+                    ];
+
+                    //scope.fields = [
+                    //    { name: 'Target', Reach: 'Jordan', CPM: '2.3$', Type: 'mobile' },
+                    //    { name: 'Target', Reach: 'KSA', CPM: '3.2$', Type: 'web' },
+
+                    //];
+
+                    scope.conditions = [
+                        { ID: 0, value: 'Target', name: '@Html.GetResource("Target", "Audience")' },
+                        { ID: 1, value: 'Exclude', name: '@Html.GetResource("Exclude", "Audience")' }
+
+					];
+
+					scope.recencyList = [
+						
+						{ ID: 0, value: '65535', name: 'All Users', selected: true },
+                        { ID: 1, value: '1', name: '1 day'},
+                        { ID: 2, value: '2', name: '2 day'  },
+						{ ID: 3, value: '3', name: '3 day'  },
+						{ ID: 5, value: '5', name: '5 day'  },
+						{ ID: 10, value: '10', name: '10 day'  },
+						{ ID: 15, value: '15', name: '15 day' },
+						{ ID: 30, value: '30', name:'30 day'  },
+						{ ID: 60, value: '60', name: '60 day'  },
+						{ ID: 90, value: '90', name:'90 day' },
+
+						{ ID: 180, value: '180', name: '180 day'  },
+						{ ID: 360, value: '360', name:'360 day' }
+					];
+
+
+                    scope.isLast = function (check) {
+                        var cssClass = '';
+
+                        if(this.rule)
+                        {
+                            if (this.rule.group)
+                                if (this.rule.group.isSelected == true || this.rule.group.isSelected == "true") {
+                            cssClass = 'activeItem ';
+                        }
+                    }
+
+                        var cssClass = check ? cssClass + 'lastone' : cssClass + '';
+                        return cssClass;
+                    };
+                    scope.addCondition = function () {
+
+                        showTree(scope);
+
+
+                    };
+                    scope.GetConditionButtonStyle = function () {
+
+                        var test = content;
+                        var Button = $(element).find("#addCondition");
+
+                        if (scope.group.rules.length == 0) {
+                            $(Button).attr("style", "margin-left: 5px;display:none;");
+                        } else {
+
+                            $(Button).attr("style", "margin-left: 5px;");
+
+                        }
+
+
+                    };
+                    scope.changeOperator = function (event) {
+                        var element = event.currentTarget;
+                        var parent = $(element).parent();
+
+
+                        if (scope.group.operator == "AND" && $(element).attr("value") == "OR") {
+                            scope.group.operator = "OR";
+
+                        }
+                        else if (scope.group.operator == "OR" && $(element).attr("value") == "AND") {
+
+                            scope.group.operator = "AND";
+                        }
+
+                        var sel = $(event.currentTarget).data('title');
+                        var tog = $(event.currentTarget).data('toggle');
+                        $('#' + tog).prop('value', sel);
+                        $(parent).find('a[data-toggle="' + tog + '"]').not('[data-title="' + sel + '"]').removeClass('active').addClass('notActive');
+
+                        $(parent).find('a[data-toggle="' + tog + '"][data-title="' + sel + '"]').removeClass('notActive').addClass('active');
+
+                        CalculatePrice();
+
+                    };
+                    scope.removeCondition = function (index) {
+
+                        scope.group.rules.splice(index, 1);
+                        CalculatePrice();
+
+                        return false;
+                    };
+                    scope.addRule = function (RulesData) {
+						
+						//if (RulesData.recency == '' || typeof (RulesData.recency) == 'undefined') {
+						//	RulesData.recency = "0";
+
+						//}
+
+						if (RulesData.ParentId == ParentIdOfFirstParty) {
+
+							RulesData.recency = "65535";
+							RulesData.showrecency = true;
+							//scope.recencyList[0].selected = true;
+							//scope.recencyList[0].shift();
+						}
+						else {
+							RulesData.recency = "65535";
+							RulesData.showrecency = false;
+							//scope.recencyList[0].selected = false;
+						}
+                        var counter = 0;
+                        //scope.group.rules.push({
+                        //    condition: 'Target',
+                        //    field: 'Firstname',
+                        //    data: '',
+                        //    Name: 'Test',
+                        //    Reach: 'MiddleEast', CPM: '2$', Type: 'test Type'
+                        //});
+                        var counterArr = [];
+                        if (!scope.group.rules.filter(function (e) { return e.id == RulesData.id || e.id == RulesData.ParentId }).length > 0) {
+                            scope.group.rules.filter(function (e) {
+
+                                if (e.ParentId == RulesData.id) {
+
+                                    //scope.group.rules.splice(counter, 1);
+                                    //  counter--;
+                                    counterArr.push(counter);
+                                }
+                                counter++;
+
+                            });
+                            var offsetin = 0;
+                            if (counterArr.length > 0) {
+                                for (var c = 0; c < counterArr.length; c++) {
+
+                                    scope.removeCondition(counterArr[c] - offsetin);
+                                    offsetin++;
+                                }
+
+                            }
+                            //
+                            scope.group.rules.push(RulesData);
+
+                        } else {
+                            $("#DublicatedAud").dialog("open");
+
+                        }
+                    };
+                    scope.addGroup = function () {
+                        scope.setAllInActive();
+                        var scopeGroup = {
+                            group: {
+                                operator: 'AND',
+                                rules: [],
+                                isSelected: true
+                            }
+                        };
+                        scope.group.rules.push(scopeGroup);
+
+                        $("ul").removeClass("activeItem");
+
+
+
+
+                    };
+                    scope.RefreshPrice = function () {
+                        CalculatePrice();
+                    };
+                    scope.SetGroupActiveCss = function () {
+                        if (!scope.group.hasOwnProperty('isParent')) {
+                            if (scope.group.isSelected) {
+                                currentscope = scope;
+                                return null;
+                            }
+                        }
+                        return null;
+                    };
+                    scope.setAllInActive = function () {
+                        var group = scope.$parent.filter.group;
+
+                        if (group.rules)
+                        for (var i = 0; i < group.rules.length; i++) {
+
+
+                            if (group.rules[i].group) {
+                                //if (group.rules[i].group.rules.length == 0) {
+
+                                //    group.rules.splice(i, 1);
+                                //    i--;
+                                //}
+                                group.rules[i].group.isSelected = false;
+
+                            }
+
+
+
+                        }
+
+                        currentscope = null;
+                    };
+                    scope.SetGroupActive = function (event) {
+                        var element = event.currentTarget;
+                        var targetelment = $(element).find(".maindiv");
+                        if (!(targetelment.length > 0)) return;
+                        var childScope = angular.element(targetelment).scope();
+                        if (!childScope.group.hasOwnProperty('isParent')) {
+                            //var group = scope.$parent.$parent.$parent.$parent.filter.group;
+                            var group = scope.$parent.filter.group;
+                            for (var i = 0; i < group.rules.length; i++) {
+
+
+                                if (group.rules[i].group) {
+                                    //if (group.rules[i].group.rules.length == 0) {
+
+                                    //    group.rules.splice(i, 1);
+                                    //    i--;
+                                    //}
+                                    group.rules[i].group.isSelected = false;
+
+                                }
+
+
+
+                            }
+                            $("ul").removeClass("activeItem");
+                            childScope.group.isSelected = true;
+                            $(element).addClass("activeItem");
+                            currentscope = childScope;
+                            //currentscope.$apply();
+                        }
+
+
+                    };
+
+                    scope.SetGroupActivebyDrag = function () {
+                        var element = event.currentTarget;
+                        var targetelment = $(element).find(".maindiv");
+                        if (!(targetelment.length > 0)) return;
+                        var childScope = angular.element(targetelment).scope();
+                        if (!childScope.group.hasOwnProperty('isParent')) {
+                            //var group = scope.$parent.$parent.$parent.$parent.filter.group;
+                            var group = scope.$parent.filter.group;
+                            for (var i = 0; i < group.rules.length; i++) {
+
+
+                                if (group.rules[i].group) {
+                                    //if (group.rules[i].group.rules.length == 0) {
+
+                                    //    group.rules.splice(i, 1);
+                                    //    i--;
+                                    //}
+                                    group.rules[i].group.isSelected = false;
+
+                                }
+
+
+
+                            }
+                            $("ul").removeClass("activeItem");
+                            childScope.group.isSelected = true;
+                            $(element).addClass("activeItem");
+                            currentscope = childScope;
+                            //currentscope.$apply();
+                        }
+
+
+                    };
+                    scope.removeGroup = function () {
+                        if (scope.group.isSelected) {
+                            currentscope = null;
+                        }
+
+                        "group" in scope.$parent && scope.$parent.group.rules.splice(scope.$parent.$index, 1);
+                        CalculatePrice();
+                    };
+
+                    directive || (directive = $compile(content));
+
+                    element.append(directive(scope, function ($compile) {
+                        return $compile;
+                    }));
+                }
+            }
+        }
+    }]);
+    //});
+
+
+
+
+															</script>
+
+															<div id="DublicatedAud" class="adfalcon-dialog" title="@Html.GetResource("Warning", "Global")" style="display:none">
+
+															</div>

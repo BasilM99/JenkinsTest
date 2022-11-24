@@ -1,0 +1,31 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.Campaign.OperaterViewModel
+<div class="section-form-inner-container info-container  tab-pane fade" tabsection="3" id="operatersSection"
+    style="display: none;">
+    <div class="ad-filter-text go-left floating-left">
+        @Html.Raw(Html.GetResource("OperatorDesc", "Campaign"))
+    </div>
+    <div class="ad-filter-data go-left floating-left campaign-right-container width-560">
+        <div class="data-row">
+            <div class="field-container floating-clear">
+                @Html.GetCheckBox("DisableProxyTraffic", Html.GetResource("DisableProxyTraffic", "Campaign"), Model.DisableProxyTraffic)
+            </div>
+        </div>
+        <br />
+        <div class="data-row space-bottom-blue-filter">
+            <div class="blue-filter-container">
+                <a ref="javascript:void(0)" tabindexoperater="1" onclick="changeTab(this,'operater','OperatorTargetingIsAll','@Model.Operaters.Name',true);" class="selected">@Html.GetResource("All")</a>
+                <a ref="javascript:void(0)" tabindexoperater="3" onclick="changeTab(this,'operater','OperatorTargetingIsAll','@Model.Operaters.Name',false);">@Html.GetResource("WIFIOnly", "Campaign")</a>
+                <a ref="javascript:void(0)" tabindexoperater="2" onclick="changeTab(this,'operater','OperatorTargetingIsAll','@Model.Operaters.Name',false);">@Html.GetResource("SpecificOperators", "Campaign")</a>
+            </div>
+            <div class="tail">
+            </div>
+        </div>
+        <div tabsectionoperater="1" id="allSection">
+        </div>
+        <div tabsectionoperater="3" id="wifiOnlySection">
+        </div>
+        <div tabsectionoperater="2" id="_OperatersSection" style="display: none;">
+            @Html.Partial("Tree", Model.Operaters)
+        </div>
+    </div>
+</div>

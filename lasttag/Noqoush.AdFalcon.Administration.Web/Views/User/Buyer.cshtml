@@ -1,0 +1,150 @@
+﻿
+@{
+    ViewBag.Title = Noqoush.AdFalcon.Web.Controllers.Utilities.ResourcesUtilities.GetResource("Buyer", "Account");
+}
+<script type="text/javascript">
+    var buyerduplicate = true;
+
+    $(function () {
+        $("#BuyerInfo").submit(function (event) {
+
+            if (buyerduplicate) {
+                event.preventDefault();
+                CheckduplicateBuyer(true);
+
+            }
+            if ($("#buyerCode").val() == '')
+            {
+
+                $("#RequiredbuyerCode-error").show();
+                event.preventDefault();
+            }
+
+
+        });
+    });
+    $(document).ready(function () {
+        SetSelectedTap("ListMenuAdmin");
+    });
+    var CheckduplicateBuyerUrl = '@Url.Action("CheckduplicateBuyer", "User")';
+    function CheckduplicateBuyer(submit) {
+
+        $("#RequiredbuyerCode-error").hide();
+        $.ajax({
+            type: 'POST',
+            url: CheckduplicateBuyerUrl + "?buyerCode=" + $("#buyerCode").val(),
+            success: function (data) {
+
+                if (data.result) {
+                    $("#buyerCode-error").show();
+                    buyerduplicate = true;
+                   // $("#buyerCode").val('');
+                }
+                else {
+                    $("#buyerCode-error").hide();
+                    buyerduplicate = false;
+
+                    if (typeof (submit) != "undefined" && submit)
+                    $("#BuyerInfo").submit();
+                }
+
+            },
+            error: function (data) {
+            }
+        });
+
+    }
+    function duplicateBuyerPress() {
+        $("#buyerCode-error").hide();
+        buyerduplicate = true;
+
+
+    }
+    var generateBuyerIdUrl = '@Url.Action("generateBuyerId", "User")';
+
+
+    function generateBuyerId() {
+        if ($("#generatebuyerbtn").hasClass("disabled"))
+        {
+            return;
+        }
+        $.ajax({
+            type: 'POST',
+            url: generateBuyerIdUrl,
+            success: function (data) {
+                $("#buyerId").val(data.value);
+                $("#buyerCode").val(data.value);
+                $("#buyerCode-error").hide();
+                buyerduplicate = false;
+                $("#generatebuyerbtn").addClass('disabled');
+
+            },
+            error: function (data) {
+                $("#buyerId").val('');
+            }
+        });
+
+
+    }
+</script>
+
+
+@using (Html.BeginForm("Buyer", "User", FormMethod.Post, new { id = "BuyerInfo" }))
+{
+    <h2>
+        @Html.GetResource("Buyer", "Account")
+    </h2>
+    <div class="section-form-container">
+        <br>
+        <input data-val="true" style="display:none;" id="buyerId" name="buyerId" type="hidden" value="@ViewBag.BuyerId">
+
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("AccountName", "Report")</span>
+            </div>
+            <div class="field-container">
+                <span class="field-title">
+
+                    @{
+
+                        string impersonatedAccountName = "";
+
+                        var impersonatedAccount = Noqoush.Framework.OperationContext.Current.UserInfo<Noqoush.AdFalcon.Common.UserInfo.AdFalconUserInfo>().ImpersonatedAccount;
+                        if (impersonatedAccount != null)
+                        {
+                            impersonatedAccountName = "" + impersonatedAccount.FirstName + " " + impersonatedAccount.LastName + "";
+
+                        }
+                        else
+                        {
+                            impersonatedAccountName = "" + Noqoush.Framework.OperationContext.Current.UserInfo<Noqoush.AdFalcon.Common.UserInfo.AdFalconUserInfo>().FirstName + " " + Noqoush.Framework.OperationContext.Current.UserInfo<Noqoush.AdFalcon.Common.UserInfo.AdFalconUserInfo>().LastName + "";
+                        }
+                    }
+
+                    @impersonatedAccountName
+                </span>
+            </div>
+
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("buyerCode", "Account")</span>
+            </div>
+            <div class="field-container">
+                <input type="text" id="buyerCode" name='buyerCode'
+                       value="@ViewBag.BuyerCode" class="text-box" style="float:right;" maxlength="6" onchange="CheckduplicateBuyer()" onkeypress="duplicateBuyerPress()" />
+            </div>
+            <div class="field-container">
+                <input type="button" onclick="generateBuyerId()" id="generatebuyerbtn" value='@Html.GetResource("Generate", "Account")' class="primary-btn " style="min-width:160px" />
+            </div>
+            <span id="buyerCode-error" class="validation-arrow field-validation-error" style="display:none"><span class="">@Html.GetResource("DuplicatedCode")</span></span>
+            <span id="RequiredbuyerCode-error" class="validation-arrow field-validation-error" style="display:none"><span class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span></span>
+        </div>
+        <div class="data-row button-container">
+            <input value="@Html.GetResource("Save", "Global")" id="saveBtn" type="submit" class="primary-btn" />
+        </div>
+
+    </div>
+
+
+                        }

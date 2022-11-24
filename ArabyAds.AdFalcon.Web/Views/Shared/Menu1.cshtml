@@ -1,0 +1,52 @@
+﻿@{
+    var visibilityValue = "hidden;";
+    if ((ViewBag.ShowMenu != null) && ViewBag.ShowMenu)
+    {
+        visibilityValue = "visibility;";
+    }
+}
+<div class="navigation-links-container" style="visibility: @visibilityValue">
+    <ul class="navigation-links">
+        <li><a href="@Url.Action("index", "dashboard", new { charttype = "ad" })">&nbsp; <span>
+        </span></a>
+            <div class="sub-menu-container">
+                @Html.ActionLink(Html.GetResource("Dashboard", "Menu").ToString(), "index", "dashboard", new { chartType = "ad" }, null)
+                @Html.ActionLink(Html.GetResource("Campains", "Menu").ToString(), "index", "campaign")
+                @Html.ActionLink(Html.GetResource("Reports", "Menu").ToString(), "index", "reports", new { reportType = "ad" }, null)
+                <a href='@Url.GetPublicPageUrl("SDKs.html")'>@Html.GetResource("SDKs", "Menu").ToString()</a>
+            </div>
+        </li>
+        <li class="publisher-lnk"><a href="@Url.Action("index", "dashboard")">&nbsp; <span></span>
+        </a>
+            <div class="sub-menu-container">
+                @Html.ActionLink(Html.GetResource("Dashboard", "Menu").ToString(), "index", "dashboard", new { chartType = "app" }, null)
+                @Html.ActionLink(Html.GetResource("Apps", "Menu").ToString(), "index", "appsite")
+                @Html.ActionLink(Html.GetResource("Reports", "Menu").ToString(), "index", "reports", new { reportType = "app" }, null)
+                <a href='@Url.GetPublicPageUrl("SDKs.html")'>@Html.GetResource("SDKs", "Menu").ToString()</a>
+            </div>
+        </li>
+        <li class="account-lnk"><a href="@Url.Action("edit", "user")">&nbsp; <span></span></a>
+            <div class="sub-menu-container">
+                @Html.ActionLink(Html.GetResource("Profile", "Menu").ToString(), "edit", "user")
+                @Html.ActionLink(Html.GetResource("Transfer", "Menu").ToString(), "PaymentDetails", "user")
+                @Html.ActionLink(Html.GetResource("Payment", "Menu").ToString(), "AccountHistory", "user")
+                @Html.ActionLink(Html.GetResource("ChangePassword", "Menu").ToString(), "changepassword", "user")
+                @Html.ActionLink(Html.GetResource("AdFund", "Menu").ToString(), "adfundpgw", "user")
+                @Html.ActionLink(Html.GetResource("Settings", "Menu").ToString(), "Settings", "AccountManagement")
+				  @Html.ActionLink("AuditTrial", "AuditTrial", "User")
+            </div>
+        </li>
+        <li class="admin-lnk"><a href="@Url.Action("Index", "AdOps")">&nbsp; <span></span></a>
+            <div class="sub-menu-container">
+                @Html.ActionLink(Html.GetResource("Impersonate", "Menu").ToString(), "Impersonate", "AccountManagement")
+                @Html.ActionLink(Html.GetResource("AdOps", "Menu").ToString(), "Index", "AdOps")
+                @Html.ActionLink(Html.GetResource("AdFund", "Menu").ToString(), "AddFund", "AccountManagement")
+                @Html.ActionLink(Html.GetResource("LookupManagement", "Menu").ToString(), "Index", "Lookup",new { id = "currency" },new{})
+                @Html.ActionLink(Html.GetResource("Employees", "Menu").ToString(), "Index", "Party", new { id = "employee" }, new { })
+                @Html.ActionLink(Html.GetResource("AddEmployees", "Menu").ToString(), "Create", "Party", new { type = "employee" }, new { })
+                @Html.ActionLink(Html.GetResource("BusinessPartners", "Menu").ToString(), "Index", "Party", new { id = "businesspartner" }, new { })
+                @Html.ActionLink(Html.GetResource("AddBusinessPartners", "Menu").ToString(), "Create", "Party", new { type = "businesspartner" }, new { })
+            </div>
+        </li>
+    </ul>
+</div>

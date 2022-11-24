@@ -1,0 +1,34 @@
+﻿@using Noqoush.AdFalcon.Services.Interfaces.DTOs.Reports
+@model List<DealPerformanceDto>
+@{
+    
+}
+<div class="grid-container data-row">
+@(Html.Telerik().Grid(Model)
+                    .Name("Grid")
+                    .Columns(columns =>
+                                 {
+                                     columns.Bound(o => o.SecondSub).Title("SecondSub");
+                                     columns.Bound(o => o.SecondSubName).Title("SecondSubName");
+                                     columns.Bound(o => o.Date).Title("Date");
+                                 
+                                 })
+                    .DataBinding(dataBinding =>
+                    {
+                        dataBinding.Server().Select("DealPerformance", "dashboard");
+                        dataBinding.Ajax().Select("DealPerformance", "dashboard");
+
+                    })
+                        .Scrollable(scrolling => scrolling.Enabled(false))
+                        .EnableCustomBinding(true)
+                                  .Pageable(paging => paging.PageSize(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total(int.Parse(ViewData["total"].ToString())).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+                              .Groupable(grouping => grouping.Enabled(false)).Footer(true))
+                              </div>
+<div class="data-row">
+    <a href="javascript:void(0)" onclick='performanceExport("excel")' class="export-icon-excel floating-left" title="Download as Excel">
+    </a><a href="javascript:void(0)" onclick='performanceExport("csv")' class="export-icon-cvs floating-left" title="Download as CSV">
+    </a><a href="javascript:void(0)" onclick='performanceExport("pdf")' class="export-icon-pdf floating-left" title="Download as PDF">
+    </a>
+</div>
+@Html.RegisterScriptBlock(string.Format("var performanceExportUrl='{0}'", Url.Action("adPerformanceExport", "dashboard")))
+<br>

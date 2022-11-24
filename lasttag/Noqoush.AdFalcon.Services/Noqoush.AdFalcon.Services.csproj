@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Obfuscar.2.2.18\build\obfuscar.props" Condition="Exists('..\packages\Obfuscar.2.2.18\build\obfuscar.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0C912539-7606-4822-8765-ABC87145248A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Noqoush.AdFalcon.Services</RootNamespace>
+    <AssemblyName>Noqoush.AdFalcon.Services</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>True</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>True</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>True</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>True</CodeContractsRedundantAssumptions>
+    <CodeContractsRedundantTests>True</CodeContractsRedundantTests>
+    <CodeContractsMissingPublicRequiresAsWarnings>True</CodeContractsMissingPublicRequiresAsWarnings>
+    <CodeContractsInferRequires>True</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>False</CodeContractsInferEnsures>
+    <CodeContractsInferObjectInvariants>False</CodeContractsInferObjectInvariants>
+    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestRequires>False</CodeContractsSuggestRequires>
+    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
+    <CodeContractsSuggestReadonly>True</CodeContractsSuggestReadonly>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsSQLServerOption />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
+    <CodeContractsFailBuildOnWarnings>False</CodeContractsFailBuildOnWarnings>
+    <CodeContractsBeingOptimisticOnExternal>True</CodeContractsBeingOptimisticOnExternal>
+    <CodeContractsRuntimeCheckingLevel>Preconditions</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>%28none%29</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WebBuild|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\WebBuild\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\Noqoush.AdFalcon.Services.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;D:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;D:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>test.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AerospikeClient">
+      <HintPath>..\..\..\..\lib\AerospikeClient.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper, Version=1.1.0.188, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\lib\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate">
+      <HintPath>..\..\..\..\lib\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="Noqoush.AdFalcon.Server.Integration.Services, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\Noqoush.AdFalcon.Server.Integration.Services.1.0.0\lib\netstandard2.0\Noqoush.AdFalcon.Server.Integration.Services.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql">
+      <HintPath>..\..\..\..\lib\Npgsql.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
+    <Compile Include="Services\Account\Fund\FundTransTypeService.cs" />
+    <Compile Include="Services\Account\Fund\FundTypeService.cs" />
+    <Compile Include="Services\Account\PaymentType\PaymentTypeService.cs" />
+    <Compile Include="Services\Account\PMP\PMPDealService.cs" />
+    <Compile Include="Services\Account\SSP\DemandSupplyService.cs" />
+    <Compile Include="Services\AppSite\AppSiteTypeService.cs" />
+    <Compile Include="Services\AppSite\AppSiteStatusService.cs" />
+    <Compile Include="Services\Campaign\AdCreativeAttributeService.cs" />
+    <Compile Include="Services\Campaign\AdvetiserService.cs" />
+    <Compile Include="Services\Campaign\AppMarketingPartnerService.cs" />
+    <Compile Include="Services\Campaign\AudienceSegmentService.cs" />
+    <Compile Include="Services\Campaign\CampaignService.cs" />
+    <Compile Include="Services\Campaign\AdGroupStatusService.cs" />
+    <Compile Include="Services\Campaign\AdCreativeStatusService.cs" />
+    <Compile Include="Services\Campaign\CreativeVendorService.cs" />
+    <Compile Include="Services\Campaign\Creative\RichMediaRequiredProtocolService.cs" />
+    <Compile Include="Services\Campaign\HouseAdService.cs" />
+    <Compile Include="Services\Campaign\Creative\CreativeUnitService.cs" />
+    <Compile Include="Services\Campaign\Creative\TitleImageService.cs" />
+    <Compile Include="Services\Campaign\ObjectiveTypeService.cs" />
+    <Compile Include="Services\Campaign\TrackingEventService.cs" />
+    <Compile Include="Services\Core\AgeGroupService.cs" />
+    <Compile Include="Services\Core\CostModelService.cs" />
+    <Compile Include="Services\Core\CostModelWrapperService.cs" />
+    <Compile Include="Services\Core\MetricTestService.cs" />
+    <Compile Include="Services\Core\VideoDeliveryMethodsService.cs" />
+    <Compile Include="Services\Core\VideoTypeService.cs" />
+    <Compile Include="Services\Core\DeviceTypeService.cs" />
+    <Compile Include="Services\Core\PartyService.cs" />
+    <Compile Include="Services\Core\JobPositionService.cs" />
+    <Compile Include="Services\Core\CostElementService.cs" />
+    <Compile Include="Services\Core\LookupService.cs" />
+    <Compile Include="Services\Core\CurrencyService.cs" />
+    <Compile Include="Services\Core\DeviceCapabilityService.cs" />
+    <Compile Include="Services\Core\DocumentService.cs" />
+    <Compile Include="Services\Core\DocumentTypeService.cs" />
+    <Compile Include="Services\Core\LocationService.cs" />
+    <Compile Include="Services\Core\PlatformService.cs" />
+    <Compile Include="Services\Core\ManufacturerService.cs" />
+    <Compile Include="Services\Core\DeviceService.cs" />
+    <Compile Include="Services\Core\KeywordService.cs" />
+    <Compile Include="Services\Account\AccountService.cs" />
+    <Compile Include="Services\AppSite\AppSiteService.cs" />
+    <Compile Include="Services\Core\CountryService.cs" />
+    <Compile Include="Services\Core\LanguageService.cs" />
+    <Compile Include="Mapping\MapperHelper.cs" />
+    <Compile Include="Mapping\MappingRegister.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Core\OperatorService.cs" />
+    <Compile Include="Services\Core\MetricService.cs" />
+    <Compile Include="Services\Core\RefreshIntervalService.cs" />
+    <Compile Include="Services\Core\MatchTypeService.cs" />
+    <Compile Include="Services\Core\ThemeService.cs" />
+    <Compile Include="Services\Account\FundService.cs" />
+    <Compile Include="Services\Account\Fund\FundTransactionService.cs" />
+    <Compile Include="Services\Reports\EmailReportingService.cs" />
+    <Compile Include="Services\Reports\PerformanceReportTestService.cs" />
+    <Compile Include="Services\Reports\PerformanceReportService.cs" />
+    <Compile Include="Services\Reports\ReportService.cs" />
+    <Compile Include="Services\Reports\SummaryService.cs" />
+    <Compile Include="Services\Account\UserService.cs" />
+    <Compile Include="Services\System\SystemAccountService.cs" />
+    <Compile Include="Utility\AccountEmailSender.cs" />
+    <Compile Include="Utility\EmailSender.cs" />
+    <Compile Include="Utility\ServicesSubscribers\CampaignSubscriber.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Noqoush.Framework\Noqoush.Framework.DomainServices\Noqoush.Framework.DomainServices.csproj">
+      <Project>{F70B1F2E-AD4B-406E-B668-7C510198700D}</Project>
+      <Name>Noqoush.Framework.DomainServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Noqoush.Framework\Noqoush.Framework.Persistence\Noqoush.Framework.Persistence.csproj">
+      <Project>{2DBB0F5E-0516-4D97-88EB-0C2B420195A9}</Project>
+      <Name>Noqoush.Framework.Persistence</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Noqoush.Framework\Noqoush.Framework\Noqoush.Framework.csproj">
+      <Project>{64D00377-15EE-4C1F-932C-0325580E2003}</Project>
+      <Name>Noqoush.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.AdServer.Integration\Noqoush.AdFalcon.AdServer.Integration.csproj">
+      <Project>{9FC900CA-99DA-467A-8497-4EB76A81FC6C}</Project>
+      <Name>Noqoush.AdFalcon.AdServer.Integration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Base\Noqoush.AdFalcon.Base.csproj">
+      <Project>{18b45557-cdea-4fd5-aeec-95e4bac5f6d0}</Project>
+      <Name>Noqoush.AdFalcon.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Common\Noqoush.AdFalcon.Common.csproj">
+      <Project>{DC961A65-F217-4C17-8DEE-DEC452AD6BF1}</Project>
+      <Name>Noqoush.AdFalcon.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Domain.Common\Noqoush.AdFalcon.Domain.Common.csproj">
+      <Project>{fe62b4e8-9278-4b6f-b0e9-67495d74cb22}</Project>
+      <Name>Noqoush.AdFalcon.Domain.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Domain.Exceptions\Noqoush.AdFalcon.Exceptions.csproj">
+      <Project>{50286B2D-5A0B-4F57-8CBB-7CC1C9A6C64F}</Project>
+      <Name>Noqoush.AdFalcon.Exceptions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Domain\Noqoush.AdFalcon.Domain.csproj">
+      <Project>{df4dfedd-0f98-45dd-be73-951fc014aaa5}</Project>
+      <Name>Noqoush.AdFalcon.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Persistance.GP\Noqoush.AdFalcon.Persistence.ReportsGP.csproj">
+      <Project>{6798574d-36f9-4daa-859a-f531a0b17c0b}</Project>
+      <Name>Noqoush.AdFalcon.Persistence.ReportsGP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Persistance\Noqoush.AdFalcon.Persistence.Reports.csproj">
+      <Project>{AB8C2371-BB5C-42C5-8B59-EC6D40FC82B1}</Project>
+      <Name>Noqoush.AdFalcon.Persistence.Reports</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Repositories\Noqoush.AdFalcon.Persistence.csproj">
+      <Project>{FAC4CF79-1413-49DE-ADF7-71878CEA8CE9}</Project>
+      <Name>Noqoush.AdFalcon.Persistence</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Services.Interfaces\Noqoush.AdFalcon.Services.Interfaces.csproj">
+      <Project>{C26F3A2D-1EEC-4567-9D1C-D8AE5834D83F}</Project>
+      <Name>Noqoush.AdFalcon.Services.Interfaces</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="test.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XMLFile1.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Obfuscar.2.2.18\build\obfuscar.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Obfuscar.2.2.18\build\obfuscar.props'))" />
+    <Error Condition="!Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets'))" />
+  </Target>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

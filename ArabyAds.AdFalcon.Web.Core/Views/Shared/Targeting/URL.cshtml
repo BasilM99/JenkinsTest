@@ -1,0 +1,212 @@
+﻿@model List<ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.URLTargetingView>
+
+    <div class="ad-filter-text go-left floating-left">
+        @Html.Raw(Html.GetResource("UrlTargetingDesc", "Campaign"))
+    </div>
+
+
+
+    <div class="ad-filter-data go-left floating-left" style="position:relative; top:-2px;" readonlyToBe>
+
+       
+
+   
+
+
+
+        <div class="data-row section-container">
+            <div class="go-left floating-left" style="margin-left:20px  ;margin-right:10px  ">
+                <a class="primary-btn" href="javascript:void(0)" onclick="addToMVCGrid('UrlGrid')">@Html.GetResource("Add", "Campaign")</a>
+
+            </div>
+        </div>
+        <div class="data-row section-container" style="margin:20px;width: 490px;padding-top:20px">
+
+
+            @(Html.Kendo().Grid(Model).Name("UrlGrid").NoRecords(p=>p.Template("&nbsp;")).HtmlAttributes(new { style = "overflow:visible" })
+                                                  //.DataKeys(keys => keys.Add(p => p.ID))
+                                                  .DataSource(dataBinding =>
+                                                  {
+
+
+                                                      dataBinding.Ajax().Read("UrlTargetingActions", "Campaign").Events(e=>e.Error("error_handler"))
+                                                   .Model(model =>
+                                                   {
+                                                       model.Id(m => m.ID);
+
+                                                   }).AutoSync(false);
+                                                  })
+                                                  //.ToolBar(commands => commands.Position(GridToolBarPosition.Top).Insert().ButtonType(GridButtonType.Image))
+                                                  .EnableCustomBinding(true)
+                                                  .Columns(columns =>
+                                                  {
+                                                      columns.Bound(o => o.ID).Hidden();
+                                                      columns.Bound(o => o.URL).Title(Html.GetResource("URL")).HtmlAttributes(new { style = "text-align:center" });
+                                                      columns.Template("<div id='DeletempButton' style='display:block'><a type='button'  class='t-button t-button-icon t-button-bare'  onclick='deleteURLTargeting(this); return false;'><span class='t-icon t-delete'></span></a></div>");
+                                                  })
+                                                  .Pageable(paging => paging.Input(false).Numeric(false).Info(false).PreviousNext(false).Refresh(false).Position(GridPagerPosition.Bottom))
+                                                   .EnableCustomBinding(true)
+                                                   .Sortable(sorting => sorting.Enabled(false))
+                                                   .Editable(editing => editing.Mode(GridEditMode.InCell).DisplayDeleteConfirmation(false))
+                                                   .Scrollable(scrolling => scrolling.Enabled(false)).Events(events => {  events.Save("save_handler"); events.DataBound("databound_handler"); })
+                                                  )
+           
+
+            <script type="text/javascript">
+                function error_handler(e) {
+                    if (e.errors) {
+                        var message = "Errors:\n";
+                        $.each(e.errors, function (key, value) {
+                            if ('errors' in value) {
+                                $.each(value.errors, function () {
+                                    message += this + "\n";
+                                });
+                            }
+                        });
+                        alert(message);
+                    }
+                }
+
+                function save_handler(e) {
+
+                    debugger;
+                    var url = e.values.URL;
+                    url = url.replace(/\s/g, '');
+                    e.values.URL = url;
+                    $(e.container).find("input").val(url);
+
+                    if (!/^(https?):\/\//i.test(url)) {
+                        url = 'http://' + url; // set both the value
+
+                    }
+                    //e.values.URL = url
+                    if (!isMatchUrlExpression(url)) {
+                       // e.preventDefault();
+
+                        $("#GeneralDialogText").text("invalid url" + " URL:" + url);
+                        $("#resultGeneralDialog").dialog("open");
+                        deleteURLTargeting(e.container);
+                    }
+                    else {
+
+                        if (e.values.URL == url.trim()) {
+                            return;
+                        }
+
+
+
+                        if (checkDublicatedURLTargeting(url )) {
+
+                            //  showErrorMessage(Duplicated, false);
+
+                            $("#GeneralDialogText").text(AlreadyAddedMsg + " URL:" + url);
+                            $("#resultGeneralDialog").dialog("open");
+
+                            deleteURLTargeting(e.container);
+
+                        }
+
+                        else {
+                            e.values.URL = url;
+                            $(e.container).find("input").val(url);
+                            // e.dataItem.URL = url;
+                            e.sender.dataSource.getByUid(e.model.uid).set("URL", url);
+
+                            e.preventDefault();
+
+                            updateUrlInfo();
+                        }
+                    }
+                }
+                function deleteURL(elem) {
+                    var grid = $("#UrlGrid").data("kendoGrid");
+                    var tr = $(elem).parents('tr');
+                    // delete the row
+                    grid.removeRow(tr);
+                }
+
+                function checkDublicatedURLTargeting(keyword) {
+                    var grid = $("#UrlGrid").data("kendoGrid");
+
+                    if (grid == null)
+                        return false;
+
+
+
+                    var inserted = new Array();
+                    var deletedIPRangeIds = '';
+
+                    var data = grid.dataSource.data();
+                    var datads = grid.dataSource._destroyed;
+                    var InsertedIds = '';
+                    if (!(data.length > 1)) { return false; }
+                    for (var idx = 0; idx < data.length; idx++) {
+                        // if (data[idx].isNew() || data[idx].dirty) {
+                        if (data[idx].URL == keyword.trim()) {
+                            return true;
+                            // }
+                            //inserted[inserted.length] = data[idx];
+                            //InsertedIds += ',' + data[idx].ID;
+
+                        }
+                    }
+
+
+
+
+
+                    // $('#InsertePMPDealConfigs').val(InsertedIds);
+                    // $('#DeletedPMPDealConfigs').val(deletedIPRangeIds);
+                    /*
+                                    for (var i = 0; i < grid.changeLog.inserted.length; i++)
+                                        if (typeof (grid.changeLog.inserted[i]) != "undefined") {
+                                            if (grid.changeLog.inserted[i].URL == keyword.trim()) {
+                                                return true;
+                                            }
+                                        }
+
+                                    array = $("#UrlGrid tbody tr");
+                                    for (var i = 0; i < array.length; i++) {
+
+                                        dataItem = grid.dataItem(array[i]);
+                                        if (dataItem != undefined) {
+                                            if (dataItem.URL == keyword.trim()) {
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                    */
+                    return false;
+
+                }
+
+                function deleteURLTargeting(elem) {
+                    var grid = $("#UrlGrid").data("kendoGrid");
+                    var tr = $(elem).parents('tr');
+                    // delete the row
+                    grid.removeRow(tr);
+                    updateUrlInfo();
+                }
+
+                function databound_handler() {
+                    updateUrlInfo(true);
+                }
+
+            </script>
+        </div>
+
+
+
+
+
+
+
+
+
+      
+        </div>
+    
+
+ 
+  
+

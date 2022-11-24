@@ -1,0 +1,65 @@
+﻿@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core
+@model ArabyAds.AdFalcon.Administration.Web.Controllers.Model.Lookup.AudienceSegmentViewModel
+@{
+    if (ViewContext.FormContext == null)
+    {
+        ViewContext.FormContext = new FormContext();
+    }
+    ViewData.TemplateInfo.HtmlFieldPrefix = "LookupDto";
+}
+
+
+<div class="data-row data-container">
+    <div class="label-container2" title='@Html.GetResource("WurflCapabilities", "Lookup")'>
+        <span class="field-title required-field">@Html.GetResource("WurflCapabilities", "Lookup")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconTextBoxFor(p => (p.LookupDto as AudienceSegmentDto).OperatorSegmentCode)
+        @Html.ValidationMessageFor(p => (p.LookupDto as AudienceSegmentDto).OperatorSegmentCode)
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container2">
+        <span class="field-title required-field">@Html.GetResource("WurflValue", "Lookup")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconTextBoxFor(p=>(p.LookupDto as AudienceSegmentDto).Price)
+        @Html.ValidationMessageFor(p => (p.LookupDto as AudienceSegmentDto).Price)
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container2">
+        <span class="field-title required-field">@Html.GetResource("WurflValue", "Lookup")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconTextBoxFor(p => (p.LookupDto as AudienceSegmentDto).Description)
+        @Html.ValidationMessageFor(p => (p.LookupDto as AudienceSegmentDto).Description)
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container2">
+        <span class="field-title required-field">@Html.GetResource("WurflValue", "Lookup")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconTextBoxFor(p => (p.LookupDto as AudienceSegmentDto).Price)
+        @Html.ValidationMessageFor(p => (p.LookupDto as AudienceSegmentDto).Price)
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("IsSupported", "Lookup")</span>
+    </div>
+    <div class="field-container">
+        @Html.GetCheckBox("IsChlid", string.Empty, isChecked: (Model.LookupDto as AudienceSegmentDto).IsChlid)
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container2">
+        <span class="field-title required-field">Code Unique</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconTextBoxFor(p => (p.LookupDto as AudienceSegmentDto).CodeUQ)
+        @Html.ValidationMessageFor(p => (p.LookupDto as AudienceSegmentDto).CodeUQ)
+    </div>
+</div>
+

@@ -1,0 +1,287 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Core.CampaignReportSchedulingViewModel
+@using ArabyAds.AdFalcon.Web.Controllers.Model.Core
+@using ArabyAds.AdFalcon.Domain.Common.Model.Core
+@using ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.Reports
+@{
+    var Months = new List<SelectListItem>();
+    var Weeks = new List<SelectListItem>();
+    for (int i = 1; i <= 31; i++)
+    {
+        Months.Add(new SelectListItem()
+        {
+            Text = i.ToString(),
+            Value = i.ToString(),
+            Selected = (int)Model.ReportSchedulerDto.MonthDay == i
+        });
+    }
+    for (int i = 0; i < 7; i++)
+    {
+        Weeks.Add(new SelectListItem()
+        {
+            Text = Html.GetResource(i.ToString(), "WeekDays"),
+            Value = i.ToString(),
+            Selected = (int)Model.ReportSchedulerDto.WeekDay == i
+        });
+    }
+}
+<script type="text/javascript" language="javascript">
+    var DailyDefaultSubject = '@Html.GetResource("DailyDefaultSubject", "Report")';
+    var WeeklyDefaultSubject = '@Html.GetResource("WeeklyDefaultSubject", "Report")';
+    var MonthlyDefaultSubject = '@Html.GetResource("MonthlyDefaultSubject", "Report")';
+    @{
+
+            var mindate = 0;
+            if (Model != null)
+            {
+                var date = ArabyAds.Framework.Utilities.Environment.GetServerTime();
+                var snb = date.Subtract(ArabyAds.Framework.Utilities.Environment.GetServerTime());
+                if (snb.TotalDays < 0)
+                {
+                    mindate = Convert.ToInt32(snb.TotalDays) - 1;
+                }
+            }
+        }
+    $(document).ready(function () {
+        Hide();
+        ReportSchdulingmetricColumn=true;
+
+        var reportType = '@Context.Request.Query["reportType"]';
+        ReportSectionType = '@ReportSectionType.Publisher';
+
+        if (reportType == "ad") {
+            ReportSectionType = '@ReportSectionType.Advertiser';
+        }
+        localInitilizeForSchaduling();
+
+        $(".blue-info").attr("style","margin-right:0px;")
+
+        jQuery.validator.setDefaults({
+            ignore: '.ValdationIgnored'});
+        var formValue= $("#reportForm")[0];
+        var settingsVal = $.data(formValue, 'validator').settings;
+        settingsVal.ignore= '.ValdationIgnored';
+        $("#Schedulingdiv").find(".text-box").attr("style","width:380px");
+        $("#Schedulingdiv").find("#Months").attr("style","width:380px");
+        $("#Schedulingdiv").find(".label-container").attr("style","width:280px");
+    });
+    function localInitilizeForSchaduling() {
+
+        var dates = jQuery("#SchedulingStartDate,#SchedulingEndDate").datepicker({
+            changeMonth: true,
+            showButtonPanel: true,
+            showOn: 'both',
+            minDate: @mindate,
+            buttonImageOnly: true,
+            dateFormat: 'dd-mm-yy',
+            buttonImage: '@(Url.GetImagePath("Calendar-icon.png"))',
+            isRTL: false,
+            onSelect: function (selectedDate) {
+                if (this.id == "SchedulingStartDate") {
+                    startDateChanged = true;
+                }
+                var option = this.id == "SchedulingStartDate" ? "minDate" : "maxDate",
+                    instance = $(this).data("datepicker"),
+                    date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+                dates.not(this).datepicker("option", option, date);
+            }
+        });
+    };
+
+    function Hide() {
+        $("#MounthsDiv, #WeeksDiv").hide();
+        var value = $('input[name=Time]:checked').val();
+        switch (value) {
+            case '@RecurrenceType.Month.ToString()':
+                $("#MounthsDiv").show();
+                CampaignReportSchedulinRecurrenceType = '@RecurrenceType.Month.ToString()';
+                break;
+            case '@RecurrenceType.Week.ToString()':
+                $("#WeeksDiv").show();
+                CampaignReportSchedulinRecurrenceType = '@RecurrenceType.Week.ToString()';
+                break;
+            case '@RecurrenceType.Day.ToString()':
+                CampaignReportSchedulinRecurrenceType = '@RecurrenceType.Day.ToString()';
+                break;
+            default:
+        }
+
+    }
+</script>
+
+<div id="Scheduling">
+    @Html.Hidden("DateRecurrenceType", Model.ReportSchedulerDto.DateRecurrenceType)
+    @Html.Hidden("ReportSchedulerHId", Model.ReportSchedulerDto.ID)
+
+
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">
+                @Html.GetResource("StartDate", "Campaign")
+            </span>
+        </div>
+        <div class="field-container iea-text-calender-margin">
+            @Html.AdFalconTextBoxFor(p => p.ReportSchedulerDto.StartDate, new { @readonly = "readonly", id = "SchedulingStartDate" }, Model != null && Model.ReportSchedulerDto.StartDate != null ? Model.ReportSchedulerDto.StartDate.ToString(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.MainShortDateFormat) : "")
+        </div>
+        @Html.AdFalconValidationMessageFor(p => p.ReportSchedulerDto.StartDate)
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title">@Html.GetResource("EndDate", "Campaign")</span>
+        </div>
+        <div class="field-container">
+            @Html.AdFalconTextBox("SchedulingEndDate", Model != null && Model.ReportSchedulerDto.EndDate.HasValue ? Model.ReportSchedulerDto.EndDate.Value.ToString(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.MainShortDateFormat) : "", new { @readonly = "readonly" })
+        </div>
+        @Html.AdFalconValidationMessageFor(p => p.ReportSchedulerDto.EndDate)
+    </div>
+
+    @*<div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("ScheduleName", "Report")</span>
+            </div>
+            <div class="field-container" title="@Model.ReportSchedulerDto.Name">
+                @Html.AdFalconEditorFor(p => p.ReportSchedulerDto.Name)
+                @Html.AdFalconValidationMessageFor(p => p.ReportSchedulerDto.Name)
+                @if (Model.ReportSchedulerDto.ReportDto.TabId == "campaign")
+                {
+
+                    @await Html.PartialAsync("MoreInfo", "ReportName", new ViewDataDictionary { { "Class_Tail", "tail-report" }, { "Style2", "width: 400px; float:none;" } })
+                }
+                else
+                {
+                    @await Html.PartialAsync("MoreInfo", "ReportNameApp", new ViewDataDictionary { { "Class_Tail", "tail-report" }, { "Style2", "width: 400px;float:none;" } })
+
+                }
+            </div>
+        </div>*@
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("PreferedName", "Report")</span>
+        </div>
+        <div class="field-container">
+            @Html.AdFalconEditorFor(p => p.ReportSchedulerDto.PreferedName, new { @style = "width:400px;" })
+            <span id="msgReportSchedulerDtoPreferedName">
+                @Html.AdFalconValidationMessageFor(p => p.ReportSchedulerDto.PreferedName)
+                @await Html.PartialAsync("MoreInfo", "PreferedName", new ViewDataDictionary(ViewData) { { "Class_Tail", "tail-report" }, { "Style2", "width: 400px; float:none;" } })
+
+
+            </span>
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("Subject", "CampaignReport")</span>
+        </div>
+        <div class="field-container" title="@Model.ReportSchedulerDto.EmailSubject">
+            @Html.AdFalconEditorFor(p => p.ReportSchedulerDto.EmailSubject)
+            @Html.AdFalconValidationMessageFor(p => p.ReportSchedulerDto.EmailSubject)
+            @if (Model.ReportSchedulerDto.ReportDto.TabId == "campaign")
+            {
+
+                @await Html.PartialAsync("MoreInfo", "ReportName", new ViewDataDictionary(ViewData) { { "Class_Tail", "tail-report" }, { "Style2", "width: 400px; float:none;" } })
+            }
+            else
+            {
+                @await Html.PartialAsync("MoreInfo", "ReportNameApp", new ViewDataDictionary(ViewData) { { "Class_Tail", "tail-report" }, { "Style2", "width: 400px;float:none;" } })
+
+            }
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title">@Html.GetResource("EmailIntroduction", "Report")</span>
+        </div>
+        <div class="field-container">
+            @Html.TextAreaFor(p => p.ReportSchedulerDto.EmailIntroduction, new { @class = "text-box", rows = 3, cols = 5 })
+        </div>
+    </div>
+
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("Recurrence", "Report")</span>
+        </div>
+        <div class="field-container">
+            <div class="data-row">
+
+                @foreach (var item in Model.Time)
+                {
+                    <div class="field-container">
+                        @Html.GetRadioButton("Time", item.Text, value: item.Value, Checked: item.Selected, onChange: "Hide")
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+    <div class="data-row data-container" id="MounthsDiv">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("ScheduleMonthDays", "Report")</span>
+        </div>
+        <div class="field-container">
+            <div class="field-container" style="width: 95px">
+                @Html.AdFalconDropDownList("Months", Months)
+            </div>
+
+        </div>
+    </div>
+    <div class="data-row data-container" id="WeeksDiv">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("WeekDays", "Report")</span>
+        </div>
+        <div class="field-container">
+            @*<div class="field-container" style="width: 95px">
+                    @Html.AdFalconDropDownList("Weeks", Weeks)
+                </div>*@
+
+            <div class="field-container">
+                @Html.GetCheckBox("IsSunday", Html.GetResource("0", "WeekDays"), Model.ReportSchedulerDto.IsSunday)
+            </div>
+
+            <div class="field-container">
+                @Html.GetCheckBox("IsMonday", Html.GetResource("1", "WeekDays"), Model.ReportSchedulerDto.IsMonday)
+            </div>
+            <div class="field-container">
+                @Html.GetCheckBox("IsTuesday", Html.GetResource("2", "WeekDays"), Model.ReportSchedulerDto.IsTuesday)
+            </div>
+            <div class="field-container">
+                @Html.GetCheckBox("IsWednesday", Html.GetResource("3", "WeekDays"), Model.ReportSchedulerDto.IsWednesday)
+            </div>
+            <div class="field-container">
+                @Html.GetCheckBox("IsThursday", Html.GetResource("4", "WeekDays"), Model.ReportSchedulerDto.IsThursday)
+            </div>
+            <div class="field-container">
+                @Html.GetCheckBox("IsFriday", Html.GetResource("5", "WeekDays"), Model.ReportSchedulerDto.IsFriday)
+            </div>
+            <div class="field-container">
+                @Html.GetCheckBox("IsSaturday", Html.GetResource("6", "WeekDays"), Model.ReportSchedulerDto.IsSaturday)
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="data-row data-container" id="DaysDiv">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("TimeSentAt", "Report") (@Html.GetResource("UTC", "Global"))</span>
+
+        </div>
+        <div class="field-container">
+            @await Html.PartialAsync("TimeControl", new TimeViewModel { Name = "StartTime", Hour = Model != null && Model.ReportSchedulerDto.TimeSentAt.HasValue ? Model.ReportSchedulerDto.TimeSentAt.Value.Hour : (int?)null, Min = Model != null && Model.ReportSchedulerDto.TimeSentAt.HasValue ? Model.ReportSchedulerDto.TimeSentAt.Value.Minute : (int?)null, action = "report" })
+        </div>
+
+
+
+    </div>
+    <div class="data-row data-container">
+        @await Html.PartialAsync("Email", Model)
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title">&nbsp;</span>
+        </div>
+        <div class="field-container">
+
+            @Html.GetCheckBox("IsActive", @Html.GetResource("IsActive", "Report"), Model.ReportSchedulerDto.IsActive, customValue: "true")
+
+        </div>
+    </div>
+</div>

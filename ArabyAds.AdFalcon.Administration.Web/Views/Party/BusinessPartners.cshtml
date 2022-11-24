@@ -1,0 +1,350 @@
+﻿@{
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+    ViewBag.Title = Html.GetResource("BusinessPartners", "Menu");
+
+}
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Core.Party.ListViewModel
+<style type="text/css">
+    .dropdown.dropdown-lg .dropdown-menu {
+        margin-top: -1px;
+        padding: 6px 20px;
+    }
+
+    .input-group-btn .btn-group {
+        display: flex !important;
+    }
+
+    .btn-group .btn {
+        border-radius: 0;
+        margin-left: -1px;
+    }
+
+        .btn-group .btn:last-child {
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+
+    .btn-group .form-horizontal .btn[type="submit"] {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
+
+    .form-horizontal .form-group {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .form-group .form-control:last-child {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
+</style>
+<script language="javascript">
+    $(document).ready(function () {
+        SetSelectedTap("ListMenuAdmin");
+      
+    });
+
+    var result = false;
+    var SSPCheckedIDs = "";
+
+    var ischecked = false;
+    var yesbtn = "@Html.GetResource("Yes", "Global")";
+    var nobtn = "@Html.GetResource("No", "Global")";
+    //var Confirmation = "@Html.GetResource("Send", "Confirmation")";
+    var ConfriamtionBoxTitle = "@Html.GetResource("Confirm")";
+    var close = "@Html.GetResource("Close","Commands")";
+    var rename = "@Html.GetResource("Rename", "Commands")";
+    var BusinessPartnerstring = "@Html.GetResource("BusinessPartners", "Menu")";
+    var selectedName = "";
+    var selectednumber = 0;
+    var text;
+    var direction = "left";
+
+
+
+    function checked() {
+        $('input').each(function () {
+
+            if ($(this).is(':checked')) {
+
+                var name = $(this).eq(0).parent().parent().find("#BusinessPartnerName").text().trim();
+
+                if (name.length > 30)
+                    name = name.substring(0, 30) + "..";
+                ischecked = true;
+                @{
+                    if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage=="ar")
+                    {
+
+                        <text>
+
+                selectedName += "<span style='float:" + direction + ";'>" + name + "-</span><br>";
+
+                </text>
+
+                    }else
+                    {
+                        <text>
+                selectedName += "<span style='float:" + direction + ";'>" + "-" + name + "</span><br>";
+                </text>
+                    }
+
+                }
+            }
+        });
+        return ischecked;
+    }
+
+    function popup(sender, SelectConfirmation, Confirmation) {
+
+        selectedName = "";
+        selectednumber = 0;
+        if (checked()) {
+            if (!result) {
+
+                $('<div id ="ConfirmationDialog" title="' + ConfriamtionBoxTitle + '"></div>').dialog({
+
+                    open: function () {
+                        text = Confirmation.format(BusinessPartnerstring) + " <br><br> <div style='float: " + direction + ";'>" + selectedName + "</div>";
+                        $(this).html(text);
+
+                    },
+                    close: function () {
+                        $(this).remove();
+                    },
+                    resizable: false,
+                    draggable: false,
+                    modal: true,
+                    showCloseButton: false,
+
+                    buttons: [
+               {
+                   text: yesbtn,
+                   click: function () {
+                       $(this).dialog("close");
+                       result = true;
+
+                       $(sender).click();
+                   }
+               },
+               {
+                   text: nobtn,
+                   click: function () {
+                       $(this).dialog('close');
+                       result = false;
+                   }
+               }
+                    ]
+
+                });
+            }
+        } else {
+            $('<div id = "NoCampaignsareSelected"></div>').dialog({
+
+                open: function (event, ui) {
+                    $(this).html(SelectConfirmation);
+                },
+                close: function () {
+                    result = false;
+
+                    $(this).remove();
+                },
+                resizable: false,
+                draggable: false,
+                // height: 140,
+                modal: true,
+
+            });
+
+        }
+        ischecked = false;
+        return result;
+    }
+
+
+    var gridItemId = 0;
+    var ok_text = '@Html.GetResource("Ok", "Commands")';
+    var service_url = null;
+    var service_callback = null;
+
+
+    function refreshBusinessPartnerGrid() {
+        RefrashGrid('BusinessPartnerGrid');
+    }
+    function generateBusinessPartnerGrid() {
+        var grid = $("#BusinessPartnerGrid").data("tGrid");
+        grid.rebind();
+    };
+    function BusinessPartnerGridDataBinding(args) {
+        args.data = $.extend(args.data,
+           {
+               Prefix: $('#PartyName').val(),
+			   IdPrefix: $('#BusinessPartnerTypeId').val(),
+			   ShowArchive: typeof ($("#ShowArchived").attr("checked")) != "undefined" && $("#ShowArchived").attr("checked") == "checked",
+           });
+    };
+
+
+
+    function BusinessPartnerGridDataBound(e) {
+        var grid = $("#BusinessPartnerGrid").data("tGrid");
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(1);
+        }
+
+    };
+
+
+    function showfilter() {
+        if ($("#advfilterBusinessPartner").hasClass('maximize')) {
+            $("#advfilterBusinessPartner").attr("class", "minimize AdvanceFilterIcon");
+
+        }
+        else {
+
+            $("#advfilterBusinessPartner").attr("class", "maximize AdvanceFilterIcon");
+        }
+    }
+
+
+</script>
+@using (Html.BeginForm())
+{
+
+    <div class="data-row section-container">
+        <div class="data-row">
+            <div class="col-sm-7" style="padding: 0px;">
+                @if (Model.TopActions != null)
+                {
+                    Html.RenderPartial("PartialViews/Actions", Model.TopActions);
+                }
+            </div>
+
+            <div class="col-sm-1">
+            </div>
+
+            <div class="col-sm-4 col-sm-push-3">
+
+
+
+                <div class="field-container dropdown-toggle" data-toggle="collapse" data-target="#TransVATFilterCollapse" aria-expanded="false">
+                    &nbsp;&nbsp;<a href="javaScript:void(0);" class="maximize AdvanceFilterIcon" onclick="" style="margin-top:0px" id="advfilterAudit"></a>
+
+                </div>
+            </div>
+
+        </div>
+       
+
+
+        <div class="data-row" style="overflow:visible">
+            <div class="col-sm-6 col-sm-push-0 customDealsFilterShiftRight floating-right" style="padding: 0px;">
+                <div style="width: 295px;font-size:12px ;margin-top:2px;" class="dropdown-menu dropdown-menu-right" id="TransVATFilterCollapse" role="menu">
+					<div id="filterdiv" style="overflow:unset">
+
+
+
+						<div class="data-row CampRow">
+							<div class="field-container marignBotoomCus" style="padding-left:6px;padding-right:6px;">
+								<span class="go-bold ">@Html.GetResource("NameColumn", "AppSite")</span>
+							</div>
+							<div class="col-lg-offset-2">
+								<div class="field-container marignBotoomCus">
+									@Html.TextBox("PartyName")
+
+
+
+								</div>
+							</div>
+						</div>
+
+						<div class="data-row CampRow">
+							<div class="field-container" style="padding-left:6px;padding-right:6px;">
+								<span class="go-bold ">@Html.GetResource("Type", "Global")</span>
+							</div>
+							<div class="col-lg-offset-2">
+								<div class="field-container marignBotoomCus">
+									@Html.DropDownList("BusinessPartnerTypeId", Model.BusinessPartnerTypes, new { @style = "width:155px" })
+
+
+								</div>
+
+							</div>
+						</div>
+
+						<div class="data-row CampRow">
+							<div class="field-container" style="padding-left:6px;padding-right:6px;">
+								<span class="go-bold "> &nbsp;</span>
+							</div>
+							<div class="col-lg-offset-2">
+								<div class="field-container marignBotoomCus">
+									@Html.GetCheckBox("ShowArchived", Html.GetResource("ShowArchived"), false, onChange: "")
+
+
+								</div>
+
+							</div>
+						</div>
+					</div>
+                    <div class="floating-right">
+                        <br>
+                        <input type="button" onclick="refreshBusinessPartnerGrid()" value='@Html.GetResource("Filter")' class="btn filter-button primary-btn" />
+                        <input type="button" onclick="return true;" data-toggle="collapse" data-target="#TransVATFilterCollapse" aria-expanded="false" value='@Html.GetResource("Cancel")' class="btn filter-button " />
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="grid-container">
+          @(Html.Telerik().Grid(Model.Items)
+                              .Name("BusinessPartnerGrid")
+                              .Columns(columns =>
+                              {
+                              columns.Template(
+                                @<text>
+                                    <input name="checkedRecords" type="checkbox" value="@item.ID " title="checkedRecords" />
+                                </text>)
+                                    .Title("").Width(36).HtmlAttributes(new { style = "text-align:center" })
+                                    .ClientTemplate("<input type='checkbox' name='checkedRecords' value='<#= ID #>' />");
+                              columns.Bound(o => o.Name).Template(
+                                @<text><div class="grid-title-container floating-left">
+                                        <span class="trimed-span" id="BusinessPartnerName">
+                                            <a href='@Url.Action("BusinessPartner", "Party", new { id = item.ID }, null)' title='@item.Name'>
+                                                @item.Name
+                                            </a>
+                                        </span>
+                                    </div>
+                                </text>
+										).Title(Html.GetResource("Name"))
+										.ClientTemplate("<div class='grid-title-container floating-left'><span class='trimed-span' id='BusinessPartnerName'><a href=\"" + Url.Action("BusinessPartner", "Party") + "/<#= ID#>\"><#= Name#> </a></span></div>");
+								  columns.Bound(o => o.ID).Title(Html.GetResource("ID", "Lookup")).Hidden(true).HtmlAttributes(new { @id = "IdPartyEnity" });
+								  columns.Bound(o => o.AccountName).Title(Html.GetResource("AccountName")).HtmlAttributes(new { @id = "PartyEnityLabel" });
+								  columns.Bound(o => o.TypeNameString).Title(Html.GetResource("Type", "Lookup")).HtmlAttributes(new { @id = "PartyEnityTypeLabel" , @class = "go-center" });
+
+							  })
+							  .DataBinding(dataBinding =>
+							  {
+								  dataBinding.Server().Select("BusinessPartners", "Party", new { ajax = true });
+								  dataBinding.Ajax().Select("_BusinessPartners", "Party");
+							  }).EnableCustomBinding(true)
+							  .ClientEvents(clientEvents => clientEvents.OnDataBinding("BusinessPartnerGridDataBinding").OnDataBound("BusinessPartnerGridDataBound"))
+							  .Scrollable(scrolling => scrolling.Enabled(false))
+							  .Selectable()
+							  .Pageable(paging => paging.PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total(int.Parse(ViewData["total"].ToString())).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+							  .Filterable(filtering => filtering.Enabled(false))
+							  .Groupable(grouping => grouping.Enabled(true)).Footer(true))
+        </div>
+        @if (Model.BelowAction != null)
+        {
+            Html.RenderPartial("PartialViews/Actions", Model.BelowAction);
+        }
+    </div>
+    if (Model.ToolTips != null)
+    {
+        @Html.Partial("GridToolTop", Model.ToolTips)
+    }
+}
+

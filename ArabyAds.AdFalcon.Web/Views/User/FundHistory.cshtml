@@ -1,0 +1,26 @@
+﻿@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Account.FundResultDto
+@(Html.Telerik().Grid(Model.Items)
+                    .Name("Grid")
+                    .Columns(columns =>
+                    {
+                        columns.Bound(o => o.ID).Hidden();
+                        columns.Bound(o => o.NoqoushReceiptNumber).Title(Html.GetResource("ReceiptNumber", "AccountHistory")).Width(130);
+                        columns.Bound(o => o.FundTransType.Name.Value).Title(Html.GetResource("FundType", "AccountHistory")).Width(130);
+                        columns.Bound(o => o.TransactionDate).Title(Html.GetResource("Date", "AccountHistory")).Format("{0:" + Noqoush.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "  hh:mm}").Width(110);
+                        columns.Bound(o => o.Amount).Title(Html.GetResource("FundedAmount")).Width(100);
+                        columns.Bound(o => o.Comment).Title(Html.GetResource("Comment", "Global")).Width(250);
+                        columns.Template(@<text>
+        <a href='@Url.Action("Receipt", "User", new { id = @item.ID }, null)' title='do'>@Html.GetResource("Receipt", "AccountHistory")</a></text>)
+ .ClientTemplate("<a href=\"" + Url.Action("Receipt", "User") + "/<#= ID#>\">" + @Html.GetResource("Receipt", "AccountHistory") + "</a>").Width(40).Title(Html.GetResource("ReceiptHeader", "AccountHistory"));
+
+                    })
+                                    .DataBinding(dataBinding =>
+                                    {
+                                        dataBinding.Ajax().Select("FundHistory", "user").Enabled(true);
+                                        dataBinding.Server().Select("FundHistory", "user", new { ajax = true });
+
+                                    })
+                                    .Scrollable(scrolling => scrolling.Enabled(false))
+                                    .EnableCustomBinding(true)
+                                    .Pageable(paging => paging.PageSize(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total(Model.Total).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+                                    .Groupable(grouping => grouping.Enabled(false)).Footer(true))

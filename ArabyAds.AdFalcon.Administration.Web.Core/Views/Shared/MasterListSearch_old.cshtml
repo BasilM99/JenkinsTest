@@ -1,0 +1,359 @@
+﻿
+
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Advertiser.MasterAppSiteListViewModel
+@*@using ArabyAds.Framework.DomainServices*@
+
+<script language="javascript">
+    $(document).ready(function () {
+
+        localInitilizeMasterListItemS();
+        //generatePartyGridMasterListItem();
+    });
+
+
+    function refreshMasterListItemGrid() {
+        RefrashGrid('MasterListItemGrid');
+    }
+    function generateMasterListItemGrid() {
+        var grid = $("#MasterListItemGrid").data("kendoGrid");
+        if (typeof (grid) != "undefined") {
+            grid.dataSource.read();
+            grid.refresh();
+
+        }
+    };
+
+
+    function MasterListItemGridData() {
+        //$('.multiselect2jq').select2();
+
+        var argstobesend = {
+            Name: $('#NameMasterList').val(),
+            StatusId: "1",
+
+            showGlobal: typeof ($("#IsGlobalMasterList").attr("checked")) != "undefined" && $("#IsGlobalMasterList").attr("checked") == "checked",
+            showAccountAdv: true
+
+
+        };
+
+        if (argstobesend.showGlobal) {
+            argstobesend.showAccountAdv = false;
+        }
+        return argstobesend
+            ;
+    };
+
+    function MasterListItemGridDataBinding(args) {
+        //$('.multiselect2jq').select2();
+
+    };
+    function getStringList(array) {
+        var string = "";
+        for (var i = 0 ; i < array.length ; i++) {
+            string += array[i] + ",";
+        }
+        return string;
+    }
+
+
+
+
+    function MasterListItemGridDataBound(e) {
+
+        var grid = $("#MasterListItemGrid").data("kendoGrid");
+        //if not first page and the no data then try load first page
+        if ((grid._data.length == 0) && (grid.dataSource.page() > 1)) {
+            e.preventDefault();
+            if (grid.dataSource.page() != 1) {
+                grid.dataSource.page(1);
+            }
+
+        }
+
+      
+    };
+
+
+
+    function localInitilizeMasterListItemS() {
+        $("#MasterListItemaccount-search-dialog-form").dialog({
+            autoOpen: false,
+            //height: 460,
+            width: 900,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            open: function () {
+
+
+
+            },
+            close: function () {
+
+               // $("#MasterListItemaccount-search-dialog-form ,#AccountSearchName ,#CompanyName,#Email").val('');
+                // generateUsersGrid();
+
+            }
+        });
+
+       @*jQuery('input[data-date="true"]')
+          .daterangepicker({ dateFormat: '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat' });*@
+
+        jQuery("#MasterListItemparty-search-dialog-form").dialog({
+            autoOpen: false,
+            //height: 450,
+            width: 700,
+            modal: true,
+            resizable: false,
+            draggable: false,
+
+        });
+
+    }
+
+
+
+    function showfilterMasterItem() {
+
+
+        //$("#filterdiv").toggle();
+
+        if ($("#advfilterMasterListItem").hasClass('maximize')) {
+            $("#advfilterMasterListItem").attr("class", "minimize AdvanceFilterIcon");
+
+        }
+        else {
+
+            $("#advfilterMasterListItem").attr("class", "maximize AdvanceFilterIcon");
+        }
+
+
+    }
+
+	function onkeyMasterItempressName(event) {
+
+		var key = event.keyCode || event.charCode;
+		if (key == 13) {
+
+			event.preventDefault();
+			generateMasterListItemGrid();
+		}
+	}
+
+	function cancelMasterListfilter() {
+
+		$("#CancelItemListFilterBtn").click();
+
+	}
+</script>
+<style type="text/css">
+	.dropdown.dropdown-lg .dropdown-menu {
+		margin-top: -1px;
+		padding: 6px 20px;
+	}
+
+	.input-group-btn .btn-group {
+		display: flex !important;
+	}
+
+	.btn-group .btn {
+		border-radius: 0;
+		margin-left: -1px;
+	}
+
+		.btn-group .btn:last-child {
+			border-top-right-radius: 4px;
+			border-bottom-right-radius: 4px;
+		}
+
+	.btn-group .form-horizontal .btn[type="submit"] {
+		border-top-left-radius: 4px;
+		border-bottom-left-radius: 4px;
+	}
+
+	.form-horizontal .form-group {
+		margin-left: 0;
+		margin-right: 0;
+	}
+
+	.form-group .form-control:last-child {
+		border-top-left-radius: 4px;
+		border-bottom-left-radius: 4px;
+	}
+</style>
+
+
+<div class="data-row go-center" style="overflow:visible;">
+
+	<div class="data-row section-container" style="overflow:visible">
+		<div class="data-row">
+
+			<div class="col-sm-4 col-sm-push-8 go-left floating-left">
+
+				<table class="special-content">
+					<tr>
+
+
+						<td>
+
+							<div class="field-container dropdown-toggle" data-toggle="collapse" data-target="#MasterItemListFilterCollapse" aria-expanded="false" onclick="showfilterMasterItem()">
+								&nbsp;&nbsp;<a href="javaScript:void(0);" class="maximize AdvanceFilterIcon" onclick="" style="margin-top:0px" id="advfilterMasterListItem"></a>
+
+							</div>
+						</td>
+
+					</tr>
+				</table>
+
+
+			</div>
+
+
+		</div>
+
+
+		<div class="data-row" style="overflow:visible">
+			<div class="col-sm-8   customDealsFilterShiftRight floating-right" style="padding: 0px;">
+				<div class="container special-content" style="width:45%" id="targetingContainer">
+					<div class="input-group" id="adv-search">
+						<div class="dropdown dropdown-lg">
+							<div style="width: 400px;font-size:12px ;margin-top:2px;" class="dropdown-menu dropdown-menu-right" id="MasterItemListFilterCollapse" role="menu">
+								<div id="filterdiv" style="overflow:unset">
+
+
+									<div class="data-row CampRow">
+										<br />
+										<br />
+										<div class="field-container marignBotoomCus">
+											<span class="go-bold ">@Html.GetResource("Name", "Global")</span>
+
+										</div>
+										<div class="col-lg-offset-2">
+											<div class="field-container marignBotoomCus">
+												<input type="text" id="NameMasterList" name='NameMasterList'
+													   class="text-box" onchange="generateMasterListItemGrid()" onkeypress="onkeyMasterItempressName(event)" />
+											</div>
+										</div>
+									</div>
+
+									<div class="data-row dealsRow" id="GlobalFilterMasterItemRow">
+
+										<div class="col-lg-offset-2">
+											<div class="field-container marignBotoomCus">
+
+												@Html.GetCheckBox("IsGlobalMasterList", Html.GetResource("ShowGlobal", "Global"), false)
+
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="floating-right">
+									<br>
+									<input type="button" onclick="generateMasterListItemGrid();cancelMasterListfilter();" value='@Html.GetResource("Filter")' class="btn filter-button primary-btn" />
+									<input type="button" onclick="return true;" id="CancelItemListFilterBtn" data-toggle="collapse" data-target="#MasterItemListFilterCollapse" aria-expanded="false" value='@Html.GetResource("Cancel")' class="btn filter-button " />
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+
+</div>
+
+<div class="grid-container">
+    @(Html.Kendo().Grid(Model.Items)
+                    .Name("MasterListItemGrid").Selectable(m=>m.Mode(GridSelectionMode.Single).Type(GridSelectionType.Row))
+                    .Columns(columns =>
+                    {
+                        columns.Bound(o => o.Id).Hidden();
+
+
+                        columns.Bound(o => o.Name).Visible(true).Title(Html.GetResource("Name", "Global"))
+                .ClientTemplate("<div class='grid-title-container floating-left'><span  style='text-align:left' class='trimed-span' title='#= Name#' id='MasterListName'><i class='#= ScopeString#' style='padding-left:2px;padding-right:2px' aria-hidden='true'></i>#= Name#</span></div>").Title(Html.GetResource("Name", "Global"));
+                        columns.Bound(o => o.TypeString).Title(Html.GetResource("Type", "AppSite"))
+                                                                            .Width("100px");
+
+                        columns.Bound(o => o.ScopeString)
+                            .Hidden();
+
+                    })
+                    .DataSource(dataBinding =>
+                    {
+
+                        dataBinding.Ajax().Read(read => read.Action("_MasterListSearch", "Campaign", new { id = @Html.ViewContext.RouteData.Values["id"] }).Data("MasterListItemGridData")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+                    })
+            .Events(clientEvents => clientEvents.DataBinding("MasterListItemGridDataBinding").DataBound("MasterListItemGridDataBound").Change("onMasterListItemRowSelected"))
+            .Scrollable(scrolling => scrolling.Enabled(false))
+            .Selectable().Pageable(paging => paging
+
+
+            .Input(false)
+            .Numeric(true)
+            .Info(true)
+            .PreviousNext(true)
+            .Refresh(true)
+
+            .Position(GridPagerPosition.Bottom))
+            .Filterable(filtering => filtering.Enabled(false))
+            .Groupable(grouping => grouping.Enabled(false)))
+    @*AhmadComment
+        @(Html.Telerik().Grid(Model.Items)
+                                               .Name("MasterListItemGrid").Selectable().DataKeys(M => M.Add(L => L.Id))
+                                               .Columns(columns =>
+                                               {
+                                                   columns.Bound(o => o.Id).Hidden();
+
+
+                                                   columns.Bound(o => o.Name).Visible(true).ReadOnly().Title(Html.GetResource("Name", "Global"))
+                                           .Template(
+                                            @<text><div class='grid-title-container floating-left'>
+                                                    <span class="trimed-span" title='@item.Name' style="text-align:left" id='MasterListName'>
+                                                        <i style="padding-left:2px;padding-right:2px" class="@item.ScopeString" aria-hidden="true"></i>
+                                                        @item.Name
+
+                                                    </span>
+                                                </div>
+
+                                            </text>
+                                                               ).ClientTemplate("<div class='grid-title-container floating-left'><span  style='text-align:left' class='trimed-span' title='<#= Name#>' id='MasterListName'><i class='<#= ScopeString#>' style='padding-left:2px;padding-right:2px' aria-hidden='true'></i><#= Name#></span></div>").Title(Html.GetResource("Name", "Global"));
+                                                           columns.Bound(o => o.TypeString).Title(Html.GetResource("Type", "AppSite"))
+                                                                                                               .Width("100px").ReadOnly();
+
+                                                           columns.Bound(o => o.ScopeString)
+                                                             .ReadOnly().Hidden();
+
+                                                       }).EnableCustomBinding(true)
+                                                                                                                        .DataBinding(dataBinding =>
+                                                                                                                        {
+                                                                                                                            dataBinding.Ajax().Select("_MasterListSearch", "Campaign");
+
+                                                                                                                        })
+                                                                                                                .ClientEvents(clientEvents => clientEvents.OnDataBinding("MasterListItemGridDataBinding").OnDataBound("MasterListItemGridDataBound").OnRowDataBound("onRowDataBound").OnRowSelect("onMasterListItemRowSelected"))
+                                                                                                                .Scrollable(scrolling => scrolling.Enabled(false))
+                                                                                                                .Selectable().Pageable(paging => paging.PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize)
+                                                                                                                                        .Total(int.Parse(ViewData["total"].ToString()))
+                                                                                                                                        .Style(GridPagerStyles.NextPreviousAndNumeric)
+                                                                                                                                        .Position(GridPagerPosition.Bottom))
+                                                                                                                .Filterable(filtering => filtering.Enabled(false))
+                                                                                                                .Groupable(grouping => grouping.Enabled(true)).Footer(true))*@
+
+
+
+
+</div>
+
+
+
+
+
+
+

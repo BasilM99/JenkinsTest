@@ -1,0 +1,416 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm5="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" dslVersion="1.0.0.0" Id="93cacaee-2cde-47cd-8c5c-89d357c9d6f6" name="Trageting" linkedPackageId="b70023b1-07e5-4332-b6d5-f78d513baa8a" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
+  <profileInstances>
+    <packageHasProfileInstances Id="54f495af-7099-4406-8c3c-343e35c736c3">
+      <profileInstance Id="0e6fbbe3-7e85-4cd7-94e8-36847f040d1c" name="CSharpProfile">
+        <elementDefinition Id="c38d8679-243e-49da-a768-c22aeb98fcbb" />
+      </profileInstance>
+      <elementDefinition Id="6712d447-0258-45be-b9ba-c78b822df3a6" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="5c5d9686-59a5-436c-8c8a-849737bf1b20" name="DemographicTrageting" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="f6baedda-44e6-440f-a12e-d96fa7f44183" />
+        <generalsInternal>
+          <generalization Id="34d283de-a082-49cd-8739-70941f765922" isSubstitutable="false">
+            <classMoniker Id="f9282184-123c-409f-a3ca-dc061d0cab1f" LastKnownName="TragetingBase" />
+            <elementDefinition Id="ae9d8c30-87a5-424d-8805-908802f0c824" />
+          </generalization>
+        </generalsInternal>
+        <targetEnds>
+          <association Id="486b2b87-3d97-4218-b479-9d10a5386d48" isDerived="false" sourceEndRoleName="DemographicTrageting" targetEndRoleName="Demographic" isLeaf="false" isAbstract="false">
+            <classMoniker Id="55b4bd71-610f-412b-86eb-9b480336301b" LastKnownName="Demographic" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="beb1abf2-c755-4100-b09d-64373a47a9e7" name="DemographicTrageting" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="1fb5b5b5-1697-4a00-b963-42fec59f8dcf" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="40709e58-60f3-4025-a0f3-c1385d333b2a" name="Demographic" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="a8532177-da5c-4fe1-9126-44bdc139f2bf" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="9a910048-aef5-4d9f-a25f-bb39957b708f" />
+          </association>
+        </targetEnds>
+        <ownedAttributesInternal>
+          <property Id="64c2bdaa-a7f5-4002-9c32-59d203d68cbf" name="Demographic" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <lowerValueInternal>
+              <literalString Id="c124b09b-9ca7-4ab8-a0f5-728260c4396d" name="Lower" value="1">
+                <elementDefinition Id="2720414d-4ab5-4c20-94d1-d996b94395c6" />
+              </literalString>
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString Id="065f129a-b7b0-4ce9-abae-f5d6b1c97941" name="Upper" value="1">
+                <elementDefinition Id="6fcf7be3-30e5-421f-9492-8434a92df076" />
+              </literalString>
+            </upperValueInternal>
+            <elementDefinition Id="a8815d98-4203-4eeb-8e61-f068afe1b612" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="f451b89a-f533-4d6f-bf48-13e88130068e" LastKnownName="Demographic" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="f451b89a-f533-4d6f-bf48-13e88130068e" name="Demographic" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::Demographic">
+        <elementDefinition Id="0bd0ba35-0d65-425f-a0db-ea459e8f3a30" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="81cd029e-5e50-47a0-895b-4f797af2e2ad" name="OperatorTrageting" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="3403dcdf-e331-421d-8a31-2c5c3096310e" />
+        <generalsInternal>
+          <generalization Id="ea20d2a9-52fc-4be9-a760-0341e61ad3c9" isSubstitutable="false">
+            <classMoniker Id="f9282184-123c-409f-a3ca-dc061d0cab1f" LastKnownName="TragetingBase" />
+            <elementDefinition Id="b3514d34-b581-4088-9892-64742d732702" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributesInternal>
+          <property Id="7901e5e4-61ed-4551-95f7-4053f0651940" name="Operators" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <lowerValueInternal>
+              <literalString Id="2f7de03f-5b9c-46f9-b521-43a823d2ade1" name="Lower" value="*">
+                <elementDefinition Id="86b06ff7-5b58-4b1b-978f-e422fe67a5e3" />
+              </literalString>
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString Id="c561a272-e1f9-4b57-a67a-07524e64c691" name="Upper" value="*">
+                <elementDefinition Id="78975b2a-0af7-4331-953b-c5a127305dd9" />
+              </literalString>
+            </upperValueInternal>
+            <elementDefinition Id="f750a09e-e9bb-47e2-b936-13e8d73b1b8a" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="42a9e448-9fe6-4fee-96f7-bc8f4b771927" LastKnownName="Operator" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="42a9e448-9fe6-4fee-96f7-bc8f4b771927" name="Operator" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::Operator">
+        <elementDefinition Id="2cdc49da-656d-46f7-a228-f9c34edd891c" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="f9282184-123c-409f-a3ca-dc061d0cab1f" name="TragetingBase" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="1b65c8e7-d488-49e7-b69d-10fe917911eb" />
+        <ownedOperationsInternal>
+          <operation Id="e72fddb8-71f8-432d-8847-4bcc236a318d" name="IsMatch" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="6b52cf4e-df77-4365-a1c8-85829188dd67" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="071c220b-e4b2-4505-8043-d327197001c9" direction="Return">
+                  <elementDefinition Id="0c3de03a-0985-4501-a477-1ad45f720840" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="7f7c3df5-625a-41ad-85cf-343af590e1eb" LastKnownName="Boolean" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="da913ac6-c872-48af-8cca-0fd6675b7a1c" name="adRequest" direction="In">
+                  <elementDefinition Id="e59490dd-bf0b-4434-af6c-0cebb547d7d2" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="f96eb1ee-754a-4600-85f5-305961599eb9" LastKnownName="AdRequest" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="7f7c3df5-625a-41ad-85cf-343af590e1eb" name="Boolean" isAbstract="false" isLeaf="false" cachedFullName="Boolean">
+        <elementDefinition Id="8943dc84-709e-4f62-b15a-a3273aa6f165" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="22132235-de0a-4f80-87e7-2920cc488c29" name="TragetingSet" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="9fe67cc7-aa9a-41bd-9aed-a88f091061fb" />
+        <targetEnds>
+          <association Id="91f8e323-2fb4-422c-b17c-d44d5c4eb1cd" isDerived="false" sourceEndRoleName="TragetingSet" targetEndRoleName="TragetingBase" isLeaf="false" isAbstract="false">
+            <classMoniker Id="f9282184-123c-409f-a3ca-dc061d0cab1f" LastKnownName="TragetingBase" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="b015563d-7005-4913-aa23-f3a2899e3daa" name="TragetingSet" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="a95c775c-b29a-4021-9138-ec606c13291e" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="7fc33858-dec9-4452-ab44-f070f4828875" name="TragetingBase" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <lowerValueInternal>
+                    <literalString Id="e8351471-d9db-43e3-8271-ed0c4bad42ac" name="Lower" value="n">
+                      <elementDefinition Id="260083e7-a4de-464f-9cc9-342f8ac83e74" />
+                    </literalString>
+                  </lowerValueInternal>
+                  <upperValueInternal>
+                    <literalString Id="8f8cfae3-ee62-4482-b776-3c53cb9e6122" name="Upper" value="n">
+                      <elementDefinition Id="908f1eed-f749-4ff9-b591-fa8f2028d0ad" />
+                    </literalString>
+                  </upperValueInternal>
+                  <elementDefinition Id="3a9d6d66-15f6-4cb5-bc7a-121cb4c1d197" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="784e6ea5-31c1-4c7b-a214-9738b30bf84a" />
+          </association>
+        </targetEnds>
+        <ownedAttributesInternal>
+          <property Id="bceaf368-a5c4-458d-b083-4c48e22b90f1" name="Tragetings" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <lowerValueInternal>
+              <literalString Id="51e4311b-14a6-4564-b46b-5c5fd1565daf" name="Lower" value="*">
+                <elementDefinition Id="dd09074d-6ca2-4586-b783-831ba64771da" />
+              </literalString>
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString Id="dc149eaf-6f59-4c09-90fb-0ef33214cb3d" name="Upper" value="*">
+                <elementDefinition Id="6c4c0b0e-4185-4517-a718-827f6554bc09" />
+              </literalString>
+            </upperValueInternal>
+            <elementDefinition Id="629047ff-8c0d-49de-b24e-d57a76e3795e" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="1bf82edc-39ad-4381-9b6c-0ebc7ad23082" LastKnownName="TragetingBase" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+        <ownedOperationsInternal>
+          <operation Id="c9d9053f-4e86-4ceb-a093-2610307e9710" name="IsMatch" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="ea9edd8f-b258-413c-8223-1f7899d03d1e" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="329209a3-b17b-4558-901c-32b6beab126d" direction="Return" isUnique="false">
+                  <elementDefinition Id="c60f7fdc-4c48-4c36-a437-6ff3ba7e5687" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="7f7c3df5-625a-41ad-85cf-343af590e1eb" LastKnownName="Boolean" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="52c0a7fd-c0a8-4a54-94cd-91dcdc277261" name="adRequest" direction="In">
+                  <elementDefinition Id="436af91a-185f-42ff-8d7e-ab4d02cbd673" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="f96eb1ee-754a-4600-85f5-305961599eb9" LastKnownName="AdRequest" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="1bf82edc-39ad-4381-9b6c-0ebc7ad23082" name="TragetingBase" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::TragetingBase">
+        <elementDefinition Id="1b65c8e7-d488-49e7-b69d-10fe917911eb" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="d2cc233f-7ba3-4c37-a0e9-b29d66fac741" name="KeywordTrageting" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="5755ef10-803b-42a3-8c9b-7cf5d46cf2dc" />
+        <generalsInternal>
+          <generalization Id="5963aeb8-87d1-4d27-b5a8-513e290388ce" isSubstitutable="false">
+            <classMoniker Id="f9282184-123c-409f-a3ca-dc061d0cab1f" LastKnownName="TragetingBase" />
+            <elementDefinition Id="a391edce-b5cb-4e3f-a9d7-4fc558e9f00f" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributesInternal>
+          <property Id="42717078-2083-49ef-841d-ae12373da959" name="Keywords" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <lowerValueInternal>
+              <literalString Id="8c5f976f-d979-4ed4-bcd6-5832dcbe6647" name="Lower" value="*">
+                <elementDefinition Id="01f3913c-7e82-4c72-80fd-f5209241f210" />
+              </literalString>
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString Id="a1794465-10fb-4896-ba21-819877fce33a" name="Upper" value="*">
+                <elementDefinition Id="257819c3-a538-479f-a500-4a5d1078817d" />
+              </literalString>
+            </upperValueInternal>
+            <elementDefinition Id="9695f4f3-0c70-4795-a2bc-9fd2d3021fd0" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="d60ece57-1950-4f7b-b58e-a0c6f39c3590" LastKnownName="Keyword" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="6eb173eb-f77a-4fc3-ae91-7ae04a4fffa3" name="GeographicTrageting" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="956d0195-0c06-486b-9d61-bfb8b52548a1" />
+        <generalsInternal>
+          <generalization Id="cfb98bf5-c156-457c-9d1b-b7e1f438456f" isSubstitutable="false">
+            <classMoniker Id="f9282184-123c-409f-a3ca-dc061d0cab1f" LastKnownName="TragetingBase" />
+            <elementDefinition Id="e2bd7a63-11e6-419f-b87a-df21066c46f6" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributesInternal>
+          <property Id="234c7801-c448-40a2-bdba-d8db0cb06f1a" name="Locations" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <lowerValueInternal>
+              <literalString Id="96824f06-fb03-4023-852e-8e378c6bff4a" name="Lower" value="*">
+                <elementDefinition Id="f4e58be6-2b08-4856-9cc5-f3abe8b9601f" />
+              </literalString>
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString Id="0014fcce-00f9-434c-91e7-9ca409b0039a" name="Upper" value="*">
+                <elementDefinition Id="2af326b5-3b0f-490d-8837-e1731d930ecd" />
+              </literalString>
+            </upperValueInternal>
+            <elementDefinition Id="de0cf618-44bd-499c-bfa7-3f4332c2fe5a" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="c44fff1c-028f-4bc5-a07c-09c87bb6c828" LastKnownName="Location" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="c44fff1c-028f-4bc5-a07c-09c87bb6c828" name="Location" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::Location">
+        <elementDefinition Id="c101cad6-e7fe-4ae4-8af3-5cd50d557b59" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="d284ea50-da7f-417a-88a6-44d99d23d8ca" name="DeviceTrageting" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="880b37cf-43a4-4e1c-969b-27f229a085d1" />
+        <generalsInternal>
+          <generalization Id="ce568c94-1de8-4262-94ef-83f8700fab3c" isSubstitutable="false">
+            <classMoniker Id="f9282184-123c-409f-a3ca-dc061d0cab1f" LastKnownName="TragetingBase" />
+            <elementDefinition Id="ed0efe08-ecd7-4eb1-a9c0-0a3593e9c0b5" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributesInternal>
+          <property Id="528346bf-c8e3-4714-9208-677dbe1ac2d8" name="IsAllManufacturers" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="21db7541-b9d9-4aa2-a246-cc97278702fc" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="7f7c3df5-625a-41ad-85cf-343af590e1eb" LastKnownName="Boolean" />
+            </type_NamedElement>
+          </property>
+          <property Id="778507e7-ee39-45bc-b623-5751ffa4f1dc" name="Devices" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <lowerValueInternal>
+              <literalString Id="cc3d1e9c-96fb-417d-8576-b094882b71dd" name="Lower" value="*">
+                <elementDefinition Id="ec19737a-8ab6-403c-8fbd-be344bb600ae" />
+              </literalString>
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString Id="0a0fe25d-731b-4c56-b746-ee615f16355e" name="Upper" value="*">
+                <elementDefinition Id="789e94a6-b2db-4d5f-ba46-c635d09e3caa" />
+              </literalString>
+            </upperValueInternal>
+            <elementDefinition Id="60cc61ee-f8fb-4a9a-84c1-c4d27cfc72bd" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="671c695a-eae9-4976-99da-95430338c6b5" LastKnownName="Device" />
+            </type_NamedElement>
+          </property>
+          <property Id="dd763440-6ce6-4bd5-9497-cca846260317" name="Manufacturers" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <lowerValueInternal>
+              <literalString Id="d5263a00-0412-4c77-b057-92260b489be9" name="Lower" value="*">
+                <elementDefinition Id="5cbf9856-e0ff-4408-8cc0-7239cc3e80b4" />
+              </literalString>
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString Id="e57489a8-482e-4a7f-b457-a5c454703f31" name="Upper" value="*">
+                <elementDefinition Id="654c7726-ec3f-433a-a806-755d29b7e6cb" />
+              </literalString>
+            </upperValueInternal>
+            <elementDefinition Id="d4a0cd6e-1cb1-40ba-afac-328bf259c626" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="af3ea940-fe9e-49c4-bee1-62850ea443c0" LastKnownName="Manufacturer" />
+            </type_NamedElement>
+          </property>
+          <property Id="6ea56852-4582-475f-942b-2778fd5dc992" name="Platforms" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="10e6f3f9-096a-4717-bd2a-6087ff66326e" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="0ac50fa6-30d4-4061-b0b5-9e998a0983ea" LastKnownName="Platform" />
+            </type_NamedElement>
+          </property>
+          <property Id="1330ea2d-f97a-4190-b484-7342165c6f9a" name="IsAllPlatforms" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="47f61ded-f300-440f-8431-45c2eaa64255" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="7f7c3df5-625a-41ad-85cf-343af590e1eb" LastKnownName="Boolean" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="671c695a-eae9-4976-99da-95430338c6b5" name="Device" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::Device">
+        <elementDefinition Id="aab45657-6e41-4b46-bfdb-560efa6c3b99" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="af3ea940-fe9e-49c4-bee1-62850ea443c0" name="Manufacturer" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::Manufacturer">
+        <elementDefinition Id="995601c8-fca9-4dd5-9253-ca39eb4d855e" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="0ac50fa6-30d4-4061-b0b5-9e998a0983ea" name="Platform" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::Platform">
+        <elementDefinition Id="1723d4c1-1744-40bb-8cbf-05988a800cbf" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="55b4bd71-610f-412b-86eb-9b480336301b" name="Demographic" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="0bd0ba35-0d65-425f-a0db-ea459e8f3a30" />
+        <ownedAttributesInternal>
+          <property Id="b8005f28-c337-4207-b4cf-23e65839e025" name="Gender" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="cff03998-641f-4792-b10b-006869d37e1c" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="7640a90a-2571-498b-8db1-fda7c6a5f6fe" LastKnownName="Gender" />
+            </type_NamedElement>
+          </property>
+          <property Id="4ecf0131-6ddc-479f-89e6-b86f1663c093" name="AgeGroup" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="4d254178-4625-457a-ade9-d38cbabf6dfb" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="b40cf42b-8d26-4709-b575-b8d7cbed8bb4" LastKnownName="AgeGroup" />
+            </type_NamedElement>
+          </property>
+          <property Id="cf3385c9-7dbe-4640-86bc-7274637bba6a" name="Percent" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="1d299757-8638-4f4e-91fa-605db8c41858" />
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="7640a90a-2571-498b-8db1-fda7c6a5f6fe" name="Gender" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::Gender">
+        <elementDefinition Id="9bd3b39f-8403-4c67-9879-608faa5d0cef" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="b40cf42b-8d26-4709-b575-b8d7cbed8bb4" name="AgeGroup" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::AgeGroup">
+        <elementDefinition Id="485d2465-23e3-4f9f-bc19-034ebbd6ce25" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="b2663a40-2edf-4d6a-8707-2880aed26206" name="AdRequest" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="c179b0d2-c289-4081-938c-4fea4a693a9f" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="f96eb1ee-754a-4600-85f5-305961599eb9" name="AdRequest" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::AdRequest">
+        <elementDefinition Id="c179b0d2-c289-4081-938c-4fea4a693a9f" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="d60ece57-1950-4f7b-b58e-a0c6f39c3590" name="Keyword" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::Keyword">
+        <elementDefinition Id="14835b36-8a71-4967-accb-a95c27ade5c3" />
+      </referencedType>
+    </packageHasNamedElement>
+  </packagedElements>
+  <package Id="b70023b1-07e5-4332-b6d5-f78d513baa8a" name="Noqoush.AdFalcon.Modeling">
+    <elementDefinition Id="279b6b6b-303f-4465-b086-4f3a45a723be" />
+    <profileInstances>
+      <packageHasProfileInstances Id="36c99f45-c569-4055-90ab-1988900e9462">
+        <profileInstance Id="98d6a7ce-5b5c-4274-9c37-070e860c4d84" name="StandardProfileL2">
+          <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+        </profileInstance>
+        <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+      </packageHasProfileInstances>
+      <packageHasProfileInstances Id="9c6c5dec-352d-4961-bf39-bf85abbe3d77">
+        <profileInstance Id="5b8eeb9d-616d-45aa-a62c-c068db74a8a0" name="StandardProfileL3">
+          <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+        </profileInstance>
+        <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+      </packageHasProfileInstances>
+    </profileInstances>
+  </package>
+</logicalClassDesignerModel>

@@ -1,0 +1,60 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("ReportTemplate", "Report");
+    Layout = "~/Views/Reports/IndexJobMaster.cshtml";
+}
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Report.ListViewModel
+@await Html.PartialAsync("GridToolTop", Model.ToolTips)
+
+@section subheader
+   {
+}
+@section Grid1 {
+
+    @{
+        var disbalastedst = "";
+         }
+    @(Html.Kendo().Grid<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Reports.ReportSchedulerDto>()
+            .Name("Grid")
+            .Columns(columns =>
+            {
+
+                columns.Template("<input type='checkbox' name='checkedRecords'  value='#= ID #' />")
+                .Width(36).HtmlAttributes(new { style = "text-align:center" });
+
+                columns.Bound(o => o.ReportId).Title("#").Width(80).HtmlAttributes(new { @class = "go-center" });
+
+
+                columns.Bound(o => o.Name).Title(Html.GetResource("Document", "JobGrid")+" "+ Html.GetResource("Name")).Width(330)
+                    .ClientTemplate("<div   class='grid-title-container floating-left'><span class='trimed-span' id='ReportTitle'><a title='#=Name#' style='#= ColorStyle#' href=\"#= URLLink#" +"" + "?reportType=" + Context.Request.Query["reportType"] + "&id=#= ID#\"" + " >#= CompositeName# </a>   </span></div>  <div class='grid-cogwheel-container floating-right go-right'> <div class='cogwheel' item_extra_info='#=LastDocumnetGeneratedId#' onclick='showGridToolTip(#= ID#,this)'><a href='javaScript:void(0);' >&nbsp</a>&nbsp</a></div></div> ");
+                columns.Bound(o => o.StartDate).Title(Html.GetResource("StartDate", "ReportSchedule")).Format("{0:" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(120).HtmlAttributes(new { @class = "go-center" });
+                columns.Bound(o => o.EndDateString).Title(Html.GetResource("EndDate", "ReportSchedule")).Format("{0:" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(120).HtmlAttributes(new { @class = "go-center" });
+
+                columns.Bound(o => o.Status).Title( Html.GetResource("Scheduling", "Report") + " " + Html.GetResource("Status")).Width(140).HtmlAttributes(new { @class = "go-center" });
+                columns.Bound(o => o.LastRunningDate).Title(Html.GetResource("LastRunningDate", "JobGrid")).Format("{0:" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(110).HtmlAttributes(new { @class = "go-center" })
+                    .ClientTemplate("<div class='grid-title-container floating-left'><span class='trimed-span'> #=LastRunningDateString#</span></div><div class='grid-cogwheel-container floating-right go-right'><img name='iconImage' class='#=LastRunningIcon#' style='display: inline;' /></div>")
+
+
+
+                                            ;
+            }).EnableCustomBinding(true)
+            .DataSource(dataBinding =>
+            {
+                //dataBinding.WebApi.Select("TrackingPixel", "Campaign", new { ajax = true });
+                dataBinding.Ajax().Read(read => read.Action("_IndexReportsJob", "Reports", new { reportType= Context.Request.Query["reportType"] }).Data("reportGridData")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+            })
+            .Events(clientEvents => clientEvents.DataBinding("reportGridDataBinding").DataBound("reportGridDataBound"))
+            .Scrollable(scrolling => scrolling.Enabled(false))
+            .Selectable().Pageable(paging => paging
+
+
+            .Input(false)
+            .Numeric(true)
+            .Info(true)
+            .PreviousNext(true)
+            .Refresh(true)
+
+            .Position(GridPagerPosition.Bottom))
+            .Filterable(filtering => filtering.Enabled(false))
+            .Groupable(grouping => grouping.Enabled(false)))
+    }

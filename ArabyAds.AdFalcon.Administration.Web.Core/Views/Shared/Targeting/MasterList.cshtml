@@ -1,0 +1,588 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.TargetingViewModel
+@*@using ArabyAds.Framework.DomainServices*@
+<div class="ad-filter-text go-left floating-left">
+    @Html.Raw(Html.GetResource("MasterAppSiteListDesc", "Campaign"))
+</div>
+<div class="ad-filter-data go-left floating-left" style="position:relative; top:-2px;" readonlyToBe>
+
+    @*<div class="label-container">
+            &nbsp;
+        </div>*@
+
+    @{
+        bool selectedinvent = false;
+        bool disabledMasterLists = true;
+
+
+        if (Model != null && Model.MasterListConfigList != null && Model.MasterListConfigList.ToList().Count > 0)
+        {
+            disabledMasterLists = false;
+        }
+    }
+
+
+
+
+    <div class="data-row section-container">
+        <div class="go-left floating-left" style="margin-left:20px  ;margin-right:10px  ">
+            @*<h3>@Html.GetResource("CostElements", "Titles")</h3>*@
+
+            <a class="primary-btn" href="javascript:void(0)" onclick="fromInventorySourceMasterList = false;showAddMasterListDialog('');">@Html.GetResource("AddContentList", "Global")</a>
+        </div>
+    </div>
+    <div class="data-row section-container" id="formMasterList">
+
+
+        @Html.Hidden("DeletedMasterListConfigs", "")
+        @Html.Hidden("InserteMasterListConfigs", "")
+
+        @*<br />*@
+
+
+        <div id="gridDivMasterList" class="floating-left grid-containe" style="width:650px;  margin-left:20px  ;margin-right:10px  ;margin-top : 10px;">
+
+
+
+            @*<div>
+                    <div class="t-toolbar t-grid-toolbar t-grid-top">
+                        <a class="t-button t-button-icon t-button-bare t-grid-add" href="javascript:void(0)"
+                           onclick="showAddMasterListDialog('')"><span class="t-icon t-add"></span></a>
+                    </div>
+                </div>*@
+            @(Html.Kendo().Grid(Model.MasterListConfigList).Name("MasterListConfigList").NoRecords(P=>P.Template("<center>" + Html.GetResource("CampaignBidConfigListIsEmpty", "Campaign") + "</center>")).HtmlAttributes(new { width = "800px" })
+                                    /*ataKeys(p => p.Add(o => o.Id))
+                                    .EnableCustomBinding(true)
+                                    .Filterable()*/
+                                    //.Editable(ed => ed.Mode(GridEditMode.).DisplayDeleteConfirmation(false))
+                                    // .Editable(e=>e.Enabled(true).DisplayDeleteConfirmation(false)
+                                    //.DefaultDataItem(new ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.AdvertiserAccountMasterAppSiteDto()))
+                                    .Columns(columns =>
+                                    {
+                                        columns.Bound(o => o.Id).Hidden();
+                                        columns.Bound(o => o.IsAdded).Hidden();
+
+                                        columns.Bound(o => o.Name)/*.ReadOnly()*/.Title(Html.GetResource("Name", "Global"))
+                                        .ClientTemplate("<div class='grid-title-container floating-left'> <span class='trimed-span' title='#= Name#' id='MasterListName'><i class='#=ScopeString#' style='padding-left:2px;padding-right:2px' aria-hidden='true'></i>#= Name#</span></div>").Title(Html.GetResource("Name", "Global"));
+                                        columns.Bound(o => o.TypeString).Title(Html.GetResource("Type", "AppSite"))
+                            .Width("90px")/*.ReadOnly()*/;
+                                        ;
+
+                                        columns.Bound(o => o.ScopeString)
+                                      /*.ReadOnly()*/.Hidden(true);
+
+                                        columns.Template("<div id='DeletempButton' style='display:block'><a type='button'  class='t-button t-button-icon t-button-bare'  onclick='ShowMasterConfirmationDialogMasterList(this); return false;'><span class='t-icon t-delete'></span></a></div>")
+                                                        .HtmlAttributes(new { @class = "go-center" }).HtmlAttributes(new { @class = "go-center" }).Width("35px");
+
+                                    })
+                                                                                                                                                                                        .DataSource(dataBinding =>
+                                                                                                                                                                                        {
+                                                                                                                                                                                            //dataBinding.Server().Select("MasterListConfigData", "Campaign", new { ajax = true });
+                                                                                                                                                                                            dataBinding.Ajax().Read("GridMasterListConfigData", "Campaign", new { id = Model.CampaignId, adGroupId = Model.AdGroupId })
+                                                                                                                                                                                                .Model(model =>
+                                                                                                                                                                                                {
+                                                                                                                                                                                                    model.Id(m => m.Id); // Specify the property which is the unique identifier of the model.
+                                                                                                                                                                                                    model.Field(m => m.Name).Editable(false);
+                                                                                                                                                                                                    model.Field(m => m.ScopeString).Editable(false);
+                                                                                                                                                                                                    model.Field(m => m.TypeString).Editable(false);
+                                                                                                                                                                                                    model.Field(m => m.IsAdded).Editable(false);
+
+
+                                                                                                                                                                                                    // Make the ProductID property not editable.
+                                                                                                                                                                                                }).AutoSync(false)
+
+                                                                                                                                                                                                ;
+
+                                                                                                                                                                                        }).Pageable(paging => paging
+
+
+            .Input(false)
+            .Numeric(false)
+            .Info(false)
+            .PreviousNext(false)
+            .Refresh(true)
+
+                                                                     .Position(GridPagerPosition.Bottom)).Events(e => e.DataBinding("MasterListTargating_OnDataBinding")).Events(e => e.DataBound("MasterListConfigList_OnDataBound"))
+                                                                                                                                                                                        .Scrollable(scrolling => scrolling.Enabled(false)).EnableCustomBinding(true))
+        </div>
+
+
+
+
+
+
+
+
+
+        <script language="javascript" type="text/javascript">
+        var ConfirmationMasterList = "@Html.GetResource( "Delete", "Confirmation")";
+        var ConfriamtionBoxTitleMasterList = "@Html.GetResource("Confirm")";
+			var fromInventorySourceMasterList = false;
+        $(document).ready(function () {
+            $('.multiselect2jq').select2();
+            $("#MasterConfirmationDialog").dialog({
+
+                resizable: false,
+                //height: 150,
+                draggable: false,
+                modal: true,
+                autoOpen: false,
+                title: ConfriamtionBoxTitleMasterList,
+
+            });
+
+
+            localInitilizeAddMasterListDialog();
+            //  SetBidClientRegExp();
+            SetGridHieghtMasterList();
+
+            //$("#MasterListConfigList tbody").find(".t-no-data").remove();
+
+            //GetMasterListConfigData();
+            localInitilizMasterListConfig();
+            // $('#InserteMasterListConfigs').val('1,707');
+        });
+
+        function MasterListTargeting_onComplete(e) {
+
+            if (e.name == "dataBinding") {
+                $('#DeletedMasterListConfigs').val('');
+                $('#InserteMasterListConfigs').val('');//;
+
+            }
+            SetGridHieghtMasterList();
+
+        }
+
+        function MasterListTargatingGrid_onCommand(e) {
+
+            //var $forms = $('#MasterListConfigListform');
+
+            //
+            //$.each($forms, function (key, value) {
+
+            //    // enable validation when an input loses focus.
+            //    var settings = $.data(value, 'validator').settings;
+            //    settings.onfocusout = function (element) { $(element).valid(); };
+            //    settings.onfocusin = function (element) { $(element).valid(); };
+            //});
+        }
+        function MasterListTargating_OnDataBinding(e) {
+
+            // SetGridHieghtMasterList();
+
+
+
+        }
+        function MasterListConfigList_OnDataBound(sender, args) {
+
+            var grid = $("#MasterListConfigList").data("kendoGrid");
+            array = $("#MasterListConfigList tbody tr");
+
+
+
+          //  if (e.name == "dataBinding") {
+                $('#DeletedMasterListConfigs').val('');
+                $('#InserteMasterListConfigs').val('');//;
+
+            //}
+            SetGridHieghtMasterList();
+
+        }
+
+
+        function localInitilizMasterListConfig() {
+            //var pagingControls = [];
+
+        }
+
+
+
+
+        function SetGridHieghtMasterList() {
+            if ($("#MasterListConfigList tbody tr").length > 5) {
+                $("#gridDivMasterList").attr("style", "margin-left:20px  ;margin-right:10px ;margin-top:20px;width:800px;height:250px;overflow:scroll;");
+            }
+        }
+
+        function selectMasterList(obj) {
+            debugger;
+            //  $("#partyGrid").data("tGrid").dataItem($(e.row));
+            var list = [];
+			var grid = $("#MasterListConfigList").data("kendoGrid");
+
+
+            if (IsAddedMasterList(obj.Id) == null) {
+                SetGridHieghtMasterList();
+                dataItem = obj;
+                // dataItem.Appsite = { "ID": selectedAppsite.val(), "Name": selectedAppsite.text() };
+               // $("#MasterListConfigList tbody").find(".k-no-data").remove();
+                grid.dataSource.insert(dataItem);
+                // initilizeFormValidationForDynamicContent('MasterListConfigListform');
+                //var $forms = $('#MasterListConfigListform');
+                //$.each($forms, function (key, value) {
+                //    // enable validation when an input loses focus.
+                //    var validator = $.data(value, 'validator');
+                //    if (validator) {
+                //        return validator;
+                //    }
+
+                //    $(value).attr('novalidate', 'novalidate');
+                //    validator = new $.validator({
+
+                //    }, value);
+                //    var settings = validator.settings;
+
+                //    settings.onfocusout = function (element) { $(element).valid(); };
+                //    settings.onfocusin = function (element) { $(element).valid(); };
+
+                //    $.data(value, 'validator', validator);
+                //});
+
+                //
+                //var validator = $.data($("#Bid")[0], 'validator');
+                //if (validator) {
+                //    return validator;
+                //}
+
+                //// Add novalidate tag if HTML5.
+                //$("#Bid").attr('novalidate', 'novalidate');
+
+                ////HERE it is creating a new one using the constructor
+                //validator = new $.validator({
+                //    required: true
+                //}, $("#Bid")[0]);
+
+                //var settings = validator.settings;
+                //settings.onfocusout = function (element) { $(element).valid(); };
+                //settings.onfocusin = function (element) { $(element).valid(); };
+                //$.data($("#Bid")[0], 'validator', validator);
+
+
+
+                //list[i] = dataItem;
+				MasterListConfigNotCompleted = true;
+
+				//alternateGrid("MasterListConfigList");
+
+            } else {
+                $("#addMasterListDialog").dialog("close");
+
+                return false;
+
+
+            }
+
+
+            getAssignedMasterLists();
+            return true;
+
+        }
+
+
+
+
+        function getAssignedMasterLists() {
+            debugger;
+            var grid = $('#MasterListConfigList').data("kendoGrid");
+            if (grid == null)
+                return;
+
+            var inserted = new Array();
+            var deletedIPRangeIds = '';
+
+            var data = grid.dataSource.data();
+            var datads = grid.dataSource._destroyed;
+            var InsertedIds = '';
+            for (var idx = 0; idx < data.length; idx++) {
+                if (data[idx].IsAdded) {
+
+                    inserted[inserted.length] = data[idx];
+                    InsertedIds += ',' + data[idx].Id;
+
+                }
+            }
+
+            for (var idx = 0; idx < datads.length; idx++) {
+
+                deletedIPRangeIds += ',' + datads[idx].Id;
+
+            }
+
+
+
+                $('#InserteMasterListConfigs').val(InsertedIds);
+                $('#DeletedMasterListConfigs').val(deletedIPRangeIds);
+
+
+
+
+        }
+
+        function deleteAssignedMasterLists(elem) {
+            debugger;
+            var grid = $("#MasterListConfigList").data("kendoGrid");
+            var tr = $(elem).parents('tr');
+            //delete the row
+            grid.removeRow(tr);
+			//alternateGrid("MasterListConfigList");
+            getAssignedMasterLists();
+
+        }
+
+        function ShowMasterConfirmationDialogMasterList(elem) {
+
+            var name = $(elem).parents('tr').find("#MasterListName").text();
+            if (name.length > 30)
+                name = name.substring(0, 30) + "..";
+
+            $("#MasterConfirmationDialog").dialog({
+
+                open: function () {
+                    $(this).html(ConfirmationMasterList.format(" " + name));
+
+                },
+                showCloseButton: false,
+
+                buttons: [
+                {
+                    text: yesbtn,
+                    click: function () {
+
+                        deleteAssignedMasterLists(elem);
+                        $(this).dialog("close");
+
+                    }
+                },
+                {
+                    text: nobtn,
+                    click: function () {
+                        $(this).dialog('close');
+
+                    }
+                },
+
+                ]
+            });
+
+            $("#MasterConfirmationDialog").dialog("open");
+            return false;
+        }
+
+
+        function IsAddedMasterList(MasterListid) {
+
+            var grid = $('#MasterListConfigList').data("kendoGrid");
+            if (grid == null)
+                return null;
+
+            var data = grid.dataSource.data();
+            var datads = grid.dataSource._destroyed;
+
+            for (var idx = 0; idx < data.length; idx++) {
+                if (data[idx].IsAdded) {
+                    if (data[idx].Id == MasterListid) {
+                        return dataItem;
+                    }
+                }
+
+            }
+
+                //    for (var y = 0; y < grid.changeLog.deleted.length; y++) {
+                //    if (typeof (grid.changeLog.deleted[y]) != "undefined") {
+                //        if (grid.changeLog.deleted[y].Id == MasterListid) {
+                //            return null;
+                //        }
+                //    }
+                //}
+            for (var idx = 0; idx < datads.length; idx++) {
+
+                if (datads[idx].Id == MasterListid) {
+                    return null;
+                }
+
+            }
+
+            //for (var idx = 0; idx < data.length; idx++) {
+            //    if (data[idx].isNew() || data[idx].dirty) {
+            //        if (data[idx].Id == MasterListid) {
+            //            return dataItem;
+            //        }
+            //    }
+
+            //}
+            //if (grid.changeLog.dirty()) {
+            //    for (var i = 0; i < grid.changeLog.inserted.length; i++) {
+            //        if (grid.changeLog.inserted[i].Id == MasterListid) {
+            //            return dataItem;
+            //        }
+            //    }
+
+            //    for (var y = 0; y < grid.changeLog.deleted.length; y++) {
+            //        if (typeof (grid.changeLog.deleted[y]) != "undefined") {
+            //            if (grid.changeLog.deleted[y].Id == MasterListid) {
+            //                return null;
+            //            }
+            //        }
+            //    }
+            //}
+            array = $("#MasterListConfigList tbody tr");
+            for (var i = 0; i < array.length; i++) {
+                dataItem = grid.dataItem(array[i]);
+                if (dataItem != undefined) {
+                    if (dataItem.Id == MasterListid) {
+                        return dataItem;
+                    }
+                }
+            }
+            return null;
+        }
+
+
+
+
+
+
+
+        //function onSelectSubPublishers() {
+
+        //    var selectedAppsite = jQuery('#AppSites_Items :selected');
+        //    var data = new Object();
+        //    data.id = selectedAppsite.val();
+
+        //    $.ajax({
+        //        type: 'POST',
+        //        data: data,
+        //        url: getPriceModelUrl,
+        //        success: function (data) {
+        //            selectSubPublishers(data.PriceModel);
+        //        }
+        //    })
+
+        //}
+
+        var GetMasterListConfigDataUrl = "@Url.Action("MasterListConfigData", "Campaign")";
+        function GetMasterListConfigData() {
+
+            var Data = new Object();
+            Data.id = $("#CampaignId").val();
+            Data.adGroupId = $("#AdGroupId").val();
+
+            $.ajax({
+                type: 'POST',
+                data: Data,
+                url: GetMasterListConfigDataUrl,
+                success: function (data) {
+
+                    var grid = $("#MasterListConfigList").data("kendoGrid");
+                    grid.dataSource.data(data.MasterListConfigList);
+                    $("#MasterListConfigList tbody").find(".t-no-data").remove();
+                    SetGridHieghtMasterList();
+                }
+            });
+
+        }
+
+        function localInitilizeAddMasterListDialog() {
+
+            $("#addMasterListDialog").dialog({
+                autoOpen: false,
+                width: 900,
+                //height:600,
+                modal: true,
+                resizable: false,
+                draggable: false,
+                showCloseButton: true
+
+            });
+            $("#DublicatedMasterList").dialog({
+                autoOpen: false,
+                //  width: 300,
+                //  height: 150,
+                modal: true,
+                resizable: false,
+                draggable: false,
+
+                open: function () {
+
+                    $(this).html('@Html.GetResource("Duplicated")');
+
+                }
+
+            });
+        }
+
+        function showAddMasterListDialog() {
+            $("#addMasterListDialog").dialog("open");
+            clearDialog("addMasterListDialog");
+			uncheck("IsGlobalMasterList");
+
+
+			generateMasterListItemGrid();
+            //if (!$("#filterdiv").is(':hidden')) {
+            //    showfilter();
+            //}
+
+        }
+
+            function onMasterListItemRowSelected(e) {
+                debugger;
+                var rows = e.sender.select();
+              //  var dataItem = null;
+              //  var grid = $("#MasterListItemGrid").data("kendoGrid");
+                dataItem = e.sender.dataItem(rows);
+                /*rows.each(function (e) {
+                    var grid = $("#MasterListConfigList").data("kendoGrid");
+                     dataItem = grid.dataItem(this);
+
+                    console.log(dataItem);
+                });*/
+           /* Id = jQuery(e.row.cells[0]).text();
+			Name = jQuery(e.row.cells[1]).text();
+				TypeString = jQuery(e.row.cells[2]).text();
+            ScopeString = jQuery(e.row.cells[3]).text();
+
+*/
+
+			// var obj = $("#MasterListsGrid").data("tGrid").dataItem($(e.row));
+			// selectMasterList
+                var obj = dataItem;
+                var ob2 = { IsAdded:true ,Name: dataItem.Name, TypeString: dataItem.TypeString, ScopeString: dataItem.ScopeString, Id: dataItem.Id }
+				if (fromInventorySourceMasterList) {
+					$("#IdMasterListTobeAdded").val(obj.Id);
+					$("#NameOfMasterListTobeAdded").val(obj.Name);
+
+					$("#reqList").hide();
+					$("#addMasterListDialog").dialog("close");
+				}
+				if (!fromInventorySourceMasterList) {
+                    if (selectMasterList(ob2)) {
+						$("#addMasterListDialog").dialog("close");
+
+					} else {
+
+
+						$("#DublicatedMasterList").dialog("open");
+					}
+				}
+        }
+
+        </script>
+    </div>
+</div>
+
+<div id="addMasterListDialog" class="" title="@Html.GetResource("AddToContentList", "Global")" style="display:none;overflow:unset;">
+    <div id="addMasterListContainer" class="data-row data-container" style="overflow:unset">
+        @*@Html.RenderAction("MasterListSearch", "Campaign", new { id = @Html.ViewContext.RouteData.Values["id"] })*@
+        @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.Campaign.MasterListSearch), new { id = @Html.ViewContext.RouteData.Values["id"] })
+
+
+    </div>
+</div>
+<div id="DublicatedMasterList" class="adfalcon-dialog" title="@Html.GetResource("Warning", "Global")" style="display:none">
+
+</div>
+<div id="MasterConfirmationDialog" style="display: none;">
+
+
+
+</div>

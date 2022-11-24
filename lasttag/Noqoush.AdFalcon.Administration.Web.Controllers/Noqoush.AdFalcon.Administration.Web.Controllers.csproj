@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{63DE48A6-00B4-44F2-8809-89A49DBC6267}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Noqoush.AdFalcon.Administration.Web.Controllers</RootNamespace>
+    <AssemblyName>Noqoush.AdFalcon.Administration.Web.Controllers</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Data, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Users\Administrator\Desktop\Microsoft.Practices.EnterpriseLibrary.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="NReco.VideoConverter">
+      <HintPath>..\packages\NReco.VideoConverter.1.0.8.0\lib\net20\NReco.VideoConverter.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Stack 5\Packages\Microsoft.AspNet.Mvc.5.0.0\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Telerik.Web.Mvc, Version=2011.2.712.340, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\lib\Telerik.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
+    <Compile Include="Controllers\AdOpsController.cs" />
+    <Compile Include="Controllers\AccountManagementController.cs" />
+    <Compile Include="Controllers\AppOpsTestController.cs" />
+    <Compile Include="Controllers\AppSiteController.cs" />
+    <Compile Include="Controllers\PartnerController.cs" />
+    <Compile Include="Controllers\ReportsTestController.cs" />
+    <Compile Include="Model\AdOpsIndexViewModel.cs" />
+    <Compile Include="Controllers\CampaignController.cs" />
+    <Compile Include="Controllers\AppOpsController.cs" />
+    <Compile Include="Controllers\PartyController.cs" />
+    <Compile Include="Controllers\SystemAccountController.cs" />
+    <Compile Include="Model\Account\AddPaymentViewModel.cs" />
+    <Compile Include="Model\Account\AddFundViewModel.cs" />
+    <Compile Include="Model\AppSite\AppOpsManagementViewModel.cs" />
+    <Compile Include="Model\AppSite\AppSiteApprovalSaveModel.cs" />
+    <Compile Include="Model\AppSite\AppSiteApprovalViewModel.cs" />
+    <Compile Include="Model\AppSite\AppSiteServerSettingViewModel.cs" />
+    <Compile Include="Model\Campaign\AdRequestViewModel.cs" />
+    <Compile Include="Model\Campaign\CampaignAssignAppsitesModel.cs" />
+    <Compile Include="Model\CostElemnts\CostElementsListViewModel.cs" />
+    <Compile Include="Model\CostElemnts\CostElementsValueAndType.cs" />
+    <Compile Include="Model\DashboardViewModel.cs" />
+    <Compile Include="Model\Core\DiscountViewModel.cs" />
+    <Compile Include="Controllers\Core\LookupController.cs" />
+    <Compile Include="Model\Lookup\AdCreativeAttributeViewModel.cs" />
+    <Compile Include="Model\Lookup\AdvertiserViewModel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\Lookup\AgeGroupViewModel.cs" />
+    <Compile Include="Model\Lookup\AudienceSegmentViewModel.cs" />
+    <Compile Include="Model\Lookup\CreativeVendorViewModel.cs" />
+    <Compile Include="Model\Lookup\LanguageViewModel.cs" />
+    <Compile Include="Model\Lookup\LocationViewModel.cs" />
+    <Compile Include="Model\Lookup\DeviceCapabilityViewModel.cs" />
+    <Compile Include="Model\Lookup\KeywordViewModel.cs" />
+    <Compile Include="Model\Lookup\PlatformViewModel.cs" />
+    <Compile Include="Model\Lookup\ManufacturerViewModel.cs" />
+    <Compile Include="Model\Lookup\CostElementViewModel.cs" />
+    <Compile Include="Model\Lookup\DeviceViewModel.cs" />
+    <Compile Include="Model\Lookup\ListViewModel.cs" />
+    <Compile Include="Model\Lookup\Lookups.cs" />
+    <Compile Include="Model\Lookup\LookupViewModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Noqoush.Framework\Noqoush.Framework.Infrastructure.Services\Noqoush.Framework.Infrastructure.Services.csproj">
+      <Project>{B8CE1B5B-F07A-43B6-A5E6-58CE0CDE4348}</Project>
+      <Name>Noqoush.Framework.Infrastructure.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Noqoush.Framework\Noqoush.Framework\Noqoush.Framework.csproj">
+      <Project>{64D00377-15EE-4C1F-932C-0325580E2003}</Project>
+      <Name>Noqoush.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Common\Noqoush.AdFalcon.Common.csproj">
+      <Project>{DC961A65-F217-4C17-8DEE-DEC452AD6BF1}</Project>
+      <Name>Noqoush.AdFalcon.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Domain.Common\Noqoush.AdFalcon.Domain.Common.csproj">
+      <Project>{fe62b4e8-9278-4b6f-b0e9-67495d74cb22}</Project>
+      <Name>Noqoush.AdFalcon.Domain.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Domain.Exceptions\Noqoush.AdFalcon.Exceptions.csproj">
+      <Project>{50286B2D-5A0B-4F57-8CBB-7CC1C9A6C64F}</Project>
+      <Name>Noqoush.AdFalcon.Exceptions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Services.Interfaces\Noqoush.AdFalcon.Services.Interfaces.csproj">
+      <Project>{C26F3A2D-1EEC-4567-9D1C-D8AE5834D83F}</Project>
+      <Name>Noqoush.AdFalcon.Services.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Web.Controllers\Noqoush.AdFalcon.Web.Controllers.csproj">
+      <Project>{94C236EB-6E22-4ED9-A5CA-68C1580FEC2E}</Project>
+      <Name>Noqoush.AdFalcon.Web.Controllers</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

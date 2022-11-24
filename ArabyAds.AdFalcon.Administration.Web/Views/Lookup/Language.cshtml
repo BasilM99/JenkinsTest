@@ -1,0 +1,62 @@
+﻿@using Noqoush.AdFalcon.Services.Interfaces.DTOs.Core
+
+@model Noqoush.AdFalcon.Administration.Web.Controllers.Model.Lookup.LanguageViewModel
+@{
+    if (ViewContext.FormContext == null)
+    {
+        ViewContext.FormContext = new FormContext();
+    }
+    ViewData.TemplateInfo.HtmlFieldPrefix = "LookupDto";
+}
+<script type="text/javascript">
+
+    @*$(document).ready(function () {
+        $("#LookupDto_Code").change(function () {
+            ValidateLangCode($(this).val());
+
+        });
+    });
+
+    var ValidateLangCodeURL = '@Url.Action("ValidateLangCode")';
+    var LangMassage = "@Html.GetResource("CodeDuplicated", "Global")";*@
+
+    //function ValidateLangCode(value) {
+    //    var id = $("#LookupDto_ID").val();
+    //    $.ajax({
+    //        type: 'POST',
+    //        url: ValidateLangCodeURL + "?id=" + id + "&code=" + value,
+    //        cache: false,
+    //        data: data,
+    //        success: function (data) {
+
+    //            if (data) {
+    //                $("#LookupDto_Code").val('');
+    //                $("#generalMessage span").text(LangMassage);
+    //                $("#generalMessage").dialog("open");
+    //            }
+
+    //        },
+    //        error: function (data) {
+
+    //        }
+    //    });
+
+    //}
+</script>
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("Code")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconTextBoxFor(p => (p.LookupDto as LanguageSaveDto).Code)
+        @Html.ValidationMessageFor(p => (p.LookupDto as LanguageSaveDto).Code)
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("Portal", "Global")</span>
+    </div>
+    <div class="field-container">
+        @Html.CheckBoxFor(p => (p.LookupDto as LanguageSaveDto).ForPortal)
+    </div>
+</div>

@@ -1,0 +1,150 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Model\AppSite\Filtering\**" />
+    <Compile Remove="Model\Campaign\Creative\**" />
+    <EmbeddedResource Remove="Model\AppSite\Filtering\**" />
+    <EmbeddedResource Remove="Model\Campaign\Creative\**" />
+    <None Remove="Model\AppSite\Filtering\**" />
+    <None Remove="Model\Campaign\Creative\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Model\Account\AccountAPIAccess.cs" />
+    <Compile Remove="Model\Account\AccountCostElement.cs" />
+    <Compile Remove="Model\Account\AccountFeatures.cs" />
+    <Compile Remove="Model\Account\AccountInvitation.cs" />
+    <Compile Remove="Model\Account\AccountPartyDefine.cs" />
+    <Compile Remove="Model\Account\AccountPortalPermissions.cs" />
+    <Compile Remove="Model\Account\AccountSummary.cs" />
+    <Compile Remove="Model\Account\BankAccountPaymentDetails.cs" />
+    <Compile Remove="Model\Account\Discount\AccountDiscount.cs" />
+    <Compile Remove="Model\Account\Fund\AccountFundPgw.cs" />
+    <Compile Remove="Model\Account\Fund\AccountFundTransHistory.cs" />
+    <Compile Remove="Model\Account\Fund\AccountFundTransHistoryCash.cs" />
+    <Compile Remove="Model\Account\Fund\AccountFundTransHistoryChecks.cs" />
+    <Compile Remove="Model\Account\Fund\AccountFundTransHistoryPaypal.cs" />
+    <Compile Remove="Model\Account\Fund\AccountFundTransHistoryPgw.cs" />
+    <Compile Remove="Model\Account\Fund\AccountFundTransHistoryWire.cs" />
+    <Compile Remove="Model\Account\Payment\Payment.cs" />
+    <Compile Remove="Model\Account\Payment\PaymentCash.cs" />
+    <Compile Remove="Model\Account\Payment\PaymentChecks.cs" />
+    <Compile Remove="Model\Account\Payment\PaymentPaypal.cs" />
+    <Compile Remove="Model\Account\Payment\PaymentWire.cs" />
+    <Compile Remove="Model\Account\PayPalAccountPaymentDetails.cs" />
+    <Compile Remove="Model\Account\PMP\AdSizePMPDealTargeting.cs" />
+    <Compile Remove="Model\Account\PMP\AdTypeGroupPMPDealTargeting.cs" />
+    <Compile Remove="Model\Account\PMP\GeographicPMPDealTargeting.cs" />
+    <Compile Remove="Model\Account\SSP\DealCampaignMapping.cs" />
+    <Compile Remove="Model\Account\SSP\PartnerSite.cs" />
+    <Compile Remove="Model\Account\SSP\SiteZone.cs" />
+    <Compile Remove="Model\Account\SSP\SiteZoneMapping.cs" />
+    <Compile Remove="Model\Account\Transfer.cs" />
+    <Compile Remove="Model\Account\User.cs" />
+    <Compile Remove="Model\AppSite\AppSite.cs" />
+    <Compile Remove="Model\AppSite\AppSiteEvent.cs" />
+    <Compile Remove="Model\AppSite\AppSiteKeyword.cs" />
+    <Compile Remove="Model\AppSite\Site.cs" />
+    <Compile Remove="Model\AppSite\TextAdTheme.cs" />
+    <Compile Remove="Model\Campaign\AdActionValueTracker.cs" />
+    <Compile Remove="Model\Campaign\AdCampaignStatus.cs" />
+    <Compile Remove="Model\Campaign\AdCreative.cs" />
+    <Compile Remove="Model\Campaign\AdCreativeStatus.cs" />
+    <Compile Remove="Model\Campaign\AdCreativeUnit.cs" />
+    <Compile Remove="Model\Campaign\AdCreativeUnitAttributeMapping.cs" />
+    <Compile Remove="Model\Campaign\AdCreativeUnitVendor.cs" />
+    <Compile Remove="Model\Campaign\AdCustomParameter.cs" />
+    <Compile Remove="Model\Campaign\AdGroupBidConfig.cs" />
+    <Compile Remove="Model\Campaign\AdGroupInventorySource.cs" />
+    <Compile Remove="Model\Campaign\AdGroupObjective.cs" />
+    <Compile Remove="Model\Campaign\AdGroupStatus.cs" />
+    <Compile Remove="Model\Campaign\AdGroupTrackingEvent.cs" />
+    <Compile Remove="Model\Campaign\AdTrackerCreative.cs" />
+    <Compile Remove="Model\Campaign\AdvertiserAccount.cs" />
+    <Compile Remove="Model\Campaign\AdvertiserAccountUser.cs" />
+    <Compile Remove="Model\Campaign\AppMarketingPartner.cs" />
+    <Compile Remove="Model\Campaign\AppMarketingPartnerTracker.cs" />
+    <Compile Remove="Model\Campaign\BannerCreative.cs" />
+    <Compile Remove="Model\Campaign\CampaignAssignedAppsite.cs" />
+    <Compile Remove="Model\Campaign\CampaignBidConfig.cs" />
+    <Compile Remove="Model\Campaign\CampaignDiscount.cs" />
+    <Compile Remove="Model\Campaign\CampaignReportRecipient.cs" />
+    <Compile Remove="Model\Campaign\CampaignServerSetting.cs" />
+    <Compile Remove="Model\Campaign\ClickTagTracker.cs" />
+    <Compile Remove="Model\Campaign\InStreamVideoCreativeUnits.cs" />
+    <Compile Remove="Model\Campaign\NativeAdCreative.cs" />
+    <Compile Remove="Model\Campaign\NativeAdCreativeBase.cs" />
+    <Compile Remove="Model\Campaign\NativeAdIcon.cs" />
+    <Compile Remove="Model\Campaign\NativeAdImage.cs" />
+    <Compile Remove="Model\Campaign\Objective\AdActionTypeConstraint.cs" />
+    <Compile Remove="Model\Campaign\Objective\AdActionTypeTrackingEvent.cs" />
+    <Compile Remove="Model\Campaign\Objective\AdActionValue.cs" />
+    <Compile Remove="Model\Campaign\Objective\AdCall.cs" />
+    <Compile Remove="Model\Campaign\Objective\Adlocate.cs" />
+    <Compile Remove="Model\Campaign\Objective\AdPromoteApp.cs" />
+    <Compile Remove="Model\Campaign\Objective\AdViewVideo.cs" />
+    <Compile Remove="Model\Campaign\Objective\AdWeb.cs" />
+    <Compile Remove="Model\Campaign\Performance\CampaignPerformance.cs" />
+    <Compile Remove="Model\Campaign\PlainHTMLCreative.cs" />
+    <Compile Remove="Model\Campaign\RichMediaCreative.cs" />
+    <Compile Remove="Model\Campaign\SubtypeAction.cs" />
+    <Compile Remove="Model\Campaign\Targeting\AdPMPDealTargeting.cs" />
+    <Compile Remove="Model\Campaign\Targeting\AdPositionTargeting.cs" />
+    <Compile Remove="Model\Campaign\Targeting\AdRequest.cs" />
+    <Compile Remove="Model\Campaign\Targeting\Demographic.cs" />
+    <Compile Remove="Model\Campaign\Targeting\DemographicTargeting.cs" />
+    <Compile Remove="Model\Campaign\Targeting\Device\DeviceCapabilityTargeting.cs" />
+    <Compile Remove="Model\Campaign\Targeting\Device\DeviceTargeting.cs" />
+    <Compile Remove="Model\Campaign\Targeting\Device\DeviceTargetingBase.cs" />
+    <Compile Remove="Model\Campaign\Targeting\Device\DeviceTypeTargeting.cs" />
+    <Compile Remove="Model\Campaign\Targeting\Device\ManufacturerTargeting.cs" />
+    <Compile Remove="Model\Campaign\Targeting\Device\ModelTargeting.cs" />
+    <Compile Remove="Model\Campaign\Targeting\Device\PlatformTargeting.cs" />
+    <Compile Remove="Model\Campaign\Targeting\GeoFencingTargeting.cs" />
+    <Compile Remove="Model\Campaign\Targeting\GeographicTargeting.cs" />
+    <Compile Remove="Model\Campaign\Targeting\ImpressionMetricTargeting.cs" />
+    <Compile Remove="Model\Campaign\Targeting\IPTargeting.cs" />
+    <Compile Remove="Model\Campaign\Targeting\KeywordTargeting.cs" />
+    <Compile Remove="Model\Campaign\Targeting\LanguageTargeting.cs" />
+    <Compile Remove="Model\Campaign\Targeting\MasterAppSiteTargeting.cs" />
+    <Compile Remove="Model\Campaign\Targeting\OperatorTargeting.cs" />
+    <Compile Remove="Model\Campaign\Targeting\TargetingBase.cs" />
+    <Compile Remove="Model\Campaign\Targeting\TragetingSet.cs" />
+    <Compile Remove="Model\Campaign\Targeting\URLTargeting.cs" />
+    <Compile Remove="Model\Campaign\Targeting\VideoTargeting.cs" />
+    <Compile Remove="Model\Campaign\TextCreative.cs" />
+    <Compile Remove="Model\Campaign\TileImage.cs" />
+    <Compile Remove="Model\Campaign\TileImageDocument.cs" />
+    <Compile Remove="Model\Campaign\VideoEndCard.cs" />
+    <Compile Remove="Model\Campaign\VideoEndCardTracker.cs" />
+    <Compile Remove="Model\Campaign\VideoMediaFiles.cs" />
+    <Compile Remove="Model\Core\BusinessPartner.cs" />
+    <Compile Remove="Model\Core\BusinessPartnerAdvertiserBlock.cs" />
+    <Compile Remove="Model\Core\CostElement\CostElement.cs" />
+    <Compile Remove="Model\Core\Document.cs" />
+    <Compile Remove="Model\Core\Employee.cs" />
+    <Compile Remove="Model\Core\SSPPartnerWhileIP.cs" />
+    <Compile Remove="Model\Core\SystemPayPalAccount.cs" />
+    <Compile Remove="Model\QueryBuilder\Column.cs" />
+    <Compile Remove="Model\QueryBuilder\Dimension.cs" />
+    <Compile Remove="Model\QueryBuilder\Entity.cs" />
+    <Compile Remove="Model\QueryBuilder\Fact.cs" />
+    <Compile Remove="Model\QueryBuilder\IEntity.cs" />
+    <Compile Remove="Model\QueryBuilder\ITree.cs" />
+    <Compile Remove="Model\QueryBuilder\Measure.cs" />
+    <Compile Remove="Model\QueryBuilder\Tree..cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Base\Noqoush.AdFalcon.Base.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Model\Campaign\Performance\" />
+  </ItemGroup>
+
+</Project>

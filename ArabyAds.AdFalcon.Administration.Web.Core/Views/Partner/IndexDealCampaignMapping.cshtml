@@ -1,0 +1,75 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("DealCampaign", "SSPDealCampaign");
+    Layout = "~/Views/Partner/IndexMaster.cshtml";
+}
+@model ArabyAds.AdFalcon.Web.Controllers.Model.BusinessPartners.DealCampaignMappingListViewModel
+
+@section subheader
+   {
+
+    <div class="data-row sub-header">
+        <div class="sub-header-left">
+        </div>
+        <div class="sub-header-center iea-sub-header-width">
+            <div class="data-row">
+                <div class="floating-left iea-go-right sub-header-item-container objective-header">
+                    <div class="sub-header-title">
+                        @Html.GetResource("SSPPartners", "SiteMapLocalizations")
+                    </div>
+                    <div class="sub-header-text">
+                        @Model.BusinessName
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="sub-header-right">
+        </div>
+    </div>
+}
+@section Grid1 {
+
+    @(Html.Kendo().Grid<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Account.SSP.DealCampaignMappingDto>()
+                        .Name("GridPartner")
+                        .Columns(columns =>
+                        {
+                            columns.Template("<input type='checkbox' name='checkedRecords' value='#= ID #' />").Title("").Width(36).HtmlAttributes(new { style = "text-align:center" });
+
+
+                            columns.Bound(o => o.CampaignName).Title(Html.GetResource("CampaignName", "SSPDealCampaign")).Width(250)
+                                .ClientTemplate("<div class='grid-title-container floating-left'><span class='trimed-span' id='CampaignName'>#= CampaignName#</span></div>");
+                            columns.Bound(o => o.DealId).Title(Html.GetResource("DealId", "SSPDealCampaign")).Width(50).HtmlAttributes(new { @class = "go-center", @id = "DealId" });
+
+
+                        }).EnableCustomBinding(true)
+                        .DataSource(dataBinding =>
+                        {
+                            //dataBinding.Server().Select("Impersonate", "AccountManagement", new { ajax = true });
+                            //dataBinding.Ajax().Select("_MyUsers", "User");
+                            dataBinding.Ajax().Read(read => read.Action("_DealCampaignMappings", "Partner",new { Id=ViewContext.RouteData.Values["Id"] }).Data("BusinessPartnersGridData")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+                        })
+                        .Events(clientEvents => clientEvents.DataBinding("BusinessPartnersGridDataBinding").DataBound("BusinessPartnersGridDataBound"))
+                        .Scrollable(scrolling => scrolling.Enabled(false))
+                        .Selectable().Pageable(paging => paging
+
+
+            .Input(false)
+            .Numeric(true)
+            .Info(true)
+            .PreviousNext(true)
+            .Refresh(true)
+
+            .Position(GridPagerPosition.Bottom)).Filterable(filtering => filtering.Enabled(false))
+            .Groupable(grouping => grouping.Enabled(false)))
+
+
+    <br />
+    <br />
+}
+
+
+
+
+

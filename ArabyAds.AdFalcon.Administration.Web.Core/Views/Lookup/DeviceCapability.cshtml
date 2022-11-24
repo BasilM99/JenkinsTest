@@ -1,0 +1,62 @@
+﻿@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core
+@model ArabyAds.AdFalcon.Administration.Web.Controllers.Model.Lookup.DeviceCapabilityViewModel
+@{
+    if (ViewContext.FormContext == null)
+    {
+        ViewContext.FormContext = new FormContext();
+    }
+    ViewData.TemplateInfo.HtmlFieldPrefix = "LookupDto";
+}
+<div class="data-row data-container">
+    <div class="label-container2">
+        <span class="field-title required-field">@Html.GetResource("DeviceType", "Lookup")</span>
+    </div>
+    <div class="field-container">
+        @{
+            bool selected = Model == null || Model.LookupDto == null || (Model.LookupDto as DeviceCapabilityDto).Type == 1 || (Model.LookupDto as DeviceCapabilityDto).Type == 0;
+        }
+        @Html.GetRadioButton("LookupDto.Type", Html.GetResource("both", "Global"), selected, value: "1")
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container2">
+        <span class="field-title required-field">&nbsp;</span>
+    </div>
+    <div class="field-container">
+        @{
+            selected = Model == null || Model.LookupDto == null || (Model.LookupDto as DeviceCapabilityDto).Type == 2;
+        }
+        @Html.GetRadioButton("LookupDto.Type", Html.GetResource("Include", "Global"), selected, value: "2")
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container2">
+        <span class="field-title required-field">&nbsp;</span>
+    </div>
+    <div class="field-container">
+        @{
+            selected = Model == null || Model.LookupDto == null || (Model.LookupDto as DeviceCapabilityDto).Type == 3;
+        }
+        @Html.GetRadioButton("LookupDto.Type", Html.GetResource("Exclude", "Global"), selected, value: "3")
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container2" title='@Html.GetResource("WurflCapabilities", "Lookup")'>
+        <span class="field-title required-field">@Html.GetResource("WurflCapabilities", "Lookup")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconTextBoxFor(p => (p.LookupDto as DeviceCapabilityDto).WurflCapabilities)
+        @Html.ValidationMessageFor(p => (p.LookupDto as DeviceCapabilityDto).WurflCapabilities)
+        @* @await Html.PartialAsync("MoreInfo", "WurflCapabilitiesMoreInfo")*@
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container2">
+        <span class="field-title required-field">@Html.GetResource("WurflValue", "Lookup")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconTextBoxFor(p=>(p.LookupDto as DeviceCapabilityDto).WurflValue)
+        @Html.ValidationMessageFor(p => (p.LookupDto as DeviceCapabilityDto).WurflValue)
+        @*@await Html.PartialAsync("MoreInfo", "WurflValueMoreInfo")*@
+    </div>
+</div>

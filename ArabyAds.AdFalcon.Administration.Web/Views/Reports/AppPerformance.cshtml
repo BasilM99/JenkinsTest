@@ -1,0 +1,35 @@
+﻿@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Reports
+@model List<AppSitePerformanceDto>
+@{
+    
+}
+@(Html.Telerik().Grid(Model)
+                    .Name("Grid")
+                    .Columns(columns =>
+                                 {
+                                     columns.Bound(o => o.AppSiteName).Title(Html.GetResource("AppName", "AppChart")).HtmlAttributes(new {Width="50px"});
+                                     columns.Bound(o => o.AdRequests).Title(Html.GetResource("AdRequests", "AppChart"));
+                                     columns.Bound(o => o.AdImpress).Title(Html.GetResource("AdImpress", "AppChart"));
+                                     columns.Bound(o => o.AdClicks).Title(Html.GetResource("AdClicks", "AppChart"));
+                                     columns.Bound(o => o.FillRateText).Title(Html.GetResource("FillRate", "AppChart"));
+                                     columns.Bound(o => o.CtrText).Title(Html.GetResource("CTR", "AppChart"));
+                                     columns.Bound(o => o.eCPMText).Title(Html.GetResource("eCPM", "AppChart"));
+                                     columns.Bound(o => o.RevenueText).Title(Html.GetResource("Revenue", "AppChart"));
+                                 })
+                    .DataBinding(dataBinding =>
+                    {
+                        dataBinding.Ajax().Select("appperformance", "dashboard");
+
+                    })
+                        .Scrollable(scrolling => scrolling.Enabled(false))
+                        .EnableCustomBinding(true)
+                              .Pageable(paging => paging.PageSize(10).Total(int.Parse(ViewData["total"].ToString())).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+                              .Groupable(grouping => grouping.Enabled(false)).Footer(true))
+<br />
+<div class="data-row">
+    <a href="javascript:void(0)" onclick='performanceExport("excel")' class="export-icon-excel floating-left">
+    </a><a href="javascript:void(0)" onclick='performanceExport("csv")' class="export-icon-cvs floating-left">
+    </a><a href="javascript:void(0)" onclick='performanceExport("pdf")' class="export-icon-pdf floating-left">
+    </a>
+</div>
+@Html.RegisterScriptBlock(string.Format("var performanceExportUrl='{0}'", Url.Action("AppPerformanceExport", "dashboard")))

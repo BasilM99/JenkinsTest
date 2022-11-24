@@ -1,0 +1,149 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("IndexAppSite", "Titles");
+}
+@Html.Hidden("AppSite", "App Sites")
+<script type="text/javascript">
+
+
+    var filterTypedialog = true;
+
+    String.prototype.format = function () {
+        var s = this,
+            i = arguments.length;
+
+        while (i--) {
+            s = s.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
+        }
+        return s;
+    };
+    var filterTypeSelected = '';
+    function  setFilterSelected(code)
+    {
+
+        filterTypeSelected = code;
+
+
+        $("a[forAppSiteFilter='true']").removeClass('selected');
+        $("#" + code + "-filterType").addClass('selected');
+        generateAppSiteGrid();
+    }
+    @*function localInitilize() {
+        jQuery('input[data-date="true"]')
+            .daterangepicker({ dateFormat: '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat' });
+    }*@
+
+    function generateAppSiteGrid() {
+        var grid = $("#PartyDto_AppSiteSearchGrid").data("kendoGrid");
+        grid.dataSource.read();
+        grid.dataSource.refresh();
+    };
+    function localAppSiteSearchInitilize() {
+        jQuery("input[filternamebutton='true']").keypress(function (e) {
+            return e.keyCode != 13;
+        });
+        $("input[filternamebutton='true']").keyup(function (event) {
+            if (event.keyCode == 13) {
+                generateAppSiteGrid();
+            }
+            return event.keyCode != 13;
+        });
+    }
+    function appSiteGridDataBinding(args) {
+        //args.data = $.extend(args.data,
+        //    {
+        //        Name: $('#AppSiteSearchDiv').find("#NameAppSite").val(),
+        //        FilterType: filterTypeSelected,
+        //        AccountId: accountID
+        //    });
+
+
+        //var url = args.currentTarget.baseURI.toLowerCase()
+        //var data = $('#Grid table a[href*="AppSite"]');
+
+        //for (var i = 0 ; i < data.length; i++) {
+
+        //    data[i].outerHTML = "<span class='trimed-span' style='width:200px !important;'><a href='" + data[i] + "' title='" + data[i].innerText + "'>" + data[i].innerText + "</a></span>";
+        //}
+
+    };
+    function appSiteGridData() {
+        var a =
+            {
+                Name: $('#AppSiteSearchDiv').find("#Name").val(),
+                FilterType: filterTypeSelected,
+                AccountId: accountID
+            };
+        return a;
+
+    };
+    function AppSiteSearchOnRowSelected(e) {
+
+        var rows = e.sender.select();
+        //  var dataItem = null;
+        //  var grid = $("#MasterListItemGrid").data("kendoGrid");
+        dataItem = e.sender.dataItem(rows);
+
+        AppSiteId = dataItem.Id;
+        AppSiteDesc = dataItem.Name;
+
+        changeAppSite(AppSiteId, AppSiteDesc);
+
+    }
+
+
+</script>
+
+@using ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.AppSite
+
+@model ArabyAds.AdFalcon.Web.Controllers.Model.AppSite.ListViewModel
+
+    <div class="section-form-inner-container" id="AppSiteSearchDiv">
+
+        @if (Model.FilterBar != null)
+        {
+            await Html.RenderPartialAsync("PartialViews/bar", Model.FilterBar);
+        }
+
+        <div class="grid-container">
+
+
+            @(Html.Kendo().Grid<ArabyAds.AdFalcon.Services.Interfaces.DTOs.AppSite.AppSiteListDto>()
+                 .Name("AppSiteSearchGrid")
+                 .Columns(columns =>
+                 {
+                    columns.Bound(o => o.Id).HtmlAttributes(new { id = "AppSiteId" }).Hidden();
+                    columns.Bound(o => o.Name).HtmlAttributes(new { id = "AppSiteName" }).Hidden();
+
+                    columns.Bound(o => o.Name).Width(200).HtmlAttributes(new { @style = "max-width: 200px;" }).ClientTemplate("<div class='grid-title-container floating-left'><span class='trimed-span' style='width:200px !important;'> #= Name #</span></div>").Title(Html.GetResource("Name", "AppSite"));
+                    columns.Bound(o => o.Type).Title(Html.GetResource("Type", "AppSite")).Width("70px");
+                    columns.Bound(o => o.RegistrationDate).Title(Html.GetResource("RegistrationDate", "AppSite")).Width("100px").Format("{0:" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").HtmlAttributes(new { @class = "go-center" });
+                    columns.Bound(o => o.Status).Title(Html.GetResource("Status", "AppSite")).Width("80px");
+
+                 })
+                 .EnableCustomBinding(true)
+                    .DataSource(dataBinding =>
+                    {
+
+                        dataBinding.Ajax().Read(read => read.Action("_AppSiteSearch", "AppSite").Data("appSiteGridData")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+                    })
+                .Events(clientEvents => clientEvents.DataBinding("appSiteGridDataBinding").DataBound("appSiteGridDataBinding").Change("AppSiteSearchOnRowSelected"))
+                .Scrollable(scrolling => scrolling.Enabled(false))
+                .Selectable(m => m.Mode(GridSelectionMode.Single).Type(GridSelectionType.Row)).Selectable().Pageable(paging => paging
+
+
+                .Input(false)
+                .Numeric(true)
+                .Info(true)
+                .PreviousNext(true)
+                .Refresh(true)
+
+                .Position(GridPagerPosition.Bottom))
+                .Filterable(filtering => filtering.Enabled(false))
+                .Groupable(grouping => grouping.Enabled(false)))
+
+        </div>
+
+    </div>
+
+

@@ -1,0 +1,83 @@
+﻿@using ArabyAds.AdFalcon.Domain.Common.Model.Campaign
+@*@using ArabyAds.Framework.DomainServices*@
+
+
+
+@{
+
+    var selectItems = Enum.GetValues(typeof(ArabyAds.AdFalcon.Domain.Common.Model.Campaign.TrackingPixel)).Cast<ArabyAds.AdFalcon.Domain.Common.Model.Campaign.TrackingPixel>().Select(p => new SelectListItem() { Text = p.ToText(), Value = ((int)p).ToString() }).ToList();
+    selectItems.Insert(0, new SelectListItem() { Text = Html.GetResource("Select", "Global"), Value = string.Empty });
+    selectItems.RemoveAt(selectItems.Count-1);
+
+}
+<div id="tagsTrackingPixelEventDialog" class="adfalcon-dialog" title="@Html.GetResource("AddNewAdvertiser", "Advertiser")" style="display:none;overflow:visible">
+
+    <div class="data-row data-container">
+
+        <div class="label-container">
+            <span class="field-title required-field">Pixel Name</span>
+        </div>
+        <div class="field-container">
+            <span class="small-big-field">@Html.TextBox("PixelEventName", string.Empty, new { @class = "", @disabled = "disabled", @readonly = "readonly" })</span>
+        </div>
+    </div>
+    <div class="data-row data-container">
+
+
+        <div class="label-container">
+            <span class="field-title required-field">Format</span>
+        </div>
+        <div class="field-container">
+
+            @Html.DropDownList("tagsDDL", selectItems)
+
+        </div>
+
+    </div>
+    <div class="field-container" style="margin-left: 100px;" id="HttpHttps" >
+        <div class="radio-button-container floating-left iea-rbtn-width-a">
+            @Html.GetRadioButton("GetTagsUseHttp", Html.GetResource("UseHttp", "Global"), true, "", "changeUseHttpFormat", "3", Id: "UseHttpFormatRadio")
+        </div>
+        <div class="radio-button-container floating-left">
+            @Html.GetRadioButton("GetTagsUseHttp", Html.GetResource("UseHttps", "Global"), false, "", "changeUseHttpFormat", "4", Id: "UseHttpsFormatRadio")
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="data-row data-container">
+
+
+            <div class="label-container">
+                <span class="field-title required-field">Tag</span>
+            </div>
+            <div class="field-container">
+
+                <textarea class="text-box" cols="20" id="ContentListItems" name="ContentListItems" rows="2" style="width:430px;height:180px;" spellcheck="false"></textarea>
+
+                <img name="iconImage" onclick="CopyTrackingUrl();" title="@Html.GetResource("Copy_1", "Commands")" class="copyicon" style="display: inline;">
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+	<script>
+		function CopyTrackingUrl() {
+
+			var copyTextarea = $('#ContentListItems');
+			//
+			copyTextarea.focus();
+			copyTextarea.select();
+
+			try {
+				var successful = document.execCommand('copy');
+				var msg = successful ? 'successful' : 'unsuccessful';
+				console.log('Copying text command was ' + msg);
+			} catch (err) {
+				console.log('Oops, unable to copy');
+			}
+
+
+		}
+
+	</script>

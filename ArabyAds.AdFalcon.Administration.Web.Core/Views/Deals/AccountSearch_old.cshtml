@@ -1,0 +1,138 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("Impersonate", "Titles");
+}
+@model ArabyAds.AdFalcon.Web.Controllers.Model.User.AccountSearchViewModel
+@using (Html.BeginForm())
+{
+    <script language="javascript">
+        function generateUsersGrid() {
+            var grid = $("#Grid").data("kenkoGrid");
+            if (typeof (grid) != "undefined") {
+                grid.dataSource.read();
+                grid.refresh();
+            }
+        };
+        function usersGridDataBinding(args) {
+            //args.data = $.extend(args.data,
+            //{
+            //    Name: $('#Name').val(),
+            //    CompanyName: $('#CompanyName').val(),
+            //    Email: $('#Email').val(),
+            //    publisherUsers: $('#publisherUsers').val()
+            //});
+        };
+        function usersGridData() {
+            var a =  
+            {
+                Name: $('#Name').val(),
+                CompanyName: $('#CompanyName').val(),
+                Email: $('#Email').val(),
+                publisherUsers: $('#publisherUsers').val()
+            };
+            return a;
+        };
+        function usersGridDataBound(e) {
+            var grid = $("#Grid").data("kendoGrid");
+            //if not first page and the no data then try load first page
+            if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+                e.preventDefault();
+                grid.pageTo(1);
+            }
+        };
+        function localAccountSearchInitilize() {
+            jQuery('input').keypress(function(e) {
+                return e.keyCode != 13;
+            });
+            jQuery("input").keyup(function(event) {
+                if (event.keyCode == 13) {
+                    generateUsersGrid();
+                }
+                return event.keyCode != 13;
+            });
+        }
+
+        var accountID, accountName;
+        function onRowSelected(e) {
+            accountID = jQuery(e.row.cells[0]).find('[name="AccountId"]').val();
+            accountName = jQuery(e.row.cells[1]).text();
+			selectAccount();
+        }
+        function selectAccount() {
+            changeAccount(accountID, accountName);
+        }
+    </script>
+    @Html.Hidden("publisherUsers","False")
+        <div>
+            <div class="data-row go-center">
+                <div class="blue-filter-container" >
+                    <table class="special-content">
+                        
+                            <td>
+                                <span class="go-bold">@Html.GetResource("Name", "Global")</span>
+                            </td>
+                            <td class="go-left" colspan="4">
+                                <span class="searchform-textfield" >@Html.AdFalconEditorFor(p => p.Name)</span>
+                            </td>
+                        
+                        
+                            <td>
+                                <span class="go-bold">@Html.GetResource("Company", "Global")</span>
+                            </td>
+                            <td class="go-left" colspan="4">
+                                <span class="searchform-textfield" >@Html.AdFalconEditorFor(p => p.CompanyName)</span>
+                            </td>
+                        
+                       
+                            <td>
+                                <span class="go-bold">@Html.GetResource("email", "Global")</span>
+                            </td>
+                            <td class="go-left" colspan="4">
+                                <span class="searchform-textfield" >@Html.AdFalconEditorFor(p => p.Email)</span>
+                            </td>
+                        
+                            <td class="go-right" colspan="5">
+                                <input type="button" onclick="generateUsersGrid();"  name="Filter" value='@Html.GetResource("Filter")' class="btn filter-button " />
+                            </td>
+                        
+                    </table>
+                </div>
+                <div class="tail">
+                </div>
+            </div>
+            <div class="grid-container">
+                @(Html.Kendo().Grid(Model.Users)
+            .Name("Grid")
+            .Columns(columns =>
+            {
+
+                columns.Template("<input type='hidden' name='AccountId' value='#= AccountId #' /><input type='hidden'  name='UserId' value='#= Id #' />").Title("").Width(0).HtmlAttributes(new { style = "text-align:center" });
+                columns.Bound(o => o.Name).Title(Html.GetResource("Name", "Global")).HtmlAttributes(new { @class = "go-center" }).Width(200);
+                columns.Bound(o => o.CompanyName).Title(Html.GetResource("Company", "Global")).Format("{0:" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").HtmlAttributes(new { @class = "go-center" }).Width(130);
+                columns.Bound(o => o.Email).Title(Html.GetResource("email", "Global")).HtmlAttributes(new { @class = "go-center" });
+
+            }).EnableCustomBinding(true)
+            .DataSource(dataBinding =>
+            {
+                dataBinding.Ajax().Read(read => read.Action("_accountSearch", "User").Data("usersGridData")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+            })
+            .Events(clientEvents => clientEvents.DataBinding("usersGridDataBinding").DataBound("usersGridDataBound").Change("onRowSelected"))
+            .Scrollable(scrolling => scrolling.Enabled(false))
+            .Selectable().Pageable(paging => paging
+
+
+            .Input(false)
+            .Numeric(true)
+            .Info(true)
+            .PreviousNext(true)
+            .Refresh(true)
+
+            .Position(GridPagerPosition.Bottom))
+            .Filterable(filtering => filtering.Enabled(false))
+            .Groupable(grouping => grouping.Enabled(false)))
+
+            </div>
+        </div>
+
+    
+}

@@ -1,0 +1,89 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("ReportTemplate", "Report");
+    Layout = "~/Views/Reports/IndexJobMaster.cshtml";
+}
+@model Noqoush.AdFalcon.Web.Controllers.Model.Report.ListViewModel
+@Html.Partial("GridToolTop", Model.ToolTips)
+
+@section subheader
+   {
+}
+@section Grid1 {
+    @(Html.Telerik().Grid(Model.Items)
+               .Name("Grid")
+               .Columns(columns =>
+                            {
+                                columns.Template(
+                                    @<text>
+                                        <input name="checkedRecords" type="checkbox" value="@item.ID " title="checkedRecords" />
+                                    </text>)
+                                    .Title("").Width(36).HtmlAttributes(new { style = "text-align:center" })
+                                    .ClientTemplate("<input type='checkbox' name='checkedRecords' value='<#= ID #>' />");
+                                columns.Bound(o => o.ReportId).Title("#").Width(80).HtmlAttributes(new { @class = "go-center" });
+
+                                columns.Bound(o => o.Name).Template(
+                                    @<text><div class="grid-title-container floating-left">
+                                            <span class="trimed-span" id="ReportTitle">
+
+
+                                                <a style="@item.ColorStyle" href='@item.URLLink?reportType=@Request.QueryString["reportType"]&id=@item.ID' title='@item.CompositeName'>
+
+
+                                                    @item.CompositeName
+
+                                                </a>
+                                            </span>
+                                        </div><div class="grid-cogwheel-container floating-right go-right">
+                                            <div class='cogwheel' item_extra_info="@item.LastDocumnetGeneratedId" onclick='showGridToolTip(@item.ID,this)'>
+                                                <a href='javaScript:void(0);'>&nbsp</a>
+                                            </div>
+                                        </div>
+                                    </text>
+                                    ).Title(Html.GetResource("Document", "JobGrid")+" "+ Html.GetResource("Name")).Width(330)
+                                    .ClientTemplate("<div   class='grid-title-container floating-left'><span class='trimed-span' id='ReportTitle'><a style='<#= ColorStyle#>' href=\"<#= URLLink#>" +"" + "?reportType=" + Request.QueryString["reportType"] + "&id=<#= ID#>\"" + " ><#= CompositeName#> </a>   </span></div>  <div class='grid-cogwheel-container floating-right go-right'> <div class='cogwheel' item_extra_info='<#=LastDocumnetGeneratedId#>' onclick='showGridToolTip(<#= ID#>,this)'><a href='javaScript:void(0);' >&nbsp</a>&nbsp</a></div></div> ");
+                            columns.Bound(o => o.StartDate).Title(Html.GetResource("StartDate", "ReportSchedule")).Format("{0:" + Noqoush.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(120).HtmlAttributes(new { @class = "go-center" });
+                            columns.Bound(o => o.EndDateString).Title(Html.GetResource("EndDate", "ReportSchedule")).Format("{0:" + Noqoush.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(120).HtmlAttributes(new { @class = "go-center" });
+
+                            columns.Bound(o => o.Status).Title( Html.GetResource("Scheduling", "Report") + " " + Html.GetResource("Status")).Width(140).HtmlAttributes(new { @class = "go-center" });
+                            columns.Bound(o => o.LastRunningDate).Title(Html.GetResource("LastRunningDate", "JobGrid")).Format("{0:" + Noqoush.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(110).HtmlAttributes(new { @class = "go-center" })
+
+.Template(
+
+                                    @<text>
+
+
+                                        <div class="grid-title-container floating-left">
+                                            <span class="trimed-span">
+                                                @item.LastRunningDateString
+                                            </span>
+                                        </div><div class="grid-cogwheel-container floating-right go-right">
+                                            <img name="iconImage" class="@item.LastRunningIcon" style="display: inline;">
+                                        </div>
+
+
+                                    </text>
+                                    ).ClientTemplate("<div class='grid-title-container floating-left'><span class='trimed-span'> <#=LastRunningDateString#></span></div><div class='grid-cogwheel-container floating-right go-right'><img name='iconImage' class='<#=LastRunningIcon#>' style='display: inline;' /></div>")
+
+
+
+                                    ;
+
+
+
+                            }).EnableCustomBinding(true)
+                                                                                        .DataBinding(dataBinding =>
+                                                                                             {
+                                                                                                 dataBinding.Server().Select("IndexReportsJob", "Reports", new { ajax = true });
+                                                                                                 dataBinding.Ajax().Select("_IndexReportsJob", "Reports");
+
+                                                                                             })
+                                                                                .ClientEvents(clientEvents => clientEvents.OnDataBinding("reportGridDataBinding").OnDataBound("reportGridDataBound").OnRowDataBound("onRowDataBound"))
+                                                                                .Scrollable(scrolling => scrolling.Enabled(false))
+                                                                                .Selectable().Pageable(paging => paging.PageSize(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.PageSize)
+                                                                                                        .Total(int.Parse(ViewData["total"].ToString()))
+                                                                                                        .Style(GridPagerStyles.NextPreviousAndNumeric)
+                                                                                                        .Position(GridPagerPosition.Bottom))
+                                                                                .Filterable(filtering => filtering.Enabled(false))
+                                                                                .Groupable(grouping => grouping.Enabled(true)).Footer(true))
+}
+

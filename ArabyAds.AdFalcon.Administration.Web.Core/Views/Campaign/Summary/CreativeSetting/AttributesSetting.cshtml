@@ -1,0 +1,33 @@
+﻿@model ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeUnitDto
+@{
+    string attributesString = string.Empty;
+    var attributesIds = string.Empty;
+    if (Model != null && Model.Attributes != null && Model.Attributes.Count() != 0)
+    {
+        attributesString = string.Join(" - ", Model.Attributes.Select(p => p.Name.ToString()));
+        attributesIds = string.Join(",", Model.Attributes.Select(p => p.ID));
+        if (attributesString.Length > 60)
+        {
+            attributesString = ArabyAds.AdFalcon.Web.Controllers.Utilities.StringUtilities.SubStringWithFullWord(attributesString, 60) + " ...";
+        }
+    }
+}
+
+@if (Model != null)
+{
+    <span style="font-size:11px;text-align:left">
+        <span id="AttributesList@(Model.ID)">@attributesString </span>
+        <br />
+        <a href="javascript:void(0)" onclick="openAttributesSettingsDialog(@Model.ID)">@Html.GetResource("Customize", "CreativesSettings")</a>
+        <input value="@attributesIds" type="hidden" name="@string.Format("Attributes_{0}",Model.ID)" id="@string.Format("Attributes_{0}",Model.ID)" />
+    </span>
+}
+
+@if (!ArabyAds.Framework.OperationContext.Current.Items.ContainsKey("AttributesDialog"))
+{
+    ArabyAds.Framework.OperationContext.Current.Items["AttributesDialog"] = 1;
+    @*@Html.RenderAction("AttributesSettingDialog", "Campaign")*@
+    @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Administration.Web.Controllers.Core.ViewComponents.Campaign.AttributesSettingDialog))
+
+
+}

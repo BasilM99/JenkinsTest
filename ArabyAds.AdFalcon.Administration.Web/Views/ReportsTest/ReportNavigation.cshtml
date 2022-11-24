@@ -1,0 +1,66 @@
+﻿@model IEnumerable<Noqoush.AdFalcon.Web.Controllers.Model.Action>
+<div class="data-row go-center">
+    <div class="blue-filter-container">
+        @{
+            string selected = "";
+            foreach (var action in Model)
+            {
+                int? ExtraParameter = null;
+                if (action.ExtraPrams != null)
+                {
+                    ExtraParameter = (int?)action.ExtraPrams;
+                }
+                string filterUrl = string.Empty;
+                string adFilterUrl = string.Empty;
+                string label = string.Empty;
+                bool showGroupByName = false;
+                string groupByNameLabel = null;
+                if (action.IsSelected)
+                {
+                    selected = "selected";
+                }
+                switch (action.Code.ToLower())
+                {
+                    case "app":
+                        adFilterUrl = Url.Action("GetAppsTree", "ReportsTest", new { type = "app" });
+                        label = Html.GetResource("Specific", "Global") + " " + Html.GetResource("App", "AppReport");
+                        break;
+                    case "campaign":
+                        showGroupByName = true;
+                        adFilterUrl = Url.Action("GetAdvertiserItems", "ReportsTest", new { type = "campaign", id = ExtraParameter });
+                        label = Html.GetResource("Specific", "Global") + " " + Html.GetResource("Campaign", "Global");
+                        groupByNameLabel = Html.GetResource("Campaign", "Global");
+                        break;
+                    case "adgroup":
+                        showGroupByName = true;
+                        adFilterUrl = Url.Action("GetAdvertiserItems", "ReportsTest", new { type = "adgroup", id = ExtraParameter });
+                        label = Html.GetResource("Specific", "Global") + " " + Html.GetResource("AdGroup", "CampaignsReport");
+                        groupByNameLabel = Html.GetResource("AdGroup", "CampaignsReport");
+                        break;
+                    case "ad":
+                        showGroupByName = true;
+                        adFilterUrl = Url.Action("GetAdvertiserItems", "ReportsTest", new { type = "ad", id = ExtraParameter });
+                        label = Html.GetResource("Specific", "Global") + " " + Html.GetResource("Ad", "Global");
+                        groupByNameLabel = Html.GetResource("Ad", "Global");
+                        break;
+                    case "operator":
+                        filterUrl = Url.Action("GetTreeData", "operator");
+                        break;
+                    case "devicemodel":
+                        filterUrl = Url.Action("GetTreeData", "platform");
+                        break;
+                    case "geolocation":
+                        filterUrl = Url.Action("GetTreeData", "Country", new { allowRegion = false });
+                        break;
+                    default:
+                        filterUrl = Url.Action("GetTreeData", "Country", new { allowRegion = false });
+                        break;
+                }
+                <a class="@selected" id="@("tab" + action.Code)" href='javascript:void(0)' onclick="getFilters('@action.Code','@adFilterUrl','@filterUrl','@label','@showGroupByName.ToString().ToLower()','@groupByNameLabel')">@action.DisplayText</a>
+                selected = "";
+            }
+        }
+    </div>
+    <div class="tail">
+    </div>
+</div>

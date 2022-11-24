@@ -1,0 +1,11 @@
+﻿@{
+    ArabyAds.AdFalcon.Services.Interfaces.Services.ILanguageService languageService = ArabyAds.Framework.IoC.Instance.Resolve<ArabyAds.AdFalcon.Services.Interfaces.Services.ILanguageService>();
+    
+    List<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core.LanguageDto> languagesDtos = languageService.GetAll().ToList();
+    SelectList items = new SelectList(languagesDtos, "Id", "Name");
+
+}
+
+@(Html.AdFalconDropDownList("",items)
+) 
+

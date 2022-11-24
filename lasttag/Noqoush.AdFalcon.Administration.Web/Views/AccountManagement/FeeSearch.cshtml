@@ -1,0 +1,84 @@
+﻿<script language="javascript" type="text/javascript">
+    function generateFeeGrid() {
+        var grid = $("#SearchFee").data("tGrid");
+        grid.rebind();
+
+	};
+
+    function feeElementGridDataBinding(args) {
+      
+		     args.data = $.extend(args.data,
+            {
+               
+				Name: $('#NameFeeSearch').val(),
+                LookupId: '@Html.ViewContext.RouteData.Values["LookupId"]'
+
+            });
+    };
+
+    function feeGridDataBound(e) {
+        var grid = $("#SearchFee").data("tGrid");
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(1);
+        }
+    };
+    var FeeID, FeeName;
+    function onRowFeeSelected(e) {
+
+        FeeID = jQuery(e.row.cells[0]).text();
+        FeeName = jQuery(e.row.cells[1]).text();
+        selectFee();
+    }
+	function selectFee() {
+        AddCostElement(FeeID, FeeName);
+    }
+
+
+</script>
+
+
+<div>
+    <div class="data-row go-center">
+        <div class="blue-filter-container">
+            <table class="special-content">
+                <tr>
+                    <td>
+                        <span class="go-bold">@Html.GetResource("Name", "Global")</span>
+                    </td>
+                    <td style="width: 110px;">
+                        <input type="text" id="NameFeeSearch" name="NameFeeSearch" class="text-box " />
+                    </td>
+
+                    <td>
+                        <input type="button" onclick="generateFeeGrid()" value='@Html.GetResource("Filter")' class="btn filter-button " />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="tail">
+        </div>
+    </div>
+
+
+    @*@Html.Partial(Model.FilterView)*@
+    @model Noqoush.AdFalcon.Administration.Web.Controllers.Model.Lookup.ListViewModel
+	<div class="grid-container">
+		@(Html.Telerik().Grid(Model.Items)
+		.Name("SearchFee")
+		.Columns(columns =>
+		{
+		columns.Bound(o => o.ID);
+		columns.Bound(o => o.Name.Value).ClientTemplate("<div class='grid-title-container floating-left'><span><#=Name.Value#></span> </div>").Title(Html.GetResource("Name"));
+		})
+		.DataBinding(dataBinding => dataBinding.Ajax().Select("_Index", "Lookup",new { Id= "fee" })).EnableCustomBinding(true)
+		.ClientEvents(clientEvents => clientEvents.OnRowDataBound("onRowDataBound").OnDataBinding("feeElementGridDataBinding").OnDataBound("feeGridDataBound").OnRowDataBound("onRowDataBound").OnRowSelect("onRowFeeSelected"))
+		.Scrollable(scrolling => scrolling.Enabled(false))
+		.Selectable()
+		.Pageable(paging => paging.PageSize(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total(int.Parse(ViewData["total"].ToString())).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+		.Filterable(filtering => filtering.Enabled(false))
+		.Groupable(grouping => grouping.Enabled(true)).Footer(true))
+	</div>
+
+</div>

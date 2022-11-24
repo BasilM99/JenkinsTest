@@ -1,0 +1,577 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.TargetingViewModel
+@*@using ArabyAds.Framework.DomainServices*@
+<div class="section-form-inner-container info-container tab-pane fade" tabsection="20" id="PMPDealSection"
+     style="display:none;" readonlyToBe>
+
+
+    <div class="data-container">
+        <div class="data-row" style="margin-left:20px  ;margin-right:10px;margin-bottom:10px;  ">
+            @*<div class="label-container">
+                    &nbsp;
+                </div>*@
+
+            @{
+                bool selectedinvent = false;
+                bool disabledDeals = true;
+                if (Model != null && Model.AllowOpenAuction)
+                {
+                    selectedinvent = true;
+                }
+
+                if (Model != null && Model.PMPDealConfigList != null && Model.PMPDealConfigList.ToList().Count > 0)
+                {
+                    disabledDeals = false;
+                }
+            }
+            @if (disabledDeals)
+            {<text>
+                    <div class="field-container" id="AllowOpenAuctionParentDiv" style="color:silver">
+            </text>
+        }
+        else
+
+        {
+            <text>
+                <div class="field-container" id="AllowOpenAuctionParentDiv">
+            </text>
+
+        }
+            @Html.GetCheckBox("AllowOpenAuction", ArabyAds.AdFalcon.Domain.Common.Model.Account.PMP.AdGroupTargetingDealType.OpenInventorytargeting.ToText(), isChecked: @selectedinvent, disabled: @disabledDeals, divid: "AllowOpenAuctionDiv")
+
+
+        </div>
+
+        <div class="field-container">
+            &nbsp;
+        </div>
+        <div class="field-container">
+            @await Html.PartialAsync("MoreInfo", "MoreInfoOpenAuction", new ViewDataDictionary(ViewData) { { "Class_Tail", "tail-report" }, { "Style2", "float:none;" } })
+        </div>
+    </div>
+</div>
+<div class="data-row section-container">
+    <div class="go-left floating-left" style="margin-left:20px  ;margin-right:10px  ">
+        @*<h3>@Html.GetResource("CostElements", "Titles")</h3>*@
+
+        <a class="primary-btn" href="javascript:void(0)" onclick="showAddPMPDialog('')">@Html.GetResource("AddDeal", "PMPDeal")</a>
+    </div>
+</div>
+<div class="data-row section-container" id="formPMPDeal">
+
+
+    @Html.Hidden("DeletedPMPDealConfigs", "")
+    @Html.Hidden("InsertePMPDealConfigs", "")
+
+    @*<br />*@
+
+
+    <div id="gridDivPMPDeal" class="floating-left grid-containe" style="width:750px;  margin-left:20px  ;margin-right:10px  ;margin-top : 10px;height: 300px;">
+
+
+
+        @*<div>
+                <div class="t-toolbar t-grid-toolbar t-grid-top">
+                    <a class="t-button t-button-icon t-button-bare t-grid-add" href="javascript:void(0)"
+                       onclick="showAddPMPDialog('')"><span class="t-icon t-add"></span></a>
+                </div>
+            </div>*@
+        @(Html.Kendo().Grid(Model.PMPDealConfigList).Name("PMPDealConfigList").NoRecords(P=>P.Template("<center>" + Html.GetResource("CampaignBidConfigListIsEmpty", "Campaign") + "</center")).HtmlAttributes(new { width = "800px" })
+
+
+
+
+        // .Editable(e=>e.Enabled(true).DisplayDeleteConfirmation(false)
+        .Columns(columns =>
+        {
+            columns.Bound(o => o.ID).Hidden();
+            columns.Bound(o => o.IsAdded).Hidden();
+
+            columns.Bound(o => o.DealID).Width("150px").Title("#");
+
+            columns.Bound(o => o.Name).Visible(true).Title(Html.GetResource("Name", "Global"))
+               .ClientTemplate("<div class='grid-title-container floating-left'> <span class='trimed-span' title='#= Name#' id='DealName'>#= Name#</span></div>").Title(Html.GetResource("Name", "Global"));
+            columns.Bound(o => o.ExchangeName).Title(Html.GetResource("Exchange", "PMPDeal"))
+                  .Width("140px");
+            columns.Bound(o => o.PublisherName).Title(Html.GetResource("Publisher", "Menu"))
+               .Width("140px");
+            columns.Bound(o => o.DealTypeString).Title(Html.GetResource("Type")).HtmlAttributes(new { @class = "go-center" }).Width("100px");
+            columns.Bound(o => o.PriceString).Title(Html.GetResource("Price", "SSPFloorPrices")).Width("50px")
+                                        ;
+
+            columns
+    .Template("<div id='DeletempButton' style='display:block'><a type='button'  class='t-button t-button-icon t-button-bare'  onclick='ShowConfirmationDialogPMP(this); return false;'><span class='t-icon t-delete'></span></a></div>").HtmlAttributes(new { @class = "go-center" }).Width("35px");
+
+        })
+                                                                                                                                        .DataSource(dataBinding =>
+                                                                                                                                        {
+                                                                                                                                            //dataBinding.Server().Select("PMPDealConfigData", "Campaign", new { ajax = true });
+
+                                                                                                                                            dataBinding.Ajax().Read("GridPMPDealConfigData", "Campaign", new { id = Model.CampaignId, adGroupId = Model.AdGroupId })
+                                                                                                                                                                                              .Model(model =>
+                                                                                                                                                                                              {
+                                                                                                                                                                                                  model.Id(m => m.ID); // Specify the property which is the unique identifier of the model.
+                                                                                                                                                                                                  model.Field(m => m.Name).Editable(false);
+                                                                                                                                                                                                  model.Field(m => m.DealID).Editable(false);
+                                                                                                                                                                                                  model.Field(m => m.IsAdded).Editable(false);
+
+
+                                                                                                                                                                                                  model.Field(m => m.ExchangeName).Editable(false);
+                                                                                                                                                                                                  model.Field(m => m.PublisherName).Editable(false);
+                                                                                                                                                                                                  model.Field(m => m.DealTypeString).Editable(false);
+                                                                                                                                                                                                  model.Field(m => m.PriceString).Editable(false);
+                                                                                                                                                                                                  // Make the ProductID property not editable.
+                                                                                                                                                                                              }).AutoSync(false);
+
+
+                                                                                                                                        }).Events(e => e.DataBinding("PMPTargating_OnDataBinding")).Events(e => e.DataBound("PMPDealConfigList_OnDataBound"))
+                                                                                                                                        .Scrollable(scrolling => scrolling.Enabled(false)).Pageable(paging => paging.Input(false).Numeric(false).Info(false).PreviousNext(false).Refresh(true).Position(GridPagerPosition.Bottom)).EnableCustomBinding(true)
+
+
+                                                                                                                                        )
+    </div>
+
+
+
+
+
+
+
+
+
+    <script language="javascript" type="text/javascript">
+        var ConfirmationPMP = "@Html.GetResource( "Delete", "Confirmation")";
+        var ConfriamtionBoxTitlePMp = "@Html.GetResource("Confirm")";
+        var openInventoryenumvalue = '@((int)ArabyAds.AdFalcon.Domain.Common.Model.Account.PMP.AdGroupTargetingDealType.OpenInventorytargeting)';
+        $(document).ready(function () {
+            $('.multiselect2jq').select2();
+            $("#ConfirmationDialog").dialog({
+
+                resizable: false,
+                //height: 150,
+                draggable: false,
+                modal: true,
+                autoOpen: false,
+                title: ConfriamtionBoxTitlePMp,
+
+            });
+
+
+            localInitilizeAddPMPDialog();
+            //  SetBidClientRegExp();
+            SetGridHieghtPMPDeal();
+
+            //$("#PMPDealConfigList tbody").find(".t-no-data").remove();
+
+            //GetPMPDealConfigData();
+            localInitilizPMPDealConfig();
+            // $('#InsertePMPDealConfigs').val('1,707');
+        });
+
+        function PMPTargeting_onComplete(e) {
+
+            if (e.name == "dataBinding") {
+
+
+            }
+
+
+        }
+
+        function PMPTargatingGrid_onCommand(e) {
+
+            //var $forms = $('#PMPDealConfigListform');
+
+            //
+            //$.each($forms, function (key, value) {
+
+            //    // enable validation when an input loses focus.
+            //    var settings = $.data(value, 'validator').settings;
+            //    settings.onfocusout = function (element) { $(element).valid(); };
+            //    settings.onfocusin = function (element) { $(element).valid(); };
+            //});
+        }
+        function PMPTargating_OnDataBinding(e) {
+
+            // SetGridHieghtPMPDeal();
+
+
+
+        }
+        function PMPDealConfigList_OnDataBound(sender, args) {
+
+            var grid = $("#PMPDealConfigList").data("kendoGrid");
+            array = $("#PMPDealConfigList tbody tr");
+
+
+            $('#DeletedPMPDealConfigs').val('');
+            $('#InsertePMPDealConfigs').val('');
+            SetGridHieghtPMPDeal();
+        }
+
+
+        function localInitilizPMPDealConfig() {
+            //var pagingControls = [];
+
+        }
+
+
+
+
+        function SetGridHieghtPMPDeal() {
+            if ($("#PMPDealConfigList tbody tr").length > 5) {
+                $("#gridDivPMPDeal").attr("style", "margin-left:20px  ;margin-right:10px ;margin-top:20px;width:800px;height:250px;overflow:scroll;");
+            }
+        }
+
+        function selectDeal(obj) {
+
+            //  $("#partyGrid").data("tGrid").dataItem($(e.row));
+            var list = [];
+            var grid = $("#PMPDealConfigList").data("kendoGrid");
+
+            if (IsAddedPMP(obj.ID) == null) {
+                SetGridHieghtPMPDeal();
+                dataItem = obj;
+                obj2 = { IsAdded:true, ID: obj.ID, DealID: obj.DealID, Name: obj.Name, ExchangeName: obj.ExchangeName, PublisherName: obj.PublisherName, PriceString: obj.PriceString, DealTypeString: obj.DealTypeString };
+
+                // dataItem.Appsite = { "ID": selectedAppsite.val(), "Name": selectedAppsite.text() };
+               // $("#PMPDealConfigList tbody").find(".t-no-data").remove();
+                grid.dataSource.insert(obj2);
+
+                // initilizeFormValidationForDynamicContent('PMPDealConfigListform');
+                //var $forms = $('#PMPDealConfigListform');
+                //$.each($forms, function (key, value) {
+                //    // enable validation when an input loses focus.
+                //    var validator = $.data(value, 'validator');
+                //    if (validator) {
+                //        return validator;
+                //    }
+
+                //    $(value).attr('novalidate', 'novalidate');
+                //    validator = new $.validator({
+
+                //    }, value);
+                //    var settings = validator.settings;
+
+                //    settings.onfocusout = function (element) { $(element).valid(); };
+                //    settings.onfocusin = function (element) { $(element).valid(); };
+
+                //    $.data(value, 'validator', validator);
+                //});
+
+                //
+                //var validator = $.data($("#Bid")[0], 'validator');
+                //if (validator) {
+                //    return validator;
+                //}
+
+                //// Add novalidate tag if HTML5.
+                //$("#Bid").attr('novalidate', 'novalidate');
+
+                ////HERE it is creating a new one using the constructor
+                //validator = new $.validator({
+                //    required: true
+                //}, $("#Bid")[0]);
+
+                //var settings = validator.settings;
+                //settings.onfocusout = function (element) { $(element).valid(); };
+                //settings.onfocusin = function (element) { $(element).valid(); };
+                //$.data($("#Bid")[0], 'validator', validator);
+
+
+
+                //list[i] = dataItem;
+				PMPDealConfigNotCompleted = true;
+				//alternateGrid("PMPDealConfigList");
+            } else {
+                $("#addPMPDialog").dialog("close");
+
+                return false;
+
+
+            }
+
+
+            getAssignedDeals();
+            return true;
+
+        }
+
+
+
+
+        function getAssignedDeals() {
+
+            var grid = $('#PMPDealConfigList').data("kendoGrid");
+            if (grid == null)
+                return;
+
+
+            var inserted = new Array();
+            var deletedIPRangeIds = '';
+
+            var data = grid.dataSource.data();
+            var datads = grid.dataSource._destroyed;
+            var InsertedIds = '';
+            for (var idx = 0; idx < data.length; idx++) {
+                if (data[idx].IsAdded ) {
+
+                    inserted[inserted.length] = data[idx];
+                    InsertedIds += ',' + data[idx].ID;
+
+                }
+            }
+
+            for (var idx = 0; idx < datads.length; idx++) {
+
+                deletedIPRangeIds += ',' + datads[idx].ID;
+
+            }
+
+
+
+            $('#InsertePMPDealConfigs').val(InsertedIds);
+            $('#DeletedPMPDealConfigs').val(deletedIPRangeIds);
+
+            //  SetBidClientRegExp();
+
+            if (grid.dataSource.data().length > 0) {
+
+                $("#AllowOpenAuction.check-box").removeAttr('disabled');
+
+                $("#AllowOpenAuctionDiv").removeAttr('disabled');
+                $("#AllowOpenAuctionParentDiv").attr('style', "color:black;");
+
+                //$("#AllowOpenAuctionDiv").off("click", "**");
+                //$("#AllowOpenAuctionDiv").off("click");
+                //$("#AllowOpenAuctionDiv").off("click",  $.proxy(function () { return false; }, this));
+                //$("#AllowOpenAuctionDiv").on("click", $.proxy(checkBox(this), this));
+                if ($("#AllowOpenAuction.check-box").attr('checked')) {
+                    $("#AllowOpenAuctionDiv").trigger("click");
+
+                    $("#AllowOpenAuction.check-box").attr('checked', false);
+                    $("#AllowOpenAuction.check-box").val(false);
+
+                    $("#AllowOpenAuction:hidden").val(false);
+                }
+
+            }
+            else {
+
+
+
+
+                if (!$("#AllowOpenAuction.check-box").attr('checked')) {
+                    $("#AllowOpenAuctionDiv").trigger("click");
+
+                    $("#AllowOpenAuction.check-box").attr('checked', true);
+                    $("#AllowOpenAuction.check-box").val(true);
+
+                    $("#AllowOpenAuction:hidden").val(true);
+                }
+                $("#AllowOpenAuctionDiv").attr('disabled', 'disabled');
+                $("#AllowOpenAuction.check-box").attr('disabled', 'disabled');
+                $("#AllowOpenAuctionParentDiv").attr('style', "color:silver;");
+
+                //$("#AllowOpenAuctionDiv").off("click", "**");
+                //$("#AllowOpenAuctionDiv").off("click");
+                //$( "#AllowOpenAuctionDiv").off("click", $.proxy(checkBox(this), this));
+                //$("#AllowOpenAuctionDiv").on("click", $.proxy(function () { return false; }, this));
+            }
+        }
+
+        function deleteAssignedDeals(elem) {
+
+            var grid = $("#PMPDealConfigList").data("kendoGrid");
+            var tr = $(elem).parents('tr');
+            //delete the row
+            grid.removeRow(tr);
+			//alternateGrid("PMPDealConfigList");
+            getAssignedDeals();
+
+        }
+
+        function ShowConfirmationDialogPMP(elem) {
+
+            var name = $(elem).parents('tr').find("#DealName").text();
+            if (name.length > 30)
+                name = name.substring(0, 30) + "..";
+
+            $("#ConfirmationDialog").dialog({
+
+                open: function () {
+                    $(this).html(ConfirmationPMP.format(" " + name));
+
+                },
+                showCloseButton: false,
+
+                buttons: [
+                {
+                    text: yesbtn,
+                    click: function () {
+
+                        deleteAssignedDeals(elem);
+                        $(this).dialog("close");
+
+                    }
+                },
+                {
+                    text: nobtn,
+                    click: function () {
+                        $(this).dialog('close');
+
+                    }
+                },
+
+                ]
+            });
+
+            $("#ConfirmationDialog").dialog("open");
+            return false;
+        }
+
+        function IsAddedPMP(dealid) {
+
+            var grid = $('#PMPDealConfigList').data("kendoGrid");
+            if (grid == null)
+                return null;
+            var data = grid.dataSource.data();
+            var datads = grid.dataSource._destroyed;
+
+            for (var idx = 0; idx < data.length; idx++) {
+                if (data[idx].isNew() || data[idx].dirty) {
+                    if (data[idx].ID == dealid) {
+                        return dataItem;
+                    }
+                }
+
+            }
+
+            for (var idx = 0; idx < datads.length; idx++) {
+
+                if (datads[idx].ID == dealid) {
+                    return null;
+                }
+
+            }
+
+
+            array = $("#PMPDealConfigList tbody tr");
+            for (var i = 0; i < array.length; i++) {
+                dataItem = grid.dataItem(array[i]);
+                if (dataItem != undefined) {
+                    if (dataItem.ID == dealid) {
+                        return dataItem;
+                    }
+                }
+            }
+            return null;
+
+
+        }
+       var GetPMPDealConfigDataUrl = "@Url.Action("PMPDealConfigData", "Campaign")";
+        function GetPMPDealConfigData() {
+
+            var Data = new Object();
+            Data.id = $("#CampaignId").val();
+            Data.adGroupId = $("#AdGroupId").val();
+
+            $.ajax({
+                type: 'POST',
+                data: Data,
+                url: GetPMPDealConfigDataUrl,
+                success: function (data) {
+
+                    var grid = $("#PMPDealConfigList").data("kendoGrid");
+                    //grid.dataBind(data.PMPDealConfigList);
+                    grid.dataSource.data(data.PMPDealConfigList);
+                    $("#PMPDealConfigList tbody").find(".t-no-data").remove();
+                    SetGridHieghtPMPDeal();
+                }
+            });
+
+        }
+
+        function localInitilizeAddPMPDialog() {
+
+            $("#addPMPDialog").dialog({
+                autoOpen: false,
+                width: 1030,
+                //height:600,
+                modal: true,
+                resizable: false,
+                draggable: false,
+                showCloseButton: true
+
+            });
+            $("#DublicatedPMP").dialog({
+                autoOpen: false,
+                //  width: 300,
+                //  height: 150,
+                modal: true,
+                resizable: false,
+                draggable: false,
+
+                open: function () {
+
+                    $(this).html('@Html.GetResource("Duplicated")');
+
+                }
+
+            });
+        }
+
+        function showAddPMPDialog() {
+            $("#addPMPDialog").dialog("open");
+            clearDialog("addPMPDialog");
+            uncheck("AdFormatInStream");
+            uncheck("AdFormatNative");
+            uncheck("AdFormatBanner");
+			uncheck("showArchived");
+			clearSelect2("ExchangeListDllList");
+            clearSelect2("PMPTargetingSaveDto_AdSizes");
+            clearSelect2("PMPTargetingSaveDto_Geographies");
+            generatePMPGrid();
+
+            //if (!$("#filterdiv").is(':hidden')) {
+            //    showfilter();
+            //}
+
+        }
+
+
+
+
+        function onPMPRowSelected(e) {
+            var rows = e.sender.select();
+
+            dataItem = e.sender.dataItem(rows);
+
+            //var obj = dataItem;
+          //  var ob2 = { Name: dataItem.Name, TypeString: dataItem.TypeString, ScopeString: dataItem.ScopeString, Id: dataItem.Id }
+
+             obj = { ID: dataItem.ID, DealID: dataItem.DealID, Name: dataItem.Name, ExchangeName: dataItem.ExchangeName, PublisherName: dataItem.PublisherName, PriceString: dataItem.PriceString, DealTypeString: dataItem.DealTypeString };
+
+            if (selectDeal(obj)) {
+                $("#addPMPDialog").dialog("close");
+
+            } else {
+
+
+                $("#DublicatedPMP").dialog("open");
+            }
+        }
+    </script>
+</div>
+</div>
+
+<div id="addPMPDialog" class="" title="@Html.GetResource("AddDeal", "PMPDeal")" style="display:none;overflow:unset;">
+    <div id="addPMPContainer" class="data-row data-container" style="overflow:unset">
+        @*@Html.RenderAction("PMPSearch", "Deals", new { id = @Html.ViewContext.RouteData.Values["id"] })*@
+        @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.Deals.PMPSearch), new { id = @Html.ViewContext.RouteData.Values["id"] })
+
+    </div>
+</div>
+<div id="DublicatedPMP" class="adfalcon-dialog" title="@Html.GetResource("Warning", "Global")" style="display:none">
+
+</div>

@@ -1,0 +1,14 @@
+﻿@using ArabyAds.AdFalcon.Web.Controllers.Model.Core
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.CreativeUnitViewModel
+
+@{
+    var uploadInfo = UploadViewModel.ParseCreativeUnit(Model);
+    var viewDataDic = new ViewDataDictionary(ViewData);
+    if (ViewData["ShowImpressionTracker"] != null && !viewDataDic.Keys.Contains("ShowImpressionTracker"))
+    {
+        viewDataDic.Add("ShowImpressionTracker", ViewData["ShowImpressionTracker"]);
+    }
+}
+
+@await Html.PartialAsync("StreamVideoUpload", uploadInfo, viewDataDic)
+

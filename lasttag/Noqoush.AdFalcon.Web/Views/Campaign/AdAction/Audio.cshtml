@@ -1,0 +1,31 @@
+﻿@model  Noqoush.AdFalcon.Web.Controllers.Model.Campaign.CreativeViewModel
+
+<div id="urlDetailsContainer">
+      @if (Model.AdCreativeDto.ID == 0 || Model.AdCreativeDto.TypeId != Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.PlainHTML)
+  {
+
+    <script type="text/javascript" language="javascript">
+        jQuery(document).ready(function () { jQuery('#AdCreativeDto_AdActionValue_Value').change(ValidateAdAction); });
+        function ValidateAdAction() {
+            return ValidateUrl(jQuery('#AdCreativeDto_AdActionValue_Value'));
+        };
+
+        var validateRM_AdAction = ValidateAdAction;
+</script>
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("AudioURL")</span>
+        </div>
+        <div class="field-container">
+             
+            @Html.AdFalconEditorFor(p => p.AdCreativeDto.AdActionValue.Value, new { })
+         
+            @Html.AdFalconValidationMessageFor(p => p.AdCreativeDto.AdActionValue.Value)
+            <span id="displayURLErrorMsg" class="validation-arrow field-validation-error"
+                style="display: none;"><span class="">@Html.GetResource("UrlMsg")</span> </span>
+            
+           
+        </div>
+    </div>
+      }
+</div>

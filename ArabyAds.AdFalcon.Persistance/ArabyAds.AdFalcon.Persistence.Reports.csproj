@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <IncludeSymbols>true</IncludeSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <Target Name="PostPackNugetDeploy" AfterTargets="Pack">
+    <Message Importance="High" Text=" deleting %userprofile%\.nuget\packages\$(PackageId)\$(PackageVersion)" />
+    <Exec Command="rmdir /S /Q %userprofile%\.nuget\packages\$(PackageId)\$(PackageVersion)" />
+    <Exec Command="dotnet nuget locals http-cache -c" />
+    <Exec Command="dotnet nuget push &quot;$(OutputPath)..\$(PackageId).$(PackageVersion).symbols.nupkg&quot; -s &quot;Local NuGet Server&quot;" />
+  </Target>
+
+  <ItemGroup>
+    <Compile Remove="Repositories\Copy %282%29 of ScriptGenerator.cs" />
+    <Compile Remove="Repositories\Copy of ScriptGenerator.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ArabyAds.Framework.Persistence" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ArabyAds.AdFalcon.Domain\ArabyAds.AdFalcon.Domain.csproj" />
+    <ProjectReference Include="..\ArabyAds.AdFalcon.Services.Interfaces\ArabyAds.AdFalcon.Services.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>

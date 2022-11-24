@@ -1,0 +1,25 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Pgw.ReceiptViewModel
+@{
+    ViewBag.Title = Model.Title;
+}
+    <style>
+        #breadcrumb a.btn#BreadCrum1 {
+            padding-left: 30px !important;
+        }
+    </style>
+<h2>
+    @Html.GetResource("TransactionCancel", "Titles")
+</h2>
+<div class="section-form-container">
+    <br />
+    <div class="data-row button-container">
+        <div class="go-left" style="margin: 13px;">
+            @Model.Message
+        </div>
+    </div>
+    <div class="section-footer">
+    </div>
+    <div class="data-row button-container">
+        <input  type="button" value='@Html.GetResource("PayAgain", "Commands")' class="primary-btn" onclick=" redirect('@Url.Action("adfundPGW", "User")    ')"/><input  type="button" value='@Html.GetResource("Close", "Commands")' class="btn" onclick="    redirect('@Url.Action("AccountHistory", "User")    ')"/>
+    </div>
+</div>

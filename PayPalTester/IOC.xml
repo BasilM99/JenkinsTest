@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <facilities>
+    <facility id="wcf"
+							type="Castle.Facilities.WcfIntegration.WcfFacility,
+										Castle.Facilities.WcfIntegration" />
+
+    <facility id="RegistrationFacility"
+							type="ArabyAds.Framework.WCF.IOC.RegistrationFacility,
+										ArabyAds.Framework.WCF">
+      <assemblies>
+        <assembly id="ServiceInterfaces" value="ArabyAds.AdFalcon.Services.Interfaces"/>
+      </assemblies>
+      <Mapping>
+        <Map id="Services" Suffix="Service" LifeStyle="Singleton">
+          <interceptors >
+            <interceptor id="BehaviorInvoker" value="ArabyAds.Framework.Behaviors.BehaviorInvoker,ArabyAds.Framework"/>
+            <interceptor id="Interceptor" value="ArabyAds.Framework.WCF.ClientAdapter, ArabyAds.Framework.WCF"/>
+          </interceptors>
+        </Map>
+      </Mapping>
+    </facility>
+  </facilities>
+  <components>
+    <component id="FrameworkBehaviorInvoker" service="ArabyAds.Framework.Behaviors.BehaviorInvoker, ArabyAds.Framework"
+ type="ArabyAds.Framework.Behaviors.BehaviorInvoker, ArabyAds.Framework"
+ lifestyle="transient" />
+    <component id="ResourceManager"
+			 service="ArabyAds.Framework.Resources.IResourceManager,ArabyAds.Framework"
+		 type="ArabyAds.Framework.Resources.ResourceManager,ArabyAds.Framework"  lifestyle="transient">
+    </component>
+    <component id="UserInfoStorage"
+			service="ArabyAds.Framework.Storage.IStorage,ArabyAds.Framework"
+		type="ArabyAds.Framework.Web.Storage.WebStorage,ArabyAds.Framework.Web"  lifestyle="transient">
+    </component>
+    <component id="UserInfoProvider"
+     service="ArabyAds.Framework.UserInfo.IUserInfoProvider,ArabyAds.Framework"
+   type="ArabyAds.AdFalcon.Common.Web.UserInfo.AdFalconUserInfoProvider,ArabyAds.AdFalcon.Common.Web"  lifestyle="transient">
+    </component>
+    <component id="SecurityContent"
+			service="ArabyAds.Framework.Security.ISecurityContext,ArabyAds.Framework"
+		type="ArabyAds.Framework.WCF.Context.WcfSecurityContext,ArabyAds.Framework.WCF"  lifestyle="transient">
+    </component>
+    <component id="STSService"
+					type="ArabyAds.Framework.Security.ISecurityService,ArabyAds.Framework"
+					wcfEndpointConfiguration="STSClient">
+    </component>
+    <component id="ConfigurationSettings"
+      type="ArabyAds.Framework.ConfigurationSetting.IConfigurationSettingService,ArabyAds.Framework"
+      wcfEndpointConfiguration="ConfigurationSettingService">
+    </component>
+
+    <component id="ConfigurationManager"
+  service="ArabyAds.Framework.ConfigurationSetting.IConfigurationManager,ArabyAds.Framework"
+  type="ArabyAds.Framework.ConfigurationSetting.ConfigurationManager,ArabyAds.Framework"></component>
+
+    <component id="MailSender"
+            service="ArabyAds.Framework.Utilities.EmailsSender.IMailSender,ArabyAds.Framework"
+           		type="ArabyAds.Framework.Utilities.EmailsSender.MailSender,ArabyAds.Framework"  lifestyle="transient" >
+    </component>
+
+    <component id="ClientInterceptor" service="ArabyAds.Framework.WCF.ClientAdapter, ArabyAds.Framework.WCF"
+						 type="ArabyAds.Framework.WCF.ClientAdapter, ArabyAds.Framework.WCF"
+						 lifestyle="transient" />
+
+    <component id="ClientOperationContextPolicy" service="ArabyAds.Framework.WCF.ClientOperationContextPolicy, ArabyAds.Framework.WCF"
+			type="ArabyAds.Framework.WCF.ClientOperationContextPolicy, ArabyAds.Framework.WCF"
+			lifestyle="transient" />
+    <component id="ClientInterceptor" service="ArabyAds.Framework.WCF.ClientAdapter, ArabyAds.Framework.WCF"
+						 type="ArabyAds.Framework.WCF.ClientAdapter, ArabyAds.Framework.WCF"
+						 lifestyle="transient" />
+    <component id="ResourceService"
+									type="ArabyAds.Framework.Resources.IResourceService,ArabyAds.Framework"
+									wcfEndpointConfiguration="ResourceService">
+    </component>
+    <component id="CallContext"
+						 service="ArabyAds.Framework.ICallContext,ArabyAds.Framework"
+						 type="ArabyAds.Framework.Web.WebCallContext,ArabyAds.Framework.Web"
+						 lifestyle="transient">
+    </component>
+    <component id="CacheProvider"
+           service="ArabyAds.Framework.Caching.ICacheProviderFactory,ArabyAds.Framework"
+           type="ArabyAds.Framework.Caching.MemoryCaching.MemoryCahceProviderFactory,ArabyAds.Framework"
+           lifestyle="Singleton">
+    </component>
+  </components>
+</configuration>

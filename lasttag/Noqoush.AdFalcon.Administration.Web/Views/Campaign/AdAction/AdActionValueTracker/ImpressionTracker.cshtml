@@ -1,0 +1,195 @@
+﻿@model  Noqoush.AdFalcon.Web.Controllers.Model.Campaign.CreativeViewModel
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    var maxAllowedTrackersNumber = 9;
+    var ClickTrackerDuplicatedMsg = '@Html.GetResource("DuplicatedClickTrackerMsg")';
+    function onCopyTrackerImpression(originalItem, clonedItem) {
+        
+        var textBox = clonedItem.find(":text");
+        var validationSpan = $(clonedItem.find("span[id$='-URLErrorMsg2']")); 
+        validationSpan.hide();
+        validationSpan.attr("id", textBox.attr("id") + "-URLErrorMsg2");
+
+        var validationSpan2 = $(clonedItem.find("span[id$='-URLErrorMsg3']"));
+        validationSpan2.hide();
+        validationSpan2.attr("id", textBox.attr("id") + "-URLErrorMsg3");
+
+        textBox.change(validateClickTrackers);
+        textBox.keyup(function () { onUrlTextKeyUpImpression("#" + clonedItem.attr("id"), false); });
+
+        var containerId = originalItem[0].id;
+
+        var plusicon = $(clonedItem.find(".plusicon"));
+        plusicon.attr("onclick", "");
+        plusicon.click(function () { ImpressionCloneClickTracker("#" + containerId); });
+
+        clonedItem.find("span.field-title").html("&nbsp;");
+
+    }
+
+    function onUrlTextKeyUpImpression(itemContainer, isShowPlus) {
+        ImpressionManagePlusIcon(itemContainer);
+    }
+
+    function ImpressionManagePlusIcon(itemContainer) {
+     
+        var container = GetContainerUrlImpression(itemContainer);
+        var containers = container.parent().find("[id^='ImpressionTrackerContainer']");
+        if (containers.length > 0 && containers.length < maxAllowedTrackersNumber) {
+            containers.find(".plusicon").hide();
+            if (validateAllClickTrackersImpression(itemContainer)) {
+                lastUrl.find(".plusicon").show();
+            }
+            else {
+                lastUrl.find(".plusicon").hide();
+            }
+        }
+    }
+
+    function validateAllClickTrackersImpression(itemContainer) {
+      
+        var container = GetContainerUrlImpression(itemContainer);
+        var containers = container.parent().find("[id^='ImpressionTrackerContainer']");
+        if (containers.length > 0) {
+            containers.find(".plusicon").hide();
+            lastUrl = containers.last();
+            
+            lastUrlTextBox = GetContainerUrlTextboxImpression(lastUrl);
+            
+            var validateUrlValue = validateClickTrackers(lastUrlTextBox.attr('id'),true, "ImpressionClickTracker");
+            if (validateUrlValue && lastUrlTextBox.val() != '') {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+    function ImpressionCloneClickTracker(_containerIdValue) {
+   
+
+        var container = GetContainerUrlImpression(_containerIdValue);
+        if (validateAllClickTrackersImpression(_containerIdValue)) {
+            cloneElement(container, onCopyTrackerImpression, onRemovedClonedTrackerImpression, true, true, "ImpressionTrackerContainer1");
+        }
+    }
+
+    function GetContainerUrlTextboxImpression(container) {
+        
+        var TextBoxContentImpression = container.find("input");
+        return TextBoxContentImpression;
+    }
+
+    function GetContainerUrlImpression(containerID) {
+        var container = $(containerID);
+        if (container == null || container.length == 0) {
+            containerID = "#" + containerID;
+            container = $(containerID);
+        }
+        return container;
+    }
+
+    function onRemovedClonedTrackerImpression(itemContainer) {
+        
+        ImpressionManagePlusIcon(itemContainer);
+    }
+   
+</script>
+@if (Model.AdCreativeDto.ID == 0 || (Model.AdCreativeDto.AdActionValueImpressionTracker != null && Model.AdCreativeDto.AdActionValueImpressionTracker.Trackers.Count == 0))
+{
+    <div class="data-row data-container" id="ImpressionTrackerContainer1">
+        <div class="label-container">
+            <span class="field-title ">@Html.GetResource("ImpressionTrackerRedirect", "CreativesSettings")</span>
+        </div>
+        <div class="field-container">
+
+            @if (Model.IsAllowedToSaveImpressionTracker)
+            {
+            <text>
+                <input class="text-box" id="ImpressionClickTracker1" name="ImpressionClickTracker" type="text" value="" onkeyup="ImpressionManagePlusIcon('ImpressionTrackerContainer1');">
+
+            </text>
+
+
+            }
+            else
+            {
+            <text>
+                <input class="text-box" readonly Impdisabled="Impdisabled" id="ImpressionClickTracker1" name="ImpressionClickTracker" type="text" value="" onkeyup="ImpressionManagePlusIcon('ImpressionTrackerContainer1');">
+
+            </text>
+
+            }
+
+            <img name="iconImage" onclick="ImpressionCloneClickTracker(ImpressionTrackerContainer1) ;" class="plusicon" style="display: none">
+        </div>
+        <span class="validation-arrow field-validation-error" id="ImpressionClickTracker1-URLErrorMsg2"
+              style="display: none;"><span class="">@Html.GetResource("UrlMsg")</span></span>
+            <span class="validation-arrow field-validation-error" id="ImpressionClickTracker1-URLErrorMsg3"
+                  style="display: none;"><span class="">@Html.GetResource("DuplicatedClickTrackerMsg")</span></span>
+            </div>
+}
+else
+{
+    if (Model.AdCreativeDto.AdActionValueImpressionTracker != null)
+    {
+        int i = 0;
+        int counter = Model.AdCreativeDto.AdActionValueImpressionTracker.Trackers.Count;
+        foreach (var item in Model.AdCreativeDto.AdActionValueImpressionTracker.Trackers)
+        {
+            <div class="data-row data-container" id="ImpressionTrackerContainer@(i)">
+                <div class="label-container">
+                    <span class="field-title">
+                        @if (i == 0)
+                        {
+                            @Html.GetResource("ImpressionTrackerRedirect", "CreativesSettings")
+                        }
+                        else
+                        {
+                            <text>&nbsp;</text>
+                        }
+                    </span>
+                </div>
+                <div class="field-container">
+
+
+                    @if (Model.IsAllowedToSaveImpressionTracker)
+                    {
+                    <text>
+                        <input class="text-box" id="ImpressionClickTracker@(i)" name="ImpressionClickTracker" type="text" value="@item.URL" onkeyup="ImpressionManagePlusIcon('ImpressionTrackerContainer@(i)');">
+                    </text>
+
+                    if (i != 0)
+                    {
+                    <img name="iconImage" onclick="removeClonedElement('ImpressionTrackerContainer@(i)');" class="minusicon" style="display: inline;">
+                    }
+                    <img name="iconImage" onclick="ImpressionCloneClickTracker(ImpressionTrackerContainer@(i));" class="plusicon" style="display: @(i + 1 == counter ? " inline" : "none" )">
+
+                    }
+                    else
+                    {
+                    <text>
+                        <input class="text-box" readonly Impdisabled="Impdisabled" id="ImpressionClickTracker@(i)" name="ImpressionClickTracker" type="text" value="@item.URL" onkeyup="ImpressionManagePlusIcon('ImpressionTrackerContainer@(i)');">
+                    </text>
+
+                    }
+
+
+
+
+                </div>
+                <span class="validation-arrow field-validation-error" id="ImpressionClickTracker@(i)-URLErrorMsg2"
+                      style="display: none;"><span class="">@Html.GetResource("UrlMsg")</span></span>
+
+                    <span class="validation-arrow field-validation-error" id="ImpressionClickTracker@(i)-URLErrorMsg3"
+                          style="display: none;"><span class="">@Html.GetResource("DuplicatedClickTrackerMsg")</span></span>
+                    </div>
+                    {
+                        i++;
+                    }
+        }
+    }
+}

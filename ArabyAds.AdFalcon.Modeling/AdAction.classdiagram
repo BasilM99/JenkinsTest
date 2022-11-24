@@ -1,0 +1,404 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm5="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" dslVersion="1.0.0.0" Id="f3fbaed7-c45f-43c4-a378-4b9629a3f679" name="AdAction" linkedPackageId="259be2c8-35f1-40b7-96ee-db98a908da46" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
+  <appliedStereotypesInternal>
+    <stereotypeInstance Id="6e6a6545-6584-4f3f-bb34-4aea07406af5" name="namespace" profile="CSharpProfile">
+      <elementDefinition Id="021a0697-2665-4919-affb-c022b25b5da6" />
+      <propertyInstances>
+        <stereotypeInstanceHasPropertyInstances Id="1cd19106-b3e4-4470-9937-41d9b37c87f9">
+          <propertyInstance Id="9a1d6fa8-73e6-42ed-bce3-7085f387cf84" name="BaseName">
+            <elementDefinition Id="a665c07b-bfc8-4ead-b583-effe2f8a6b54" />
+          </propertyInstance>
+          <elementDefinition Id="50b2d8e0-dd36-4615-816a-c371b637db35" />
+        </stereotypeInstanceHasPropertyInstances>
+        <stereotypeInstanceHasPropertyInstances Id="460c06e5-5016-4ebc-95db-f2a5664912b7">
+          <propertyInstance Id="d48be2c9-a3f7-4901-81fe-5a9c2bf858df" name="ClrAttributes">
+            <elementDefinition Id="17007fce-8e3f-4ec0-b0e2-128446ad5172" />
+          </propertyInstance>
+          <elementDefinition Id="562dafc4-599d-48c7-af5a-52ddfcf27ad7" />
+        </stereotypeInstanceHasPropertyInstances>
+        <stereotypeInstanceHasPropertyInstances Id="0c04ca3d-45ca-478c-8dfd-4cad5cb84534">
+          <propertyInstance Id="2a0c6b25-4396-42a0-af64-956081f2a420" name="Usings">
+            <elementDefinition Id="bfbda9ba-c521-4319-ad05-35abe96efa81" />
+          </propertyInstance>
+          <elementDefinition Id="a6fbd4b8-1dce-4323-bf30-f7680fae1ce4" />
+        </stereotypeInstanceHasPropertyInstances>
+      </propertyInstances>
+    </stereotypeInstance>
+    <stereotypeInstance Id="ed9f97c0-a64d-449b-bd30-52a05f2b9377" name="TextTemplateBindings" profile="TextTemplateBindings">
+      <elementDefinition Id="fe6cdc91-04a1-47b3-bf80-c1c4f7092b78" />
+      <propertyInstances>
+        <stereotypeInstanceHasPropertyInstances Id="70d15a38-200c-45b4-bd07-637060fa694b">
+          <propertyInstance Id="38ab9684-07e3-478d-a051-e1a8ab576a65" name="Alias" value="ClassTemplate|EnumTemplate|InterfaceTemplate|StructTemplate">
+            <elementDefinition Id="a0a2053f-978e-47c7-9826-7ddd8e5ea9f7" />
+          </propertyInstance>
+          <elementDefinition Id="e8b89c8d-af5e-4c34-85ce-b9ce38b38340" />
+        </stereotypeInstanceHasPropertyInstances>
+        <stereotypeInstanceHasPropertyInstances Id="bb906fe0-6204-4f77-bccf-b68ac867c103">
+          <propertyInstance Id="af3c1fc5-ba3e-4e60-8de1-d078eac48cec" name="TemplateFilePath" value="ClassTemplate=D:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\Extensions\Microsoft\Visualization and Modeling Feature Pack\2.0\Templates\Text\ClassTemplate.t4|EnumTemplate=D:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\Extensions\Microsoft\Visualization and Modeling Feature Pack\2.0\Templates\Text\EnumTemplate.t4|InterfaceTemplate=D:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\Extensions\Microsoft\Visualization and Modeling Feature Pack\2.0\Templates\Text\InterfaceTemplate.t4|StructTemplate=D:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\Extensions\Microsoft\Visualization and Modeling Feature Pack\2.0\Templates\Text\StructTemplate.t4">
+            <elementDefinition Id="c7aab3fa-959a-463c-a772-9040ed094d94" />
+          </propertyInstance>
+          <elementDefinition Id="3ccda426-5dd5-4e99-8610-39e73533578b" />
+        </stereotypeInstanceHasPropertyInstances>
+        <stereotypeInstanceHasPropertyInstances Id="e150e37f-e3a8-4a8b-b0ba-9640d04d38db">
+          <propertyInstance Id="91dc73f6-fe57-4a2f-8d15-0ad35b08a2ec" name="ProjectPath" value="ClassTemplate=..\Noqoush.AdFalcon.ModelingLib\Noqoush.AdFalcon.ModelingLib.csproj|EnumTemplate=..\Noqoush.AdFalcon.ModelingLib\Noqoush.AdFalcon.ModelingLib.csproj|InterfaceTemplate=..\Noqoush.AdFalcon.ModelingLib\Noqoush.AdFalcon.ModelingLib.csproj|StructTemplate=..\Noqoush.AdFalcon.ModelingLib\Noqoush.AdFalcon.ModelingLib.csproj">
+            <elementDefinition Id="c5384b0c-b01f-46b3-ab39-74481284dcae" />
+          </propertyInstance>
+          <elementDefinition Id="6a057ccc-c4f4-443c-b2d8-60c87303195a" />
+        </stereotypeInstanceHasPropertyInstances>
+        <stereotypeInstanceHasPropertyInstances Id="bcb1040c-8ba9-4ad0-a829-43cb23db33ef">
+          <propertyInstance Id="359312b0-e4cc-4d78-ac3e-51fb0c8acec2" name="TargetDirectory" value="ClassTemplate=GeneratedCode\{PackageStructure}|EnumTemplate=GeneratedCode\{PackageStructure}|InterfaceTemplate=GeneratedCode\{PackageStructure}|StructTemplate=GeneratedCode\{PackageStructure}">
+            <elementDefinition Id="9875f146-c1c8-41d9-97c8-08109a291253" />
+          </propertyInstance>
+          <elementDefinition Id="29062a5b-6693-428b-b3a7-1d1c00ffe75f" />
+        </stereotypeInstanceHasPropertyInstances>
+        <stereotypeInstanceHasPropertyInstances Id="28559ed2-6bdc-4690-889d-700d23309e26">
+          <propertyInstance Id="9dfa118b-2c29-424a-bbe6-beb99177f045" name="TargetName" value="ClassTemplate={Name}|EnumTemplate={Name}|InterfaceTemplate={Name}|StructTemplate={Name}">
+            <elementDefinition Id="f3fa85fa-590c-40c3-97ec-bcdbd8552958" />
+          </propertyInstance>
+          <elementDefinition Id="b6828c34-5324-450f-acaf-b222aacfe2d5" />
+        </stereotypeInstanceHasPropertyInstances>
+        <stereotypeInstanceHasPropertyInstances Id="a73bde7c-2cd6-415d-878b-55b3d370c39c">
+          <propertyInstance Id="01c0b156-e768-41a0-b414-bee3fbf1610e" name="Overwrite" value="ClassTemplate=True|EnumTemplate=True|InterfaceTemplate=True|StructTemplate=True">
+            <elementDefinition Id="21d42b81-553e-4130-a91f-c861b9da1f6c" />
+          </propertyInstance>
+          <elementDefinition Id="34f42c7f-1559-4866-a04c-0639d6c5dfc1" />
+        </stereotypeInstanceHasPropertyInstances>
+        <stereotypeInstanceHasPropertyInstances Id="679fb2b5-1ea4-435f-a415-ca16dc71cd48">
+          <propertyInstance Id="dff8b6f4-751a-4a25-92fb-0e5ea463ae8c" name="Parameters">
+            <elementDefinition Id="74fe73ce-7e2b-4aa7-b82e-665465a8bf19" />
+          </propertyInstance>
+          <elementDefinition Id="2c1c88fd-26f6-4e3c-b87b-8ea6397c422a" />
+        </stereotypeInstanceHasPropertyInstances>
+      </propertyInstances>
+    </stereotypeInstance>
+  </appliedStereotypesInternal>
+  <profileInstances>
+    <packageHasProfileInstances Id="b260d5e9-a8d1-4d09-94e6-0211b953c79e">
+      <profileInstance Id="49d4e346-b83b-44c4-8244-55338c5107f1" name="TextTemplateBindings">
+        <elementDefinition Id="891fe37d-646e-4391-8027-3938ef5cff53" />
+      </profileInstance>
+      <elementDefinition Id="a2ee8248-14f5-4286-a18f-a21048b5424e" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="fe6f4875-6f40-424d-8baa-bd9f7f4a34bd" name="AdActionBase" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="146e1e06-329a-4f1a-a254-a51d03393ccb" />
+        <ownedOperationsInternal>
+          <operation Id="f635047e-2aa2-4fb6-b194-cb71574df1ee" name="Execute" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="842cb719-e0ab-484e-b4e1-b342c1949636" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="f74ae577-11fa-4535-a138-a70db7fa12f1" direction="Return">
+                  <elementDefinition Id="bd46f616-bef6-4876-b8e9-ddd1edeaf1c5" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="bcdc6779-9289-47c6-8f30-e31f6b14d396" LastKnownName="Boolean" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="bcdc6779-9289-47c6-8f30-e31f6b14d396" name="Boolean" isAbstract="false" isLeaf="false" cachedFullName="Boolean">
+        <elementDefinition Id="8943dc84-709e-4f62-b15a-a3273aa6f165" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="e630fff3-9444-4082-b4d4-40b2b5166c7f" name="AdActionTypeBase" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="5f0ec039-c64b-4452-a5a1-c5a5bb7dbc00" />
+        <generalsInternal>
+          <generalization Id="79ed344e-4f56-45b5-81ba-9f2b415c3bbc" isSubstitutable="false">
+            <classMoniker Id="5fdab630-b91b-4b0c-a029-1969fb849f49" LastKnownName="LookupBase" />
+            <elementDefinition Id="c6076280-c511-431f-9212-9c05226e5efc" />
+          </generalization>
+        </generalsInternal>
+        <ownedOperationsInternal>
+          <operation Id="241e2d58-63a1-4a71-83f8-4e30eb32af1a" name="GetAdAction" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="72ba0fc3-e6cf-4a50-8490-b3f98b862c0a" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="f935f7c3-90dd-4968-b4d0-6ce137aa9990" direction="Return">
+                  <elementDefinition Id="aedab838-4527-4180-b766-87187f0f97eb" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="b6ae6560-35f4-4268-a8b5-8d48c47a0be2" LastKnownName="AdActionBase" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="873ccc35-a9c4-46bb-85be-ace1c8a10927" name="GetTrageting" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="965b64a1-8d03-48d8-98bb-8b13b9619d58" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="051baf5b-8aae-4dcb-b9ca-29a9dbc6c2b2" direction="Return">
+                  <lowerValueInternal>
+                    <literalString Id="0d2d5be8-7af1-4c8c-bf0a-b8acf3f74a5c" name="Lower" value="*">
+                      <elementDefinition Id="a568ee70-ec85-4117-95df-5490c624f396" />
+                    </literalString>
+                  </lowerValueInternal>
+                  <upperValueInternal>
+                    <literalString Id="6d031693-81d5-4008-8db6-4bea5c7118fa" name="Upper" value="*">
+                      <elementDefinition Id="0b7f9639-b555-43cd-82fa-6f66c32c777b" />
+                    </literalString>
+                  </upperValueInternal>
+                  <elementDefinition Id="2911e2d3-cca9-4d15-b093-cfe8caf70c01" />
+                  <type_NamedElement>
+                    <referencedTypeMoniker Id="10fc22da-ac20-4606-aa9f-80deabfb6953" LastKnownName="TragetingBase" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="b6ae6560-35f4-4268-a8b5-8d48c47a0be2" name="AdActionBase" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::AdActionBase">
+        <elementDefinition Id="146e1e06-329a-4f1a-a254-a51d03393ccb" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="870c3faa-9a57-4d7a-a894-8c11ec70d70a" name="AdGroupObjectiveType" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="61ef87a4-6a1e-4537-a355-a00eff8afab9" />
+        <generalsInternal>
+          <generalization Id="df319b1d-8dca-47d6-a941-e0da0a1e14c5" isSubstitutable="false">
+            <classMoniker Id="5fdab630-b91b-4b0c-a029-1969fb849f49" LastKnownName="LookupBase" />
+            <elementDefinition Id="00080aa5-f4bc-43f7-8559-9eba36ebb22b" />
+          </generalization>
+        </generalsInternal>
+        <targetEnds>
+          <association Id="09bcff09-c1a8-4950-8603-9e81ed481526" isDerived="false" sourceEndRoleName="AdGroupObjective" targetEndRoleName="AdActionType" isLeaf="false" isAbstract="false">
+            <classMoniker Id="e630fff3-9444-4082-b4d4-40b2b5166c7f" LastKnownName="AdActionTypeBase" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="fd7d726b-a7ce-4466-8a6c-319f369c91b2" name="AdGroupObjective" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="420d9998-a2c7-4d6d-9cd4-63114c80a746" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="1a5d3190-2141-4f12-815e-5c47ed2a0c50" name="AdActionType" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <lowerValueInternal>
+                    <literalString Id="f7f5d5fa-9dba-4751-a973-3d14288bdef3" name="Lower" value="n">
+                      <elementDefinition Id="812d5889-96c7-4c23-becf-2229fb6ed2f2" />
+                    </literalString>
+                  </lowerValueInternal>
+                  <upperValueInternal>
+                    <literalString Id="0f91d744-d6d3-4685-90f8-2b5cb9109201" name="Upper" value="n">
+                      <elementDefinition Id="434bfbb0-f2ca-4ef1-9bf6-01b1f53ba011" />
+                    </literalString>
+                  </upperValueInternal>
+                  <elementDefinition Id="d8039e00-efc8-4b43-b491-5558404f25d5" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="912fe256-cc37-41aa-85e3-045a7874da82" />
+          </association>
+        </targetEnds>
+        <ownedAttributesInternal>
+          <property Id="de81f176-fff1-40f7-a86f-53aa470da55b" name="Descrption" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="fe8a0599-5d42-485e-9312-f0487f0ed6f2" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="c2adcfc2-91ad-4143-9141-0a46ce63f16d" LastKnownName="String" />
+            </type_NamedElement>
+          </property>
+          <property Id="b80207e2-e141-4f5a-a98a-b4f4d4c0a0ea" name="AdActionTypes" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <lowerValueInternal>
+              <literalString Id="ffb803df-084b-4204-b6b2-fdbc633bcc53" name="Lower" value="*">
+                <elementDefinition Id="db9f608e-8bef-4f73-a496-5f89f6c91a17" />
+              </literalString>
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString Id="c39fc896-67b8-4321-a764-edb5185e96b4" name="Upper" value="*">
+                <elementDefinition Id="49d2fff8-7d06-4fff-aa4f-3e56a46f9943" />
+              </literalString>
+            </upperValueInternal>
+            <elementDefinition Id="83c82a21-8ddc-407c-9e0d-35dc116c3582" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="91dea3ee-d42a-4f50-aa6b-b3e9e8b679c8" LastKnownName="AdActionTypeBase" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="c2adcfc2-91ad-4143-9141-0a46ce63f16d" name="String" isAbstract="false" isLeaf="false" cachedFullName="String">
+        <elementDefinition Id="59259974-6d55-42c6-b7bd-763d77ac8ef9" />
+      </referencedType>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <referencedType Id="91dea3ee-d42a-4f50-aa6b-b3e9e8b679c8" name="AdActionTypeBase" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::AdActionTypeBase">
+        <elementDefinition Id="5f0ec039-c64b-4452-a5a1-c5a5bb7dbc00" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="f67f6bc2-429f-4a29-be0f-5f4ec5191a74" name="Adlocate" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="83716485-c241-48cc-889b-9080c8866ad6" />
+        <generalsInternal>
+          <generalization Id="53305af9-7608-4828-864d-b3470de05ce1" isSubstitutable="false">
+            <classMoniker Id="fe6f4875-6f40-424d-8baa-bd9f7f4a34bd" LastKnownName="AdActionBase" />
+            <elementDefinition Id="22212128-9444-4550-b559-26d0e9b62d9e" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributesInternal>
+          <property Id="f15c36ed-ed20-487e-9ff3-0d258531d691" name="Keywords" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <lowerValueInternal>
+              <literalString Id="445a3160-80ed-4b42-9ae3-e0de35fadcc0" name="Lower" value="*">
+                <elementDefinition Id="1c11708e-737a-48b7-882f-75951e4ca2e2" />
+              </literalString>
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString Id="17169207-4ff3-4f7f-9e2c-8944fcf0fc20" name="Upper" value="*">
+                <elementDefinition Id="d449b29f-09dd-4b3c-bd19-3084f2f39499" />
+              </literalString>
+            </upperValueInternal>
+            <elementDefinition Id="b0f8b918-57fa-400e-8c03-1f92c4f62e14" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="c2adcfc2-91ad-4143-9141-0a46ce63f16d" LastKnownName="String" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="b3ca00bd-3ce6-471e-ac76-85f7a68dfc0f" name="AdPromoteApp" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="549865e8-d5c3-49a5-9ad4-ef4419d4fbbd" />
+        <generalsInternal>
+          <generalization Id="c96f6ed4-0ab6-4f30-9952-22e7d94006f4" isSubstitutable="false">
+            <classMoniker Id="fe6f4875-6f40-424d-8baa-bd9f7f4a34bd" LastKnownName="AdActionBase" />
+            <elementDefinition Id="9f4dc989-14c4-43b4-a2db-168ae9eb2461" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributesInternal>
+          <property Id="f604d08f-2fdd-499b-868b-f737c8985a22" name="AppURL" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="5590c8b9-724f-4976-8b51-edc2efd883dd" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="c2adcfc2-91ad-4143-9141-0a46ce63f16d" LastKnownName="String" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="3232c28b-74e4-49ce-a2f4-e46a318b3dd9" name="AdViewVideo" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="f4260bc2-6583-4b00-bdf2-fe518209194c" />
+        <generalsInternal>
+          <generalization Id="c5e274b3-7f1a-4f62-91ce-e849ad5a1dea" isSubstitutable="false">
+            <classMoniker Id="fe6f4875-6f40-424d-8baa-bd9f7f4a34bd" LastKnownName="AdActionBase" />
+            <elementDefinition Id="7896c712-8c66-4461-bfcb-73ff92a6cf39" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributesInternal>
+          <property Id="d137dd77-0942-4c83-a547-b081547810c9" name="VideoURL" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="137faef0-a401-4d77-8866-710100e66ed6" />
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="1a1a4002-d98c-465f-bdee-2186eeb6f096" name="AdCall" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="80b64f4a-0a36-452b-bacf-ad701eae5016" />
+        <generalsInternal>
+          <generalization Id="fe847987-c3b6-4b59-b074-4afe25b88ead" isSubstitutable="false">
+            <classMoniker Id="fe6f4875-6f40-424d-8baa-bd9f7f4a34bd" LastKnownName="AdActionBase" />
+            <elementDefinition Id="3ed84b92-6087-4298-b91c-c5f58da18b12" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributesInternal>
+          <property Id="554c1ae7-3911-491c-a9af-c9bb64bdd786" name="PhoneNumber" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="c60ed1fa-df1c-4918-8fa9-f3714d570ae5" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="c2adcfc2-91ad-4143-9141-0a46ce63f16d" LastKnownName="String" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="e71f472d-0cd0-4b3d-a39d-384f81f24520" name="AdAudio" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="7a047a4a-aa63-490b-83b9-86354ea48373" />
+        <generalsInternal>
+          <generalization Id="195afa18-3e68-4acd-9a17-123fb057b248" isSubstitutable="false">
+            <classMoniker Id="fe6f4875-6f40-424d-8baa-bd9f7f4a34bd" LastKnownName="AdActionBase" />
+            <elementDefinition Id="a0a42542-a24e-4a68-83cc-292b1759435d" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributesInternal>
+          <property Id="3868d969-9e6d-4532-8d45-0fbe5625e662" name="AudioURL" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="9e863697-34b9-4e41-9450-45519e18ea64" />
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="10fc22da-ac20-4606-aa9f-80deabfb6953" name="TragetingBase" isAbstract="false" isLeaf="false" cachedFullName="Noqoush.AdFalcon.Modeling::TragetingBase">
+        <elementDefinition Id="1b65c8e7-d488-49e7-b69d-10fe917911eb" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="5fdab630-b91b-4b0c-a029-1969fb849f49" name="LookupBase" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="324ddb8d-4160-428b-8699-019170c777c9" />
+        <ownedAttributesInternal>
+          <property Id="6e5b9c47-6583-4373-bb22-d9c7a4f50115" name="ID" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="74653fb3-c9a6-49d1-9eaa-d0263bec41a7" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="b8a7d0b0-67da-44d6-aba0-716acc5d79f9" LastKnownName="Integer" />
+            </type_NamedElement>
+          </property>
+          <property Id="1d3d9352-4a82-4e12-ae33-c9aca2b3193b" name="Name" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="1b76fb50-41e1-410b-80f9-d6da2fa5ad81" />
+            <type_NamedElement>
+              <referencedTypeMoniker Id="c2adcfc2-91ad-4143-9141-0a46ce63f16d" LastKnownName="String" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <packageHasNamedElement>
+      <referencedType Id="b8a7d0b0-67da-44d6-aba0-716acc5d79f9" name="Integer" isAbstract="false" isLeaf="false" cachedFullName="Integer">
+        <elementDefinition Id="220a3521-e091-4221-bae9-3ef9018e845c" />
+      </referencedType>
+    </packageHasNamedElement>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="58d710da-7786-4b83-be7f-e3d5d006c188" name="AdWeb" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="a343d233-7af6-4dbd-b6e5-6a4d5371bf0f" />
+        <generalsInternal>
+          <generalization Id="ea404fc1-fd48-486c-94fc-fe3098d71467" isSubstitutable="false">
+            <classMoniker Id="fe6f4875-6f40-424d-8baa-bd9f7f4a34bd" LastKnownName="AdActionBase" />
+            <elementDefinition Id="8b743fea-0645-47bb-8a87-e127a6d4cb06" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributesInternal>
+          <property Id="ec68c77f-95af-4e24-a1a5-30b0d91b6150" name="WebURL" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="d82f7938-3fec-461d-8fd8-f2591b640943" />
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+  </packagedElements>
+  <package Id="259be2c8-35f1-40b7-96ee-db98a908da46" name="Noqoush.AdFalcon.Modeling">
+    <elementDefinition Id="279b6b6b-303f-4465-b086-4f3a45a723be" />
+    <profileInstances>
+      <packageHasProfileInstances Id="e9b11885-8821-4a9d-82e2-bb20f1f4cb08">
+        <profileInstance Id="5bb236ad-dc00-4b78-b684-2c7f4d690d71" name="StandardProfileL2">
+          <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+        </profileInstance>
+        <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+      </packageHasProfileInstances>
+      <packageHasProfileInstances Id="0e120b78-e307-4391-af73-87e04af5e606">
+        <profileInstance Id="68c4eb23-026a-42f0-b64d-e469e7f9e3f4" name="StandardProfileL3">
+          <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+        </profileInstance>
+        <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+      </packageHasProfileInstances>
+      <packageHasProfileInstances Id="c4f34dc8-ec68-452c-b63d-6624e91b9da3">
+        <profileInstance Id="ae8d1901-d65d-4fd5-841a-764df62a2b0d" name="CSharpProfile">
+          <elementDefinition Id="c38d8679-243e-49da-a768-c22aeb98fcbb" />
+        </profileInstance>
+        <elementDefinition Id="6712d447-0258-45be-b9ba-c78b822df3a6" />
+      </packageHasProfileInstances>
+    </profileInstances>
+  </package>
+</logicalClassDesignerModel>

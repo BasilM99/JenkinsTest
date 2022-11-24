@@ -1,0 +1,197 @@
+﻿@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Account.AccountPaymentDetailDto
+@{
+    ViewBag.Title = Html.GetResource("BankAccountInfo", "Titles");
+    int TaxDocumentId = Model.Document != null ? Model.Document.ID : 0;
+    string TaxDocumentName = Model.Document != null ? Model.Document.Name : "";
+}
+
+<style>
+	#breadcrumb a.btn#BreadCrum1 {
+		padding-left: 30px !important;
+	}
+</style>
+<script type="text/javascript">
+    var TaxNumberRegex = '@Model.TaxNumberRegex';
+    $(document).ready(function () {
+        if (VatAmountPercentage > 0) {
+            $("#Document_ID").val(@TaxDocumentId);
+            $("#TaxDocumentName").text('@TaxDocumentName');
+        } else {
+            $("#Document_ID").val('0');
+
+        }
+
+    });
+    var DownloadTaxDocumentUrl = '@Url.Action("DownloadTaxDocument", "Document")';
+
+    function VatDownlaod() {
+
+
+        var reportParams = {
+            documentId: $("#Document_ID").val()
+
+        };
+
+        downlaodByPostAction(DownloadTaxDocumentUrl, reportParams);
+    }
+
+    function upload(e) {
+
+        var array = $(e).val().split('\\');
+        if (array.length > 1)
+            $("#TaxDocumentName").text(array[array.length - 1])
+        else {
+
+            $("#TaxDocumentName").text("");
+        }
+
+        $("#Document_ID").val('0');
+    }
+    function ValidateTaxNumber() {
+
+        if (ValidateRegex(TaxNumberRegex, $("#TaxNumber").val()) || $("#TaxNumber").val() == "") {
+            $("#InvalidTaxNumberSpan").hide();
+            $(':input[type="submit"]').prop('disabled', false);
+
+        }
+        else {
+            $("#InvalidTaxNumberSpan").show();
+            $(':input[type="submit"]').prop('disabled', true);
+
+        }
+    }
+
+</script>
+@using (Html.BeginForm("PaymentDetails", "user", FormMethod.Post, new { id = "bankAccountForm", name = "bankAccountForm", enctype = "multipart/form-data" }))
+{
+    @Html.HiddenFor(m => m.Document.ID)
+    @Html.HiddenFor(m => m.TaxNumberRegex)
+    <h2>
+        @Html.GetResource("DefaultAccount", "BankAccount")
+    </h2>
+    <div class="section-form-container">
+        <div class="section-form-inner-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    &nbsp;
+                </div>
+                <div class="field-container">
+                    @{
+                        var selected = (Model != null && Model.TypeId == 1);
+
+                    }
+                    @Html.GetRadioButton("TypeId", Html.GetResource("BankAccount", "BankAccount"), selected, "floating-left iea-rbtn-width-c", value: "1")
+                    @{ selected = (Model != null && Model.TypeId == 2); }
+                    @Html.GetRadioButton("TypeId", Html.GetResource("PayPal", "BankAccount"), selected, "floating-left iea-rbtn-width-c", value: "2")
+                </div>
+            </div>
+        </div>
+    </div>
+    <h2>
+        @Html.GetResource("BankAccountInfo", "Titles")
+    </h2>
+    <div class="section-form-container">
+        <div class="section-form-inner-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("BankName", "BankAccount")</span>
+                </div>
+                <div class="field-container">
+                    @Html.AdFalconEditorFor(p => p.BankName)
+                    @Html.AdFalconValidationMessageFor(p => p.BankName)
+                </div>
+            </div>
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("BankAddress", "BankAccount")</span>
+                </div>
+                <div class="field-container">
+                    @Html.AdFalconEditorFor(p => p.BankAddress)
+                    @Html.AdFalconValidationMessageFor(p => p.BankAddress)
+                </div>
+            </div>
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("BeneficiaryName", "BankAccount")</span>
+                </div>
+                <div class="field-container">
+                    @Html.AdFalconEditorFor(p => p.BeneficiaryName)
+                    @Html.AdFalconValidationMessageFor(p => p.BeneficiaryName)
+                </div>
+            </div>
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("RecipientAccountNumber", "BankAccount")</span>
+                </div>
+                <div class="field-container">
+                    @Html.AdFalconEditorFor(p => p.RecipientAccountNumber)
+                    @Html.AdFalconValidationMessageFor(p => p.RecipientAccountNumber)
+                </div>
+            </div>
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("SWIFT", "BankAccount")</span>
+                </div>
+                <div class="field-container">
+                    @Html.AdFalconEditorFor(p => p.SWIFT)
+                    @Html.AdFalconValidationMessageFor(p => p.SWIFT)
+                </div>
+            </div>
+        </div>
+    </div>
+    <h2>
+        @Html.GetResource("PayPal", "Titles")
+    </h2>
+    <div class="section-form-container">
+        <div class="section-form-inner-container last-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("UserName", "BankAccount")</span>
+                </div>
+                <div class="field-container">
+                    @Html.AdFalconEditorFor(p => p.UserName)
+                    @Html.AdFalconValidationMessageFor(p => p.UserName)
+                </div>
+            </div>
+        </div>
+    </div>
+                        if (Noqoush.Framework.OperationContext.Current.UserInfo<Noqoush.AdFalcon.Common.UserInfo.AdFalconUserInfo>().VATValue > 0)
+                        {
+                            <h2>
+                                @Html.GetResource("VATInfo")
+                            </h2>
+                            <div class="section-form-container">
+                                <div class="section-form-inner-container last-container">
+                                    <div class="data-row data-container">
+                                        <div class="label-container">
+                                            <span class="field-title">@Html.GetResource("TaxNumber", "Tax")</span>
+                                        </div>
+                                        <div class="field-container">
+                                            @Html.AdFalconTextBoxFor(p => p.TaxNumber, new { @onchange = "ValidateTaxNumber()" })
+                                            @Html.AdFalconValidationMessageFor(p => p.TaxNumber)
+                                            <span id="InvalidTaxNumberSpan" style="display: none; margin-left: 2px; margin-right: 2px;"><span class="validation-arrow field-validation-error" data-valmsg-for="Amount" data-valmsg-replace="true"><span id="Amount-error" class="">@Html.GetResource("InvalidTaxNumber", "VAT")</span></span></span>
+                                        </div>
+                                    </div>
+                                    <div class="data-row data-container">
+                                        <div class="label-container">
+                                            <span class="field-title">@Html.GetResource("Document")</span>
+                                        </div>
+                                        <div class="field-container">
+                                            <label class="btncustom btncustom-default btncustom-file">
+                                                @Html.GetResource("Upload")&hellip; <input data-val="true" data-val-regex="Invalid Uploaded File Type" style="display: none;" id="TaxDocument" name="TaxDocument" type="file" onclick="upload(this)" onchange="upload(this)">
+                                            </label>
+                                            @Html.Label("TaxDocumentName", new { @id = "TaxDocumentName", @onclick = "VatDownlaod()", @style= "text-decoration:underline; color:blue;" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="section-footer">
+                        </div>
+                        <div class="data-row button-container">
+                            <input value="@Html.GetResource("Save")" type="submit" class="primary-btn" />
+                        </div>
+
+                        }

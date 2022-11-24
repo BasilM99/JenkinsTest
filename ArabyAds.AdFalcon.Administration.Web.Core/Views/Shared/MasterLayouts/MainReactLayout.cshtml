@@ -1,0 +1,209 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta charset='utf-8' />
+    <title>@ViewBag.Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" href="~/KendoUI/adfalcon.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="~/ClientReactJs/app.min.css.gz"  asp-append-version="true" />
+
+
+</head>
+<script type="text/javascript">
+
+    @{
+        var impersonatedAccount = ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().ImpersonatedAccount;
+        string impersonatedAccountName = "";
+        if (impersonatedAccount != null) {
+            impersonatedAccountName = " (" + impersonatedAccount.FirstName + " " + impersonatedAccount.LastName + ")";
+
+        }
+
+        int NormalAccId = 0;
+        int DSPAccId = 0;
+        int DataProviderAccId = 0;
+
+        var accounts = ArabyAds.Framework.IoC.Instance.Resolve<ArabyAds.AdFalcon.Services.Interfaces.Services.Account.IAccountService>().GetUserAccountsByEmail(ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().EmailAddress);
+        if (accounts != null && accounts.Count() > 1)
+        {
+            foreach (var item in accounts)
+            {
+                if (item.AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP)
+                {
+                    DSPAccId = item.AccountId;
+                }
+                else if (item.AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DataProvider)
+                {
+                    DataProviderAccId = item.AccountId;
+
+                }
+                else
+                {
+                    NormalAccId = item.AccountId;
+                }
+
+
+                //ViewData["UserId"] = userDto.Id;
+
+            }
+
+
+
+
+        }
+
+        List<string> SystemRoles = new List<string>();
+
+        if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.IsAdmin)
+        {
+            SystemRoles.Add(@"Administrator");
+        }
+        if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.IsAppOps)
+        {
+            SystemRoles.Add(@"AppOps");
+
+        }
+
+        if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.IsAdOps)
+        {
+            SystemRoles.Add(@"AdOps");
+        }
+        if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.IsFinanceManager)
+        {
+            SystemRoles.Add(@"FinanceManager");
+        }
+        if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.IsAccountManager)
+        {
+            SystemRoles.Add(@"AccountManager");
+        }
+
+        }
+
+    var SystemRolesArray = '@(string.Join(",", SystemRoles.ToArray()))'.split(',');
+    window.AdFalconUserLoggedInUserObject = {
+        IsAdmin: false,
+        IsAdminApp: true,
+        IsPrimary: false, loadingLang:true,
+             Direction: '@(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage.ToLower()=="en"?"ltr":"rtl")',
+            impersonatedAccountName: '@impersonatedAccountName',
+            Email: '@(ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().EmailAddress)',
+             CurrentUserRole: @(ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().AccountRole),
+        SystemRoles: SystemRolesArray,
+        themeClass: 'theme-dark',
+            NormalAccId: @NormalAccId,
+            DSPAccId: @DSPAccId,
+            DataProviderAccId: @DataProviderAccId,
+             PermissionsList:  [ @(string.Join(",", ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().Permissions!=null  && ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().Permissions.Length>0? ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().Permissions : new int[] { 0} ))],
+
+
+
+                    CurrentLanguage: '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage.ToLower()', Name: '@(ArabyAds.Framework.OperationContext.Current.UserInfo
+<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+().FirstName + ArabyAds.Framework.OperationContext.Current.UserInfo
+<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+().LastName  )', Email: '@(ArabyAds.Framework.OperationContext.Current.UserInfo
+<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+().EmailAddress)', Company: '@(ArabyAds.Framework.OperationContext.Current.UserInfo
+<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+().Company)',
+
+
+
+					CurrentUserId: '@(ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().UserId)',
+					CurrentAccountId: '@(ArabyAds.Framework.OperationContext.Current.UserInfo
+<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+().OriginalAccountId)',
+             AccountId: '@(ArabyAds.Framework.OperationContext.Current.UserInfo
+<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+().OriginalAccountId)',
+                    CurrentLoggedAccountId:'@(ArabyAds.Framework.OperationContext.Current.UserInfo
+<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+().AccountId)',
+					DefaultRedirect: "/audience-list",
+					FirstName: '@(ArabyAds.Framework.OperationContext.Current.UserInfo
+<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+().FirstName  )',LastName: '@( ArabyAds.Framework.OperationContext.Current.UserInfo
+<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+().LastName  )',
+								 ImpersonatedAccountId:'@(ArabyAds.Framework.OperationContext.Current.UserInfo
+<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+().ImpersonatedAccount != null ? ArabyAds.Framework.OperationContext.Current.UserInfo
+<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+().ImpersonatedAccount.AccountId : 0)'
+
+
+
+    };
+ @if((ArabyAds.Framework.OperationContext.Current.UserInfo
+<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+().IsPrimaryUser== true?true:false)) {
+     <text>
+
+
+    window.AdFalconUserLoggedInUserObject.IsPrimary = true;
+
+             </text>
+    }
+
+
+     @if((ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.IsAdOpsAdmin==true?true:false)) {
+     <text>
+    window.AdFalconUserLoggedInUserObject.IsAdmin = true;
+
+             </text>
+    }
+  @{var homeBaseController = ViewData["Controller"] as ArabyAds.AdFalcon.Web.Controllers.Core.ControllerBase;}
+
+    @{
+        if(ArabyAds.Framework.OperationContext.Current.CurrentPrincipal.Identity.IsAuthenticated) 
+        {
+        <text>
+            window.IsAuthenticated = true;
+        </text>
+        }
+        else{
+        <text>
+            window.IsAuthenticated = false;
+        </text>
+        }
+
+    if(ArabyAds.Framework.OperationContext.Current.CurrentPrincipal.Identity.IsAuthenticated) 
+        {
+        <text>
+            window.TopMenu = '@Html.Raw(Json.Serialize(homeBaseController.GetTopBarData()))'
+            window.SideMenu = '@Html.Raw(Json.Serialize(homeBaseController.GetSideBarData()))'
+            window.UserSettingsMenu = '@Html.Raw(Json.Serialize(homeBaseController.GetUserSettingsBarData()))'
+        </text>
+    }else {
+        <text>
+    window.TopMenu = "";
+    window.SideMenu = "";
+    window.UserSettingsMenu = "";
+        </text>
+    }
+    }
+
+
+</script>
+<body>
+
+
+    @RenderBody()
+
+
+
+
+</body>
+
+
+</html>

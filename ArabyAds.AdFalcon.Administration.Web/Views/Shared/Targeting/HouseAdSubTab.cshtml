@@ -1,0 +1,19 @@
+﻿@*<div class="data-row tab-container go-left">
+    <a href="javascript:void(0)" tabindex="1" onclick="changeTab(this);" class="first-tab selected tab-padding">@Html.GetResource("DeviceTargeting", "Campaign")</a>
+    <a href="javascript:void(0)" tabindex="2" onclick="changeTab(this);" class="tab-padding">@Html.GetResource("Geographic", "Campaign")</a>
+    <a href="javascript:void(0)" tabindex="3" onclick="changeTab(this);" class="last-link-container tab-padding">@Html.GetResource("NetworkAndOperators", "Campaign")</a>
+</div>*@
+
+<div class="go-left" style="width:13%;height:100%;padding:0px;position:absolute;">
+    <ul class="nav nav-tabs tabs-left  " style="height:100%; width:100%; font-size: 11px !important;">
+
+        <li class="active mainmenueli tab01" ><a href="#deviceSection" tabindex="1" onclick="changeTab(this);" data-toggle="tab">@Html.GetResource("DeviceTargeting", "Campaign")</a></li>
+        <li class="mainmenueli tab02"><a href="#geographicSection" tabindex="2" onclick="changeTab(this);" data-toggle="tab">@Html.GetResource("Geographic", "Campaign")</a></li>
+        <li class="mainmenueli tab03"><a href="#operatersSection" tabindex="3" onclick="changeTab(this);" data-toggle="tab">@Html.GetResource("NetworkAndOperators", "Campaign")</a></li>
+
+
+
+
+    </ul>
+ 
+</div>

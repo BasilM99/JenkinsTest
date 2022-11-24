@@ -1,0 +1,810 @@
+@{
+
+	ViewBag.Title = Html.GetResource("TrafficPlanner");
+
+}
+
+@*@using ArabyAds.Framework.DomainServices*@
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.TrafficPlannerViewModel
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<Script src="https://cdn.rawgit.com/nnattawat/flip/master/dist/jquery.flip.min.js"></Script>
+
+<script language="javascript" type="text/javascript">
+    google.load('visualization', '1.1', { 'packages': ['bar', "corechart"] });
+    var ChartUrl = '@Url.Action("TrafficPlannerChart", "Campaign")';
+    GlobalAdvertiserId = '@(Model!=null ?Model.AdvertiserId:0)';
+    GlobalAdvertiserAccountId = '@(Model!=null ?Model.AdvertiserAccountId : 0)';
+    var Name = '@Html.GetResource("Name")';
+    var AdFormats = [];
+    var lastType = -1;
+    var windowTap = 1;
+    var CurrentName = '@Html.GetResource("ByCountry", "Chart")';
+    var gridText = '@Html.GetResource("GridView")';
+    var chartView = '@Html.GetResource("ChartView")';
+    var flipSelected = 0;
+    var UniqueImpText = '@Html.GetResource("UniqueImp", "Report")';
+    var isRun = false;
+    var NoData = '@Html.GetResource("NoDataBR")';
+
+    $(document).ready(function (){
+
+        $("#card").flip({
+            trigger: 'manual'
+
+        });
+
+        $('.multiselect2jq').select2();
+
+        localInitilize();
+
+        SetSelectedTap("ListMenuAdvertiser");
+
+        onAdFormatChange();
+
+
+
+
+    });
+
+    function localInitilize() {
+
+    }
+    function FixCountriesLimit() {
+        Select2LimitSelection("CountriesList", 1);
+
+    }
+    function FixAppSitesLimit() {
+        Select2LimitSelection("AppSitesList", 1);
+
+    }
+    function FixOperatorsLimit() {
+        Select2LimitSelection("OperatorsList", 1);
+
+    }
+    function FixPlatformsLimit() {
+        Select2LimitSelection("PlatformsList", 1);
+
+    }
+
+    function onAdFormatChange()
+    {
+        AdFormats = [];
+
+        var checked = false;
+        if(typeof($("#AdFormatBanner").attr("checked")) != 'undefined' && $("#AdFormatBanner").attr("checked")=="checked")
+        {
+            AdFormats.push('@Convert.ToInt32(ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.Banner)');
+            checked = true;
+        }
+
+        if(typeof($("#AdFormatNative").attr("checked")) != 'undefined' && $("#AdFormatNative").attr("checked")=="checked")
+        {
+            AdFormats.push('@Convert.ToInt32(ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.Native)');
+            checked = true;
+
+        }
+
+        if(typeof($("#AdFormatInStream").attr("checked")) != 'undefined' && $("#AdFormatInStream").attr("checked")=="checked")
+        {
+            AdFormats.push('@Convert.ToInt32(ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.InStream)');
+            checked = true;
+
+        }
+
+        if(checked)
+        {
+            $('#PMPTargetingSaveDto_AdSizes').select2("enable",'true');
+
+
+        }else
+        {
+
+            $('#PMPTargetingSaveDto_AdSizes').select2("enable",false);
+
+        }
+        $("#PMPTargetingSaveDto_RawAdFormats").val(AdFormats);
+        fillTree(AdFormats);
+
+
+    }
+
+    function FixCountriesTree() {
+
+        var datas = $("#CountriesList").select2("data");
+        var indexsesDeleted = [];
+        var indexsesParent = [];
+        var ParentFiltered = [];
+        var newValues = [];
+
+        var IdToBeRemoved = [];
+        if (datas) {
+            var values = $("#CountriesList").val();
+            for (var i = 0; i < datas.length; i++) {
+                if (datas[i].parentId > 0) {
+                    var indextoBeRemoved = values.indexOf(datas[i].parentId);
+                    if (indextoBeRemoved >= 0) {
+                        if (!(indexsesParent.indexOf(datas[i].parentId) >= 0))
+                            indexsesParent.push(datas[i].parentId);
+                    }
+
+
+                }
+            }
+
+            for (var i = 0; i < datas.length; i++) {
+
+                var indextoBeRemoved = Countries_ValuesBefore.indexOf(datas[i].parentId);
+                if (indextoBeRemoved >= 0) {
+                    if (!(ParentFiltered.indexOf(datas[i].parentId) >= 0))
+                        ParentFiltered.push(datas[i].parentId);
+                }
+
+
+
+            }
+
+            for (var i = 0; i < ParentFiltered.length; i++) {
+                var indextoBeRemoved = values.indexOf(ParentFiltered[i]);
+                if (indextoBeRemoved >= 0) {
+                    if (!(indexsesDeleted.indexOf(indextoBeRemoved) >= 0))
+                        indexsesDeleted.push(indextoBeRemoved);
+                    IdToBeRemoved.push(values[indextoBeRemoved]);
+                }
+
+            }
+
+            for (var i = 0; i < datas.length; i++) {
+                if (datas[i].parentId > 0 && indexsesParent.indexOf(datas[i].parentId) >= 0 && !(IdToBeRemoved.indexOf(datas[i].parentId) >= 0)) {
+
+                    var indextoBeRemoved = values.indexOf(datas[i].id);
+                    if (indextoBeRemoved >= 0) {
+                        if (!(indexsesDeleted.indexOf(indextoBeRemoved) >= 0))
+                            indexsesDeleted.push(indextoBeRemoved);
+
+                        IdToBeRemoved.push(values[indextoBeRemoved]);
+                    }
+                }
+
+            }
+            if (indexsesDeleted) {
+                for (var i = 0; i < values.length; i++) {
+                    var indextoBeRemoved = indexsesDeleted.indexOf(i);
+                    if (!(indextoBeRemoved >= 0)) {
+                        newValues.push(values[i]);
+                    }
+
+                }
+                $("#CountriesList").val(newValues).change();
+
+            }
+
+        }
+    }
+
+    var RunUrl = '@Url.Action("TPGrid", "Campaign")';
+	var sp1, sp2;
+	function run() {
+
+		isRun = true;
+		if (windowTap == 1 && flipSelected == 1) {
+			Performance();
+		}
+		else {
+            var grid = $("#TPGrid").data("kendoGrid");
+            if (typeof (grid) != "undefined") {
+                grid.dataSource.read();
+                grid.refresh();
+            }
+		}
+
+        $("#reportViewArea").show();
+		lastType = GetType();
+		if (sp == undefined)
+			sp = getSpinner("ContainerChartView");
+
+		sp.showSpinner();
+		window.scrollTo(0, document.body.scrollHeight);
+
+
+    }
+
+    function CollectData() {
+        var obj = new Object();
+        obj.Operators = $("#OperatorsList").val() != null ? $("#OperatorsList").val().toString() : "";
+        obj.Countries = $("#CountriesList").val() != null ? $("#CountriesList").val().toString() :"";
+        obj.AdSizes = $("#PMPTargetingSaveDto_AdSizes").val()!=null ? $("#PMPTargetingSaveDto_AdSizes").val().toString() : "";
+        obj.Platforms = $("#PlatformsList").val() != null ? $("#PlatformsList").val().toString():"";
+        obj.AppSites = $("#AppSitesList").val() != null ? $("#AppSitesList").val().toString():"";
+        obj.AgeGroup= $("#AgeGroupId").val();
+        obj.DeviceTypeId = getCheckRadioValue($("input[name='DeviceTypes']"));
+		obj.GenderType = getCheckRadioValue($("input[name='Gender']"));
+		obj.EnvironmentType = getCheckRadioValue($("input[name='EnvironmentType']"));
+        obj.languages = $("#LanguagesList").val()!=null ? $("#LanguagesList").val().toString():"";
+        obj.AdFormats = AdFormats.join();
+        obj.Type = GetType();
+        obj.IsRun = isRun;
+        return JSON.stringify(obj);
+
+    }
+
+	function ViewAreaChanged(number) {
+
+
+        $("#areas").show();
+
+        if (number == 2) {
+            $("#subTabareaDrill").addClass("selected");
+            $("#subTabareaSummary").removeClass("selected");
+
+        } else {
+            $("#subTabareaDrill").removeClass("selected");
+            $("#subTabareaSummary").addClass("selected");
+
+        }
+
+        windowTap = number;
+        flip(0);
+        run();
+    }
+	function TPGridDataBound(e) {
+
+		if (sp) {
+			sp.hideSpinner();
+		}
+        if (windowTap == 1) {
+            $("#TapsView").show();
+
+            $("#TPGrid").data("kendoGrid").showColumn(3);
+           // $("#TPGrid").data("kendoGrid").hideColumn(1);
+            $("#TPGrid .k-grid-header .k-header").eq(0).text(CurrentName);
+            $("#flipbtn").show();
+			Performance();
+
+        } else {
+            $("#TapsView").hide();
+
+            $("#TPGrid").data("kendoGrid").hideColumn(3);
+            //$("#TPGrid").data("kendoGrid").showColumn(1);
+            $("#TPGrid .k-grid-header .k-header").eq(0).text(Name);
+            $("#card").flip(false);
+            $("#flipbtn").hide();
+
+        }
+
+    }
+    function GetType() {
+
+            if ($("#subTabareaSummary").hasClass("selected")) {
+
+
+				//if ($("#AdSizeReport1").hasClass("selected")) return 1;
+				//if ($("#DeviceTypeReport1").hasClass("selected")) return 2;
+				//if ($("#OSReport1").hasClass("selected")) return 3;
+				//if ($("#CountryReport1").hasClass("selected")) return 4;
+				//if ($("#AdFormatReport1").hasClass("selected")) return 5;
+				//if ($("#GenderReport1").hasClass("selected")) return 6;
+
+				//if ($("#AdSizeReport2").hasClass("selected")) return 1;
+				//if ($("#DeviceTypeReport2").hasClass("selected")) return 2;
+				//if ($("#OSReport2").hasClass("selected")) return 3;
+				//if ($("#CountryReport2").hasClass("selected")) return 4;
+				//if ($("#AdFormatReport2").hasClass("selected")) return 5;
+				//if ($("#GenderReport2").hasClass("selected")) return 6;
+
+				if ($("#AdSizeReport").hasClass("selected")) return 1;
+				if ($("#DeviceTypeReport").hasClass("selected")) return 2;
+				if ($("#OSReport").hasClass("selected")) return 3;
+				if ($("#CountryReport").hasClass("selected")) return 4;
+				if ($("#AdFormatReport").hasClass("selected")) return 5;
+				if ($("#GenderReport").hasClass("selected")) return 6;
+
+				if ($("#EnvironmentTypeReport").hasClass("selected")) return 7;
+            } else {
+                return 0;
+            }
+
+
+    }
+
+    function SelectMark(id,name) {
+
+
+
+		//$("#AdSizeReport1").removeClass("selected");
+		//$("#DeviceTypeReport1").removeClass("selected");
+		//$("#OSReport1").removeClass("selected");
+		//$("#CountryReport1").removeClass("selected");
+		//$("#AdFormatReport1").removeClass("selected");
+		//$("#GenderReport1").removeClass("selected");
+
+		//$("#AdSizeReport2").removeClass("selected");
+		//$("#DeviceTypeReport2").removeClass("selected");
+		//$("#OSReport2").removeClass("selected");
+		//$("#CountryReport2").removeClass("selected");
+		//$("#AdFormatReport2").removeClass("selected");
+		//$("#GenderReport2").removeClass("selected");
+
+
+		$("#AdSizeReport").removeClass("selected");
+		$("#DeviceTypeReport").removeClass("selected");
+		$("#OSReport").removeClass("selected");
+		$("#CountryReport").removeClass("selected");
+		$("#AdFormatReport").removeClass("selected");
+		$("#GenderReport").removeClass("selected");
+		$("#EnvironmentTypeReport").removeClass("selected");
+        $("#" + id).addClass("selected");
+
+
+		$(".AdSizeReport").removeClass("selected");
+		$(".DeviceTypeReport").removeClass("selected");
+		$(".OSReport").removeClass("selected");
+		$(".CountryReport").removeClass("selected");
+		$(".AdFormatReport").removeClass("selected");
+		$(".GenderReport").removeClass("selected");
+		$(".EnvironmentTypeReport").removeClass("selected");
+		$("." + id).addClass("selected");
+        $("#TPGrid .t-grid-header .t-header").eq(0).find("span").text(name);
+        CurrentName = name;
+
+    }
+
+    function Performance() {
+
+		if (windowTap == 1 && flipSelected == 1) {
+			if (sp == undefined)
+				sp = getSpinner("ContainerChartView");
+
+			sp.showSpinner();
+            $("#topAccountsChart").empty();
+			var typeselected= GetType();
+            var button = "<button type='button' onclick='flip()' class='btncustom btncustom-default' style='float: right;'>{0}</button>";
+            $.when(
+                $.ajax({
+                    type: 'post',
+                    url: ChartUrl + "?jsdata=" + CollectData(),
+                    success: function (data) {
+                        if (data != "NoData") {
+                            if (typeselected == 1 || typeselected == 4)
+                                drawBarChart('topAccountsChart', data, 900, 250);
+                            else {
+                                drawPieChart('topAccountsChart', data, 500, 250, undefined, UniqueImpText);
+                            }
+                            $("#card").attr("style", "position: relative; transform-style: preserve-3d;");
+
+                        } else {
+                            $("#card").attr("style", "position: relative; transform-style: preserve-3d;");
+
+                            $("#topAccountsChart").html("<span style='font-size: xx-large;'>" + NoData + "</span>");
+
+                        }
+                    }
+                })).done(function () {
+					if (windowTap == 1 && flipSelected == 1) {
+						$('div[aria-label="A chart."]').attr("style", "position: absolute; left: 0px; top: 0px;width: 100%;height: 100%;left: 30px;")
+					}
+					if (sp) {
+						sp.hideSpinner();
+					}
+
+                }).fail(function () {
+                });
+        }
+
+    }
+    function GetSelectedTap() {
+        return $("#TapsView").find(".selected");
+
+    }
+
+    function TPGridDataBinding(args) {
+        //args.data = $.extend(args.data,
+        //    {
+        //        obj: CollectData()
+
+        //    });
+        $("#TPGrid").data("kendoGrid").resize();
+    };
+    function TPGridData() {
+        var j = {
+            obj: CollectData()
+        };
+        return j;
+    }
+    function flip(id) {
+        flipSelected = id;
+
+		if (id == 0) {
+			$("#ContainerChartView").attr("style", "height:350px;");
+            $("#areaSummary").show();
+            $("#topAccountsChart").hide();
+            $("#card").attr("style", "position: relative; transform-style: preserve-3d;");
+
+            $("#card").flip(false);
+            $("#GridSelectedViewFlip").show();
+            $("#GridUnSelectedViewFlip").hide();
+
+            $("#ChartUnSelectedViewFlip").show();
+			$("#ChartSelectedViewFlip").hide();
+			run();
+        } else if (id == 1) {
+
+
+			Performance();
+			$("#ContainerChartView").attr("style", "height:400px;");
+            $("#areaSummary").hide();
+            $("#topAccountsChart").show();
+			$("#card").attr("style", "position: relative; transform-style: preserve-3d;");
+
+
+            $("#card").flip(true);
+            $("#GridSelectedViewFlip").hide();
+            $("#GridUnSelectedViewFlip").show();
+            $("#ChartUnSelectedViewFlip").hide();
+            $("#ChartSelectedViewFlip").show();
+        } else {
+            $("#card").flip('toggle');
+        }
+    }
+
+</script>
+<style>
+	.row {
+		padding-bottom: 5px;
+	}
+
+	.change-reportview-container span a {
+		color: #45638f;
+	}
+</style>
+
+<div class="data-row section-container">
+	<h2>@Html.GetResource("Criteria", "Report")</h2>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12 col-sm-6 col-sm-push-1">
+				<div class="container">
+					<div class="">
+						<div class="col-sm-2">
+							<span class="field-title">@Html.GetResource("Country", "Global")</span>
+						</div>
+						<div class="col-sm-10">
+							@await Html.PartialAsync("Select2Dynamic", Model.Countries)
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-xs-12 col-sm-6">
+				<div class="container">
+					<div class="">
+						<div class="col-xs-12 col-sm-6 col-md-2">
+							<span class="field-title"> @Html.GetResource("AdFormat", "PMPDeal")</span>
+						</div>
+						<div class="col-md-10">
+							<div class="field-container">
+								<div class="radio-button-container floating-left iea-rbtn-width-a">
+									@Html.GetCheckBox("AdFormatBanner", ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.Banner.ToText(), false, onChange: "onAdFormatChange", customValue: ((int)ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.Banner).ToString())
+								</div>
+								<div class="radio-button-container floating-left">
+									@Html.GetCheckBox("AdFormatInStream", ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.InStream.ToText(), false, onChange: "onAdFormatChange", customValue: ((int)ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.InStream).ToString())
+								</div>
+
+								<div class="radio-button-container floating-left">
+									@Html.GetCheckBox("AdFormatNative", ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.Native.ToText(), false, onChange: "onAdFormatChange", customValue: ((int)ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.Native).ToString())
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-6 col-sm-push-1">
+				<div class="container">
+					<div class="">
+						<div class="col-xs-12 col-sm-6 col-md-2">
+							<span class="field-title ">@Html.GetResource("Language", "Register")</span>
+						</div>
+						<div class="col-xs-12 col-sm-6 col-md-3">
+							@await Html.PartialAsync("Select2Dynamic", Model.Languages)
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-6">
+				<div class="container">
+					<div class="" id="targetingContainer">
+						<div class="col-xs-12 col-sm-6 col-md-2">
+							<span class="field-title">@Html.GetResource("AdSize", "PMPDealTargetings")</span>
+						</div>
+						<div class="col-xs-12 col-sm-6 col-md-3">
+							@await Html.PartialAsync("~/Views/Campaign/TrafficPlanning/Select2/Tree.cshtml")
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-6 col-sm-push-1">
+				<div class="container">
+					<div class="">
+						<div class="col-xs-12 col-sm-6 col-md-2">
+							<span class="field-title">@Html.GetResource("PlatformOS", "Campaign")</span>
+						</div>
+						<div class="col-xs-12 col-sm-6 col-md-3">
+							@await Html.PartialAsync("Select2Dynamic", Model.Platforms)
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-6">
+				<div class="container">
+					<div class="">
+						<div class="col-xs-12 col-sm-6 col-md-2">
+							<span class="field-title">@Html.GetResource("InventorySource", "SSPDealCampaign")</span>
+						</div>
+						<div class="col-xs-12 col-sm-6 col-md-3">
+							@await Html.PartialAsync("Select2Dynamic", Model.AppSites)
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+        <div class="row">
+           
+            <div class="col-xs-12 col-sm-6 col-sm-push-1">
+                <div class="container">
+                    <div class="">
+                        <div class="col-xs-12 col-sm-6 col-md-2">
+                            <span class="field-title">@Html.GetResource("Operators")</span>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-3">
+                            @await Html.PartialAsync("Select2Dynamic", Model.Operators)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-6">
+                <div class="container">
+                    <div class="">
+                        <div class="col-xs-12 col-sm-6 col-md-2">
+                            <span class="field-title ">@Html.GetResource("Gender")</span>
+                        </div>
+                        <div class="col-md-8">
+
+                            @{
+                                var genderid = 0;
+                                var isSlected = true;
+
+
+                                isSlected = (genderid == 0);
+
+                                isSlected = (genderid == 1);
+
+                                isSlected = (genderid == 2);
+
+                            }
+
+                            <div class="field-container">
+                                <div class="radio-button-container floating-left iea-rbtn-width-a">
+                                    <div class="floating-left iea-rbtn-width-a">@Html.GetRadioButton("Gender", Html.GetResource("both"), Checked: true, value: "0")</div>
+                                </div>
+                                <div class="radio-button-container floating-left">
+                                    <div class="floating-left iea-rbtn-width-a">@Html.GetRadioButton("Gender", Html.GetResource("Male"), Checked: isSlected, value: "1")</div>
+                                </div>
+
+                                <div class="radio-button-container floating-left">
+                                    <div class="floating-left">
+                                        @Html.GetRadioButton("Gender", Html.GetResource("Female"), Checked: isSlected, value: "2")
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-sm-push-1">
+            <div class="container">
+                <div class="">
+                    <div class="col-xs-12 col-sm-6 col-md-2">
+                        <span class="field-title ">@Html.GetResource("DeviceType", "BidConfigType")</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="field-container">
+                            <div class="radio-button-container floating-left iea-rbtn-width-a">
+                                @Html.GetRadioButton("DeviceTypes", Html.GetResource("Any"), true, onChange: "", value: ((int)ArabyAds.AdFalcon.Domain.Common.Model.Core.DeviceTypeEnum.Any).ToString())
+                            </div>
+                            <div class="radio-button-container floating-left">
+                                @Html.GetRadioButton("DeviceTypes", Html.GetResource("Tablet", "Campaign"), false, onChange: "", value: ((int)ArabyAds.AdFalcon.Domain.Common.Model.Core.DeviceTypeEnum.Tablet).ToString())
+                            </div>
+
+                            <div class="radio-button-container floating-left">
+                                @Html.GetRadioButton("DeviceTypes", Html.GetResource("Phone", "Party"), false, onChange: "", value: ((int)ArabyAds.AdFalcon.Domain.Common.Model.Core.DeviceTypeEnum.SmartPhone).ToString())
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <div class="col-xs-12 col-sm-6">
+                <div class="container">
+                    <div class="">
+                        <div class="col-xs-12 col-sm-6 col-md-2">
+                            <span class="field-title ">@Html.GetResource("AgeGroup")</span>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-3">
+                            @Html.DropDownList("AgeGroupId", Model.DemographicTargetingView.AgeGroups)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+		<div class="row">
+		
+			<div class="col-xs-12 col-sm-6 col-sm-push-1">
+				<div class="container">
+					<div class="">
+						<div class="col-xs-12 col-sm-6 col-md-2">
+							<span class="field-title ">@Html.GetResource("EnvironmentType", "Campaign")</span>
+						</div>
+						<div class="col-md-8">
+
+							@*@{
+								var genderid = 0;
+								var isSlected = true;
+
+
+								isSlected = (genderid == 0);
+
+								isSlected = (genderid == 1);
+
+								isSlected = (genderid == 2);
+
+							}*@
+
+							<div class="field-container">
+								<div class="radio-button-container floating-left iea-rbtn-width-a">
+									<div class="floating-left iea-rbtn-width-a">@Html.GetRadioButton("EnvironmentType", Html.GetResource("both"), Checked: true, value: "0")</div>
+								</div>
+								<div class="radio-button-container floating-left">
+									<div class="floating-left iea-rbtn-width-a">@Html.GetRadioButton("EnvironmentType", Html.GetResource("AppEnvironmentType", "Campaign"), Checked: isSlected, value: "2")</div>
+								</div>
+
+								<div class="radio-button-container floating-left">
+									<div class="floating-left">
+										@Html.GetRadioButton("EnvironmentType", Html.GetResource("WebEnvironmentType", "Campaign"), Checked: isSlected, value: "1")
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+
+	</div>
+
+	<div class="data-row go-center">
+		<input type="button" value='@Html.GetResource("Query")' class="btn" onclick="run()" />
+	</div>
+
+
+	<div id="reportViewAreaSpinner">
+		<div class="data-row section-container" id="reportViewArea" style="display:none;">
+
+			<div class="data-row tab-container">
+				<a style="padding-right: 10px;padding-left: 10px;" onclick="changeReportView('areaSummary'); ViewAreaChanged(1);" id="subTabareaSummary" class="first-tab selected" href="javascript:void(0)">@Html.GetResource("Summary")</a>
+				<a style="padding-right: 10px;padding-left: 10px;" onclick="ViewAreaChanged(2);" id="subTabareaDrill" href="javascript:void(0)">@Html.GetResource("DrillDown")</a>
+			</div>
+			<div id="ContainerChartView" style="height:350px;">
+				<div class="btn-group" style="padding-top: 3px;height: 31px;padding-bottom: 32px;" id="flipbtn">
+					<img id="GridSelectedViewFlip" style="width: 30px;float: right;height: 30px;padding:3px;" onclick="flip(0)" title="@Html.GetResource("GridView")" src="~/Content/en/magenta/Images/GridViewOn.png">
+					<img id="GridUnSelectedViewFlip" style="width: 30px;float: right;height: 30px;padding:3px;display:none;" onclick="flip(0)" title="@Html.GetResource("GridView")" src="~/Content/en/magenta/Images/GridViewOff.png" />
+
+					<img id="ChartUnSelectedViewFlip" style="width: 30px;float: right;height: 30px;padding:3px;" onclick="flip(1)" title="@Html.GetResource("ChartView")" src="~/Content/en/magenta/Images/ChartViewOff.png">
+					<img id="ChartSelectedViewFlip" style="width: 30px;float: right;height: 30px;display:none;padding:3px;" onclick="flip(1)" title="@Html.GetResource("ChartView")" src="~/Content/en/magenta/Images/ChartViewOn.png">
+				</div>
+				<div id="card" style="">
+					<div id="areas" class="front">
+
+						<div class="section-form-container" id="areaSummary">
+
+							<div class="section-form-inner-container" id="GridLayoutSummary" style="overflow:visible;padding:0px;">
+								<div id="appSitesResultContainer">
+									<div class="grid-container" id="topAccountsGrid">
+                                        @(Html.Kendo().Grid(Model.Data)
+                                        .Name("TPGrid")
+                                            .Columns(columns =>
+                                            {
+                                                columns.Bound(o => o.Name).Title(Html.GetResource("ByCountry", "Chart")).Width(500);
+                                                columns.Bound(o => o.SecondSubName).Title(Html.GetResource("SubAppSite", "AppSite")).Hidden();
+                                                columns.Bound(o => o.Requests).Title(Html.GetResource("Impressions", "Campaign")).Format("{0:n0}").HtmlAttributes(new { @class = "go-center" });
+                                                columns.Bound(o => o.UniqueImp).Title(Html.GetResource("UniqueImp", "Report")).Format("{0:n0}").HtmlAttributes(new { @class = "go-center" });
+                                                columns.Bound(o => o.eCPMText).Title(Html.GetResource("eCPM", "AppChart")).Format("{0:n0}").HtmlAttributes(new { @class = "go-center" }).Hidden();
+
+                                            }).EnableCustomBinding(true)
+                                            .DataSource(dataBinding =>
+                                            {
+                                                dataBinding.Ajax().Read(read => read.Action("_TPGrid", "Campaign").Data("TPGridData")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+                                            })
+                                    .Events(clientEvents => clientEvents.DataBinding("TPGridDataBinding").DataBound("TPGridDataBound"))
+                                    .Scrollable(scrolling => scrolling.Enabled(false))
+                                    .Selectable().Pageable(paging => paging
+
+
+                                            .Input(false)
+                                            .Numeric(true)
+                                            .Info(true)
+                                            .PreviousNext(true)
+                                            .Refresh(true)
+
+                                                                     .Position(GridPagerPosition.Bottom))
+                                             .Filterable(filtering => filtering.Enabled(false))
+                                             .Groupable(grouping => grouping.Enabled(false)))
+
+
+										
+									</div>
+
+								</div>
+							</div>
+
+							<div class="data-row change-reportview-container" id="TapsView">
+								<span style="">
+									<a id="CountryReport" class="CountryReport selected" href="javascript:SelectMark('CountryReport','@Html.GetResource("ByCountry", "Chart")');run();">@Html.GetResource("ByCountry", "Chart")</a>
+
+									&nbsp;|&nbsp;
+									<a id="DeviceTypeReport" class="DeviceTypeReport" href="javascript:SelectMark('DeviceTypeReport','@Html.GetResource("DeviceType", "BidConfigType")');run();">@Html.GetResource("DeviceType", "BidConfigType")</a>
+									&nbsp;|&nbsp;
+									<a id="OSReport" class="OSReport" href="javascript:SelectMark('OSReport','@Html.GetResource("Platform", "Lookup")');run();">@Html.GetResource("Platform", "Lookup")</a>
+									&nbsp;|&nbsp;
+									<a id="AdSizeReport" class="AdSizeReport" href="javascript:SelectMark('AdSizeReport','@Html.GetResource("AdSize", "PMPDealTargetings")');run();">@Html.GetResource("AdSize", "PMPDealTargetings")</a>
+									&nbsp;|&nbsp;
+									<a id="AdFormatReport" class="AdFormatReport" href="javascript:SelectMark('AdFormatReport','@Html.GetResource("AdFormat", "PMPDeal")');run();">@Html.GetResource("AdFormat", "PMPDeal")</a>
+									&nbsp;|&nbsp;
+									<a id="GenderReport" class="GenderReport" href="javascript:SelectMark('GenderReport','@Html.GetResource("Gender")');run();">@Html.GetResource("Gender")</a>
+									&nbsp;|&nbsp;
+									<a id="EnvironmentTypeReport" class="EnvironmentTypeReport" href="javascript:SelectMark('EnvironmentTypeReport','@Html.GetResource("EnvironmentType","Campaign")');run();">@Html.GetResource("EnvironmentType", "Campaign")</a>
+
+								</span>
+							</div>
+						</div>
+					</div>
+					<br>
+					<div id="topAccountsChart" align="center" class="back" style="display:none;">
+
+					</div>
+
+
+				</div>
+				<div class="data-row change-reportview-container" id="TapsView">
+					<span style="">
+						<a id="CountryReport" class="CountryReport selected" href="javascript:SelectMark('CountryReport','@Html.GetResource("ByCountry", "Chart")');run();">@Html.GetResource("ByCountry", "Chart")</a>
+
+						&nbsp;|&nbsp;
+						<a id="DeviceTypeReport" class="DeviceTypeReport" href="javascript:SelectMark('DeviceTypeReport','@Html.GetResource("DeviceType", "BidConfigType")');run();">@Html.GetResource("DeviceType", "BidConfigType")</a>
+						&nbsp;|&nbsp;
+						<a id="OSReport" class="OSReport" href="javascript:SelectMark('OSReport','@Html.GetResource("Platform", "Lookup")');run();">@Html.GetResource("Platform", "Lookup")</a>
+						&nbsp;|&nbsp;
+						<a id="AdSizeReport" class="AdSizeReport" href="javascript:SelectMark('AdSizeReport','@Html.GetResource("AdSize", "PMPDealTargetings")');run();">@Html.GetResource("AdSize", "PMPDealTargetings")</a>
+						&nbsp;|&nbsp;
+						<a id="AdFormatReport" class="AdFormatReport" href="javascript:SelectMark('AdFormatReport','@Html.GetResource("AdFormat", "PMPDeal")');run();">@Html.GetResource("AdFormat", "PMPDeal")</a>
+						&nbsp;|&nbsp;
+						<a id="GenderReport" class="GenderReport" href="javascript:SelectMark('GenderReport','@Html.GetResource("Gender")');run();">@Html.GetResource("Gender")</a>
+						&nbsp;|&nbsp;
+						<a id="EnvironmentTypeReport" class="EnvironmentTypeReport" href="javascript:SelectMark('EnvironmentTypeReport','@Html.GetResource("EnvironmentType","Campaign")');run();">@Html.GetResource("EnvironmentType", "Campaign")</a>
+
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

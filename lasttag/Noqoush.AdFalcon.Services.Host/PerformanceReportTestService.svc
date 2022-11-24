@@ -1,0 +1,3 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="PerformanceReportTestService" 
+Factory="Castle.Facilities.WcfIntegration.DefaultServiceHostFactory, Castle.Facilities.WcfIntegration" %>
+

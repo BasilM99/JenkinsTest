@@ -1,0 +1,37 @@
+﻿@using Noqoush.AdFalcon.Services.Interfaces.DTOs.Core
+@using Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative
+@model Noqoush.AdFalcon.Administration.Web.Controllers.Model.Lookup.AdCreativeAttributeViewModel
+@{
+    if (ViewContext.FormContext == null)
+    {
+        ViewContext.FormContext = new FormContext();
+    }
+    ViewData.TemplateInfo.HtmlFieldPrefix = "LookupDto";
+}
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("Code")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconTextBoxFor(p => (p.LookupDto as AdCreativeAttributeDto).Code, new  { masktype = "Int" })
+        @Html.ValidationMessageFor(p => (p.LookupDto as AdCreativeAttributeDto).Code)
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("Description","Campaign")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconTextBoxFor(p => (p.LookupDto as AdCreativeAttributeDto).Description)
+        @Html.ValidationMessageFor(p => (p.LookupDto as AdCreativeAttributeDto).Description)
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("IsSupported","Lookup")</span>
+    </div>
+    <div class="field-container">
+        @Html.GetCheckBox("IsSupported", string.Empty,isChecked:(Model.LookupDto as AdCreativeAttributeDto).IsSupported)
+    </div>
+</div>
+

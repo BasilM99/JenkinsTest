@@ -1,0 +1,112 @@
+@{
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+}
+<script language="javascript">
+    var downloadUrl = '@Url.Action("DownloadImpLog", "User")';
+
+    function refreshImpressionLogsGrid() {
+        RefrashGrid('ImpressionLogs');
+    }
+    function generateImpressionLogsGrid() {
+        var grid = $("#ImpressionLogs").data("tGrid");
+        grid.rebind();
+    };
+    function ImpressionLogsGridDataBinding(args) {
+
+        args.data = $.extend(args.data,
+            {
+                FromDate: $('#FromDate').val(),
+				ToDate: $('#ToDate').val(),
+				TypeLog: $('input[name=TypeId]:checked').val()
+            });
+
+    };
+    function ImpressionLogsGridDataBound(e) {
+
+        $("#ImpressionLogs #DownloadBtn").removeClass("t-last");
+
+
+    };
+
+    $(document).ready(function () {
+
+        if (AccountRole == "DSP") {
+            SetSelectedTap("");
+        } else {
+            SetSelectedTap("");
+
+        }
+        jQuery('input[data-date="true"]')
+       .daterangepicker({
+           dateFormat: '@Noqoush.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat'
+       });
+
+    });
+	function showfilter() {
+
+		if ($("#advfilterCamp").hasClass('maximize')) {
+
+			$("#advfilterCamp").attr("class", "minimize AdvanceFilterIcon");
+		}
+		else {
+
+			$("#advfilterCamp").attr("class", "maximize AdvanceFilterIcon");
+		}
+	}
+
+</script>
+
+
+@RenderSection("subheader")
+
+<div class="data-row section-container">
+	<div class="data-row">
+		<div class="col-sm-6" style="padding: 0px;">
+
+		</div>
+		<div class="col-sm-1" style="padding: 0px;">
+		</div>
+		<div class="col-sm-4 col-sm-push-2">
+
+			<table class="special-content">
+				<tr>
+					<td>
+						<span class="go-bold">@Html.GetResource("From", "Global")</span>
+					</td>
+					<td style="width: 110px;">
+						<input type="text" readonly="readonly" data-date="true" id="FromDate" name="FromDate"
+							   class="text-box range-date-cntl" />
+					</td>
+					<td>
+						<span class="go-bold">@Html.GetResource("To", "Global")</span>
+					</td>
+					<td style="width: 110px;">
+						<input type="text" readonly="readonly" data-date="true" id="ToDate" name='ToDate'
+							   class="text-box range-date-cntl left-range-cntrl" onchange="generateImpressionLogsGrid()" />
+					</td>
+					<td>
+
+
+						<div class="field-container dropdown-toggle" data-toggle="collapse" data-target="#CampFilterCollapse" aria-expanded="false" onclick="showfilter()">
+							&nbsp;&nbsp;<a href="javaScript:void(0);" class="maximize AdvanceFilterIcon" onclick="" style="margin-top:0px" id="advfilterCamp"></a>
+
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+	</div>
+	<div class="data-row" style="overflow:visible">
+		<div class="col-sm-7 col-sm-push-3 customDealsFilterShiftRight floating-right" style="padding: 0px;">
+			@Html.Partial("../ImpressionLog/ImpFilter")
+		</div>
+	</div>
+	<div class="grid-container">
+		@RenderSection("Grid")
+	</div>
+
+</div>
+
+
+

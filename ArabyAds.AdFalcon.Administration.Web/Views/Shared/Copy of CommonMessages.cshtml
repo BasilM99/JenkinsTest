@@ -1,0 +1,103 @@
+﻿<div class="data-row green-box" style="display:@(ViewBag.SuccessMessages != null || TempData["TempSuccessMessages"]!= null ? "block" : "none")" id="divSuccessMessages">
+    @if (ViewBag.SuccessMessages != null)
+    {
+        foreach (var item in ViewBag.SuccessMessages)
+        {
+        <div class="data-row">
+            <span class="msg-img"></span><span>@Html.Raw(item)</span></div>
+        }
+    }
+    @if (TempData["TempSuccessMessages"] != null)
+    {
+        var tempSuccessMessages = TempData["TempSuccessMessages"] as List<string>;
+        foreach (var item in tempSuccessMessages)
+        {
+        <div class="data-row">
+            <span class="msg-img"></span><span>@Html.Raw(item)</span></div>
+        }
+    }
+</div>
+<div class="data-row yellow-box" style="display:@(ViewBag.WarningMessages != null || TempData["TempWarningMessages"] != null ? "block" : "none")" id="divWarnMessages">
+    @if (ViewBag.WarningMessages != null)
+    {
+        foreach (var item in ViewBag.WarningMessages)
+        {
+        <div class="data-row">
+            <span class="msg-img"></span><span>@Html.Raw(item)</span></div>
+        }
+    }
+    @if (TempData["TempWarningMessages"] != null)
+    {
+        var tempWarningMessages = TempData["TempWarningMessages"] as List<string>;
+        foreach (var item in tempWarningMessages)
+        {
+        <div class="data-row">
+            <span class="msg-img"></span><span>@Html.Raw(item)</span></div>
+        }
+    }
+</div>
+<div class="data-row blue-box" style="display:@(ViewBag.InformationMessages != null || TempData["TempInformationMessages"] != null ? "block" : "none")" id="divInfoMessages">
+    @if (ViewBag.InformationMessages != null)
+    {
+        foreach (var item in ViewBag.InformationMessages)
+        {
+        <div class="data-row">
+            <span class="msg-img"></span><span>@Html.Raw(item)</span></div>
+        }
+    }
+    @if (TempData["TempInformationMessages"] != null)
+    {
+        var tempInformationMessages = TempData["TempInformationMessages"] as List<string>;
+        foreach (var item in tempInformationMessages)
+        {
+        <div class="data-row">
+            <span class="msg-img"></span><span>@Html.Raw(item)</span></div>
+        }
+    }
+</div>
+@{
+    var displayflag = false;
+    if ((ViewBag.ErrorMessages != null) && (ViewBag.ErrorMessages.Count > 0))
+    {
+        displayflag = true;
+    }
+    else
+    {
+        displayflag = (ViewData.ModelState != null && ViewData.ModelState.Where(p => p.Value.Errors.Count != 0).Count() != 0);
+    }
+    if (!displayflag)
+    {
+        displayflag = TempData["TempInformationMessages"] != null;
+    }
+}
+<div class="data-row red-box" style="display:@(displayflag ? "block" : "none")" id="divErrorMessages">
+    @{
+
+        if (ViewBag.ErrorMessages != null)
+        {
+            foreach (var item in ViewBag.ErrorMessages)
+            {
+        <div class="data-row">
+            <span class="msg-img"></span><span>@Html.Raw(item)</span></div>
+            }
+        }
+        if (TempData["TempErrorMessages"] != null)
+        {
+            var tempErrorMessages = TempData["TempErrorMessages"] as List<string>;
+            foreach (var item in tempErrorMessages)
+            {
+        <div class="data-row">
+            <span class="msg-img"></span><span>@Html.Raw(item)</span></div>
+            }
+        }
+    }
+    @if (ViewData.ModelState != null && ViewData.ModelState.Where(p => p.Value.Errors.Count != 0).Count() != 0)
+    {
+
+        foreach (var item in ViewData.ModelState.Where(p => p.Value.Errors.Count != 0))
+        {
+        <div class="data-row">
+            <span class="msg-img"></span><span>@Html.Raw(item.Value.Errors[0].ErrorMessage)</span></div>
+        }
+    }
+</div>

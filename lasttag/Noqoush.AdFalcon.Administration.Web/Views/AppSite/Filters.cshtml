@@ -1,0 +1,98 @@
+﻿
+@{
+
+    ViewBag.Title = Html.GetResource("Filters", "Titles");
+    List<Noqoush.AdFalcon.Web.Controllers.Model.Tab> actions = new List<Noqoush.AdFalcon.Web.Controllers.Model.Tab>()
+    {
+     new Noqoush.AdFalcon.Web.Controllers.Model.Tab{
+
+      Action = new Noqoush.AdFalcon.Web.Controllers.Model.Action(){
+           DisplayText = Html.GetResource("TextFilters","Filters"),
+        ActionName = "filters",
+        ControllerName = "appsite",
+      ExtraPrams =new {appsiteid = ViewData["AppSiteId"].ToString(),type="1"}
+      }
+     },
+      new Noqoush.AdFalcon.Web.Controllers.Model.Tab{
+
+             Action = new Noqoush.AdFalcon.Web.Controllers.Model.Action(){
+       DisplayText = Html.GetResource("UrlFilters","Filters"),
+        ActionName = "filters",
+        ControllerName = "appsite",
+ ExtraPrams =new {appsiteid = ViewData["AppSiteId"].ToString(),type="2"}
+     }
+      },
+      new Noqoush.AdFalcon.Web.Controllers.Model.Tab{
+
+           Action = new Noqoush.AdFalcon.Web.Controllers.Model.Action()
+           {
+       DisplayText = Html.GetResource("LanguageFilters","Filters"),
+        ActionName = "filters",
+        ControllerName = "appsite",
+        ExtraPrams =new {appsiteid = ViewData["AppSiteId"].ToString(),type="3"}
+     }
+      }
+    };
+
+    actions[int.Parse(ViewData["type"].ToString()) - 1].IsSelected = true;
+}
+<script language="javascript" type="text/javascript">
+    function InitilizeSaveButton() {
+        var Orgbuttons = $("#party-add-dialog-form").dialog("option", "buttons");
+        $("#party-add-dialog-form").dialog({
+            buttons: [
+                {
+                    text: '@Html.GetResource("Save", "Commands")',
+                    click: function () {
+                        collect();
+                    },
+                    "class": 'primary-btn',
+
+                }, Orgbuttons[Orgbuttons.length - 1]]
+        });
+    }
+
+    jQuery(document).ready(function () {
+
+        SetSelectedTap("ListMenuPublisher");
+    });
+
+</script>
+
+<div class="data-row section-container">
+    <div class="data-row section-container">
+        @Html.Partial("Tabs", ViewData["Tabs"])
+        @Html.Hidden("AppSiteId", ViewData["AppSiteId"])
+    </div>
+</div>
+<div class="section-form-container">
+    <div class="section-form-inner-container">
+        @{Html.RenderPartial("PartialViews/NavigationBar", actions);}
+
+        <div id="filterTypeCustom" style="margin-top:15px">
+            @{
+
+                switch (ViewData["type"].ToString())
+                {
+                    case "1":
+                        Html.RenderAction("TextFilters", new { AppSiteId = ViewData["AppSiteId"], Message = ViewData["message"], Kind = ViewData["kind"] });
+                        break;
+                    case "2":
+                        Html.RenderAction("UrlFilters", new { AppSiteId = ViewData["AppSiteId"], Message = ViewData["message"], Kind = ViewData["kind"] });
+                        break;
+                    case "3":
+                        Html.RenderAction("LanguageFilters", new { AppSiteId = ViewData["AppSiteId"], Message = ViewData["message"], Kind = ViewData["kind"] });
+                        break;
+                    case "4":
+                        Html.RenderAction("KeywordFilters", new { AppSiteId = ViewData["AppSiteId"], Message = ViewData["message"], Kind = ViewData["kind"] });
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+
+        </div>
+    </div>
+</div>
+<div class="section-footer"></div>

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+
+  <components>
+
+    <component id="CallContext"
+               service="Noqoush.Framework.ICallContext,Noqoush.Framework"
+               type="Noqoush.Framework.ThreadCallContext,Noqoush.Framework"
+               lifestyle="transient">
+    </component>
+    <component id="RepositoryImpl"
+                service="Noqoush.Framework.Persistence.RepositoryImplBase`2,Noqoush.Framework"
+                type="Noqoush.Framework.Persistence.NHibernate.NHRepository`2,Noqoush.Framework.Persistence"
+                lifestyle="transient">
+    </component>
+  </components>
+
+</configuration>

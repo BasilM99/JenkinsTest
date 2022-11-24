@@ -1,0 +1,142 @@
+﻿@model ArabyAds.AdFalcon.Services.Interfaces.DTOs.Account.AccountFeeDto
+@{
+    if (ViewContext.FormContext == null)
+    {
+        ViewContext.FormContext = new FormContext();
+    }
+}
+<script language="javascript" type="text/javascript">
+
+    var Partyurl = '@Url.Action("search", "Party")';
+    var FirstTimePartyurl = false;
+    $(document).ready(function () {
+        SetSelectedTap("ListMenuAdmin");
+    });
+
+    function validation() {
+        var result = true;
+
+        if ($("#FeeId").val() == '' || $('[name="Value"]').val() == '') {
+            $("#required_signCost").show();
+            result = false;
+        }
+
+        //if ($("#partyId").val() == '' || $("#partyName").val() == '') {
+        //    $("#required_signParty").show();
+        //    result = false;
+        //}
+
+        return result;
+    }
+
+    function showPartySearchDialog() {
+
+
+        if (FirstTimePartyurl == false)
+            refreshPartyGrid();
+
+        FirstTimePartyurl = true;
+        showDialog('party-search-dialog-form');
+    }
+    function AddCostElement(feeElementID, feeElementName) {
+
+        if ((typeof (feeElementID) != "undefined") && (typeof (feeElementName) != "undefined")) {
+            jQuery('#FeeElementName').text(feeElementName);
+            jQuery('[name="FeeId"]').val(feeElementID);
+            jQuery('[name="Value"]').val(feeElementName);
+            jQuery('[id="feeElementText"]').val(feeElementName);
+
+            $("#required_signCost").hide();
+
+        }
+		jQuery('#party-FeeElementSearch-dialog-form').dialog('close');
+
+    }
+    function refreshPartyGrid() {
+
+
+        $.ajax(
+            {
+                url: Partyurl,
+                cache: false,
+                success: function (html) {
+
+                    //
+                    html = html.toString();
+                    $("#party-search-dialog-form").html('');
+                    var newelem = jQuery(html);
+                    $("#party-search-dialog-form").append(newelem);
+                    parseScript(html);
+                    initilize();
+
+                    $("#SearchParty").show();
+
+                },
+                error: function (error) {
+
+                }
+            });
+    }
+
+    function changeParty(partytId, partyDesc) {
+
+        if ((typeof (partytId) != "undefined") && (typeof (partyDesc) != "undefined")) {
+            jQuery('#beneficiaryName').text(partyDesc);
+            jQuery('[name="partyId"]').val(partytId);
+            jQuery('[name="partyName"]').val(partyDesc);
+            jQuery('[id="partyNameText"]').val(partyDesc);
+
+        }
+        jQuery('#party-search-dialog-form').dialog('close');
+    }
+</script>
+<div class="section-form-inner-container">
+    @Html.HiddenFor(x => x.ID, new { id = "AccountFeeElement_Id" })
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("FeeElement", "Account")</span>
+        </div>
+        <div class="field-container">
+            <div onclick="showCostElementSearchDialog();" style="line-height: 24px;">
+                @Html.HiddenFor(p => p.FeeId)
+                @Html.HiddenFor(p => p.Value)
+                @Html.AdFalconTextBoxFor(p => p.Value, new { id = "FeeElementName" , disabled = "true" })
+                <img class="find-icon" src='@Url.GetImagePath("find-icon.png")' />
+                @*<span class="side-text" id="FeeElementName" style="float: none;">@(Model != null ? Model.Value : string.Empty)</span>*@
+            </div>
+        </div>
+        <div class="field-container">
+            <span class="field-validation-error" data-valmsg-for="Code" data-valmsg-replace="true" style="display:none" name="required_sign" id="required_signCost">
+                <span htmlfor="Code" generated="true" class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span>
+            </span>
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("Beneficiary", "CostElements")</span>
+        </div>
+        <div class="field-container">
+            <div onclick="showPartySearchDialog();" style="line-height: 24px;">
+                @Html.HiddenFor(p => p.partyId)
+                @Html.HiddenFor(p => p.partyName)
+                @Html.AdFalconTextBoxFor(p => p.partyName, new { id= "beneficiaryName", disabled = "true" })
+                <img class="find-icon" src='@Url.GetImagePath("find-icon.png")' />
+
+                @*<span class="side-text" id="beneficiaryName" style="float: none;">@(Model != null ? Model.partyName : string.Empty)</span>*@
+            </div>
+        </div>
+        <div class="field-container">
+            <span class="field-validation-error" data-valmsg-for="Code" data-valmsg-replace="true" style="display:none" name="required_sign" id="required_signParty">
+                <span htmlfor="Code" generated="true" class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span>
+            </span>
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">&nbsp;</span>
+        </div>
+        <div class="field-container">
+            @Html.GetCheckBox("Enabled", Html.GetResource("IsCapping", "Campaign"), @isChecked: true)
+        </div>
+    </div>
+</div>

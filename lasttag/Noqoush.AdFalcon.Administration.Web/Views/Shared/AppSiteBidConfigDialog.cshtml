@@ -1,0 +1,138 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.Campaign.CampaignBidConfigModel
+
+
+@Html.Hidden("CampaignId", Model.CampaignId)
+@Html.Hidden("UpdatedCampaignBidConfiges-Dialog", "")
+
+@Html.Hidden("DeletedCampaignBidConfigs-Dialog", "")
+@Html.Hidden("InserteCampaignBidConfigs-Dialog", "")
+
+
+
+<div id="gridDivAppSiteBidConfig" class="floating-left grid-containe" style="width: 100%;">
+    <div class="data-row" >
+        <div class="go-left data-row">
+            @Html.GetResource("BidConfigsDescription", "Campaign")
+        </div>
+    </div>
+
+    <div class="data-row red-box" style="display:none; " id="divErrorMessagesForBidConfigsDialog">
+        <div class="data-row"><span class="msg-img"></span><span>@Html.GetResource("MinBidErrMsg")</span></div>
+    </div>
+    <div class="data-row " style="padding: 15px;">
+        @(Html.Telerik().Grid(Model.CampaignBidConfigList).Name("CampaignBidConfigs").NoRecordsTemplate("&nbsp;").TableHtmlAttributes(new { width = "800px" })
+        .DataKeys(p => p.Add(o => o.ID))
+        .EnableCustomBinding(true)
+        .Editable(ed => ed.Mode(GridEditMode.InCell).DisplayDeleteConfirmation(false)
+        .DefaultDataItem(new Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.CampaignBidConfigDto()))
+
+        .Columns(columns =>
+        {
+            columns.Bound(o => o.CampaingName).HtmlAttributes(new { @class = "trimed-info2" }).ReadOnly().Hidden(ViewBag.showAppSitePricingModel);
+            columns.Bound(o => o.AdGrouptName).ReadOnly().HtmlAttributes(new { @class = "trimed-info2" });
+            columns.Bound(o => o.AdGroupPricingModel).Width("100px").ReadOnly();
+            columns.Bound(o => o.AppsiteName).HtmlAttributes(new { @class = "trimed-info2" }).ReadOnly().Title(Html.GetResource("AppSites", "CampaignBidConfig")).Hidden(!ViewBag.showAppSitePricingModel);
+
+           
+            columns.Bound(o => o.ID).Hidden();
+            columns.Bound(o => o.AdGroupId).Hidden();
+            columns.Bound(o => o.Appsite.ID).Hidden();
+            columns.Bound(o => o.AccountId).Hidden();
+            columns.Bound(o => o.AppsitePricingModelId).Hidden();
+            columns.Bound(o => o.AppsitePricingModel).Template(
+                @<text>
+                    @{
+
+
+                        if (@item.AppsitePricingModel == string.Empty)
+                        {
+                            @Html.GetResource("Default", "Campaign")
+                        }
+                        else
+                        { @item.AppsitePricingModel }
+
+                    }
+                </text>
+                                    ).ReadOnly().Width("100px").Title(string.Format("{0} {1}", Html.GetResource("AppSites", "CampaignBidConfig"), Html.GetResource("CostModel", "Global"))).Hidden(!ViewBag.showAppSitePricingModel);
+            columns.Bound(o => o.MinBid).Title(Html.GetResource("MaxBidConfig", "BidConfig")).ReadOnly().Width("70px").HtmlAttributes(new { id = "MinBid" });
+            columns.Bound(o => o.Bid).Title(Html.GetResource("Bid", "Campaign")).Template(
+            r => Html.AdFalconTextBox("Bid" + r.ID, r.Bid.ToString("F3"), new
+            {
+                @class = "required text-box ",
+                maskType = "decimal",
+                onchange = " CampaignBidConfigs_BidValue_Changed(this);",
+                onfocus = "onBid_select(this);"
+               ,
+                onkeypress = "onbidpress(event,this)",
+                style = "width:80px"
+            }).ToString() +
+            "<span class='field-validation-error' style='display: none;'><span>" + Html.GetResource("CurrencyMsg", "ResourceSet") + "</span></span>"
+                //  Html.AdFalconValidationMessage("Bid" + r.ID).ToString()
+            ).ReadOnly()
+            .HtmlAttributes(new { style = "width:50px!important;" })
+            .ClientTemplate(
+             Html.AdFalconTextBox("Bid", "", new
+             {
+                 //    @class = "required text-box input-validation-error",
+                 maskType = "decimal",
+                 onchange = " CampaignBidConfigs_BidValue_Changed(this);",
+                 onfocus = "onBid_select(this);"
+                ,
+                 onkeypress = "onbidpress(event,this)",
+                 style = "width:80px"
+             }).ToString().ToString()
+            +
+            "<span  class='field-validation-error' style='display: none;'><span>" + Html.GetResource("CurrencyMsg", "ResourceSet") + "</span></span>"
+
+            //  Html.AdFalconValidationMessage("Bid").ToString()
+            )
+            .HtmlAttributes(new { style = "width:50px!important;" }).ReadOnly();
+            
+        }).ClientEvents(e => e.OnDataBound("CampaignBidConfigs_OnDataBound"))
+                                                                .DataBinding(dataBinding =>
+                                                                {
+                                                                    dataBinding.Server().Select("GetCampaignBidConfigs", "AppSite", new { ajax = true });
+                                                                    dataBinding.Ajax().Select("GetCampaignBidConfigs", "AppSite");
+
+                                                                })
+                                                                .Scrollable(scrolling => scrolling.Enabled(false)).EnableCustomBinding(true))
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    
+
+    $(document).ready(function () {
+        $("#CampaignBidConfigDialog").dialog({
+
+            resizable: false,
+            draggable:false,
+            //height: 500,
+            width: 900,
+            modal: true,
+            autoOpen: false,
+            title: '@Html.GetResource("CampaignBidConfig", "Titles")',
+
+        });
+        $("#CampaignBidConfigs .t-status .t-icon.t-refresh").attr("style", "display:none");
+
+    });
+
+    function CampaignBidConfigs_OnDataBound(sender, args) {
+
+        var grid = $("#CampaignBidConfigs").data("tGrid");
+        array = $("#CampaignBidConfigs tbody tr");
+        for (var i = 0; i < array.length; i++) {
+            dataItem = grid.dataItem(array[i]);
+            if (dataItem != undefined) {
+                if (dataItem.Bid != "") {
+                    $(array[i]).find("#Bid")[0].value = parseBidValue(dataItem.Bid);
+                }
+
+
+            }
+        }
+    }
+
+</script>

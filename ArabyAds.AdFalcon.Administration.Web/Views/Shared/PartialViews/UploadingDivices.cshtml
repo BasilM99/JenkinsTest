@@ -1,0 +1,120 @@
+﻿@using ArabyAds.AdFalcon.Domain.Common.Model.Campaign
+@*@using ArabyAds.Framework.DomainServices*@
+
+<div id="uploaderAdvertiserAudienceListEventDialog" class="adfalcon-dialog" style="display:none;overflow:visible">
+	<div class="data-row red-box" style="display:none" id="party-divErrorMessages-uploader">
+		@{
+
+			if (ViewBag.ErrorMessages != null)
+			{
+				foreach (var item in ViewBag.ErrorMessages)
+				{
+					<div class="data-row">
+						<span class="msg-img"></span><span>@Html.Raw(item)</span>
+					</div>
+				}
+			}
+			if (TempData["TempErrorMessages"] != null)
+			{
+				var tempErrorMessages = TempData["TempErrorMessages"] as List<string>;
+				foreach (var item in tempErrorMessages)
+				{
+					<div class="data-row">
+						<span class="msg-img"></span><span>@Html.Raw(item)</span>
+					</div>
+				}
+			}
+		}
+		@if (ViewData.ModelState != null && ViewData.ModelState.Where(p => p.Value.Errors.Count != 0).Count() != 0)
+		{
+
+			foreach (var item in ViewData.ModelState.Where(p => p.Value.Errors.Count != 0))
+			{
+				<div class="data-row">
+					<span class="msg-img"></span><span>@Html.Raw(item.Value.Errors[0].ErrorMessage)</span>
+				</div>
+			}
+		}
+	</div>
+	<br />
+
+	<div class="data-row data-container">
+
+		<div class="label-container">
+			<span class="field-title required-field"> @Html.GetResource("AudienceList", "Global")</span>
+		</div>
+		<div class="field-container">
+			<span class="small-big-field">@Html.TextBox("AudienceListName", string.Empty, new { @class = "", @disabled = "disabled", @readonly = "readonly" })</span>
+		</div>
+	</div>
+	<br />
+
+	<div class="data-row data-container">
+		<div class="label-container">
+			&nbsp;
+		</div>
+		<div class="field-container">
+
+			@Html.GetRadioButton("AppType", Html.GetResource("Android", "AppType"), true, "floating-left iea-rbtn-width-b", value: "1", Id: "AppTypeAnd")
+			@Html.GetRadioButton("AppType", Html.GetResource("IOS", "AppType"), false, "floating-left iea-rbtn-width-b", value: "2", Id: "AppTypeIOS")
+		</div>
+	</div>
+
+	<div class="data-row data-container">
+		<div class="label-container">
+			<span class="field-title required-field">@Html.GetResource("SelectFile", "AudienceList")</span>
+		</div>
+		<div class="field-container">
+			<div class="floating-right uplaod-ctnl-special">
+				@(Html.Telerik().Upload().Name("CSVfile_upload").Multiple(false).ShowFileList(false)
+											  .Async(async => async.Save("SaveForCSV", "Document", new { AudienceListId = 0, DeviceTypeId = 0 }).Remove("Remove", "Document")
+												  .AutoUpload(true)).ClientEvents(events => events.OnSuccess("onFileUploadCSVSuccess").OnUpload("onFileUpload_CSV")).HtmlAttributes(new { accept = ".cvs,.txt" }))
+			</div>
+		</div>
+	</div>
+	<div class="data-row data-container">
+		<h3 id="warningMessage" style="margin-top: -2px !important;text-align: center;float: unset;font-size: 11px;"></h3>
+	</div>
+
+	<script>
+
+
+                                                    function onFileUpload_CSV(e) {
+														var URL = CSVUploadURL.replace("AudienceListId=0", "AudienceListId=" + AudienceListIdSelected);
+                                                        URL = URL.replace("DeviceTypeId=0", "DeviceTypeId=" + $("input[name=AppType][checked='checked']").val());
+
+                                                        URL = URL.replace("&amp;", "&" );
+														//URL = "&DeviceTypeId=" + $('input[name=AppType]:checked').val()
+														$($("#CSVfile_upload")[0]).tUpload().data().tUpload.async.saveUrl = URL;
+														//e.files[0].Anas = 0;
+              //                                          jQuery(e.files).each(function () {
+
+              //                                          });
+		};
+
+
+
+		function onFileUploadCSVSuccess(e) {
+
+			clearErrorMessage();
+
+            if (e.response.status == "OK") {
+
+                clearErrorMessage("party-divErrorMessages-uploader");
+                showNotfy("@Html.GetResource( "UploadSuccess", "AudienceList")", "success", '', toastroptionsWithNoTime)
+
+
+
+                $('#uploaderAdvertiserAudienceListEventDialog').dialog('close');
+			}
+			else {
+                clearErrorMessage("party-divErrorMessages-uploader");
+                showErrorMessage("@Html.GetResource("FileSize", "Upload")", true, "party-divErrorMessages-uploader");
+
+            }
+		};
+
+
+
+	</script>
+</div>

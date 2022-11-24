@@ -1,0 +1,296 @@
+﻿@using Noqoush.AdFalcon.Domain.Common.Model.Core.CostElement
+@using Noqoush.Framework
+@using Noqoush.AdFalcon.Services.Interfaces.DTOs.Core
+@using Noqoush.AdFalcon.Services.Interfaces.Services
+@model Noqoush.AdFalcon.Administration.Web.Controllers.Model.Lookup.CostElementViewModel
+@{
+	if (ViewContext.FormContext == null)
+	{
+		ViewContext.FormContext = new FormContext();
+	}
+	ViewData.TemplateInfo.HtmlFieldPrefix = "LookupDto";
+	var costElementModel = (Model.LookupDto as CostElementDto);
+	bool isFixed = costElementModel.TypeId == (int)CalculationType.Fixed;
+
+	bool isDataScope = costElementModel.Scope == 2;
+
+	bool isBillableCost = costElementModel.CostElementCalculatedFrom == CostElementCalculatedFrom.BillableCost;
+
+	bool isFee = costElementModel.CostElementCalculatedFrom == CostElementCalculatedFrom.Fee;
+	bool isNetCost = costElementModel.CostElementCalculatedFrom == CostElementCalculatedFrom.NetCost;
+
+	var costModels = (IoC.Instance.Resolve<ICostModelWrapperService>()).GetAll();
+
+	if (costElementModel.ID==0)
+	{
+		isBillableCost = true;
+		isNetCost = false;
+
+
+
+	}
+
+}
+<script language="javascript" type="text/javascript">
+    var latestCalculatedFrom = '@((int)costElementModel.CostElementCalculatedFrom)';
+    function show_costElement_value_msg(flag, validationItem) {
+        if (flag) {
+            $('[name="' + validationItem + '"]').show();
+        } else {
+            $('[name="' + validationItem + '"]').hide();
+        }
+    }
+
+    function validate_costElement_value(itemName, onlyFormat) {
+
+        var validateFormatResult = true;
+        var requiredValueResult = true;
+        var itemToValidate = null;
+        if (typeof (itemName) == "string") {
+            itemToValidate = $("input[name='" + itemName + "']");
+        } else {
+            itemToValidate = $(itemName);
+        }
+
+        var value = parseFloat(itemToValidate.val());
+        var percentage_checked = $("[name='LookupDto.TypeId'][value='1']").is(':checked');
+        if ((!isNaN(value)) && percentage_checked && (value < 0.0001 || value > 100)) {
+            validateFormatResult = false;
+        } else {
+            if (isNaN(value) && !onlyFormat) {
+                requiredValueResult = false;
+            }
+        }
+
+
+        show_costElement_value_msg(!validateFormatResult, itemToValidate.attr("datavalidationitemId"));
+        show_costElement_value_msg(!requiredValueResult, itemToValidate.attr("datarequireditemid"));
+
+        return requiredValueResult && validateFormatResult;
+    }
+
+    function validate_costElement_values(onlyFormat) {
+
+        var result = true;
+        $("input[name^='LookupDto.CostModelValue']").each(function () {
+            var itemValidation = validate_costElement_value($(this).attr("name"), onlyFormat);
+
+            if (itemValidation == false) {
+                result = false;
+            }
+        });
+
+
+        return result;
+    }
+
+    function costTypeChanged(elem, value) {
+        var desc = '$';
+        var maskType = 'decimal';
+        switch (parseInt(value)) {
+        case 1: //Percentage
+            desc = '%';
+            maskType = 'percentage';
+            latestCalculatedFrom = $("input[name='LookupDto.CostElementCalculatedFrom'][checked]").val();
+            break;
+        case 2://Fixed
+            desc = '$';
+            maskType = 'decimal';
+            latestCalculatedFrom = $("input[name='LookupDto.CostElementCalculatedFrom'][checked]").val();
+            Radio_uncheck("NetCostRdb");
+				if ((latestCalculatedFrom + '') == '1') {
+					Radio_check("FeeRdb");
+				}
+				else {
+					Radio_check("BillableCostRdb");
+				}
+
+
+            break;
+
+        default:
+        }
+        $('[name=value_type_desc]').text(desc);
+        validate_costElement_values(true);
+    }
+    function scopeChanged(elem,value) {
+
+
+        switch (parseInt(value)) {
+            case 1:
+				$("#category").show();
+				$("#CalculatedFrom").show();
+            break;
+        case 2:
+
+				$("#category").hide();
+				$("#CalculatedFrom").hide();
+				Radio_uncheck("NetCostRdb");
+				Radio_check("BillableCostRdb");
+				Radio_uncheck("FeeRdb");
+
+            break;
+
+
+		}
+
+	
+    }
+
+    function validateForm() {
+        return validate_costElement_values(false);
+    }
+
+    function feeOnChange(elem, value) {
+
+        if ($("input[name='LookupDto.CostElementCalculatedFrom'][checked]").val() == 2 && $("input[name='LookupDto.TypeId'][checked]").val()==2) {
+
+
+            Radio_uncheck("NetCostRdb");
+
+            event.preventDefault();
+            if ((latestCalculatedFrom+'') == '1') {
+                Radio_check("FeeRdb");
+            }
+            else {
+				Radio_check("BillableCostRdb");
+
+		
+            }
+            return;
+
+        }
+        if ($("input[name='LookupDto.CostElementCalculatedFrom'][checked]").val() == 1) {
+
+            latestCalculatedFrom = 1;
+            $("#fee").show();
+
+        } else {
+            latestCalculatedFrom = 3;
+            $("#fee").hide();
+        }
+
+    }
+</script>
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("Scope", "Global")</span>
+    </div>
+    <div class="field-container">
+        @{
+            @Html.GetRadioButton("LookupDto.Scope", "Inventory", isDataScope==false, "floating-left", value: "1", onChange: "scopeChanged")
+            @Html.GetRadioButton("LookupDto.Scope", "Data", isDataScope, "floating-left", value: "2", onChange: "scopeChanged")
+        }
+        @Html.ValidationMessageFor(p => (p.LookupDto as CostElementDto).TypeId)
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("Type", "Lookup")</span>
+    </div>
+    <div class="field-container">
+        @{
+            @Html.GetRadioButton("LookupDto.TypeId", Html.GetResource("FixedType", "Lookup"), isFixed, "floating-left", value: "2", onChange: "costTypeChanged")
+            @Html.GetRadioButton("LookupDto.TypeId", Html.GetResource("PercentageType", "Lookup"), !isFixed, "floating-left", value: "1", onChange: "costTypeChanged")
+        }
+        @Html.ValidationMessageFor(p => (p.LookupDto as CostElementDto).TypeId)
+    </div>
+</div>
+<div class="data-row data-container" id="CalculatedFrom" style='@(isDataScope?"display: none":"")'>
+    <div class="label-container">
+        <span class="field-title required-field">Calculated From</span>
+    </div>
+	<div class="field-container">
+
+		@Html.GetRadioButton("LookupDto.CostElementCalculatedFrom", "Fee", isFee, "floating-left", value: "1", onChange: "feeOnChange", Id: "FeeRdb")
+		@Html.GetRadioButton("LookupDto.CostElementCalculatedFrom", "NetCost", isNetCost, "floating-left", value: "2", onChange: "feeOnChange", Id: "NetCostRdb")
+		@Html.GetRadioButton("LookupDto.CostElementCalculatedFrom", "BillableCost", isBillableCost, "floating-left", value: "3", onChange: "feeOnChange", Id: "BillableCostRdb")
+
+	</div>
+</div>
+<div class="data-row data-container" id="fee" style='@(isFee?"":"display: none")'>
+    <div class="label-container">
+        <span class="required-field" style="line-height: 20px; margin-right: 10px; font-size: 11px">Calculation From Fee Category</span>
+    </div>
+    <div class="field-container">
+
+        @*@Html.GetCheckBox("IsDataFee", "Data", (Model.LookupDto as CostElementDto).IsDataFee)*@
+        @*@Html.GetCheckBox("IsThirdPartyFee", "Third Party", (Model.LookupDto as CostElementDto).IsThirdPartyFee)*@
+        @Html.GetCheckBox("IsPlatformFee", "Platform", (Model.LookupDto as CostElementDto).IsPlatformFee)
+        @*@Html.GetCheckBox("IsAVRFee", "AVR", (Model.LookupDto as CostElementDto).IsAVRFee)
+            @Html.GetCheckBox("IsExchangeDiscrepancyFee", "Exchange Discrepancy", (Model.LookupDto as CostElementDto).IsExchangeDiscrepancyFee)*@
+
+    </div>
+
+</div>
+<div class="data-row data-container" id="category"  style='@(isDataScope?"display: none":"")'>
+    <div class="label-container">
+        <span class="field-title required-field">Category</span>
+    </div>
+    <div class="field-container">
+
+        @if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsDataCostElem)
+        {
+            @Html.GetCheckBox("IsData", "Data", (Model.LookupDto as CostElementDto).IsData)
+
+
+        }
+        @if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsThirdPartyCostElem)
+        {
+            @Html.GetCheckBox("IsThirdParty", "Third Party", (Model.LookupDto as CostElementDto).IsThirdParty)
+
+        }
+        @if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsPlatformCostElem)
+        {
+            @Html.GetCheckBox("IsPlatform", "Platform", (Model.LookupDto as CostElementDto).IsPlatform)
+        }
+        @if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsAVRCostElem)
+        {
+            @Html.GetCheckBox("IsAVR", "AVR", (Model.LookupDto as CostElementDto).IsAVR)
+        }
+        @if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsExchangeDiscrepancyCostElem)
+        {
+            @Html.GetCheckBox("IsExchangeDiscrepancy", "Exchange Discrepancy", (Model.LookupDto as CostElementDto).IsExchangeDiscrepancy)
+        }
+
+    </div>
+
+</div>
+
+@foreach (var item in costModels)
+{
+    string value = string.Empty;
+    if (!(costElementModel == null || costElementModel.Values == null || costElementModel.Values.Count() == 0))
+    {
+        var costModelWrapperValue = costElementModel.Values.Where(p => p.CostModelWrapper.ID == item.ID).SingleOrDefault();
+        if (costModelWrapperValue != null)
+        {
+            value = costElementModel.TypeId == 1 ? (costModelWrapperValue.Value * 100).ToString("F2") : costModelWrapperValue.Value.ToString("F2");
+        }
+    }
+
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@item.Name</span>
+        </div>
+        <div class="field-container">
+            @Html.TextBox(string.Format("CostModelValue-{0}", item.ID), value, new { @class = "text-box", maskType = "decimal", onchange = "validate_costElement_value(this,false);", datarequireditemid = string.Format("displayRequiredMsg-{0}", item.ID), datavalidationitemId = string.Format("displayValueErrorMsg-{0}", item.ID) })
+            <span name="value_type_desc" class="side-text">@(isFixed ? "$" : "%")</span>
+            <span name="displayValueErrorMsg-@item.ID" class="validation-arrow field-validation-error" style="display: none;">
+                <span class="">@(string.Format(Html.GetResource("RangeMessage", "ResourceSet"), 1, 100))</span>
+            </span>
+            <span name="displayRequiredMsg-@item.ID" class="validation-arrow field-validation-error"
+                  style="display: none;"><span class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span></span>
+            </div>
+        </div>
+    }
+
+@*<div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">&nbsp;</span>
+        </div>
+        <div class="field-container">
+            @Html.GetCheckBox("IsOneTime", Html.GetResource("IsOneTime", "Lookup"), (Model.LookupDto as CostElementDto).IsOneTime)
+            @Html.ValidationMessageFor(p => (p.LookupDto as CostElementDto).IsOneTime)
+        </div>
+    </div>*@

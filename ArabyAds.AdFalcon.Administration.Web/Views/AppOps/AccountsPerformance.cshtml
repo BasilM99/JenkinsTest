@@ -1,0 +1,173 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("AccountsPerformance", "Titles");
+}
+@model ArabyAds.AdFalcon.Web.Controllers.Model.AppSite.Performance.AppOpsAccountPerformanceViewModel
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+    // Load the Visualization API and the controls package.
+    google.load('visualization', '1.1', { 'packages': ['bar', "corechart"] });
+    var topAppSitesAccountsPerformanceSpinner;
+    var appSitesAccountsChartUrl = '@Url.Action("AccountsPerformanceChart", "AppOps")';
+    
+</script>
+<style>
+
+    .optWrapper 
+    {
+
+        position:relative !important;
+
+    }
+
+</style>
+@using (Html.BeginForm())
+{
+    <script language="javascript" type="text/javascript">
+
+        $(document).ready(function () {
+            SetSelectedTap("ListMenuAdmin");
+        });
+
+        function localInitilize() {
+            jQuery('input[data-date="true"]')
+                .daterangepicker(
+                    {
+                        dateFormat: 'dd-mm-yy',
+                        isRTL: false
+                    });
+
+            searchAppSitesAccountsPerformance();
+
+            $(".multiselect").SumoSelect({ placeholder: "@Html.GetResource("Select","Global")" });
+        }
+
+        function appOpsGridRawDataBound(args) {
+            console.log(args);
+            var accountLink = $(args.row.innerHTML).find("[name=accountnameLink]");
+            accountLink.attr("href", accountLink.attr("href") + "?datefrom=" + $('#DateFrom').val() + "&dateto=" + $('#DateTo').val());
+
+            args.row.cells[0].innerHTML = $('<div>').append("<div>" + $('<div>').append(accountLink.clone()).html() + "</div>").html();
+        }
+        function appOpsGridDataBinding(args) {
+
+            args.data = $.extend(args.data,
+                {
+                    FromDate: $('#DateFrom').val(),
+                    ToDate: $('#DateTo').val(),
+                    AccountName: $("#AccountName").val(),
+                    AppSiteName: $("#AppSiteName").val(),
+
+                    Countries: $("#country").val() == null ? "" : $("#country").val().join(","),
+                    MetricValue: $("#metric").val()
+                });
+        };
+
+    </script>
+
+    <br />
+<br />
+<div class="data-row go-center" style="overflow: visible;">
+    <div class="blue-filter-container" style="height: 230px; overflow: visible;">
+        <table class="special-content">
+            <tr>
+                <td style="width: 80px">
+                    <span class="go-bold">@Html.GetResource("From", "Global")</span>
+                </td>
+                <td style="width: 110px;">
+                    <input type="text" readonly="readonly" value="@(Model.DateFrom.HasValue ? Model.DateFrom.Value.ToString(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.MainShortDateFormat) : string.Empty)" data-date="true" name="DateFrom" id="DateFrom"
+                           class="text-box range-date-cntl" />
+                </td>
+                <td>
+                    <span class="go-bold">@Html.GetResource("To", "Global")</span>
+                </td>
+                <td style="width: 110px;">
+                    <input type="text" readonly="readonly" value="@(Model.DateTo.HasValue ? Model.DateTo.Value.ToString(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.MainShortDateFormat) : string.Empty)" data-date="true" name="DateTo" id="DateTo"
+                               class="text-box range-date-cntl left-range-cntrl" />
+                </td>
+                <td style="width: 360px;">&nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="go-bold">@Html.GetResource("Name", "AppSite")</span>
+                </td>
+                <td class="go-left" colspan="4">
+                    @Html.AdFalconEditorFor(p => p.AppSiteName)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="go-bold">@Html.GetResource("AccountName", "Global")</span>
+                </td>
+                <td class="go-left" colspan="4">
+                    @Html.AdFalconEditorFor(p => p.AccountName)
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 80px">
+                    <span class="go-bold">@Html.GetResource("OrderBy", "Global")</span>
+                </td>
+                <td class="small-select" colspan="4">
+                    @Html.DropDownList("metric", Model.MetricsList)
+                </td>
+            </tr>
+            <tr>
+                <td class="">
+                    <span class="go-bold">@Html.GetResource("Country", "Global")</span>
+                </td>
+                <td class="go-left" colspan="4">
+                    @Html.ListBox("country", Model.Countries, new { @class = "multiselect" })
+                </td>
+                <td class="go-right" colspan="5">
+                    <input type="button" onclick="searchAppSitesAccountsPerformance();" value='@Html.GetResource("Filter")' class="btn filter-button " />
+                </td>
+            </tr>
+            
+            @*<tr>
+                
+            </tr>*@
+        </table>
+    </div>
+    <div class="tail">
+    </div>
+</div>
+<br />
+
+<div id="appSitesResultContainer">
+        <div class="grid-container" id="topAccountsGrid">
+            @(Html.Telerik().Grid(Model.Result)
+              .Name("AccountsGrid")
+              .Columns(columns =>
+                  {
+
+                      columns.Bound(o => o.Name).Title(Html.GetResource("AccountName", "Global")).
+                          ClientTemplate("<div><a name='accountnameLink' href=\"" + Url.Action("AppSitesPerformance", "AppOps") + "/<#= Id#>\"><#= Name#></a> </div>");
+                      columns.Bound(o => o.AdRequests).Format("{0:#,##0}").Title(Html.GetResource("AdRequests", "AppChart")).Width("120px").HtmlAttributes(new { @class = "go-center" });
+                      columns.Bound(o => o.AdImpress).Format("{0:#,##0}").Title(Html.GetResource("AdImpress", "AppChart")).Width("120px").HtmlAttributes(new { @class = "go-center" });
+                      columns.Bound(o => o.Clicks).Format("{0:#,##0}").Title(Html.GetResource("AdClicks", "AppChart")).Width("120px").HtmlAttributes(new { @class = "go-center" });
+                      columns.Bound(o => o.RevenueText).Title(Html.GetResource("Revenue", "AppChart")).Width("120px").HtmlAttributes(new { @class = "go-center" });
+                      columns.Bound(o => o.FillRateText).Title(Html.GetResource("FillRate", "AppChart")).Width("100px").HtmlAttributes(new { @class = "go-center" }).Sortable(false);
+                      columns.Bound(o => o.CtrText).Title(Html.GetResource("CTR", "AppChart")).Width("75px").HtmlAttributes(new { @class = "go-center" }).Sortable(false);
+                      columns.Bound(o => o.eCPMText).Title(Html.GetResource("eCPM", "AppChart")).Width("70px").HtmlAttributes(new { @class = "go-center" }).Sortable(false); ;
+
+                  })
+              .DataBinding(dataBinding =>
+                  {
+                      dataBinding.Server().Select("AccountsPerformance", "AppOps", new { ajax = true });
+                      dataBinding.Ajax().Select("AccountsPerformanceGrid", "AppOps");
+
+                  }).EnableCustomBinding(true)
+              .ClientEvents(clientEvents => clientEvents.OnDataBinding("appOpsGridDataBinding").OnRowDataBound("appOpsGridRawDataBound"))
+              .Scrollable(scrolling => scrolling.Enabled(false))
+              .Selectable()
+              .Pageable(paging => paging.PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total((int)Model.TotalCount).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+              .Filterable(filtering => filtering.Enabled(false))
+              .Groupable(grouping => grouping.Enabled(true)).Footer(true))
+        </div>
+
+        <div id="topAccountsChart" style="display: none;">
+        </div>
+        @Html.Partial("PerformanceReportChangeViewTab", "topAccounts")
+        <br />
+    </div>
+}

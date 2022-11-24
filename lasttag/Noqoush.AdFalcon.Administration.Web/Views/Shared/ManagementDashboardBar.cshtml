@@ -1,0 +1,38 @@
+﻿@model Noqoush.AdFalcon.Administration.Web.Controllers.Model.DashboardViewModel
+@{
+    
+}
+
+<div class="blue-filter-container" style="height: 40px;">
+        <table class="special-content">
+            <tr>
+                <td style="width: 40px;">
+                    <span class="go-bold">@Html.GetResource("From", "Global")</span>
+                </td>
+                <td style="width: 80px;">
+                    <input type="text"  value="@(Model.DateFrom.HasValue ? Model.DateFrom.Value.ToString(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.MainShortDateFormat) : string.Empty)" data-date="true" name="DateFrom" id="DateFrom"
+                               class="text-box range-date-cntl" />
+                </td>
+                <td style="width: 40px;">
+                    <span class="go-bold">@Html.GetResource("To", "Global")</span>
+                </td>
+                <td style="width: 80px;">
+                      <input type="text" readonly="readonly" value="@(Model.DateTo.HasValue ? Model.DateTo.Value.ToString(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.MainShortDateFormat) : string.Empty)" data-date="true" name="DateTo" id="DateTo"
+                               class="text-box range-date-cntl left-range-cntrl" />
+                </td>
+                <td style="width: 40px;">&nbsp;</td>
+                <td  style="width:50px;">
+                   <span class="go-bold">@Html.GetResource("Metric", "Global")</span>
+                </td>
+                <td class="small-select">
+                    @Html.DropDownList("metric", Model.MetricsList)
+                </td>
+                <td style="width:20px;">
+                    &nbsp;
+                </td>
+                <td>
+                    <input type="button" value="@Html.GetResource("Apply","Global")" onclick="loadEntireAppSiteDashboardReport()" class="save-button" />
+                </td>
+            </tr>
+        </table>
+    </div>

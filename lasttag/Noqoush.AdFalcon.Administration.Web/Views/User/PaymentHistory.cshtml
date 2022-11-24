@@ -1,0 +1,28 @@
+﻿@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Account.Payment.PaymentDtoResult
+
+
+        @(Html.Telerik().Grid(Model.Items)
+                    .Name("GridPayments")
+                    .Columns(columns =>
+                    {
+
+                        columns.Bound(o => o.AdFalconReceiptNo).Title(Html.GetResource("TransactionID", "AccountHistory"));
+                        columns.Bound(o => o.Type.Name.Value).Title(Html.GetResource("PaymenType", "AccountHistory"));
+                        columns.Bound(o => o.TransactionDate).Title(Html.GetResource("Date", "AccountHistory")).Format("{0:" + Noqoush.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}");
+                        columns.Bound(o => o.Amount).Title(Html.GetResource("Amount", "AccountHistory"));
+                        columns.Bound(o => o.VATAmount).Title(Html.GetResource("Vat"));
+                        columns.Bound(o => o.Comment).Title(Html.GetResource("Comment", "Global")).Width(250);
+
+                    })
+                                                                                    .DataBinding(dataBinding =>
+                                                                                    {
+                                                                                        dataBinding.Ajax().Select("PaymentHistory", "user").Enabled(true);
+                                                                                        dataBinding.Server().Select("PaymentHistory", "user", new { ajax = true });
+
+                                                                                    })
+                                                                                        .Scrollable(scrolling => scrolling.Enabled(false))
+                                                                                        .EnableCustomBinding(true)
+                                                                                                  .Pageable(paging => paging.PageSize(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total(Model.Total).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+                                                                                              .Groupable(grouping => grouping.Enabled(false)).Footer(true))
+   
+

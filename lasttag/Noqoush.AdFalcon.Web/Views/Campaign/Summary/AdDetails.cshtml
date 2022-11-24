@@ -1,0 +1,435 @@
+﻿@using Noqoush.AdFalcon.Domain.Common.Model.Campaign;
+@{
+    ViewBag.Title = Html.GetResource("AdDetails", "Titles");
+}
+@model Noqoush.AdFalcon.Web.Controllers.Model.Campaign.AdCreativeFullSummaryViewModel
+@{
+    ViewData["ControllerName"] = Model.ViewSummary.Campaign.CampaignTypeEnum == (int)Noqoush.AdFalcon.Domain.Common.Model.Campaign.CampaignType.Normal ? "Campaign" : "HouseAd";
+}
+<script language="javascript" type="text/javascript">
+    var resource_select_command= '@Html.GetResource("SelectComman")';
+    var isHouseAd = '@(Model.ViewSummary.Campaign.CampaignTypeEnum == (int)Noqoush.AdFalcon.Domain.Common.Model.Campaign.CampaignType.AdHouse ? true : false)';
+    var copyToAdsCounter = 0;
+    var CheckAppSiteCompatibleWithAddUrl = '@Url.Action("CheckAppSiteCompatibleWithAdd", "Campaign")';
+    var OkButton = '@Html.GetResource("Ok", "Commands")';
+
+    jQuery(document).ready(function () {
+        //$('#DomainURL').change(ValidateControls);
+        $("form:not(#SwitchAccountForm)").validate({
+            //other options
+            ignore: ':hidden'
+        });
+
+        if (AccountRole == "DSP") {
+            SetSelectedTap("ListMenuCampains");
+        } else {
+            SetSelectedTap("ListMenuAdvertiser");
+
+        }
+    });
+
+    function ValidateControls() {
+        var returnvalue = true;
+
+        if (isHouseAd.toLowerCase() == 'false') {
+            var val = $('#DomainURL').val();
+
+
+
+            var val2 = $('[name="Keyword.ID"]').val();
+
+            if ((val2 == null) || $.trim(val2) == '') {
+                $('#displayKeywordRequiredMsg').show();
+                returnvalue = false;
+            } else {
+                $('#displayKeywordRequiredMsg').hide();
+            }
+        } else {
+            $('#displayKeywordRequiredMsg').hide();
+
+        }
+
+
+        //var temp = ValidateUrl($('#DomainURL'));
+
+        return returnvalue;
+    }
+
+    function KewordChanged(event, item) {
+        if ((typeof(item) != "undefined") && (item != null)) {
+            $('[name="Keyword.ID"]').val(item.ID);
+        } else {
+            $('[name="Keyword.ID"]').val('');
+        }
+		$("form:not(#SwitchAccountForm)").validate().form();
+        ValidateControls();
+    }
+
+    function localInitilize() {
+
+        @foreach (var appSiteAdQueueDto in Model.ViewSummary.AppSiteAdQueues)
+        {
+            <text>
+        addAppSiteId(@appSiteAdQueueDto.Id,'@(appSiteAdQueueDto.Name)',@appSiteAdQueueDto.AccountId,'@appSiteAdQueueDto.AccountName', true);
+        </text>
+        }
+        @{
+            if (Model.ViewSummary.AppSiteAdQueues.Count > 0)
+            {
+                <text>
+        jQuery('#AppSitesContiner').slideDown('slow');
+        </text>
+            }
+        }
+
+        var selectAdsButtons = {};
+        selectAdsButtons[resource_select_command] = function () {
+            $("#AdsToCopyAppsites").val(getTreeData("AdsCopyList","Ads",true));
+			$("form:not(#SwitchAccountForm)").submit();
+            $("#bidDialog-form").dialog("close");
+
+        }
+        $("#bidDialog-form").dialog({
+            autoOpen: false,
+            //height: 400,
+            width: 470,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            showCloseButton:false,
+            buttons: selectAdsButtons,
+            close: function () {
+                copyToAdsCounter = 0;
+            }
+        });
+    }
+
+    function onRunTypeChange(item, value) {
+        switch (value) {
+            case "Apps":
+                {
+                    jQuery('#AppSitesContiner').slideDown('slow');
+                    break;
+                }
+            case "RON":
+                {
+                    jQuery('#AppSitesContiner').slideUp('slow');
+                    break;
+                }
+        }
+
+
+    }
+
+    function validateSnapshots(){
+        var validationResult = true;
+        clearErrorMessage();
+
+        if(validateType){
+
+            var custom_name = "CreativeUnit_" + adTypeId;
+            var stopLoop = false;
+
+            $('div[custom_name^=' + custom_name + ']').each(function () {
+                if(!stopLoop){
+                    var elem = $(this);
+                    var inputElem = elem.find('[custom_name="content"]');
+
+                    var content = inputElem.val();
+                    if(content == null || content == ''){
+
+                        showErrorMessage(requiredSnapshots, false);
+                        validationResult = false;
+                        stopLoop = true;
+                    }
+                }
+            });
+        }
+
+        return validationResult;
+    }
+
+    function validateAttributes(){
+
+        var attributesName = "Attributes_";
+        var attributesInputs = $("[id^='" + attributesName + "']");
+        var validationResult = true;
+
+        isContainProhibitedAttributes = false;
+        var stopLoop = false;
+        attributesInputs.each(function(){
+            if(!stopLoop){
+                var elemt = $(this);
+                var inputValue = elemt.val();
+                if(inputValue == ""){
+                    validationResult = false;
+                    showErrorMessage(requiredAttributes, false);
+                    stopLoop = true;
+                }else{
+                    var inputArrayAttributes = inputValue.split(',');
+                    for (var i = 0; i < inputArrayAttributes.length; i++) {
+                        if(attributesProhibited.indexOf(parseInt(inputArrayAttributes[i])) != -1){
+                            isContainProhibitedAttributes = true;
+                        }
+                    }
+                }
+            }
+        });
+
+        return validationResult;
+    }
+
+
+    function adDetailsValidate() {
+
+        var validateControlsResult = ValidateControls();
+        var validateSnapshotsResult = validateSnapshots();
+        var validateAttributesResult = validateAttributes();
+
+        var validationResult = validateControlsResult && validateSnapshotsResult && validateAttributesResult;
+
+        if(validationResult){
+            if(isContainProhibitedAttributes)
+            {
+                showErrorMessage(prohibitedAttributesMessage, false);
+                return false;
+            }else{
+                if ($("input:checkbox[name=CopyToOtherAds]:checked").length == 1){
+                    var treeObj=$("#AdsCopyListTree");
+
+                    if(treeObj.find('li').length != 0){
+                        if(copyToAdsCounter == 0){
+                            $("#bidDialog-form").dialog("open");
+                            copyToAdsCounter++;
+                            return false;
+                        }
+                    }
+
+                }
+            }
+        }
+
+        if(validationResult && CampaignBidConfigNotCompleted && $("#appSiteInfo").find("a").length >0 && $("#RunOnApps").parent().hasClass("radio-button-checked"))
+        {
+
+            CheckAppSiteCompatibleWithAdd();
+
+
+            return false;
+
+        }else if(!validationResult) return false;
+
+    }
+
+
+
+    function getappsites()
+    {
+
+        var appsites = $("#appSiteInfo").find("a");
+        var appsitesIds="";
+
+        for(var i =0 ; i < appsites.length ; i++)
+        {
+            if(i==0)
+            {
+                appsitesIds=(appsites.eq(i).attr("appsiteid"));
+            }
+            else
+            {
+                appsitesIds += "," + (appsites.eq(i).attr("appsiteid"));
+            }
+        }
+
+        return appsitesIds;
+    }
+
+    var BidMustBeMoreThanMinBid = '@Html.GetResource("MinBidErrMsg")';
+    function CheckAppSiteCompatibleWithAdd()
+    {
+        var appsitesIds = getappsites();
+
+        var Data = new Object();
+        Data.CampaignId = $("#CampaignId").val();
+        Data.adGroupId = $("#AdGroupId").val();
+        Data.AdId = $("#AdId").val();
+        Data.AppsitesIds = appsitesIds;
+
+        $.ajax({
+            type: 'POST',
+            data: Data,
+            url: CheckAppSiteCompatibleWithAddUrl,
+
+            success: function (data) {
+                if (!data.status) {
+
+                    var grid = $("#CampaignBidConfigs").data("tGrid");
+
+                    grid.dataBind(data.List);
+
+                    $("#CampaignBidConfigs tbody").find(".t-no-data").remove();
+
+
+                    $("#CampaignBidConfigDialog").dialog({
+                        buttons: [
+                        {
+                            text: OkButton,
+                            click: function () {
+
+                                if (IsValidBidConfigDialog()) {
+                                    $('#InsertedAppsites').val(jQuery.toJSON(getNotCompatableItems()));
+                                    $(this).dialog('close');
+                                }
+                                else {
+
+                                    DialogshowErrorMessage("divErrorMessagesForBidConfigsDialog", true);
+                                    return false;
+                                }
+
+                                $( "#Approve" ).click();
+
+
+                            }
+                        }]
+                    });
+                    $("#CampaignBidConfigDialog").dialog({
+                        close: function (event, ui) {
+                            DialogclearErrorMessage("divErrorMessagesForBidConfigsDialog");
+
+                        }
+                    });
+                    $("#CampaignBidConfigDialog").dialog("open");
+
+
+                } else {
+                    CampaignBidConfigNotCompleted= false;
+                    $( "#Approve" ).click();
+                }
+
+            }
+        });
+
+
+    }
+
+</script>
+<script type="text/javascript">
+    var validateType = '@(!(Model.ViewSummary.TypeId == AdTypeIds.Banner || (Model.ViewSummary.TypeId == AdTypeIds.RichMedia && Model.ViewSummary.AdSubType == AdSubTypes.ExpandableRichMedia)))';
+    var adTypeId = @((int)Model.ViewSummary.TypeId);
+    var requiredSnapshots = '@Html.GetResource("RequiredSnapshots", "CreativesSettings")';
+    var requiredAttributes = '@Html.GetResource("RequiredAttributes", "CreativesSettings")';
+    var prohibitedAttributesMessage = '@Html.GetResource("ProhibitedAttributes", "CreativesSettings")';
+    var isContainProhibitedAttributes = false;
+</script>
+@using (Html.BeginForm("AdDetails"))
+{
+
+    ViewData.Add("HideCreative", true);
+    ViewData.Add("EnlargeImage", true);
+    @Html.Hidden("KeywordId", Model.ViewSummary.Keyword != null ? Model.ViewSummary.Keyword.ID.ToString() : string.Empty)
+    @Html.Hidden("Keyword.ID", Model.ViewSummary.Keyword != null ? Model.ViewSummary.Keyword.ID.ToString() : string.Empty)
+    @Html.Hidden("AdsToCopyAppsites")
+    @Html.Hidden("InsertedAppsites")
+    @Html.Hidden("CampaignId", Model.ViewSummary.Campaign.ID)
+    @Html.Hidden("AdGroupId", Model.ViewSummary.Group.ID)
+    @Html.Hidden("AdId", Model.ViewSummary.ID)
+
+
+    <div class="section-form-container">
+        @Html.Partial("Summary/CampaignSummary", Model.ViewSummary.Campaign)
+        @Html.Partial("Summary/AdGroupSummary", Model.ViewSummary.Group)
+        <h2>@Html.GetResource("AdCreation", "Titles") @Html.ActionLink(Html.GetResource("Edit", "Commands"), "Creative", ViewData["ControllerName"].ToString(), new { id = Model.ViewSummary.Campaign.ID, adGroupId = Model.ViewSummary.Group.ID, adId = Model.ViewSummary.ID, returnUrl = Request.RawUrl }, new { @class = "grid-tool-tip-edit floating-right ie-edit-ads" })</h2>
+
+        <div class="data-row tab-container">
+            <a class="first-tab selected tab-padding" href="javascript:void(0)" tabindex="0" onclick="changeTab(this);">@Html.GetResource("BasicInformation")</a>
+            <a class="first-tab tab-padding" href="javascript:void(0)" tabindex="1" onclick="changeTab(this);">@Html.GetResource("CreativesSettings", "Campaign")</a>
+        </div>
+        <div id="CampaignBidConfigDialog" style="display: none;">
+
+            @Html.Action("CampaignBidConfigDialogView", new { id = Model.ViewSummary.Campaign.ID })
+
+        </div>
+        <div tabsection="0">
+            @Html.Partial("Summary/AdSummary", Model.ViewSummary)
+
+            @*<div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title  required-field">@Html.GetResource("DomainURL", "Campaign")</span>
+                </div>
+                <div class="field-container">
+                    @Html.AdFalconTextBox("DomainURL", Model.ViewSummary.DomainURL)
+                    <span id="displayURLRequiredMsg" class="validation-arrow field-validation-error"
+                          style="display: none;"><span class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span></span>
+                        <span id="displayURLErrorMsg" class="validation-arrow field-validation-error" style="display: none;">
+                            <span class="">@Html.GetResource("UrlMsg")</span>
+                        </span>
+                    </div>
+                </div>*@
+            <div class="data-row data-container">
+                <div class="label-container required-field">
+                    <span class="field-title">@Html.GetResource("Keyword", "Campaign")</span>
+
+                </div>
+                <div class="field-container">
+                    @{
+                        var autoComplete = ViewBag.KeywordAutoComplete as Noqoush.AdFalcon.Web.Controllers.Model.AutoComplete;
+                        @Html.Partial("Autocomplete", autoComplete)
+                        <span id="displayKeywordRequiredMsg" class="validation-arrow field-validation-error"
+                              style="display: none;"><span class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span></span>
+                    }
+                </div>
+            </div>
+            <p>
+            </p>
+            <div class="data-row info-container">
+                <br />
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        &nbsp;
+                    </div>
+                    <div class="field-container">
+                        @Html.GetRadioButton("RunType", Html.GetResource("RunOnNetwork", "Campaign"), Model.ViewSummary.AppSiteAdQueues.Count == 0, "floating-left iea-rbtn-width-b", onChange: "onRunTypeChange", value: "RON")
+                        @Html.GetRadioButton("RunType", Html.GetResource("RunOnApps", "Campaign"), Model.ViewSummary.AppSiteAdQueues.Count > 0, "floating-left iea-rbtn-width-b", onChange: "onRunTypeChange", value: "Apps", Id: "RunOnApps")
+                    </div>
+                </div>
+                <div id="AppSitesContiner" style="display: none;">
+                    <br />
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            &nbsp;
+                        </div>
+                        <div class="field-container">
+                            @Html.GetRadioButton("Include", Html.GetResource("Include", "Global"), Model.ViewSummary.Include, "floating-left iea-rbtn-width-b", value: "true")
+                            @Html.GetRadioButton("Include", Html.GetResource("Exclude", "Global"), !Model.ViewSummary.Include, "floating-left iea-rbtn-width-b", value: "false")
+                        </div>
+                    </div>
+                    @Html.Action("AppSites", "AppSite")
+                </div>
+                <div style="clear: both">&nbsp;</div>
+                <div class="label-container">
+                    <span class="field-title required-field">&nbsp;</span>
+                </div>
+                <div class="field-container">
+                    <div class="ddl-container data-row">
+                        @Html.GetCheckBox("CopyToOtherAds", Html.GetResource("CopyToOtherAds", "Ad"), false)
+                    </div>
+                </div>
+                @Html.Action("AccountCampaigns", new { accountId = Model.ViewSummary.AdAccountId })
+            </div>
+        </div>
+
+        <div style="display: none" tabsection="1">
+            @Html.Partial("Summary/CreativesSettings", Model)
+        </div>
+    </div>
+    <div class="section-footer">
+    </div>
+    <div class="data-row go-center">
+        @Html.SubmitButton(@Html.GetResource("Approve", "Commands"), "Approve", new { @class = "primary-btn", onclick = "adDetailsValidate()", id = "Approve" })
+        @*<input type="submit" name="Approve" value="@Html.GetResource("Approve", "Commands")" class="primary-btn" onclick="return adDetailsValidate()"/>*@
+        <input type="submit" name="Reject" value="@Html.GetResource("Reject", "Commands")" class="btn" />
+        <input type="button" value="@Html.GetResource("Close", "Commands")" class="btn" onclick="redirect('@Url.Action("Index", "AdOps")')" />
+    </div>
+}
+
+@Html.Partial("PartialViews/ImpressionTrackerText")

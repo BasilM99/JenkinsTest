@@ -1,0 +1,439 @@
+﻿
+@{
+    ViewBag.Title = Html.GetResource("SwitchAccount", "SwitchAccount");
+    int NormaRolelId = (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.NormalUser;
+    int DSPRoleId = (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP;
+    int DataRoleProviderId = (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DataProvider;
+    int PopOverFeatureCode = (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.FeaturesCode.PopOver;
+    int NormalAccId = ViewData["NormalId"] != null && !string.IsNullOrEmpty(ViewData["NormalId"].ToString()) ? Convert.ToInt32(ViewData["NormalId"].ToString()) : 0;
+    int DSPAccId = ViewData["DSPId"] != null && !string.IsNullOrEmpty(ViewData["DSPId"].ToString()) ? Convert.ToInt32(ViewData["DSPId"].ToString()) : 0;
+    int DataProviderAccId = ViewData["DataProviderId"] != null && !string.IsNullOrEmpty(ViewData["DataProviderId"].ToString()) ? Convert.ToInt32(ViewData["DataProviderId"].ToString()) : 0;
+    int count = DSPAccId + DataProviderAccId;
+
+    bool ShowPopOverFeature = ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().ImpersonatedAccount == null && count > 0;
+}
+
+<script type="text/javascript">
+    var logoutURL = '@Url.Action("login", "user", new { method = "logout" })';
+    $(document).ready(function() {
+        $('#signoutButton').click(function() {
+            window.location.href = logoutURL;
+        });
+        showPopOverFeature();
+
+    });
+	var HadAFeatureUrl = '@Url.Action("HadAFeature", "User")';
+		    var HadAFeatureHttpsUrl = '@Url.Action("HadAFeatureHttps", "User")';
+    function showPopOverFeature()
+    {
+
+		if ('@ShowPopOverFeature' == "True" && '@Request.IsSecureConnection'=='True' )
+        {
+            jQuery.ajax(
+            {
+                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                type: "GET",
+					url: HadAFeatureHttpsUrl + "?code=" + @PopOverFeatureCode,
+                success: function (data) {
+                    $(function () {
+                        if (!data.Result) {
+                            $('#overlay').delay(500).fadeIn()
+                            $('#popOver').delay(1000).fadeIn()
+
+                            $('#popOver > a, #x').click(function () {
+                                $('#popOver').fadeOut()
+                                $('#overlay').fadeOut()
+                            })
+                            SetFeature();
+                        }
+                    })
+                }
+
+            });
+		}
+
+		
+		if ('@ShowPopOverFeature' == "True" && '@Request.IsSecureConnection'=='False' )
+        {
+            jQuery.ajax(
+            {
+                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                type: "GET",
+                url: HadAFeatureUrl + "?code=" + @PopOverFeatureCode,
+                success: function (data) {
+                    $(function () {
+                        if (!data.Result) {
+                            $('#overlay').delay(500).fadeIn()
+                            $('#popOver').delay(1000).fadeIn()
+
+                            $('#popOver > a, #x').click(function () {
+                                $('#popOver').fadeOut()
+                                $('#overlay').fadeOut()
+                            })
+                            SetFeature();
+                        }
+                    })
+                }
+
+            });
+        }
+    }
+
+    var SetFeatureUrl = '@Url.Action("SetFeature", "User")';
+
+    function SetFeature()
+    {
+        jQuery.ajax(
+               {
+                   dataType: "json",
+                   contentType: 'application/json; charset=utf-8',
+                   type: "POST",
+                   url: SetFeatureUrl + "?code=" + @PopOverFeatureCode,
+               });
+
+    }
+
+
+    function onAccountTypeChanged(type) {
+
+        if (type == (@DSPRoleId) ) {
+            $("#SwitchAccountUserChosenId").val(@DSPAccId);
+        }
+        else if(type == (@DataRoleProviderId)) {
+            $("#SwitchAccountUserChosenId").val(@DataProviderAccId);
+        }
+        else if(type==(@NormaRolelId)){
+            $("#SwitchAccountUserChosenId").val(@NormalAccId);
+        }
+
+        $("#SwitchAccountForm").submit();
+    }
+
+
+</script>
+
+<style>
+	.imgBoxHover {
+		opacity: 1;
+	}
+	.notimgBoxHover {
+		opacity: 0.3;
+	}
+</style>
+@if (NormalAccId > 0 || DSPAccId > 0 || DataProviderAccId > 0)
+			{
+				bool IsSecureConnection = Request.IsSecureConnection;
+				string className = "";
+				string action = IsSecureConnection ? "SwitchAccountUserFormDataHttps" : "SwitchAccountUserFormData";
+				int userid = ArabyAds.Framework.OperationContext.Current.UserInfo
+			<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().UserId.Value;
+				int AccountRole = ArabyAds.Framework.OperationContext.Current.UserInfo
+	   <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+	   ().AccountRole;
+
+
+
+
+
+				using (Html.BeginForm(action, "user", FormMethod.Post, new { id = "SwitchAccountForm", name = "SwitchAccountForm" }))
+				{
+
+		<input type="text" id="SwitchAccountUserChosenId" name="SwitchAccountUserChosenId" style="display:none;" value="@ViewData["ChosenId"]" />
+
+		<input type="text" id="SwitchAccountUserEmail" name="SwitchAccountUserEmail" style="display:none;" value="@ViewData["Email"]" />
+
+		<input type="text" id="SwitchAccountUserUserId" name="SwitchAccountUserUserId" style="display:none;" value="@ViewData["UserId"]" />
+
+		<input type="text" id="SwitchAccountUserNormalId" name="SwitchAccountUserNormalId" style="display:none;" value="@ViewData["NormalId"]" />
+
+		<input type="text" id="SwitchAccountUserDSPId" name="SwitchAccountUserDSPId" style="display:none;" value="@ViewData["DSPId"]" />
+
+		<input type="text" id="SwitchAccountUserDataProviderId" name="SwitchAccountUserDataProviderId" style="display:none;" value="@ViewData["DataProviderId"]" />
+
+
+		<input type="text" id="SwitchAccountUserReturnUrl" name="SwitchAccountUserReturnUrl" style="display:none;" value="@ViewData["returnUrl"]" />
+
+
+		<div id="ADFalconuserMenu">
+
+
+
+
+			<ul class="ggg dropdown-menu " id="swithusermenueaccoit">
+
+
+				@{
+					if (AccountRole == NormaRolelId || (AccountRole == 0))
+					{
+						if (NormalAccId > 0)
+						{
+							if (AccountRole == NormaRolelId || (AccountRole == 0))
+							{
+								className = "imgBoxHover";
+
+
+
+
+							}
+							else
+							{
+								className = "notimgBoxHover";
+
+
+
+							}
+
+							<li class="@className">
+
+								<img id='adfalconNetwork' onclick="onAccountTypeChanged(@NormaRolelId);" src='~/Content_OverRide/en/magenta/Images/adfNetworkIcon.png' />
+
+							</li>}
+						if (DSPAccId > 0)
+						{
+							if (AccountRole == DSPRoleId)
+							{
+								className = "imgBoxHover";
+
+
+
+
+							}
+							else
+							{
+								className = "notimgBoxHover";
+
+
+
+							}
+							<li class="@className">
+								<img id='dsPlatform' onclick="onAccountTypeChanged(@DSPRoleId);" src='~/Content_OverRide/en/magenta/Images/dsPlatformIcon.png' />
+
+
+
+							</li>}
+
+						if (DataProviderAccId > 0)
+						{
+							if (AccountRole == DataRoleProviderId)
+							{
+								className = "imgBoxHover";
+
+
+
+
+							}
+							else
+							{
+								className = "notimgBoxHover";
+
+
+
+							}
+							<li class="@className">
+								<img id='dsPlatform' onclick="onAccountTypeChanged(@DataRoleProviderId);" src='~/Content_OverRide/en/magenta/Images/dataProvider.png' />
+
+
+
+							</li>
+						}
+					}
+					else if (AccountRole == DSPRoleId)
+					{
+
+						if (DSPAccId > 0)
+						{
+							if (AccountRole == DSPRoleId)
+							{
+								className = "imgBoxHover";
+
+
+
+
+							}
+							else
+							{
+								className = "notimgBoxHover";
+
+
+
+							}
+							<li class="@className">
+								<img id='dsPlatform' onclick="onAccountTypeChanged(@DSPRoleId);" src='~/Content_OverRide/en/magenta/Images/dsPlatformIcon.png' />
+
+
+
+							</li>}
+						if (NormalAccId > 0)
+						{
+							if (AccountRole == NormaRolelId || (AccountRole == 0))
+							{
+								className = "imgBoxHover";
+
+
+
+
+							}
+							else
+							{
+								className = "notimgBoxHover";
+
+
+
+							}
+
+							<li class="@className">
+
+								<img id='adfalconNetwork' onclick="onAccountTypeChanged(@NormaRolelId);" src='~/Content_OverRide/en/magenta/Images/adfNetworkIcon.png' />
+
+							</li>}
+
+
+						if (DataProviderAccId > 0)
+						{
+							if (AccountRole == DataRoleProviderId)
+							{
+								className = "imgBoxHover";
+
+
+
+
+							}
+							else
+							{
+								className = "notimgBoxHover";
+
+
+
+							}
+							<li class="@className">
+								<img id='dsPlatform' onclick="onAccountTypeChanged(@DataRoleProviderId);" src='~/Content_OverRide/en/magenta/Images/dataProvider.png' />
+
+
+
+							</li>
+						}
+
+
+					}
+					else
+					{
+						if (DataProviderAccId > 0)
+						{
+							if (AccountRole == DataRoleProviderId)
+							{
+								className = "imgBoxHover";
+
+
+
+
+							}
+							else
+							{
+								className = "notimgBoxHover";
+
+
+
+							}
+							<li class="@className">
+								<img id='dsPlatform' onclick="onAccountTypeChanged(@DataRoleProviderId);" src='~/Content_OverRide/en/magenta/Images/dataProvider.png' />
+
+
+
+							</li>
+						}
+
+
+						if (DSPAccId > 0)
+						{
+							if (AccountRole == DSPRoleId)
+							{
+								className = "imgBoxHover";
+
+
+
+
+							}
+							else
+							{
+								className = "notimgBoxHover";
+
+
+
+							}
+							<li class="@className">
+								<img id='dsPlatform' onclick="onAccountTypeChanged(@DSPRoleId);" src='~/Content_OverRide/en/magenta/Images/dsPlatformIcon.png' />
+
+
+
+							</li>}
+						if (NormalAccId > 0)
+						{
+							if (AccountRole == NormaRolelId || (AccountRole == 0))
+							{
+								className = "imgBoxHover";
+
+
+
+
+							}
+							else
+							{
+								className = "notimgBoxHover";
+
+
+
+							}
+
+							<li class="@className">
+
+								<img id='adfalconNetwork' onclick="onAccountTypeChanged(@NormaRolelId);" src='~/Content_OverRide/en/magenta/Images/adfNetworkIcon.png' />
+
+							</li>}
+
+
+
+					}
+
+				}
+
+				<li>
+					<img id='signoutButton' src='~/Content_OverRide/en/magenta/Images/signout.png' />
+
+				</li>
+
+
+
+
+			</ul>
+        </div>
+
+
+						}
+
+					}
+
+					else
+
+					{
+
+                        <div id="ADFalconuserMenu">
+
+
+
+                            <ul class="ggg dropdown-menu " id="swithusermenueaccoit">
+
+
+
+                                <li>
+                                    <img id='signoutButton' src='~/Content_OverRide/en/magenta/Images/signout.png' />
+
+                                </li>
+
+
+
+
+                            </ul>
+                        </div>
+                    }

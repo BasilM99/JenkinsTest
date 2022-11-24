@@ -1,0 +1,43 @@
+﻿@model ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeUnitDto
+@{
+    bool allowEnlarge = false;
+    if (ViewData["EnlargeImage"] != null && bool.Parse(ViewData["EnlargeImage"].ToString()) == true)
+    {
+        allowEnlarge = true;
+    }
+
+}
+<div class="data-row info-container last-container">
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field reverse-link">@(Model.Name)</span>
+        </div>
+        <div class="field-container" style="width: 300px; height:300px;"
+             @(allowEnlarge ? "onclick=enlargeImage('" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + Model.DocumentId.ToString() + "');" : "")>
+            <img width="300" height="300" src='@(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + @Model.DocumentId.ToString())' />
+        </div>
+    </div>
+</div>
+@if (!string.IsNullOrEmpty(Model.UniqueId))
+        {
+        <div class="data-row info-container last-container MarginBannerAdSummaryRow1" >
+            <div class="data-row data-container">
+
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("UniqueId", "Global") </span>
+                </div>
+                <div class="field-container">
+                    <span class="slide-text margin-summary UniqueID-line-height">@Model.UniqueId</span>
+                </div>
+            </div>
+        </div>
+    }
+@if (allowEnlarge && !ArabyAds.Framework.OperationContext.Current.Items.ContainsKey("IsLargeImageRegistered"))
+{
+    ArabyAds.Framework.OperationContext.Current.Items["IsLargeImageRegistered"] = 1;
+    <div id="enlargeDialog-form" style="display: none;">
+
+        <img id="largeImage" />
+
+    </div>
+}

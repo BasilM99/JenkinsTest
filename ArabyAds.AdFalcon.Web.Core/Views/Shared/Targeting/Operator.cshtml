@@ -1,0 +1,138 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.OperaterViewModel
+<script type="text/javascript">
+        var IPRangeValidation = '@Html.GetResource("IPRangeValidation", "Campaign")';
+
+            var warning = "@Html.GetResource("Warning")";
+
+	$(document).ready(function () {
+		$(".t-grid-content").find("table tbody tr td").mouseover(function () {
+
+			$(this).attr('title', $(this).text());
+		});
+	});
+
+</script>
+@{
+
+
+	List<SelectListItem> TargetingConnectionType = new List<SelectListItem>()
+{
+new SelectListItem()
+{
+Value = "",
+Text = Html.GetResource("Select","Global"),
+Selected = true
+} ,
+new SelectListItem()
+{
+Value = "1",
+Text = Html.GetResource("Wifi","Campaign"),
+},
+new SelectListItem()
+{
+Value = "2",
+Text = Html.GetResource("Cellular","Campaign"),
+},
+
+};
+
+}
+<div class="ad-filter-text go-left floating-left">
+	@Html.Raw(Html.GetResource("OperatorDesc", "Campaign"))
+</div>
+<div class="ad-filter-data go-left floating-left campaign-right-container width-560" >
+	<div class="data-row data-container" readonlyToBe>
+		<div class="field-container floating-clear">
+			@Html.GetCheckBox("DisableProxyTraffic", Html.GetResource("DisableProxyTraffic", "Campaign"), Model.DisableProxyTraffic)
+		</div>
+	</div>
+	@*<br />*@
+	<div class="data-row data-container" id="connDiv" readonlyToBe>
+		<div>
+			<span class="field-title required-field">@Html.GetResource("ConnectionType", "Campaign")</span>
+		</div>
+		<div class="field-container">
+			@Html.AdFalconDropDownList("TargetingConnectionType", TargetingConnectionType)
+		</div>
+	</div>
+	<div class="data-row space-bottom-blue-filter">
+		<div class="blue-filter-container">
+			<a ref="javascript:void(0)" tabindexoperater="1" onclick="changeTab(this,'operater','OperatorTargetingIsAll','@Model.Operaters.Name',true);" class="selected">@Html.GetResource("All")</a>
+			@*<a ref="javascript:void(0)" tabindexoperater="3" onclick="changeTab(this,'operater','OperatorTargetingIsAll','@Model.Operaters.Name',false);">@Html.GetResource("WIFIOnly", "Campaign")</a>*@
+			<a ref="javascript:void(0)" tabindexoperater="2" onclick="changeTab(this,'operater','OperatorTargetingIsAll','@Model.Operaters.Name',false);">@Html.GetResource("SpecificOperators", "Campaign")</a>
+			@if ((ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.IsShowAdminSection) || (Model.IPRanges != null && Model.IPRanges.Count > 0))
+			{
+				<a ref="javascript:void(0)" tabindexoperater="4" onclick="changeTab(this,'operater','OperatorTargetingIsAll','@Model.Operaters.Name',false);">@Html.GetResource("IPRange", "Campaign")</a>
+			}
+		</div>
+		<div class="tail">
+		</div>
+	</div>
+	<div tabsectionoperater="1" id="allSection" readonlyToBe >
+	</div>
+	<div tabsectionoperater="3" id="wifiOnlySection" readonlyToBe >
+	</div>
+	<div tabsectionoperater="2" id="_OperatersSection"  readonlyToBe style="display: none;">
+		@await Html.PartialAsync("Tree", Model.Operaters)
+	</div>
+	@if ((ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.IsShowAdminSection) || (Model.IPRanges != null && Model.IPRanges.Count > 0))
+   {
+        //var hide_id = !(Request.Browser.Type.ToUpper().Contains("IE") && Request.Browser.MajorVersion < 8);AhmadComment
+<div tabsectionoperater="4" id="ipRangeSection" readonlyToBe>
+    @if ((ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.IsShowAdminSection))
+    {
+        <div style="width: 500px;overflow: hidden;">
+            <div style="width: 250px;float:left;">
+                @Html.TextBoxFor(m => m.IPFile, new { type = "file" })
+            </div>
+            <div style="overflow: hidden;">
+                @Html.ValidationMessageFor(m => m.IPFile)
+            </div>
+        </div>
+    }
+
+    <div class="go-left " style="background-color:none !important">
+        @*<h3>@Html.GetResource("CostElements", "Titles")</h3>*@
+
+        <a class="primary-btn" href="javascript:void(0)" onclick="addToMVCGrid('IPRangesGrid')">@Html.GetResource("Add", "Campaign")</a>
+    </div>
+    <br />
+    <div class="small-grid ip-Range-Section" style="width: 540px;">
+
+        @(Html.Kendo().Grid(Model.IPRanges).Name("IPRangesGrid").NoRecords(p=>p.Template("&nbsp;"))
+            .Pageable(paging => paging.Input(false).Numeric(false).Info(false).PreviousNext(false).Refresh(false).Position(GridPagerPosition.Bottom))
+
+
+            .HtmlAttributes(new { width = "500px;" })
+                                                              // .DataKeys(keys => keys.Add(p => p.ID))
+                                                              .DataSource(dataBinding =>
+                                                              {
+                                                                  dataBinding.Ajax().Read("DummySelect", "Campaign").Events(c=>c.Error("Grid_onError")).Model(model =>
+                                                                  {
+                                                                      model.Id(m => m.ID);
+
+                                                                  }).AutoSync(false);
+
+
+                                                                  ;
+                                                              })
+                                                              .EnableCustomBinding(true)
+                                                              .Editable(ed => ed.Mode(GridEditMode.InCell).DisplayDeleteConfirmation(false))
+                                                              //.DefaultDataItem(new ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.IPTargetingView { Description = string.Empty }))
+                                                              //.ToolBar(commands => commands.Insert().ButtonType(GridButtonType.BareImage))
+                                                              .Columns(columns =>
+                                                              {
+                                                                  columns.Bound(o => o.ID).Title(Html.GetResource("ID", "Lookup")).HtmlAttributes(new { @class = "go-center ip-targeting-hidden-field" }).Width(1).Hidden(true);
+                                                                  columns.Bound(o => o.StartRange).EditorTemplateName("IPRange").Title(Html.GetResource("StartIPRange", "Campaign")).Width(160).HtmlAttributes(new { @Id = "StartIPRange", @class = "go-center ip-targeting-width" });
+                                                                  columns.Bound(o => o.EndRange).EditorTemplateName("IPEndRange").Title(Html.GetResource("EndIPRange", "Campaign")).Width(160).HtmlAttributes(new { @Id = "EndIPRange", @class = "go-center ip-targeting-width" });
+                                                                  columns.Bound(o => o.Description).EditorTemplateName("TextBox").Title(Html.GetResource("Description", "Campaign")).Width(160).HtmlAttributes(new { @class = "go-center ip-targeting-width" });
+                                                                  columns.Template("<div id='DeletempButton' style='display:block'><a type='button'  class='t-button t-button-icon t-button-bare'  onclick='deleteIPTargeting(this); return false;'><span class='t-icon t-delete'></span></a></div>").Width(50).HtmlAttributes(new { @class = "ip-targeting-width-small" });
+                                                                  //columns.Command(o => o.Delete().ButtonType(GridButtonType.BareImage));.Width(25);
+                                                              })
+                                                      
+                                                      )
+
+    </div>
+</div>
+	}
+</div>

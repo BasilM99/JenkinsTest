@@ -1,0 +1,115 @@
+
+/*Here We will add some css for style our treeview*/
+.tree .ltr li.closed {
+	background-image: url('../Images/ui-icons3-up.png');
+	background-repeat: no-repeat;
+	background-position: -47px -46px;
+	background-position-x: right;
+	background-position-y: center;
+	cursor: pointer;
+}
+
+.tree .ltr li.open {
+	background-image: url('../Images/ui-icons3-close.png');
+	background-repeat: no-repeat;
+	background-position: -16px -46px;
+	background-position-x: right;
+	background-position-y: unset;
+	cursor: pointer;
+	border-bottom: unset !important;
+}
+
+.tree .ltr ul {
+	font: 14px Arial, Sans-Serif;
+	margin: 0px;
+	padding-left: 20px;
+	
+}
+
+.tree .ltr li > a {
+	font-weight: bold;
+}
+
+
+
+.tree .ltr li > a {
+	padding: 4px;
+	font-size: 12px;
+
+	text-decoration: none;
+	width: auto;
+}
+
+.head-text {
+	font-weight: 500;
+	font-size: 12px;
+	color: #7c97ae;
+}
+
+.child-text {
+	color: #969696;
+	font-weight: 100;
+	font-size: 13px;
+}
+
+
+li[isroot="false"] > a {
+	color: darkslategray !important;
+	font-weight: 100 !important;
+	font-size: 13px !important;
+}
+
+
+.tree li[isroot="false"].leaf a {
+	color: #337ab7 !important;
+	font-weight: 500 !important;
+	font-size: 13px !important;
+}
+
+span.collapse.collapsible, span.expand.collapsible {
+	float: right;
+}
+
+#DimensionsTree ul > li {
+	border-bottom: solid 0.1px #f2f2f3;
+	width: 100%;
+	padding-right: 15px;
+}
+
+#MeasuresTree ul > li {
+	border-bottom: solid 0.1px #f2f2f3;
+	width: 100%;
+	padding-right: 15px;
+}
+
+
+.tree li {
+	padding-bottom: 5px;
+	
+}
+.text-box-like-container {
+border:unset;
+}
+
+.tree .ltr ul {
+
+	padding-left:5px;
+}
+
+li[isroot="true"] > a {
+	font-weight: 500 !important;
+	font-size: 17px !important;
+	color: darkslategray !important;
+
+}
+li[isroot="true"] {
+	padding-top: 5px !important;
+	padding-bottom: 5px !important;
+}
+.tree li {
+	padding-top: 5px !important;
+}
+
+.tree .ltr ul {
+	padding-top: 5px !important;
+}

@@ -1,0 +1,5 @@
+﻿@model IList<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeUnitDto> 
+@foreach (var adCreativeUnitDto in Model)
+{
+    @await Html.PartialAsync("Summary/CreativeUnit/Units/RichMedia/JavaScriptRichMediaUnit", adCreativeUnitDto)
+}

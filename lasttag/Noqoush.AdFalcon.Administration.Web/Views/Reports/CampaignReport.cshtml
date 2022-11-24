@@ -1,0 +1,690 @@
+﻿@using Noqoush.AdFalcon.Web.Controllers.Model
+@using Noqoush.AdFalcon.Web.Controllers.Model.Tree
+@model Noqoush.AdFalcon.Web.Controllers.Model.Tree.TreeViewModel
+@{
+	List<SelectListItem> summaryByItems = new List<SelectListItem>();
+
+	SelectListItem day = new SelectListItem();
+	day.Selected = true;
+	day.Text = Html.GetResource("Day", "Report");
+	day.Value = "1";
+
+	SelectListItem week = new SelectListItem();
+	week.Text = Html.GetResource("Week", "Report");
+	week.Value = "2";
+
+	SelectListItem month = new SelectListItem();
+	month.Text = Html.GetResource("Month", "Report");
+	month.Value = "3";
+	SelectListItem accumulated = new SelectListItem();
+
+	accumulated.Text = Html.GetResource("IsAccumulated", "Report");
+	accumulated.Value = "4";
+
+
+	summaryByItems.Add(day);
+	summaryByItems.Add(week);
+	summaryByItems.Add(month);
+	summaryByItems.Add(accumulated);
+	if (Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.SummaryBy == 1)
+	{
+		day.Selected = true;
+		accumulated.Selected = false;
+	}
+	if (Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.SummaryBy == 2)
+	{
+		week.Selected = true;
+		accumulated.Selected = false;
+	}
+	if (Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.SummaryBy == 3)
+	{
+		month.Selected = true;
+		accumulated.Selected = false;
+	}
+	if (Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.SummaryBy == 4)
+	{
+		accumulated.Selected = true;
+		//accumulated.Selected = false;
+	}
+	List<Noqoush.AdFalcon.Web.Controllers.Model.Action> tabList = new List<Noqoush.AdFalcon.Web.Controllers.Model.Action>()
+{
+new Noqoush.AdFalcon.Web.Controllers.Model.Action()
+{
+DisplayText  = Html.GetResource("Campaign","CampaignsReport"),
+
+Code = "campaign",
+IsSelected =  Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.TabId == "campaign"?true:false,
+ExtraPrams = Model.CampaignReportSchaduling.ReportSchedulerDto.ID
+, ExtraPrams2=Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.AccountAdvertiserId>0 ? Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.AccountAdvertiserId:(int?)null
+}
+,
+new Noqoush.AdFalcon.Web.Controllers.Model.Action()
+{
+DisplayText  = Html.GetResource("AdGroup","CampaignsReport"),
+Code = "AdGroup",
+IsSelected = Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.TabId == "AdGroup"?true:false,
+			 ExtraPrams = Model.CampaignReportSchaduling.ReportSchedulerDto.ID
+
+			  , ExtraPrams2=Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.AccountAdvertiserId>0 ? Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.AccountAdvertiserId: (int?)null
+
+}
+,
+new Noqoush.AdFalcon.Web.Controllers.Model.Action()
+{
+DisplayText  = Html.GetResource("Ad","CampaignsReport"),
+Code = "Ad",
+IsSelected =  Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.TabId == "Ad"?true:false,
+			ExtraPrams = Model.CampaignReportSchaduling.ReportSchedulerDto.ID
+
+			 , ExtraPrams2=Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.AccountAdvertiserId>0 ? Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.AccountAdvertiserId: (int?)null
+
+}
+,
+new Noqoush.AdFalcon.Web.Controllers.Model.Action()
+{
+DisplayText  = Html.GetResource("Operator","Report"),
+Code = "Operator",
+IsSelected = Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.TabId == "Operator"?true:false
+}
+,
+new Noqoush.AdFalcon.Web.Controllers.Model.Action()
+{
+DisplayText  = Html.GetResource("DeviceModel","Report"),
+Code = "DeviceModel",
+IsSelected =  Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.TabId == "DeviceModel"?true:false
+}
+,
+new Noqoush.AdFalcon.Web.Controllers.Model.Action()
+{
+DisplayText  = Html.GetResource("GeoLocation","Report"),
+Code = "GeoLocation",
+IsSelected = Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.TabId == "GeoLocation"?true:false
+},
+
+
+new Noqoush.AdFalcon.Web.Controllers.Model.Action()
+{
+DisplayText  = Html.GetResource("AudienceSegmentUsage","DataProviders"),
+Code = "AudianceSegmentForAdvertiser",
+		style = Noqoush.Framework.OperationContext.Current.UserInfo<Noqoush.AdFalcon.Common.UserInfo.AdFalconUserInfo>().AccountRole == (int)Noqoush.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP || (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsAdmin || Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsAccountManager || Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsAdOps) ? "display: inherit;":"display:none;",
+IsSelected = Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.TabId == "AudianceSegmentForAdvertiser"?true:false
+}
+
+,
+new Noqoush.AdFalcon.Web.Controllers.Model.Action()
+{
+DisplayText  =Html.GetResource("App","AppReport"),
+Code = "SubAppSite",
+ style = Noqoush.Framework.OperationContext.Current.UserInfo<Noqoush.AdFalcon.Common.UserInfo.AdFalconUserInfo>().AccountRole == (int)Noqoush.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP || (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsAdmin || Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsAccountManager || Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsAdOps) ? "display: inherit;":"display:none;",
+IsSelected = Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.TabId == "SubAppSite"?true:false
+}
+
+};
+
+	if (!Model.ShowAudienceSegmentUsage)
+	{
+		//AudianceSegmentForAdvertiser
+		tabList.RemoveAt(6);
+
+
+	}
+}
+
+
+<script type="text/javascript">
+    var SaveReportUrl = '@Url.Action("SaveCampaignReport", "Reports")';
+    CampaignIdForCampaignpReport = "@(Request.QueryString["itemId"])";
+    var wait = false;
+
+    $(document).ready(function () {
+        if (CampaignIdForCampaignpReport != "")
+            $("#advancedCriteria").show();
+        else
+            $("#advancedCriteria").hide();
+
+        $("#tab" + "@Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.TabId").click();
+        $("#ToDate").val('@Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.ToDateString');
+        $("#FromDate").val('@Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.FromDateString');
+
+        showHideColmns();
+
+    });
+    function ReportAdvertisersChanged(event, item) {
+
+
+		if ((typeof (item) != "undefined") && (item != null)) {
+		
+
+			var split = item.AdvertiserAccId.split("-");
+
+			$('[name="AdvertiserId"]').val(split[1]);
+			$('[name="AdvertiserAccountId"]').val(split[0]);
+        }
+        else {
+			$('[name="AdvertiserId"]').val('');
+			$('[name="AdvertiserAccountId"]').val('');
+        }
+        var advid = '';
+        var tabId = $("#tabId").val();
+       // if (tabId == 'campaign' || tabId.toLowerCase() == 'adgroup' || tabId.toLowerCase == 'ad') {
+            if ((typeof (item) != "undefined") && (item != null)) {
+				var split = item.AdvertiserAccId.split("-");
+				advid = "&AdvertiserId=" + split[0];
+            }
+        //}
+        InitTree("AdsList", adsListTreeURL + advid);
+
+
+	}
+
+	function showHideColmns() {
+	
+		var UniqueImpId = $("[customvalue='UniqueImp']").attr("id");
+		var UniqueClicksId = $("[customvalue='UniqueClicks']").attr("id");
+		var DataRangeId = $("[customvalue='DateRangeProp']").attr("id");
+		var NameId = $("[customvalue='Name']").attr("id");
+		var SubNameId = $("[customvalue='SubName']").attr("id");
+		var AudianceSegDataProvider = $("[customvalue='DataProvider']").attr("id");
+
+		var SpendText = $("[customvalue='AdjustedNetCostText']").attr("id");
+		var TotalDataPriceText = $("[customvalue='TotalDataPriceText']").attr("id");
+		var TotalSpendText = $("[customvalue='BillableCostText']").attr("id");
+		var GrossCostText = $("[customvalue='GrossCostText']").attr("id");
+		var AgencyRevenueText = $("[customvalue='AgencyRevenueText']").attr("id");
+
+
+
+
+		HiddenSelectableColumns = 0;
+
+		uncheck(AudianceSegDataProvider);
+		$("#Div_DataProvider").hide();
+
+		if ($("#Div_UniqueClicks").length > 0 && $("#Div_UniqueImp").length > 0) {
+			if (!(($("#SummaryBy").val() == "1" || $("#SummaryBy").val() == "4" || $("#SummaryBy").val() == "3") && Radio_IsChecked("#DetailedRd") && !Radio_IsChecked("#GroupByName") && ($("#tabcampaign").hasClass("selected") || $("#tabAdGroup").hasClass("selected")))) {
+
+				uncheck(UniqueImpId);
+				uncheck(UniqueClicksId);
+				$("#Div_UniqueClicks").hide();
+				$("#Div_UniqueImp").hide();
+				ReportSchdulingmetricColumn = true;
+
+			} else {
+				check(UniqueImpId);
+				check(UniqueClicksId);
+				$("#Div_UniqueClicks").show();
+				$("#Div_UniqueImp").show();
+				ReportSchdulingmetricColumn = true;
+			}
+		}
+		if ($("#SummaryBy").val() == "4") {
+			uncheck(DataRangeId);
+		} else {
+			check(DataRangeId);
+		}
+
+		if (!Radio_IsChecked("#DetailedRd")) {
+			uncheck(NameId);
+		} else {
+			if (($("#tabcampaign").hasClass("selected") || $("#tabAdGroup").hasClass("selected") || $("#tabAd").hasClass("selected")))
+				check(SubNameId);
+			else
+				check(NameId);
+		}
+
+
+		if (($("#tabcampaign").hasClass("selected") || $("#tabAdGroup").hasClass("selected") || $("#tabAd").hasClass("selected"))) {
+			uncheck(NameId);
+
+			if (!Radio_IsChecked("#DetailedRd")) {
+				uncheck(SubNameId);
+			}
+
+		} else if (Radio_IsChecked("#DetailedRd")) {
+			check(NameId);
+			check(SubNameId);
+		}
+		else {
+			check(NameId);
+			uncheck(SubNameId);
+		}
+
+		if ($("#tabAudianceSegmentForAdvertiser").hasClass("selected")) {
+			check(AudianceSegDataProvider);
+
+			check(TotalDataPriceText);
+			uncheck(SpendText);
+			uncheck(TotalSpendText);
+			uncheck(GrossCostText);
+			uncheck(AgencyRevenueText);
+
+
+			$("#Div_DataProvider").show();
+			$("#Div_TotalDataPriceText").show();
+
+			$("#Div_AdjustedNetCostText").hide();
+			$("#Div_BillableCostText").hide();
+
+
+			$("#Div_GrossCostText").hide();
+			$("#Div_AgencyRevenueText").hide();
+		}
+		else {
+			check(GrossCostText);
+			check(AgencyRevenueText);
+			uncheck(TotalDataPriceText);
+			check(TotalSpendText);
+			$("#Div_AdjustedNetCostText").show();
+			$("#Div_BillableCostText").show();
+			$("#Div_TotalDataPriceText").show();
+
+
+
+			$("#Div_GrossCostText").show();
+			$("#Div_AgencyRevenueText").show();
+		}
+
+		if (Radio_IsChecked(DataRangeId)) {
+			HiddenSelectableColumns++;
+		}
+
+		if (Radio_IsChecked(NameId)) {
+			HiddenSelectableColumns++;
+		}
+
+		if (Radio_IsChecked(SubNameId)) {
+			HiddenSelectableColumns++;
+		}
+		ReportSchdulingmetricColumn = true;
+
+	}
+
+    function SaveReport(run) {
+        if (run) {
+            generateGoogleReport();
+        }
+        if ($("#ReportTempName").val() == "") {
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+        }
+        var ObjectModel = ReportdataCollector();
+        if ($("#IsActive").is(":checked")) {
+            $("#ReportSchedulerDto_PreferedName").removeClass("ValdationIgnored");
+            $("#msgReportSchedulerDtoPreferedName").show();
+
+            if (ObjectModel.CriteriaOpt == "specific") {
+                if (ObjectModel.ItemsList) {
+                    // var str_array = ObjectModel.ItemsList.split(',');
+                    if (ObjectModel.ItemsList.match(/,/g).length == 1) {
+                        $("#ReportSchedulerDto_PreferedName").addClass("ValdationIgnored");
+                        $("#msgReportSchedulerDtoPreferedName").hide();
+                    }
+                    //for (var i = 0; i < str_array.length; i++) {
+
+                    //    str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+
+                    //}
+
+                }
+            }
+        }
+        else {
+
+            $("#ReportSchedulerDto_PreferedName").addClass("ValdationIgnored");
+            $("#msgReportSchedulerDtoPreferedName").hide();
+
+        }
+        if ($("#ReportTempName").val() == '' || $("#ReportTempName").val() == null || $("#ReportTempName").val().trim() == '') {
+            $("#msgReportSchedulerDtoReportTempName").show();
+            return false;
+        }
+        else {
+
+            $("#msgReportSchedulerDtoReportTempName").hide();
+        }
+
+        if ($("#reportForm").validate().form() && $("span[id*='URLErrorMsg']:visible").length < 1) {
+            if (!wait) {
+                wait = true;
+                $.ajax({
+                    type: 'POST',
+                    data: ObjectModel,
+                    url: SaveReportUrl,
+                    success: function (date) {
+                        if (date.Result) {
+                            showSuccessfullyMessage(date.Message, false);
+                            $("#ReportSchedulerHId").val(date.id);
+                            wait = false;
+                        }
+                        else
+                            showErrorMessage(date.Message, false);
+
+                    }
+                });
+            }
+        }
+        return false;
+    }
+
+</script>
+
+@using (Html.BeginForm("CampaignReport", "reports", FormMethod.Post, new { id = "reportForm" }))
+{
+	@*<div>
+			@Html.Partial("ReportTemplates")
+		</div>*@
+
+	<div class="data-row section-container">
+		@Html.Partial("ReportNavigation", tabList)
+	</div>
+	@Html.RegisterScriptBlock(string.Format("var groupByNameLabelTemplate = '{0}';var showGroupByName='true';var MainFilterUrl='{1}';var MainLabel='{2}';", Html.GetResource("GroupByName", "Report"), Model.Url, Html.GetResource("Specific", "Global") + " " + Html.GetResource("Campaign", "Global")))
+	@Html.Hidden("tabId", Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.TabId)
+
+	@Html.Hidden("AdvertiserId", Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.AdvertiserId)
+	@Html.Hidden("AdvertiserAccountId", Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.AccountAdvertiserId)
+	@Html.RegisterScriptBlock(string.Format("var datesErrorMessage='{0}';", Html.GetResource("DatesErrorMessage", "Errors")))
+
+	<div id="ReportFormDetails">
+
+		@if (Request.QueryString["IsSchedule"] == "True" || Model.CampaignReportSchaduling.ReportSchedulerDto.ID > 0)
+		{
+			<h2>
+				@Html.GetResource("ReportTempInfo", "Report")
+			</h2>
+
+			<div class="section-form-container">
+				<div class="section-form-inner-container">
+					<div class="data-row data-container">
+						<div class="label-container">
+							<span class="field-title required-field">@Html.GetResource("Name")</span>
+						</div>
+						<div class="field-container">
+							@Html.AdFalconEditorFor(p => p.ReportTempName)
+							<span id="msgReportSchedulerDtoReportTempName" style="display:none">
+								<span class="validation-arrow field-validation-error">
+									<span id="ReportTempName-error" class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span>
+								</span>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="section-footer">
+			</div>}
+		<h2>
+			@Html.GetResource("TimePerid", "Reports")
+		</h2>
+		<div class="section-form-container">
+			<div class="section-form-inner-container">
+				<div class="data-row data-container">
+					@{Html.RenderPartial("daterangepicker");}
+				</div>
+			</div>
+		</div>
+		<div class="section-footer">
+		</div>
+
+		<h2>
+			@Html.GetResource("Criteria", "Report")
+		</h2>
+		<div class="section-form-container" id="criteriaContainer">
+			<div class="section-form-inner-container">
+
+				<div class="data-row data-container">
+					<div class="label-container">
+						<span class="field-title required-field">@Html.GetResource("Advertiser", "Global")</span>
+					</div>
+					<div class="field-container">
+						@{
+							var AdvertiserAutoComplete = ViewBag.AdvertiserAutoComplete as Noqoush.AdFalcon.Web.Controllers.Model.AutoComplete;
+							@Html.Partial("Autocomplete", AdvertiserAutoComplete)
+							@*@Html.Partial("MoreInfo", "DomainURLMoreInfo", new ViewDataDictionary { { "Class_Tail", "tail-report" }, { "Style2", "width: 400px; float:none;" } })*@
+						}
+
+
+					</div>
+
+				</div>
+
+				<div class="data-row data-container">
+					<div class="label-container ">
+						<span class="field-title required-field">&nbsp;</span>
+					</div>
+					@{
+
+						var isSelectedAll = false;
+						var isSelectedSpecificAd = false;
+
+						var islayoutSummery = false;
+
+						var isDetailed = false;
+
+
+						if (Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.CriteriaOpt == "specific")
+						{
+							isSelectedSpecificAd = true;
+
+							isSelectedAll = false;
+						}
+						else
+						{
+							isSelectedAll = true;
+							isSelectedSpecificAd = false;
+						}
+						if (Request.QueryString["itemId"] != null)
+						{
+							Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.CriteriaOpt = "specific";
+							isSelectedSpecificAd = true;
+							isSelectedAll = false;
+						}
+
+						if (Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.Layout == "summary")
+						{
+							islayoutSummery = true;
+						}
+						else
+						{
+							isDetailed = true;
+						}
+					}
+					<div class="field-container">
+						<div class="radio-button-container floating-left iea-rbtn-width-a">
+							@Html.GetRadioButton("criteriaOpt", Html.GetResource("All", "Global"), isSelectedAll, "", "changeAdvancedCriteria", "all", Id: "AllRadio")
+						</div>
+						<div class="radio-button-container floating-left">
+							@Html.GetRadioButton("criteriaOpt", Html.GetResource("SpecificAd", "CampaignReport") + " " + Html.GetResource("Campaign", "Global"), isSelectedSpecificAd, "specificName", "changeAdvancedCriteria", "specific", Id: "SpecificCampaign")
+						</div>
+					</div>
+				</div>
+				<div class="data-row data-container">
+					<div class="label-container ">
+						<span class="field-title required-field">&nbsp;</span>
+					</div>
+					<div style="display: none" id="advancedCriteria" class="field-container">
+						@Html.Partial("Tree", Model)
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="advancedCriteriaContainer" style="display: none">
+			@Html.Partial("advancedcriteria")
+		</div>
+		@Html.Hidden("deviceCategory", Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.DeviceCategory)
+		<div class="section-footer">
+		</div>
+		<h2>
+			@Html.GetResource("Layout", "Global")
+		</h2>
+		<div class="section-form-container">
+			<div class="section-form-inner-container">
+				<div class="data-row data-container">
+					<div class="label-container ">
+						<span class="field-title required-field">&nbsp;</span>
+					</div>
+					<div class="field-container">
+						<div class="radio-button-container floating-left iea-rbtn-width-a">
+							@Html.GetRadioButton("layout", Html.GetResource("Summary", "Global"), islayoutSummery, "", "showGrouByNameOption", "summary", Id: "SummaryRd")
+						</div>
+						<div class="radio-button-container floating-left">
+							@Html.GetRadioButton("layout", Html.GetResource("Detailed", "Global") + " " + Html.GetResource("Campaign", "Global"), isDetailed, "specificName", "showGrouByNameOption", "detailed", Id: "DetailedRd")
+						</div>
+					</div>
+				</div>
+				<div class="data-row data-container" id="divGrouByName" style="display:none">
+					<div class="label-container ">
+						<span class="field-title required-field">&nbsp;</span>
+					</div>
+					<div class="field-container">
+						@Html.GetCheckBox("GroupByName", "<span id='groupbyNameLabel'>" + Html.GetResource("GroupByName", "Report").Replace("{Name}", Html.GetResource("Campaign", "Global")) + "&nbsp;</span>", Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.GroupByName, "showHideColmns", "groubByName")
+					</div>
+
+					@Html.Partial("MoreInfo", "GroupBy", new ViewDataDictionary { { "Class", "blue-info-report" } })
+				</div>
+
+
+
+				<div class="data-row data-container">
+					<div class="label-container ">
+						<span class="field-title required-field">@Html.GetResource("SummaryBy", "Global")</span>
+					</div>
+					<div class="field-container">
+						<div class="ddl-container data-row">
+							@Html.AdFalconDropDownList("SummaryBy", summaryByItems, new { @onchange = "showHideColmns()" })
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<h2>
+			<div class='grid-title-container floating-left'>
+				<span class='trimed-span'>@Html.GetResource("Metrices", "Global")</span>
+			</div>
+			<div class='grid-cogwheel-container floating-right go-right'>
+				<a name='iconImage' onclick='ShowMetricDivSearch()' id='advMetric' class='maximize' style='display: inline;margin-right: 5px;margin-top: 10px;'></a>
+			</div>
+
+
+		</h2>
+		<div class="section-form-container">
+			<div class="section-form-inner-container" id="MetricDivS">
+				@Html.Partial("metriceColumn", Model.ColumnViewModel)
+
+
+			</div>
+		</div>
+
+
+
+
+		<div class="section-footer">
+		</div>
+
+	</div>
+	if (Request.QueryString["IsSchedule"] == "True" || Model.CampaignReportSchaduling.ReportSchedulerDto.ID > 0)
+	{
+		<h2>
+			<div class='grid-title-container floating-left'>
+				<span class='trimed-span'>@Html.GetResource("Scheduling", "Report")</span>
+			</div>
+			<div class='grid-cogwheel-container floating-right go-right'>
+				<a name='iconImage' onclick='ShowSchdulingSearch()' id='adv' class='maximize' style='display: inline;margin-right: 5px;margin-top: 10px;'></a>
+			</div>
+
+
+		</h2>
+
+
+
+
+
+		<div class="section-form-container" id="Schedulingdiv">
+
+			<div class="section-form-inner-container">
+				<div class="data-row data-container">
+					@Html.Partial("Scheduling", Model.CampaignReportSchaduling)
+				</div>
+			</div>
+		</div>
+
+		<div class="section-footer">
+		</div>
+	}
+
+
+
+	<div class="data-row go-center">
+		<input type="submit" onclick="return generateGoogleReport();" class="btn iee-btn" value="@Html.GetResource("Run", "Report")" />
+		@if (Request.QueryString["IsSchedule"] == "True" || Model.CampaignReportSchaduling.ReportSchedulerDto.ID > 0)
+		{
+			<input id="Schedulingbutton" type="submit" onclick="return SaveReport(false); return false;" class="primary-btn" value="@Html.GetResource("ReportTempSave", "Report")" />
+			<input id="RunAndSavebutton" type="submit" onclick="return SaveReport(true); return false;" class="primary-btn" value="@Html.GetResource("RunAndSave", "Report")" />
+
+		}
+		@*else
+			{
+
+			<input id="Schedulingbutton" type="submit" onclick="return SaveReport() && false" class="primary-btn" style="display:none" value="@Html.GetResource("SaveButton", "Report")" />
+			}*@
+	</div>
+
+
+	<br />
+	<div class="data-row section-container" style="display: none" id="reportViewArea">
+		<div class="data-row tab-container">
+			<a onclick="changeReportView('areaChart'); generateGoogleChartImage();" id="subTabareaChart" href="javascript:void(0)"><span></span>@Html.GetResource("Chart", "Report")</a><a id="subTabareaDetails" onclick="changeReportView('areaDetails');" href="javascript:void(0)" class="first-tab selected">@*<span></span>*@@Html.GetResource("Details", "Report")</a>
+		</div>
+		<div class="section-form-container" id="areaDetails">
+
+			<div class="section-form-inner-container" id="GridLayoutDetails" style="overflow:visible   ;overflow-x:auto">
+
+				@{Html.RenderAction("CampaignGrid", "reports");}
+			</div>
+		</div>
+		<div class="section-form-container" id="areaChart" style="display: none">
+			<div class="data-row section-container">
+				<br />
+				@{Html.RenderAction("gcampaignchart", "reports");}
+			</div>
+		</div>
+		<div class="section-footer">
+		</div>
+	</div>
+	<br />
+
+	<div class="spinner-container" style="display: none">
+		<img src="@Url.GetImagePath("ajax-loader.gif")" alt="">
+	</div>
+
+}
+
+
+<script defer type="text/javascript">
+
+    $(document).ready(function () {
+        changeAdvancedCriteria('', '@Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.CriteriaOpt');
+
+        if ($("#deviceCategory").val() != "platform") {
+            $("#deviceTabManuFactor").click();
+        }
+
+    });
+
+
+    function autoChangedForTreeAdvanceCriteria(event) {
+
+        var treeName = "advancedCriteria";
+        var values = '@Model.CampaignReportSchaduling.ReportSchedulerDto.ReportDto.AdvancedCriteria'.split(",");
+        for (var i in values) {
+            if (values[i] != '') {
+                var match = jQuery("#" + treeName + "Tree").find('li[id=' + values[i] + ']');
+
+                match.each(function () {
+                    jQuery.tree.plugins.checkbox.check(this);
+                });
+            }
+
+        }
+        return false;
+    }
+</script>

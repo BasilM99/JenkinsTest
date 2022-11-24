@@ -1,0 +1,30 @@
+﻿<script type="text/javascript">
+    var defaultText = "@Html.GetResource("Default")";
+    var wifiOnlyText='@Html.GetResource("WIFIOnly", "Campaign")';
+    var specificIPRangesText='@Html.GetResource("SpecificIPRanges", "Campaign")';
+    var maxCount = 6;
+   
+ </script>
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.TargetingViewModel
+<div class="gray-container-box data-row">
+    <div class="target-label-container">
+        <div>@Html.GetResource("DeviceTargeting", "Campaign")</div>
+        <div>@Html.GetResource("Geographic", "Campaign")</div>
+         
+          @if(Model.DeviceTargetingView.DeviceTypeModel != null)
+        {
+        <div>@Html.GetResource("AdBannerType","Campaign")</div>
+        }
+        <div>@Html.GetResource("NetworkAndOperators", "Campaign")</div>
+    </div>
+    <div class="target-data-container">
+        <div id="deviceTargetingInfo" class="default-values trimed-info">@Html.GetResource("Default")</div>
+        <div id="@(Model.Geographics.GeographicalAreas.Name)TreeInfo" class="default-values trimed-info">@Html.GetResource("Default")</div>
+        
+         @if(Model.DeviceTargetingView.DeviceTypeModel != null)
+       {
+            <div id="deviceTypeInfo"class="default-values trimed-info">@Html.GetResource("Default")</div>
+        }
+        <div id="@(Model.OperaterTargetingView.Operaters.Name)TreeInfo" class="default-values trimed-info">@Html.GetResource("Default")</div>
+    </div>
+</div>

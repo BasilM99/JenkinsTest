@@ -1,0 +1,136 @@
+﻿@{
+    Layout = null;
+}
+
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.CreativeViewModel
+
+
+<script type="text/javascript">
+
+    var ListOfCreativeUnitVendors = '@(Model != null && Model.CreativeVendorIds!=null && Model.CreativeVendorIds.Count > 0 ? string.Join(",", (int[])(Model).CreativeVendorIds.ToArray()) :string.Empty)';
+
+    var ElemnetID = "";
+
+    var CreativeVendorUrl = '@Url.Action("GetCreativeVendors", "CreativeUnit")';
+    var selectElemnt;
+    $(document).ready(function () {
+
+        ElemnetID = "#" + "CreativeVendorIds";
+
+        selectElemnt = $(ElemnetID);
+
+        $(".multiselect2jq").select2({
+
+            tags: true,
+            multiple: true,
+            tokenSeparators: [',', ' '],
+
+            ajax: {
+                url: CreativeVendorUrl,
+                dataType: "json",
+                type: "GET",
+                data: function (params) {
+
+                    var queryParameters = {
+                        q: params.term
+                    }
+
+                    return queryParameters;
+                },
+                processResults: function (data) {
+
+                    return {
+
+                        results: $.map(data, function (item) {
+
+                            return {
+                                text: item.Name.Value,
+                                id: item.ID
+                            }
+                        })
+
+                    };
+                }
+
+
+
+            }
+
+        });
+
+        var valuesBeforeAdvertiser = [];
+        //selectElemnt.on("select2:selecting", function (e) {
+            
+            
+        //    valuesBeforeAdvertiser = selectElemnt.val();
+        //});
+        selectElemnt.on("select2:unselect", function (e) {
+
+
+            $("#IsCreativeVendorChanged").val("True");
+        });
+       // $eventSelect.on("select2:unselect", function (e) { log("select2:unselect", e); });
+        setTimeout("setCreativeUnitVendorsStyle()", parseInt(300));
+        CustomInitSelect2();
+    });
+    function setCreativeUnitVendorsStyle() {
+        $("#CreativeUnitVendorsDiv").find(".select2-selection").attr("style", " border: solid 1px #acabb6!important;");
+
+    }
+
+    function CustomInitSelect2() {
+
+        $.ajax({
+            type: 'GET',
+            url: CreativeVendorUrl + "?q=",
+            dataType: 'json'
+        }).then(function (data) {
+
+
+            var dataF = $.map(data, function (item) {
+                return {
+                    text: item.Name.Value,
+                    id: item.ID
+                }
+            })
+            ;
+            selectElemnt.select2({
+                data: dataF
+            });
+            if (typeof (ListOfCreativeUnitVendors) != "undefined") {
+
+                fillselect2multipe(ListOfCreativeUnitVendors, "#CreativeVendorIds");
+            }
+
+
+            $('#CreativeVendorIds').on("select2:selecting", function (e) {
+
+                $("#IsCreativeVendorChanged").val("True");
+            });
+        });
+
+    }
+
+
+</script>
+
+@Html.HiddenFor(x => x.IsCreativeVendorChanged)
+
+<div class="section-form-inner-container" id="divCreativeVendorsEC">
+    <div class="section-form-inner-container info-container">
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("Vendors", "Campaign")</span>
+            </div>
+            <div class="field-container">
+                <div id="CreativeUnitVendorsDiv">
+                    <div id="CreativeUnitVendorsP">
+                        <select id="CreativeVendorIds" name="CreativeVendorIds" class="js-example-theme-multiple js-states form-control select2-hidden-accessible multiselect2jq" style="width: 250px;" multiple="" tabindex="-1" aria-hidden="true"></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+

@@ -1,0 +1,78 @@
+@{
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+}
+<script language="javascript">
+
+
+    function refreshBusinessPartnersGrid() {
+        RefrashGrid('Grid');
+    }
+    function generateBusinessPartnersGrid() {
+        var grid = $("#Grid").data("tGrid");
+        grid.rebind();
+    };
+    function BusinessPartnersGridDataBinding(args) {
+
+
+    };
+    function BusinessPartnersGridDataBound(e) {
+
+        var grid = $("#Grid").data("tGrid");
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(1);
+        }
+
+
+    };
+
+
+</script>
+@model Noqoush.AdFalcon.Web.Controllers.Model.BusinessPartners.BusinessPartnersListViewModelBase
+@using (Html.BeginForm())
+{
+
+    @RenderSection("subheader")
+
+
+    <div class="data-row section-container">
+        <br />
+        <div class="data-row go-center">
+            <div class="blue-filter-container">
+                <table class="special-content">
+                    <tr>
+                        <td>
+                            <span class="go-bold">Name</span>
+                        </td>
+                        <td style="width: 110px;">
+                            <input type="text" id="Name" name="Name"
+                                   class="text-box " />
+                        </td>
+                        <td>
+                            <input type="button" onclick="generateBusinessPartnersGrid()" value='@Html.GetResource("Filter")' class="btn filter-button " />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="tail">
+            </div>
+        </div>
+        <br />
+        @if (Model.TopActions != null)
+        {
+            Html.RenderPartial("PartialViews/Actions", Model.TopActions);
+        }
+        <div class="grid-container">
+            @RenderSection("Grid1")
+        </div>
+        @if (Model.BelowAction != null)
+        {
+            Html.RenderPartial("PartialViews/Actions", Model.BelowAction);
+        }
+    </div>
+    if (Model.ToolTips != null)
+    {
+        @Html.Partial("GridToolTop", Model.ToolTips)
+    }
+}

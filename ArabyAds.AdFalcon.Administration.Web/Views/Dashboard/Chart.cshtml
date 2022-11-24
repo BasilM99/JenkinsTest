@@ -1,0 +1,39 @@
+﻿@{
+	string AdvertiserId = TempData["DashAdvertiserId"] != null ? TempData["DashAdvertiserId"].ToString() : "";
+	string AdvertiserAccountId = TempData["DashAdvertiserAccountId"] != null ? TempData["DashAdvertiserAccountId"].ToString() : "";
+}
+<script type="text/javascript">
+
+	GlobalAdvertiserId = '@AdvertiserId';
+	    GlobalAdvertiserAccountId = '@AdvertiserAccountId';
+</script>
+@if (string.IsNullOrEmpty(Request.QueryString["chartType"]) || Request.QueryString["chartType"].ToLower() == "app")
+{
+    Html.RenderAction("GAppChart");
+}
+else if (Request.QueryString["chartType"].ToLower() == "ad")
+{
+    if (ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DataProvider)
+    {
+        Html.RenderAction("ImpressionLogChart");
+
+    }
+    else
+    {
+        Html.RenderAction("GAdChart");
+
+    }
+
+
+} else if (Request.QueryString["chartType"].ToLower() == "deal")
+{
+    Html.RenderAction("DealChart");
+
+
+}
+else if (Request.QueryString["chartType"].ToLower() == "lmpressionlog")
+{
+    Html.RenderAction("ImpressionLogChart");
+
+
+}

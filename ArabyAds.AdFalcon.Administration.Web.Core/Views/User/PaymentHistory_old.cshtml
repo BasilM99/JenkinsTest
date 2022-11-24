@@ -1,0 +1,39 @@
+﻿@model ArabyAds.AdFalcon.Services.Interfaces.DTOs.Account.Payment.PaymentDtoResult
+@(Html.Kendo().Grid(Model.Items)
+            .Name("GridPayments")
+            .Columns(columns =>
+            {
+
+                columns.Bound(o => o.AdFalconReceiptNo).Title(Html.GetResource("TransactionID", "AccountHistory"));
+                columns.Bound(o => o.Type.Name).Title(Html.GetResource("PaymenType", "AccountHistory"));
+                columns.Bound(o => o.TransactionDate).Title(Html.GetResource("Date", "AccountHistory")).Format("{0:" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}");
+                columns.Bound(o => o.Amount).Title(Html.GetResource("Amount", "AccountHistory"));
+                columns.Bound(o => o.VATAmount).Title(Html.GetResource("Vat"));
+                columns.Bound(o => o.Comment).Title(Html.GetResource("Comment", "Global")).Width(250);
+
+            })
+            .DataSource(dataBinding =>
+            {
+                //dataBinding.Ajax().Select("PaymentHistory", "user").Enabled(true);
+                //dataBinding.Server().Select("PaymentHistory", "user", new { ajax = true });
+                dataBinding.Ajax().Read(read => read.Action("PaymentHistory", "user")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+            })
+            .Scrollable(scrolling => scrolling.Enabled(false))
+            .EnableCustomBinding(true)
+            .Pageable(paging => paging
+
+
+            .Input(false)
+            .Numeric(true)
+            .Info(true)
+            .PreviousNext(true)
+            .Refresh(true).Responsive(false)
+
+            .Position(GridPagerPosition.Bottom))
+
+
+            .Groupable(grouping => grouping.Enabled(false)))
+
+
+

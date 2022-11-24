@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Noqoush.AdFalcon.Services.Interfaces.DTOs.Account.AccountCostElementDto>
+
+@(Html.Telerik().Grid(Model)
+                            .Name("AccountCostElementsGrid")
+                         .Columns(columns =>
+                            {
+                                columns.Template(
+                                    @<text>
+                                        <input name="checkedRecords" type="checkbox" value="@item.ID " title="checkedRecords" />
+                                    </text>)
+                                    .Title("").Width(36).HtmlAttributes(new { style = "text-align:center" })
+                                    .ClientTemplate("<input type='checkbox' name='checkedRecords' value='<#= ID #>' />");
+
+
+                                columns.Bound(o => o.Value).Template(
+                                    @<text><div class="grid-title-container floating-left">
+                                            <span class="trimed-span" id="CampaignName">
+
+
+                                                @item.Value
+
+
+                                            </span>
+                                        </div><div class="grid-cogwheel-container floating-right go-right">
+                                            <div class='cogwheel' item_extra_info="@item.Value" onclick='showGridToolTip(@item.ID,this)'>
+                                                <a href='javaScript:void(0);'>&nbsp</a>
+                                            </div>
+                                        </div>
+                                    </text>
+                                    ).Title(Html.GetResource("CampaignName", "SSPDealCampaign")).Width(250)
+                                    .ClientTemplate("<div class='grid-title-container floating-left'><span class='trimed-span' id='Value'><#= Value#></span></div>");
+                             columns.Bound(o => o.ID).Title(Html.GetResource("DealId", "SSPDealCampaign")).Width(50).HtmlAttributes(new { @class = "go-center", @id = "AccountCostElementId" });
+
+
+                         })
+                                                                     .EnableCustomBinding(true).DataBinding(dataBinding =>
+                                                                     {
+                                                                         dataBinding.Server().Select("_AccountCostElmentsGrid", "AccountManagement", new { Ajax=true});
+                                                                         dataBinding.Ajax().Select("_AccountCostElmentsGrid", "AccountManagement");
+
+                                                                     })
+
+
+                        .ClientEvents(clientEvents => clientEvents.OnDataBinding("AccountCostElementsGridDataBinding").OnDataBound("AccountCostElementsGridDataBound"))
+                        .Scrollable(scrolling => scrolling.Enabled(false))
+                        .Selectable()
+                                .Pageable(paging => paging.PageSize(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total(int.Parse(ViewData["total"].ToString())).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+                      
+                        .Footer(true))
+
+
+<br />
+<br />

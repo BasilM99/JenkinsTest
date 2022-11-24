@@ -1,0 +1,141 @@
+﻿@{
+	Layout = null;
+}
+
+
+
+
+<script type="text/javascript">
+
+    var ElemnetIDacc = "";
+
+	var AccountUrl = '@Url.Action("GetAccountSecure", "AccountManagement")';
+	    var AccountByIdUrl = '@Url.Action("GetAccountById", "AccountManagement")';
+    var selectElemntacc;
+    $(document).ready(function () {
+		ElemnetIDacc = "#" +"PartyDto_AccountList";
+		selectElemntacc = $(ElemnetIDacc);
+		$(ElemnetIDacc).select2({
+            tags: false,
+            multiple: true,
+            tokenSeparators: [','],
+			allowClear: false,
+            ajax: {
+			delay:250,
+                url: AccountUrl,
+                dataType: "json",
+                type: "GET",
+                data: function (params) {
+
+                    var queryParameters = {
+						q: params.term,
+						page: params.page || 1
+                    }
+                    return queryParameters;
+                },
+				processResults: function (data, params) {
+					params.page = params.page || 1;
+
+					return {
+                        results: $.map(data.Items, function (item) {
+                            return {
+								text: item.AccountName,
+								id: item.AccountId
+                            }
+						})
+						, pagination: {
+							more: (params.page * 10) < data.TotalCount
+						}
+                    };
+                }
+
+
+
+            }
+
+        });
+		var valuesBeforeAccount = [];
+		$("#AccountsP").find("span.select2-selection").attr("style", "width: 430px;height:80px; overflow:auto;");
+
+		selectElemntacc.on("select2:selecting", function (e) {
+
+           
+			valuesBeforeAccount = selectElemntacc.val();
+        });
+
+
+		CustomInitSelectAcc2();
+    });
+
+
+    function CustomInitSelectAcc2() {
+
+
+		var arrpush = [];
+		if (typeof (ListOfAccounts) != "undefined") {
+			$.each(ListOfAccounts.split(","), function (i, e) {
+				if (e != "Not Set" && e != "" && e != null && e != undefined) {
+					//if (!/[0-9]+$/.test(e)) {
+					//    //var newList = $.merge($(nameoflist).select2('data'), [{
+					//    //    id: e,
+					//    //    tag: e
+					//    //}]);
+					//    //$(nameoflist).select2('data', newList);
+					//    //$(nameoflist).append('<option value="' + e + '">' + e + '</option>');
+
+					//    $(nameoflist).select2().val(e).trigger("change");
+					//}
+					//else {
+					//    $(nameoflist).select2().val(e).trigger("change");
+					//}
+
+					arrpush.push(e);
+					//$(nameoflist + " option[value='" + e + "']").prop("selected", true);
+
+				}
+			});
+
+
+			var arrResult = [];
+
+
+			$.ajax({
+				type: 'GET',
+				url: AccountByIdUrl + "?Ids=" + ListOfAccounts,
+			}).then(function (data) {
+				// create the option and append to Select2
+				for (var i = 0; i < data.length; i++) {
+					var option = new Option(data[i].AccountName, data[i].AccountId, true, true);
+					var resultData = {
+						text: data[i].AccountName,
+						id: data[i].AccountId
+					}
+					selectElemntacc.append(option).trigger('change');
+					arrResult.push(resultData);
+
+				}
+				// manually trigger the `select2:select` event
+				selectElemntacc.trigger({
+					type: 'select2:select',
+					params: {
+						data: arrResult
+					}
+				});
+			});
+		}
+       
+
+    }
+
+
+</script>
+
+
+<div id="AccountDiv">
+	<div id="AccountsP">
+		<select id="PartyDto_AccountList" name="PartyDto.AccountList" class="js-example-theme-multiple js-states form-control select2-hidden-accessible multiselect2jq" style="width: 430px;height:80px; " multiple="" tabindex="-1" aria-hidden="true"></select>
+	</div>
+</div>
+
+
+

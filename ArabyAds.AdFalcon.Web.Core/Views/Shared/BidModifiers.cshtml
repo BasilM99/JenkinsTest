@@ -1,0 +1,119 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.BidModifierModel
+
+
+    <style type="text/css">
+
+
+    @if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage == "en")
+    {
+        <text>
+        #SectionOne div[id$="Div"] {
+            float: left;
+        }
+
+        </text>
+    }
+    else
+    {
+        <text>
+        #SectionOne div[id$="Div"] {
+            float: right;
+        }
+
+        </text>
+    }
+
+
+
+    #SectionOne div .select2-selection__rendered {
+        float: left;
+    }
+    </style>
+
+@*<div class="conversions ad-filter-text go-left floating-left">
+
+
+        <h3>@Html.GetResource("BidModifiers", "Global")</h3>
+
+
+    </div>*@
+
+<div class="ad-filter-data" id="Global" style="padding-top:7px;">
+
+
+    <div class="data-row data-container">
+        <div class="label-container" style="min-height:1px;width: 57px;">
+
+
+
+
+
+        </div>
+
+        <div class="field-container">
+
+
+            <span class="field-title required-field">@Html.GetResource("DimensionType", "Global")</span>
+
+
+        </div>
+
+
+
+        <div class="label-container label-container-sm" style="min-height:1px;width:242px;">
+
+
+
+
+
+        </div>
+
+
+
+
+        <div class="field-container">
+
+
+            <span class="field-title required-field">@Html.GetResource("DimensionValue", "Global")</span>
+
+        </div>
+
+
+
+        <div class="label-container" style="min-height:1px;width:420px;">
+
+
+
+
+
+        </div>
+
+
+
+        <div class="field-container">
+
+
+            <span class="field-title required-field ">@Html.GetResource("Multiplier", "Global") </span>
+
+
+        </div>
+
+
+        <div class="label-container label-container-sm" style="min-height:1px; width:55px;">
+
+
+
+        </div>
+
+    </div>
+
+
+
+
+</div>
+
+
+<div class="col-sm-12 col-md-12" style="padding-top: 2px;">
+    @await Html.PartialAsync("BidModifierShared", Model)
+</div>
+

@@ -1,0 +1,63 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<PlatformTarget>x64</PlatformTarget>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<PlatformTarget>x64</PlatformTarget>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="App.config" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="ArabyAds.Framework" Version="1.0.0" />
+	  <PackageReference Include="ArabyAds.Framework.Grpc" Version="1.0.0" />
+	  <PackageReference Include="FFMpegCore" Version="4.7.0" />
+	  <PackageReference Include="iTextSharp.LGPLv2.Core" Version="1.7.1" />
+	  <PackageReference Include="Quartz" Version="3.3.3" />
+	  <PackageReference Include="Quartz.Plugins" Version="3.3.3" />
+	  <PackageReference Include="RestSharp" Version="107.1.1" />
+	  <PackageReference Include="Topshelf" Version="4.3.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\ArabyAds.AdFalcon.AdServer.Integration\ArabyAds.AdFalcon.AdServer.Integration.csproj" />
+		<ProjectReference Include="..\ArabyAds.AdFalcon.Common.Web\ArabyAds.AdFalcon.Common.Web.csproj" />
+		<ProjectReference Include="..\ArabyAds.AdFalcon.Domain.Common\ArabyAds.AdFalcon.Domain.Common.csproj" />
+		<ProjectReference Include="..\ArabyAds.AdFalcon.Domain\ArabyAds.AdFalcon.Domain.csproj" />
+		<ProjectReference Include="..\ArabyAds.AdFalcon.Server.Integration.Services\ArabyAds.AdFalcon.Server.Integration.Services.csproj" />
+		<ProjectReference Include="..\ArabyAds.AdFalcon.Services.Interfaces\ArabyAds.AdFalcon.Services.Interfaces.csproj" />
+
+
+
+
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="ffmpeg.exe">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="ffprobe.exe">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="IoC.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="log4net.config">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="quartz.config">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+</Project>

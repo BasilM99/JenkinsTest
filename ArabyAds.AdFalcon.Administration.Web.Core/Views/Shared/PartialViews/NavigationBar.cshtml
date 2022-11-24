@@ -1,0 +1,19 @@
+﻿@model IEnumerable<ArabyAds.AdFalcon.Web.Controllers.Model.Tab>
+<div class="data-row purpul-filter ">
+    <div class="blue-filter-container ">
+        @{string selected = "";
+          int i=1;}
+
+        @foreach (var action in Model)
+        {
+            if (action.IsSelected)
+            {
+                selected = "selected";
+            }
+            @Html.ActionLink(action.Action.DisplayText, action.Action.ActionName, action.Action.ControllerName, action.Action.ExtraPrams, new { @class = selected,id="filterTab" + i++ })
+            @(selected = "")
+        }
+    </div>
+    <div class="tail">
+    </div>
+</div>

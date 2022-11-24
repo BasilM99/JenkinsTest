@@ -1,0 +1,102 @@
+﻿@using ArabyAds.AdFalcon.Domain.Common.Model.Campaign
+@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.AdCreativeFullSummaryViewModel
+@{
+    var adCreativeDto = Model.ViewSummary;
+    string creativeUnitName = "Summary/CreativeUnit/Units/BannerUnit";
+    IList<AdCreativeUnitDto> creatives = adCreativeDto.CreativeUnitsContent;
+}
+
+<div style="width:1200px;overflow: overlay; margin-bottom: 20px; margin-top: 10px;">
+    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+        <colgroup>
+            <col width="40%" />
+            <col width="46%" />
+            <col width="14%" />
+        </colgroup>
+        <thead>
+
+            <tr>
+                <td class="left"><b>@Html.GetResource("Creative", "Campaign")</b></td>
+                <td><b>@Html.GetResource("Snapshots", "CreativesSettings")<span style="width: 150px; display: inline-block;">&nbsp;</span></b></td>
+                <td><b>@Html.GetResource("Attributes", "CreativesSettings")</b></td>
+            </tr>
+        </thead>
+        @{
+            for (int i = 1; i <= creatives.Count; i++)
+            {
+            <tr>
+                <td class="left" style="vertical-align:top;padding-top:15px;">
+                    <div class="decorate creativeDecorate@(i.ToString())">@await Html.PartialAsync(creativeUnitName, creatives[i - 1])</div>
+                </td>
+                <td class="left" style="vertical-align: top; padding-top: 15px;">
+
+                    <div class="decorate creativeDecorate@(i.ToString())">
+                    
+                      @await Html.PartialAsync(creativeUnitName, creatives[i - 1])
+                    </div>
+
+                </td>
+                <td style="padding: 15px 20px 0 0px;">@await Html.PartialAsync("Summary/CreativeSetting/AttributesSetting", creatives[i - 1])</td>
+            </tr>
+            if(!string.IsNullOrEmpty(creatives[i -1].ImpressionTrackerRedirect)){
+            <tr>
+                <td class="impression-tracker"><b>@Html.GetResource("ImpressionTrackerRedirect","CreativesSettings"):</b> @creatives[i -1].ImpressionTrackerRedirect</td>
+                <td colspan="2">&nbsp;</td>
+            </tr>
+            }
+            <tr>
+                <td colspan="3">&nbsp;</td>
+            </tr>
+            }
+        }
+    </table>
+</div>
+<style type="text/css">
+     @for (int i = 1; i <= creatives.Count; i++)
+            {
+                int previewWidth = creatives[i - 1].CreativeUnit.PreviewWidth;
+                int previewHeight = creatives[i - 1].CreativeUnit.PreviewHeight;
+                int width, height;
+                if (previewHeight > 120 || previewWidth > 360)
+                {
+                    width = (int)Math.Ceiling((creatives[i - 1].CreativeUnit.PreviewWidth / 3.0d) * 2);
+                    height = (int)Math.Ceiling((creatives[i - 1].CreativeUnit.PreviewHeight / 3.0d) * 2);
+                }
+                else
+                {
+                    width = previewWidth;
+                    height = previewHeight;
+                }
+                <text>
+               
+                 .creativeDecorate@(i.ToString())
+                {
+                      height: @(height)px;
+                      width: @(width + 200)px;
+                      
+               }
+
+                .creativeDecorate@(i.ToString()) div.field-container, .creativeDecorate@(i.ToString()) .banner-size
+                 {
+                   width: @(width)px !important;
+                   height: @(height)px !important;
+                 }
+                .creativeDecorate@(i.ToString()) img {
+                  width: @(width)px;
+                  height: @(height)px;
+                }
+    
+            .decorate .field-container
+            {
+                width:310px;
+            }
+
+           .decorate .field-container .text-box
+            {
+                width:300px;
+            }
+         
+                </text>
+            }
+</style>

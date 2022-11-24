@@ -1,0 +1,190 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("AddAppSiteAndroid", "Titles");
+    if (ViewContext.FormContext == null)
+    {
+        ViewContext.FormContext = new FormContext();
+    }
+}
+@model ArabyAds.AdFalcon.Web.Controllers.Model.AppSite.CreateViewModel
+<script language="javascript" type="text/javascript">
+    $(document).ready(function () {
+        if (AccountRole == "DSP") {
+            SetSelectedTap("");
+        } else {
+            SetSelectedTap("ListMenuPublisher");
+
+        }
+
+    });
+    function localInitilize() {
+
+
+	 @{
+
+
+                var IsCustom = false;
+                if ((Model.AppSiteDto != null) && (Model.AppSiteDto.Theme != null))
+                {
+                    IsCustom = Model.AppSiteDto.Theme.IsCustom;
+                }
+                <text>
+        initAppSitePage(@(IsCustom.ToString().ToLower()));
+        </text>
+                if (IsCustom)
+                {
+                <text>
+        var themeListObj = jQuery("#themeList");
+        themeListObj.attr("disabled", "true");
+        </text>
+                }
+                if ((Model.AppSiteDto != null) && (Model.AppSiteDto.Theme != null))
+                {
+               <text>
+        var themeSample = jQuery("#themeSample");
+        themeSample.css("background-color", '@Model.AppSiteDto.Theme.BackgroundColor');
+        themeSample.css("color", '@Model.AppSiteDto.Theme.TextColor');
+        </text>
+                }
+            }
+        $('[name="AppSiteDto.URL"]').rules("add", "urlAutoComplete");
+
+       
+    };
+    function CopyToClipBoard() {
+        elem = document.getElementById("PublisherIdToCopy");
+        $(elem).show();
+        elem.select();
+        document.execCommand("copy");
+        $(elem).hide();
+    }
+</script>
+<h2>@Html.GetResource("InfoCaption", "AppSite")</h2>
+@Html.HiddenFor(p => p.AppSiteDto.Theme.Id)
+<input id="AppSiteDto_Type_Id" name="AppSiteDto.Type.Id" value="1" type="hidden" />
+<input id="AppSiteDto_Type_ViewName" name="AppSiteDto.Type.ViewName" value="CreateAndroid"
+       type="hidden" />
+<input id="AppSiteDto_Type_IsApp" name="AppSiteDto.Type.IsApp" value="True" type="hidden" />
+<div class="info-container data-row">
+    <br />
+    @{
+        if (Model.AppSiteDto != null)
+        {
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("NameId", "AppSite")</span>
+            </div>
+            <div class="field-container">
+                <span class="side-text">@Model.AppSiteDto.PublisherId</span>
+                @Html.TextBox("PublisherIdToCopy", Model.AppSiteDto.PublisherId, new { @style = "display:none;" })
+            </div>
+            <div class="label-container" style=" text-align: center;width: 64px;">
+                <img name="iconImage" onclick="CopyToClipBoard();" title="Copy" class="copyicon" style="display: inline;">
+            </div>
+        </div>
+        }
+
+        if (Model != null && Model.AppSiteDto != null && !string.IsNullOrEmpty(Model.AppSiteDto.SupUserName))
+        {
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">Created By</span>
+                </div>
+                <div class="field-container">
+                    @Html.DisplayTextFor(p => p.AppSiteDto.SupUserName)
+                </div>
+            </div>
+        }
+
+    }
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("Name", "AppSite")</span>
+        </div>
+        <div class="field-container">
+            @Html.AdFalconEditorFor(p => p.AppSiteDto.Name)
+            @Html.AdFalconValidationMessageFor(p => p.AppSiteDto.Name)
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">&nbsp;</span>
+        </div>
+        <div class="field-container">
+            @{
+                bool IsPublished = false;
+                if (Model.AppSiteDto != null)
+                {
+                    IsPublished = Model.AppSiteDto.IsPublished;
+                }
+            }
+            @Html.GetCheckBox("AppSiteDto.IsPublished", Html.GetResource("AndroidURL", "AppSite"), isChecked: IsPublished, onChange: "onPublishedChangde")
+            @Html.AdFalconValidationMessageFor(p => p.AppSiteDto.IsPublished)
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("URL", "AppSite")</span>
+            </div>
+            <div class="field-container">
+                @Html.AdFalconEditorFor(p => p.AppSiteDto.URL)
+                @Html.AdFalconValidationMessageFor(p => p.AppSiteDto.URL)
+            </div>
+        </div>
+        @await Html.PartialAsync("PartialViews/KeyWord", Model.KeywordViewModel)
+    </div>
+    <h2>@Html.GetResource("Theme", "AppSite")</h2>
+    <div class="data-row info-container last-container">
+        <br />
+        <div class="data-row data-container ">
+            <div class="label-container">
+                &nbsp;
+            </div>
+            <div class="f-container data-row floating-left">
+                <span id="themeSample" class="f-text go-left floating-left app-site-f-text">
+                    <img src='@Url.GetImagePath("sports38.png")' class="floating-left" /><img src='@Url.GetImagePath("a_call2.png")' class="floating-right smaller-img" /><span class="iea-margin-upload-file-text">@Html.GetResource("SampleAdText", "AppSite")</span>
+                </span>
+            </div>
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                &nbsp;
+            </div>
+            <div class="field-container">
+                @Html.GetRadioButton("AppSiteDto.Theme.IsCustom", "", !IsCustom, "floating-left only-checkbox", value: "false", onChange: "clearTheme")
+                <div class="floating-left">
+                    @Html.DropDownList("themeList", Model.Themes)
+                </div>
+            </div>
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                &nbsp;
+            </div>
+            <div class="field-container">
+                @Html.GetRadioButton("AppSiteDto.Theme.IsCustom", "", IsCustom, "floating-left only-checkbox", value: "true", onChange: "clearTheme")
+                <div class="ddl-container data-row floating-left">
+                    <span class="check-box-text">@Html.GetResource("Custom", "AppSite")</span>
+                </div>
+            </div>
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("Background", "AppSite")</span>
+            </div>
+            <div class="field-container english-text">
+                @Html.AdFalconEditorFor(p => p.AppSiteDto.Theme.BackgroundColor)
+                @Html.AdFalconValidationMessageFor(p => p.AppSiteDto.Theme.BackgroundColor)
+                <span class="data-row guid-text go-left">e.g. #0055FF</span>
+            </div>
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("Text", "AppSite")</span>
+            </div>
+            <div class="field-container english-text">
+                @Html.AdFalconEditorFor(p => p.AppSiteDto.Theme.TextColor)
+                @Html.AdFalconValidationMessageFor(p => p.AppSiteDto.Theme.TextColor)
+                <span class="data-row guid-text go-left">e.g. #0055FF</span>
+            </div>
+        </div>
+    </div>
+  

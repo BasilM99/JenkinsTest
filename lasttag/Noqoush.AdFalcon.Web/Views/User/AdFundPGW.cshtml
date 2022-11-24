@@ -1,0 +1,100 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.AdFundDtoPGW
+@{
+    ViewBag.Title = Html.GetResource("AdFund", "Titles");
+    string VatAmountPercentage = Noqoush.Framework.Utilities.FormatHelper.FormatPercentage(Noqoush.Framework.OperationContext.Current.UserInfo<Noqoush.AdFalcon.Common.UserInfo.AdFalconUserInfo>().VATValue);
+}
+
+<style>
+	#breadcrumb a.btn#BreadCrum1 {
+		padding-left: 30px !important;
+	}
+</style>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        amountCalculator();
+
+    });
+
+    function amountCalculator() {
+        var amount = $("#Amount").val();
+        if (VatAmountPercentage > 0 && amount > 0) {
+            getAmountVAT(amount, "NetAmount", "VatAmount");
+            $("#NetAmountDiv").show();
+            $("#VATAmountDiv").show();
+        } else {
+            $("#NetAmountDiv").hide();
+            $("#VATAmountDiv").hide();
+        }
+    }
+</script>
+<h2>
+    @Html.GetResource("SubAdFund", "Titles")
+</h2>
+
+<div class="section-form-container">
+    <div class="data-row">
+        <div class="ad-filter-text go-left floating-left iea-go-right" style="width: 250px; padding: 10px;">
+            <h3>@Html.GetResource("InformationMesssageHeader", "AdFund")</h3>
+            <p>@Html.Raw(Html.GetResource("InformationMesssagePGW", "AdFund"))</p>
+        </div>
+        <div class="section-form-inner-container info-container">
+
+            @using (Html.BeginForm())
+            {
+                <div class="data-row data-container">
+                    <div class="label-container" style="width: 75px;">
+                        <span class="field-title required-field">@Html.GetResource("FundAmount")</span>
+                    </div>
+                    <div class="field-container">
+                        <span class="small-big-field">@Html.AdFalconTextBox("Amount", Model == null ? string.Empty : Model.Amount.ToString("F2"), new { maskType = "Int", onchange = "amountCalculator(event)" })</span>
+                        <span class="guid-text go-right field-title floating-left iea-label-container-padding-right" style="line-height: 32px;">@Html.GetResource("FundCurrency", "PGW")</span>
+                        <span style="display: inline-block; margin-left: 2px; margin-right: 2px;">@Html.AdFalconValidationMessageFor(p => p.Amount)</span>
+                    </div>
+                </div>
+
+             
+                    if (Noqoush.Framework.OperationContext.Current.UserInfo<Noqoush.AdFalcon.Common.UserInfo.AdFalconUserInfo>().VATValue > 0)
+                    {
+                        <div class="data-row data-container" style="display:none" id="VATAmountDiv">
+                            <div class="label-container" style="width: 75px;">
+                                <span class="field-title required-field">@Html.GetResource("VATAmount", "Global")</span>
+                            </div>
+                            <div class="field-container">
+                                <span class="small-big-field">@Html.AdFalconTextBox("VatAmount", null, new { @disabled = "disabled" })</span>
+                                <span class="guid-text go-right field-title floating-left iea-label-container-padding-right" style="line-height: 32px;">(@VatAmountPercentage)</span>
+
+                                <span style="display: inline-block; margin-left: 2px; margin-right: 2px;">@Html.AdFalconValidationMessageFor(p => p.VatAmount)</span>
+                            </div>
+                        </div>
+                        <div class="data-row data-container" style="display:none;" id="NetAmountDiv">
+                            <div class="label-container" style="width: 75px;">
+                                <span class="field-title required-field">@Html.GetResource("TotalAmount", "Global")</span>
+                            </div>
+                            <div class="field-container">
+                                <span class="small-big-field">@Html.AdFalconTextBox("NetAmount", Model == null ? string.Empty : Model.Amount.ToString("F2"), new { @disabled = "disabled" })</span>
+                                <span style="display: inline-block; margin-left: 2px; margin-right: 2px;">@Html.AdFalconValidationMessageFor(p => p.NetAmount)</span>
+                            </div>
+                        </div>
+                    }
+                
+                    <div class="data-row data-container">
+                        @Html.GetRadioButton("PaymentType", Html.GetResource("PayPal"), true, value: "PayPal")
+                    </div>
+                    <div class="data-row data-container">
+                        @Html.GetRadioButton("PaymentType", Html.GetResource("CreditCard"), false, value: "MIGS")
+                    </div>
+                    <div class="data-row go-left iea-float-none">
+                        <div class="label-container" style="width: 75px;">
+                            &nbsp;
+                        </div>
+                        <input value="@Html.GetResource("Pay", "Commands")" type="submit" name='CreaditCard' class="primary-btn iee-primary-btn floating-left" />
+                        <span class="creditcard-holder floating-left"></span>
+                        <span class="paypal-holder floating-left"></span>
+                    </div>
+                    }
+        </div>
+    </div>
+</div>
+<div class="section-footer">
+</div>

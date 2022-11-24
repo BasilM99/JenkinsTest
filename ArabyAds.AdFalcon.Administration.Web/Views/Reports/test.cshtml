@@ -1,0 +1,623 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.Campaign.GeographicViewModel
+
+@{
+    ViewBag.Title = "test";
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+}
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<style>
+    ul.dashed-list {
+        list-style: none outside none;
+    }
+
+        ul.dashed-list li:before {
+            content: "\2014";
+            float: left;
+            margin: 0 0 0 -27px;
+            padding: 0;
+        }
+
+        ul.dashed-list li {
+            list-style-type: none;
+        }
+
+    ul.tree, ul.tree ul {
+        list-style-type: none;
+        background: url(vline.png) repeat-y;
+        margin: 0;
+        padding: 0;
+    }
+
+        ul.tree ul {
+            margin-left: 10px;
+        }
+
+        ul.tree li {
+            margin: 0;
+            padding: 0 12px;
+            line-height: 20px;
+            background: url(node.png) no-repeat;
+            color: #369;
+            font-weight: bold;
+        }
+
+
+    ol.treedd, ol.treedd ol {
+        list-style-type: none;
+        background: url(vline.png) repeat-y;
+        margin: 0;
+        padding: 0;
+    }
+
+        ol.treedd ul {
+            margin-left: 10px;
+        }
+
+        ol.treedd li {
+            margin: 0;
+            padding: 0 12px;
+            line-height: 20px;
+            background: url(node.png) no-repeat;
+            color: #369;
+            font-weight: bold;
+        }
+
+
+
+    ul.treed, ul.treed ul {
+        list-style-type: none;
+        background: #fff url(http://odyniec.net/articles/turning-lists-into-trees/vline.png) repeat-y; /*margin: 0; padding: 0;*/
+    }
+
+        ul.treed ul {
+            margin-left: 20px;
+        }
+
+        ul.treed li {
+            margin: 5px;
+            padding: 5 18px;
+            line-height: 30px;
+            background: url(http://odyniec.net/articles/turning-lists-into-trees/node.png) no-repeat;
+            color: #369;
+            font-weight: bold;
+        }
+
+            ul.treed li.last {
+                background: #fff url(http://odyniec.net/articles/turning-lists-into-trees/lastnode.png) no-repeat;
+            }
+
+    /*ul, li { list-style: none; margin: 0; padding: 0; }
+    ul { padding-left: 1em; }
+    li { padding-left: 1em;
+      border: 1px dotted black;
+      border-width: 0 0 1px 1px;
+    }
+    li.container2 { border-bottom: 0px; }
+    li.empty { font-style: italic;
+      color: silver;
+      border-color: silver;
+    }
+    li p { margin: 0;
+      background: white;
+      position: relative;
+      top: 0.5em;
+    }
+    li ul {
+      border-top: 1px dotted black;
+      margin-left: -1em;
+      padding-left: 2em;
+    }
+    ul li:last-child ul {
+      border-left: 1px solid white;
+      margin-left: -17px;
+    }*/
+
+
+    .treeddd, .treeddd ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+        .treeddd ul {
+            margin-left: 1em;
+            position: relative;
+        }
+
+            .treeddd ul ul {
+                margin-left: .5em;
+            }
+
+            .treeddd ul:after {
+                content: "";
+                display: block;
+                width: 0;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                border-left: 1px solid;
+            }
+
+        .treeddd li {
+            margin: 0;
+            padding: 0 1em;
+            line-height: 2em;
+            color: #369;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .treeddd ul li:after {
+            content: "";
+            display: block;
+            width: 10px;
+            height: 0;
+            border-top: 1px solid;
+            margin-top: -1px;
+            position: absolute;
+            top: 1em;
+            left: 0;
+        }
+
+        .treeddd ul li:last-child:after {
+            background: #fff;
+            height: auto;
+            top: 1em;
+            bottom: 0;
+        }
+
+    .indicator {
+        margin-right: 5px;
+    }
+
+    /*ul, menu, dir {
+        display: block;
+        list-style-type: disc;
+        -webkit-margin-before: 1em;
+        -webkit-margin-after: 1em;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+        -webkit-padding-start: 40px;
+    }*/
+
+
+    .query-builder .rules-list > :last-child::before {
+        border-radius: 0 0 0 4px;
+    }
+
+    .query-builder .rules-list > ::before {
+        top: -4px;
+        border-width: 0 0 2px 2px;
+    }
+
+    /*.query-builder .rules-list>::after,*/ .query-builder .rules-list > ::before {
+        content: '';
+        position: absolute;
+        left: -10px;
+        width: 10px;
+        height: calc(50% + 4px);
+        border-color: #CCC;
+        border-style: solid;
+    }
+
+    .query-builder .rules-list > ::after {
+        top: calc(50% + 2px);
+        border-width: 0 0 0px 2px;
+    }
+
+    .query-builder .rules-list > ::after {
+        content: '';
+        position: absolute;
+        left: -10px;
+        width: 10px;
+        height: calc(50% + 6px);
+        border-color: #CCC; /*rgb(220, 200, 150);*/
+        border-style: solid;
+    }
+
+
+
+
+
+    .lastone > ::after {
+        border-width: 0 0 0px 0px !important;
+        border-color: coral !important;
+        border-style: none !important;
+    }
+
+
+    /*li:last-child>::after {
+     border-width: 0 0 0px 0px !important;
+      border-color: coral !important;
+      border-style:  none !important;
+    }*/
+    /*li:nth-last-child(1)>::after{
+     border-width: 0 0 0px 0px !important;
+      border-color: coral !important;
+      border-style:  none !important;
+    }*/
+    /*.rules-list:last-child >::after{
+     border-width: 0 0 0px 0px !important;
+      border-color: coral !important;
+      border-style:  none !important;
+    }*/
+    .group {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        border: solid 1px #666;
+    }
+
+    .group-conditions {
+        margin-left: 25px;
+    }
+
+    .alert-group {
+        margin-top: 15px;
+        margin-bottom: 15px;
+        border-color: rgb(192, 152, 83);
+        border-color: rgb(251, 238, 213);
+        border-color: rgb(220, 200, 150);
+    }
+
+    .condition,
+    .group {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .label {
+        font-size: small;
+        color: white;
+    }
+
+    .value-span {
+        color: black;
+    }
+
+    #radioBtn .notActive {
+        color: #3276b1;
+        background-color: #fff;
+    }
+</style>
+<script>
+        //$(document).ready(function () {
+
+        //    $('#radioBtn a').on('click', function () {
+        //        
+        //        var sel = $(this).data('title');
+        //        var tog = $(this).data('toggle');
+        //        $('#' + tog).prop('value', sel);
+
+        //        $('a[data-toggle="' + tog + '"]').not('[data-title="' + sel + '"]').removeClass('active').addClass('notActive');
+        //        $('a[data-toggle="' + tog + '"][data-title="' + sel + '"]').removeClass('notActive').addClass('active');
+        //    })
+        //});
+
+    </script>
+@*<div class="btncustom-group" data-toggle="buttons">
+
+        <label class="btncustom btncustom-primary">
+            <input type="radio" name="options" id="option2" autocomplete="off"> Radio 2
+        </label>
+        <label class="btncustom btncustom-primary">
+            <input type="radio" name="options" id="option3" autocomplete="off"> Radio 3
+        </label>
+    </div>*@
+<div id="Tree-dialog-form" style="display: none;" title="@Html.GetResource("Permissions", "Global")">
+
+    <div tabsectiongeographic="2" id="geographicContainer">
+        @Html.Partial("Tree", Model.GeographicalAreas)
+    </div>
+    <input type="button" onclick="test2(1)" name="Target" value='Target' class="btn filter-button " />
+    <input type="button" onclick="test2(0)" name="Exclude" value='Exclude' class="btn filter-button " />
+
+</div>
+<div ng-app="app">
+    <div class="container" ng-controller="QueryBuilderCtrl">
+        <h1>Angular.js Query Builder</h1>
+        <div class="alert alert-info">
+            <strong>Example Output</strong>
+            <br>
+            <span ng-bind-html="output"></span>
+        </div>
+        <query-builder group="filter.group"></query-builder>
+    </div>
+    <script type="text/ng-template" id="/queryBuilderDirective.html">
+        <div class="alert alert-warning alert-group" style="border-color: silver!important;background-color: #dee7ef!important;">
+            <ul class="list-group query-builder">
+                <li class="query-builder" style="list-style-type:none">
+                    <div class="form-inline">
+                        @*<select ng-options="o.name as o.name for o in operators" ng-model="group.operator" class="form-control input-sm"></select>*@
+
+                        <div class="input-group">
+                            <div id="radioBtn" class="btncustom-group">
+                                <a class="btncustom btncustom-primary btncustom-sm active" ngClass="" data-toggle="happy" ng-model="group.operator" ng-click="changeOperator()" value="AND" data-title="Y">AND</a>
+                                <a class="btncustom btncustom-primary btncustom-sm notActive" ngClass="" data-toggle="happy" ng-model="group.operator" ng-click="changeOperator()" value="OR" data-title="N">OR</a>
+                            </div>
+                            <input type="hidden" name="happy" id="happy">
+                        </div>
+
+                        <button style="margin-left: 5px" ng-click="addCondition()" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus-sign"></span> Add Condition</button>
+                        <button style="margin-left: 5px" ng-click="addGroup()" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus-sign"></span> Add Group</button>
+                        <button style="margin-left: 5px" ng-click="removeGroup()" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-minus-sign"></span> Remove Group</button>
+                    </div>
+
+                    <ul class="list-group query-builder">
+                        <div class="group-conditions">
+                            <div ng-repeat="rule in group.rules | orderBy:'index'" class="condition">
+                                <div ng-switch="rule.hasOwnProperty('group')">
+
+                                    <div ng-switch-when="true">
+                                        <ul class="list-group-item rules-list" ng-class="isLast($last)">
+
+                                            <query-builder group="rule.group"></query-builder>
+
+                                        </ul>
+
+                                    </div>
+
+
+                                    <div ng-switch-default="ng-switch-default">
+                                        <li class="list-group-item rules-list  gggg" ng-class="isLast($last)">
+                                            <div class="form-inline">
+                                                <div class="container" style="border: 1px solid #337ab7;padding: 20px;border-radius: 10px;">
+                                                    <div class="row">
+                                                        <div class="col-sm-3">
+                                                            <span class="label label-primary">Name: <span class="value-span">{{rule.Name}}</span> </span>
+
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <span class="label label-primary">Reach: <span class="value-span">{{rule.Reach}}</span> </span>
+                                                        </div>
+
+                                                        <div class="col-sm-3">
+                                                            <select ng-options="t.name as t.name for t in conditions" ng-model="rule.condition" class="form-control input-sm"></select>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <button style="margin-left: 5px;min-width: 35px !important;" ng-click="removeCondition($index)" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-minus-sign"></span></button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-sm-3">
+                                                            <span class="label label-primary">CPM: <span class="value-span">{{rule.CPM}}</span></span>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <span class="label label-primary">Type: <span class="value-span">{{rule.Type}}</span></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <br>
+
+                                            </div>
+                                        </li>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </script>
+</div>
+<script type="text/javascript">
+    var currentscope = null;
+    $(document).ready(function () {
+
+        TreeDialogInitilize();
+    });
+    var loadOperatorsFlag = false;
+    function TreeDialogInitilize() {
+        $("#Tree-dialog-form").dialog({
+            autoOpen: false,
+            height: 400,
+            width: 470,
+            modal: true,
+            resizable: true,
+            draggable: false,
+            open: function () {
+
+
+
+            },
+            close: function () {
+
+
+            }
+        });
+    }
+    function showTree(scope) {
+
+        currentscope = scope;
+        jQuery('#Tree-dialog-form').dialog('open');
+    }
+
+
+    var url = '@Url.Action("GetOjects", "reports")';
+
+    function test2(type) {
+
+
+
+        var checkedlist = $("#GeographiesTree").find(".checked");
+        var input = '';
+        for (var i = 0 ; i < checkedlist.length; i++) {
+            if ($("#GeographiesTree").find(".checked").eq(i).parent().attr("isroot") == 'false')
+                input += $("#GeographiesTree").find("a[class*='checked']").eq(i).parent().attr("id") + ",";
+
+        }
+
+
+        if (input.length > 0)
+            $.ajax({
+                type: 'POST',
+                url: url + "?ids=" + input,
+                success: function (data) {
+
+
+
+                    for (var i = 0 ; i < data.length; i++) {
+                        if (type == 1) {
+                            data[i].condition = "Target";
+                        }
+                        else {
+
+                            data[i].condition = "Exclude";
+                        }
+                        currentscope.addRule(data[i]);
+
+                    }
+
+                    $('#Tree-dialog-form').dialog("close");
+                    currentscope.$apply();
+                },
+                error: function (data) {
+                    alert(data);
+                }
+            });
+
+
+    }
+
+    var app = angular.module('app', ['ngSanitize', 'queryBuilder']);
+    app.controller('QueryBuilderCtrl', ['$scope', function ($scope) {
+        var data = '{"group": {"operator": "AND","rules": []}}';
+
+        function htmlEntities(str) {
+            return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function computed(group) {
+            if (!group) return "";
+            for (var str = "(", i = 0; i < group.rules.length; i++) {
+                i > 0 && (str += " <strong>" + group.operator + "</strong> ");
+                str += group.rules[i].group ?
+                    computed(group.rules[i].group) :
+                    group.rules[i].Name + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].Reach;
+            }
+
+            return str + ")";
+        }
+
+        $scope.json = null;
+
+        $scope.filter = JSON.parse(data);
+
+        $scope.$watch('filter', function (newValue) {
+            $scope.json = JSON.stringify(newValue, null, 2);
+            $scope.output = computed(newValue.group);
+        }, true);
+    }]);
+
+    var queryBuilder = angular.module('queryBuilder', []);
+    queryBuilder.directive('queryBuilder', ['$compile', function ($compile) {
+        return {
+            restrict: 'E',
+            scope: {
+                group: '='
+            },
+            templateUrl: '/queryBuilderDirective.html',
+            compile: function (element, attrs) {
+
+                var content, directive;
+                content = element.contents().remove();
+                return function (scope, element, attrs) {
+                    scope.operators = [
+                        { name: 'AND' },
+                        { name: 'OR' }
+                    ];
+
+                    //scope.fields = [
+                    //    { name: 'Target', Reach: 'Jordan', CPM: '2.3$', Type: 'mobile' },
+                    //    { name: 'Target', Reach: 'KSA', CPM: '3.2$', Type: 'web' },
+
+                    //];
+
+                    scope.conditions = [
+                        { ID: 0, name: 'Target' },
+                        { ID: 1, name: 'Exclude' }
+
+                    ];
+                    scope.isLast = function (check) {
+
+
+                        var cssClass = check ? 'lastone' : null;
+                        return cssClass;
+                    };
+                    scope.addCondition = function () {
+
+                        showTree(scope);
+
+
+                    };
+                    scope.changeOperator = function () {
+                        var element = event.currentTarget;
+                        var parent = $(element).parent();
+
+
+                        if (scope.group.operator == "AND" && $(element).attr("value") == "OR") {
+                            scope.group.operator = "OR";
+
+                        }
+                        else if (scope.group.operator == "OR" && $(element).attr("value") == "AND") {
+
+                            scope.group.operator = "AND";
+                        }
+
+                        var sel = $(event.currentTarget).data('title');
+                        var tog = $(event.currentTarget).data('toggle');
+                        $('#' + tog).prop('value', sel);
+                        $(parent).find('a[data-toggle="' + tog + '"]').not('[data-title="' + sel + '"]').removeClass('active').addClass('notActive');
+
+                        $(parent).find('a[data-toggle="' + tog + '"][data-title="' + sel + '"]').removeClass('notActive').addClass('active');
+
+                    };
+                    scope.removeCondition = function (index) {
+                        scope.group.rules.splice(index, 1);
+                    };
+                    scope.addRule = function (RulesData) {
+
+
+                        //scope.group.rules.push({
+                        //    condition: 'Target',
+                        //    field: 'Firstname',
+                        //    data: '',
+                        //    Name: 'Test',
+                        //    Reach: 'MiddleEast', CPM: '2$', Type: 'test Type'
+                        //});
+
+                        if (!scope.group.rules.filter(function (e) { return e.ID == RulesData.ID }).length > 0) {
+                            scope.group.rules.push(RulesData);
+                        }
+                    };
+                    scope.addGroup = function () {
+                        scope.group.rules.push({
+                            group: {
+                                operator: 'AND',
+                                rules: []
+                            }
+                        });
+                    };
+
+                    scope.removeGroup = function () {
+                        "group" in scope.$parent && scope.$parent.group.rules.splice(scope.$parent.$index, 1);
+                    };
+
+                    directive || (directive = $compile(content));
+
+                    element.append(directive(scope, function ($compile) {
+                        return $compile;
+                    }));
+                }
+            }
+        }
+    }]);
+    //});
+
+
+</script>

@@ -1,0 +1,95 @@
+﻿@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.AdGroupSummaryDtoBase
+            
+<h2>@Html.GetResource("AdGroup", "Titles") @Html.ActionLink(Html.GetResource("Edit", "Commands"), "Targeting",ViewData["ControllerName"].ToString(), new { id = Model.CampaignId, adGroupId = Model.ID, returnUrl = Request.RawUrl }, new { @class = "grid-tool-tip-edit floating-right ie-edit-ads" })</h2>
+    <div class="section-form-inner-container">
+        <div class="floating-left" style="width: 515px">
+            <div class="data-row info-container last-container">
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("GroupName", "AdGroup")</span>
+                    </div>
+                    <div class="field-container" >
+                        <span class="side-text margin-summary" >@Model.Name</span>
+                    </div>
+                </div>
+            </div>
+            <div class="data-row info-container last-container">
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("Status")</span>
+                    </div>
+                    <div class="field-container">
+                        <span class="side-text margin-summary">@Model.Status</span>
+                    </div>
+                </div>
+            </div>
+            @if (Model.DailyBudget.HasValue)
+            {
+                <div class="data-row info-container last-container">
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("DailyBudget", "Campaign")</span>
+                        </div>
+                        <div class="field-container">
+                            <span class="side-text margin-summary">@Model.DailyBudget.Value.ToString("F2")</span>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (Model.Budget.HasValue)
+            {
+                <div class="data-row info-container last-container">
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("Budget", "Campaign")</span>
+                        </div>
+                        <div class="field-container">
+                            <span class="side-text margin-summary">@Model.Budget.Value.ToString("F2")</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="floating-left">
+            <div class="data-row info-container last-container">
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("Objective", "Campaign")</span>
+                    </div>
+                    <div class="field-container margin-summary">
+                        <span class="side-text">@Model.Objective</span>
+                    </div>
+                </div>
+            </div>
+            <div class="data-row info-container last-container">
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("ActionType", "Campaign")</span>
+                    </div>
+                    <div class="field-container">
+                        <span class="side-text margin-summary">@Model.ActionType</span>
+                    </div>
+                </div>
+            </div>
+            <div class="data-row info-container last-container">
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("Bid", "Campaign")</span>
+                    </div>
+                    <div class="field-container">
+                        <span class="side-text margin-summary">@Html.DisplayFor(p => p.Bid)</span>
+                        @if ((Noqoush.Framework.OperationContext.Current.UserInfo
+<Noqoush.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+                ().AccountRole == (int)Noqoush.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP))
+                        {
+                            if (Model.DiscountedBid != Model.Bid)
+                            {
+                                <span id="bidDiscounted" style="color:#E40685; " class="data-row guid-text go-left iea-go-right">@("(" + string.Format(Html.GetResource("DiscountedBidDesc", "Campaign"), Model.DiscountedBid.ToString("F2")) + ")")</span>
+                            }
+                        }
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+

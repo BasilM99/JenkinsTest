@@ -1,0 +1,150 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Select2ViewModel
+@{
+    Layout = null;
+
+}
+
+<script type="text/javascript">
+
+    var ElemnetID@(Model.Id) = "";
+    var Type@(Model.Id) = '@Model.Id';
+    var CreativeFormatsUrl@(Model.Id) = '@Url.Action(Model.ActionName,Model.ControllerName)';
+    var selectElemnt@(Model.Id);
+    var select@(Model.Id)List = "#" + '@Model.Id' + "List";
+    var P@(Model.Id) = "#" + '@Model.Id' + "P";
+    var IsTree_@(Model.Id) = '@Model.IsTree';
+    var @(Model.Id)OnReadyFunctions = '@Model.OnReadyFunctions';
+    var @(Model.Id)OnSelectFunctions = '@Model.OnSelectFunctions';
+    var @(Model.Id)_ValuesBefore = [];
+
+    $(document).ready(function () {
+		   $(select@(Model.Id)List).select2({
+
+			placeholder: "@Model.PlaceHolder",
+			tags: false,
+
+			multiple: @((Model.Single==false).ToString().ToLower()),
+			tokenSeparators: [',', ' '],
+			allowClear:  @((Model.AllowClear== true).ToString().ToLower()),
+			closeOnSelect: true
+		});
+        Fill@(Model.Id)();
+           $(select@(Model.Id)List).on("select2:select", function (e) {
+
+            if ($(P@(Model.Id)).find("span.select2-selection").height() > 64) {
+
+                $(P@(Model.Id)).find("span.select2-selection").attr("style", "width: 295px;height:100%;max-height:65px;overflow:auto;");
+               }
+            var OnSelectFunctions = @(Model.Id)OnSelectFunctions.split(',');
+
+               for (var i = 0; i < OnSelectFunctions.length; i++) {
+                   if (OnSelectFunctions[i]!="")
+                    executeFunctionByName(OnSelectFunctions[i], window, "");
+
+               }
+
+        });
+
+        $(select@(Model.Id)List).on("select2:selecting", function (e) {
+
+            @(Model.Id)_ValuesBefore = $(select@(Model.Id)List).val();
+        });
+
+
+        var OnReadyFunctions = @(Model.Id)OnReadyFunctions.split(',');
+
+        for (var i = 0; i < OnReadyFunctions.length; i++) {
+            if (OnReadyFunctions[i] != "")
+
+            executeFunctionByName(OnReadyFunctions[i], window, "");
+
+		}
+		$(select@(Model.Id)List).val(null).trigger('change');
+		@*$(select@(Model.Id)List).select2("val", "");
+		$(select@(Model.Id)List).val("");
+		$(select@(Model.Id)List).attr('value', '');
+		$(select@(Model.Id)List).trigger('change.select2');
+
+		$(select@(Model.Id)List).val(null).trigger('change');*@
+		//$(select@(Model.Id)List).select2('close');
+		//$(select@(Model.Id)List).select2('change');
+		//$(select@(Model.Id)List).select2('clear');
+		//$('.select2-selection__rendered').html('');
+		//$(select@(Model.Id)List).trigger("clear.select2");
+    });
+
+    function Fill@(Model.Id)() {
+
+        $.ajax({
+            type: 'POST',
+            url: CreativeFormatsUrl@(Model.Id),
+            dataType: "json",
+            data: @Html.Raw(Json.Serialize(Model.ParameterObject != null ? Model.ParameterObject : "")),
+            success: function (data) {
+                var option = "<option customvalue='{0}' value='{1}'>{2}</option>";
+                var group = "<optgroup label='{0}'>{1}</optgroup>";
+                var childArr = [];
+
+                var html = '';
+                var selectElemnt = $(select@(Model.Id)List);
+
+                  if (IsTree_@(Model.Id)=="True") {
+                      for (var i = 0; i < data.length; i++) {
+                          childArr.push({ id: data[i].attributes.id, text: data[i].data, html: '<strong>' + data[i].data + '</strong>', parentId: 0, disabled: stringToBoolean('@Model.disabled') });
+                          for (var v = 0; v < data[i].children.length; v++) {
+                              childArr.push({ id: data[i].children[v].attributes.id, text: data[i].children[v].data, html: '' + data[i].children[v].data + '', parentId: data[i].attributes.id });
+
+                          }
+                      }
+                      $(selectElemnt).select2({
+                          data: childArr, escapeMarkup: function (markup) {
+
+                              return markup;
+                          },
+                          templateResult: function (data) {
+
+                              return data.html;
+                          },
+                          templateSelection: function (data) {
+
+                              return data.text;
+                          }, placeholder: "@Model.PlaceHolder",
+			tags: false,
+
+			multiple: @((Model.Single==false).ToString().ToLower()),
+			tokenSeparators: [',', ' '],
+			allowClear:  @((Model.AllowClear==true).ToString().ToLower()),
+			closeOnSelect: true
+					  });
+					  $(select@(Model.Id)List).val(null).trigger('change');
+                  } else {
+                      for (var i = 0; i < data.length; i++) {
+                          html += option.format(data[i].additionalValue, data[i].id, data[i].name);
+
+                      }
+                      selectElemnt.html(html);
+					  	  $(select@(Model.Id)List).val(null).trigger('change');
+                    }
+
+            },
+            error: function (data) {
+                alert(data);
+            }
+        });
+
+
+    }
+
+</script>
+
+
+<div id="@(Model.Id)Div">
+    <div id="@(Model.Id)P">
+        <select id="@(Model.Id)List" name="@(Model.Id)List" class="js-example-theme-multiple js-states form-control select2-hidden-accessible" style="width: 295px;height:100%;max-height:65px;overflow:auto;" multiple="" tabindex="-1" aria-hidden="true"></select>
+    </div>
+</div>
+
+
+
+
+

@@ -1,0 +1,958 @@
+﻿@using ArabyAds.AdFalcon.Domain.Common.Model.Campaign
+@using ArabyAds.AdFalcon.Web.Controllers.Model.Core
+@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative
+@using ArabyAds.AdFalcon.Web.Controllers.Model.Campaign
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.CreativeViewModel
+@*@using ArabyAds.Framework.DomainServices*@
+
+
+
+
+<div class="section-form-inner-container">
+    <div class="section-form-inner-container info-container">
+
+
+
+
+
+
+        <script>
+
+
+            var yesbtn = "@Html.GetResource("Yes", "Global")";
+             var nobtn = "@Html.GetResource("No", "Global")";
+
+
+                 var VendorIndexItems = parseInt('@( Model.ThirdPartyTrackers!=null ? Model.ThirdPartyTrackers.Count():-1 )');
+            if (VendorIndexItems>0) {
+
+                VendorIndexItems = VendorIndexItems - 1;
+            }
+
+
+     var VendorsItekumsCount = @( Model.ThirdPartyTrackers!=null ? Model.ThirdPartyTrackers.Count():0 );
+
+
+
+        function AddVendor(VendorVal, ScriptURLVal, ExecutionErrorTrackerURLVal, ParametersURL, vendorIndexItems) {
+
+
+
+
+            var vendor = "<div indexelem='{{id}}' id='new-vendor-item_{{id}}' class='newVen' ><div  class='data-row data-container'><div class='label-container' style='min-height:1px;width: 15px;'></div><div class='field-container'><input id='ThirdPartyTrackers_{{id}}__VendorID' name='ThirdPartyTrackers[{{id}}].VendorID'    type='hidden' value='{{VendorIDTuken}}'  /><div disabled class='form-control newvend textbox '    title='{{VendorIDTuken}}'  style='cursor:unset; height:28px;overflow:hidden;text-overflow:ellipsis;width: 200px;'>{{VendorIDTuken}}</div></div><div class='label-container' style='min-height:1px;width: 40px;'></div><div class='field-container' ><input  id='ThirdPartyTrackers_{{id}}__ScriptURL' name='ThirdPartyTrackers[{{id}}].ScriptURL' type='hidden' value='{{hdnScriptURL}}'  /><div disabled class='form-control newvend textbox '   title='{{ScriptURL}}'  style='cursor:unset; height:28px;overflow:hidden;text-overflow:ellipsis;width: 250px;'>{{ScriptURL}}</div></div><div class='label-container'style='min-height:1px;width: 46px;'></div><div class='field-container' ><input  id='ThirdPartyTrackers_{{id}}__ExecutionErrorTrackerURL' name='ThirdPartyTrackers[{{id}}].ExecutionErrorTrackerURL' type='hidden' value='{{hdnExecutionErrorTrackerURL}}'  /><div disabled class='form-control newvend textbox '    title='{{ExecutionErrorTrackerURL}}'  style='cursor:unset; height:28px;overflow:hidden;text-overflow:ellipsis;width: 250px;'>{{ExecutionErrorTrackerURL}}</div></div><div class='label-container ' style='min-height:1px;width: 35px;'></div><div class='field-container'  ><div disabled class='form-control newvend textbox '    title='{{ParametersURL}}'  style='cursor:unset; height:28px;overflow:hidden;text-overflow:ellipsis;width: 250px;'>{{ParametersURL}}</div><input  id='ThirdPartyTrackers_{{id}}__ParametersURL' name='ThirdPartyTrackers[{{id}}].ParametersURL' type='hidden' value='{{hdnParametersURL}}'  /></div><div class='field-container' style='margin-left:2px;'><img name='iconImage' onclick='ShowConfirmationDialogForDeleteVendor(\"{{VendorIDTuken}}\",\"new-vendor-item_"+vendorIndexItems+"\","+vendorIndexItems+")' class='minusicon' id='del-ad-VendorBtn' alt='Remove Vendor Item' title='Remove Vendor Item'></div><div class='field-container'><img name='iconImage' onclick='showHideVendorsAdd(this)'  style='display:none' class='plusicon addIconForVen' id='' alt='' title=''></div></div></div>";
+      
+
+
+
+            vendor = vendor.replace(/{{VendorIDTuken}}/g, VendorVal);
+
+
+            vendor = vendor.replace(/{{hdnScriptURL}}/g, ScriptURLVal);
+            vendor = vendor.replace(/{{ScriptURL}}/g, ScriptURLVal);
+
+
+            vendor = vendor.replace(/{{hdnExecutionErrorTrackerURL}}/g, ExecutionErrorTrackerURLVal);
+            vendor = vendor.replace(/{{ExecutionErrorTrackerURL}}/g, ExecutionErrorTrackerURLVal);
+
+            vendor = vendor.replace(/{{hdnParametersURL}}/g, ParametersURL);
+            vendor = vendor.replace(/{{ParametersURL}}/g, ParametersURL);
+
+            vendor = vendor.replace(/{{id}}/g, vendorIndexItems);
+
+                  vendor = vendor.replace(/vendorIndexItems/g, vendorIndexItems);
+            var PixelHeddin = "";
+
+
+
+
+
+
+
+            var CodeHeddin = "";
+
+
+
+
+            var DelHeddin = '<input data-val="true"  id="ThirdPartyTrackers_{{id}}__IsDeleted" name="ThirdPartyTrackers[{{id}}].IsDeleted" type="hidden" value="{{value}}">';
+
+
+			DelHeddin = DelHeddin.replace(/{{id}}/g, vendorIndexItems);
+
+
+			DelHeddin = DelHeddin.replace(/{{value}}/g, "False");
+
+
+            $("div#vendor").before(vendor + PixelHeddin + CodeHeddin + DelHeddin  /* *//*+ "</div>"*/);
+            $("#vendor").hide();
+			CalculateVendorAddIcon();
+            ClearVendorFields();
+
+        }
+
+		var conversionEventsNamesIdsListData = [];
+        $(document).ready(function () {
+
+
+            $("#addVendorBtn").click(function () {
+
+
+                if (AddVendorItemValidation()) {
+
+
+					doVendorAdd();
+
+                }
+
+
+            });
+
+            $("#cancel-addVendorBtn").click(function () {
+
+                showHideVendorsAdd();
+                ClearVendorFields();
+
+                $("#vendor").hide();
+                $(".newVen").last().find(".addIconForVen").show();
+
+            });
+
+
+
+            $('.testcheck').click(function () {
+
+
+                if ($(this).attr('id') == 'watch-me') {
+                    $('#show-me').show('slow');
+                }
+                else {
+                    $('#show-me').hide('slow');
+                }
+
+
+            });
+
+
+
+
+           // ShowCountVendorEveryTimeStamp(false);
+
+			showHideVendorsAdd();
+			ClearVendorFields();
+
+
+            ShowHideCancelBut();
+        });
+
+
+		function FilterVendorEvent() {
+			var arr = [];
+
+			for (var i = 0; i < conversionEventsNamesIdsListData.length; i++) {
+
+
+				if (!($(".newVen").find(".newvend:input[value='" + conversionEventsNamesIdsListData[i].text + "']").length > 0)) {
+
+					arr.push(conversionEventsNamesIdsListData[i]);
+				}
+			}
+
+
+
+
+
+
+		}
+
+
+        function doVendorAdd() {
+
+            let VendorVal = $('#VendorID').val();
+            let ScriptURLVal = $('#ScriptURL').val();
+            let ExecutionErrorTrackerURLVal = $('#ExecutionErrorTrackerURL').val();
+            let ParametersURL = $('#ParametersURL').val();
+
+
+            VendorIndexItems = VendorIndexItems + 1;
+            VendorsItekumsCount = VendorsItekumsCount + 1;
+
+            ShowHideCancelBut();
+
+            AddVendor(VendorVal, ScriptURLVal, ExecutionErrorTrackerURLVal, ParametersURL, VendorIndexItems);
+
+            var AddConversionItem = $(".newVen").last().find(".addIconForVen");
+            showHideVendorsAdd(AddConversionItem);
+		}
+
+
+
+
+            function removeVendorItem(Id, indexI) {
+            
+                         $("#" + Id).hide();
+
+                         $("#" + Id).removeClass("newVen");
+
+
+           $("#" + Id).find("#ThirdPartyTrackers_" + indexI + "__IsDeleted").val("True");
+           VendorsItekumsCount = VendorsItekumsCount - 1;
+           ShowHideCancelBut();
+           CalculateVendorAddIcon();
+           ClearVendorFields();
+
+        };
+
+
+
+
+
+			function ShowConfirmationDialogForDeleteVendor(nameVar, Id, indexI) {
+
+			var name = "@Html.GetResource("ThirdPartyVerifications", "Global")" +" "+nameVar;
+
+			var ConfirmationPMP = "@Html.GetResource( "Delete", "Confirmation")";
+
+
+			if (name.length > 60)
+				name = name.substring(0,60) + "..";
+
+			$("#ConfirmationDialog").dialog({
+
+				open: function () {
+					$(this).html(ConfirmationPMP.format(" " + name));
+
+				},
+				showCloseButton: false,
+
+				buttons: [
+					{
+						text: yesbtn,
+						click: function () {
+
+							removeVendorItem(Id, indexI);
+							$(this).dialog("close");
+
+						}
+					},
+					{
+						text: nobtn,
+						click: function () {
+							$(this).dialog('close');
+
+						}
+					},
+
+				]
+			});
+
+			$("#ConfirmationDialog").dialog("open");
+			return false;
+		}
+
+
+
+
+
+
+			function ShowConfirmationDialogForUpdateVendor(nameVar, Id, indexI) {
+
+			var name = "@Html.GetResource("ThirdPartyVerifications", "Global")" +" "+nameVar;
+
+			var ConfirmationPMP = "Are you sure you want to Update Added{0} ?";
+
+
+			if (name.length > 30)
+				name = name.substring(0, 30) + "..";
+
+			$("#ConfirmationDialog").dialog({
+
+				open: function () {
+					$(this).html(ConfirmationPMP.format(" " + name));
+
+				},
+				showCloseButton: false,
+
+				buttons: [
+					{
+						text: yesbtn,
+						click: function () {
+
+							removeVendorItem(Id, indexI);
+							doVendorAdd();
+							$(this).dialog("close");
+
+						}
+					},
+					{
+						text: nobtn,
+						click: function () {
+							ClearVendorFields();
+							$(this).dialog('close');
+
+						}
+					},
+
+				]
+			});
+
+			$("#ConfirmationDialog").dialog("open");
+			return false;
+		}
+
+
+
+
+
+
+
+
+
+
+
+        function AddVendorItemValidation() {
+
+            let VendorVal = $.trim($('#VendorID').val());
+            let ScriptURLVal = $.trim($('#ScriptURL').val());
+
+            let VendorValBool = (typeof (VendorVal) != "undefined" && VendorVal != "") ? true : false;
+            let ScriptURLValBool = (typeof (ScriptURLVal) != "undefined" && ScriptURLVal != "") ? true : false;
+       
+            if (VendorValBool && ScriptURLValBool) {
+
+                var nhifen = VendorVal.lastIndexOf("-");
+                if (nhifen==-1) {
+
+                    showNotfy('VendorID is not Valid usually [domain]-[usecase]', "error", '', toastroptionsWithTime);
+
+                       return false;
+                }
+          
+                	var pattern = new RegExp(/^(?!:\/\/)([a-zA-Z0-9-_]+\.)*[a-zA-Z0-9][a-zA-Z0-9-_]+\.[a-zA-Z]{2,11}?$/i);
+
+			
+                var res = VendorVal.substring(0, nhifen);
+                if (!pattern.test(res)) {
+
+                          showNotfy('VendorID is not Valid usually [domain]-[usecase]', "error", '', toastroptionsWithTime);
+
+                       return false;
+
+                }
+
+
+                var tempScriptURLVal = ValidateUrl($('#ScriptURL'));
+
+                if (!tempScriptURLVal) {
+                    showNotfy('The Script URL is not Valid', "error", '', toastroptionsWithTime);
+
+                          return false;
+                }
+
+
+                var tempExecutionErrorTrackerURL = ValidateUrl($('#ExecutionErrorTrackerURL'));
+                if (!((tempExecutionErrorTrackerURL == null) || $.trim(tempExecutionErrorTrackerURL) == '')) {
+                    if (!tempExecutionErrorTrackerURL) {
+                        showNotfy('The Execution Error Tracker URL is not Valid', "error", '', toastroptionsWithTime);
+                        return false;
+                    }
+
+                }
+                    return true;
+            }
+
+            else {
+
+                if (!VendorValBool)
+                    showNotfy('The Vendor ID field is mandatory', "error", '', toastroptionsWithTime);
+
+                if (!ScriptURLValBool)
+                    showNotfy('The Script URL field is mandatory', "error", '', toastroptionsWithTime);
+
+                    return false;
+            }
+
+        }
+
+
+
+
+
+
+
+
+        function ClearVendorFields() {
+
+
+
+            $("#VendorID").val("");
+            $("#ScriptURL").val("");
+
+                   $("#ExecutionErrorTrackerURL").val("");
+              $("#ParametersURL").val("");
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        function showHideVendorsAdd(elem) {
+
+
+            if (VendorIndexItems == -1) {
+
+                $("#vendor").show();
+                //return;
+            }
+
+            if (elem) {
+
+                $(elem).hide();
+                $("#vendor").show();
+            }
+            if (VendorIndexItems == -1) {
+
+                return;
+            }
+            if (elem) {
+                return;
+            }
+            CalculateVendorAddIcon();
+        }
+
+
+
+        function CalculateVendorAddIcon() {
+
+            $(".newVen").find(".addIconForVen").hide();
+            if (!($("#vendor").is(':visible')))
+            $(".newVen").last().find(".addIconForVen").show();
+
+            if ($(".newVen").last().length == 0) {
+                $("#vendor").show();
+			}
+        }
+
+
+
+
+        function ShowHideVendorsBtn(flag) {
+            if (!flag)
+                return;
+            if (!AddVendorItemValidation()) {
+                $("#addVendorBtn").show();
+                if (VendorsItekumsCount > 0)
+                $("#cancel-addVendorBtn").show();
+            } else {
+                $("#addVendorBtn").hide();
+                $("#cancel-addVendorBtn").hide();
+            }
+        }
+
+
+
+        function EventsVendorsSaveWhenSubmit() {
+            var funcResult = true;
+            var flag = 0;
+
+            if ($('#vendor').is(":visible")) {
+
+
+                         let VendorVal = $.trim($('#VendorID').val());
+            let ScriptURLVal = $.trim($('#ScriptURL').val());
+
+            let VendorValBool = (typeof (VendorVal) != "undefined" && VendorVal != "") ? true : false;
+            let ScriptURLValBool = (typeof (ScriptURLVal) != "undefined" && ScriptURLVal != "") ? true : false;
+
+            
+
+                if (VendorValBool&&  ScriptURLValBool) {
+
+                    if (AddVendorItemValidation()) {
+
+
+
+                        doVendorAdd();
+                        returnerrorFee = true;
+
+
+
+
+                    } else {
+                        funcResult = false;
+                    }
+                }
+            }
+            return funcResult;
+        }
+
+        function ShowHideCancelBut() {
+
+            //else
+            //    $('#cancel-ad-taggingBtn').show();
+
+            if (VendorsItekumsCount <= 0)
+                $('#cancel-addVendorBtn').hide()
+            //else
+            //    $('#cancel-addVendorBtn').show();
+
+        }
+
+
+
+
+        function UnCheckAllElseThis(e) {
+
+            //select all primary checkbox elements in array
+            var chkPrimary = document.querySelectorAll('.newVen .check-box-container , #vendor .check-box-container ');
+
+            //uncheck all checkbox elements thrue forEach
+            chkPrimary.forEach(function (elem, elements) {
+
+                CustomUnCheck(elem);
+                //set the value of the selected hidden field that are inside checkbox div to false
+				$(elem).find("input[type='hidden']").val(false);
+
+				$("#ThirdPartyTrackers_" + $(elem).attr("indexelem") + "__IsNotChanged").val(false);
+            });
+
+
+			$(e).find("input[type='hidden']").val(true);
+
+			$("#ThirdPartyTrackers_" + $(e).attr("indexelem") + "__IsNotChanged").val(false);
+
+
+        }
+
+        function CustomUnCheck(elem){
+           // $(elem).find('#Primary , #PrimaryConv').removeAttr("checked");
+           // $(elem).find('#Primary , #PrimaryConv').parent().attr("class", "check-box-uncheck");
+        }
+
+
+        </script>
+
+        <style>
+            .invalid-feedback {
+                display: block;
+                /*width: 100%;*/
+                margin-top: .6rem;
+                font-size: 80%;
+                color: #FFF;
+                background: #bd006b;
+                float: left;
+                padding: 2px 5px
+            }
+
+            .field-container > span.field-title > input {
+                font: inherit !important;
+            }
+
+            #ConversionType, #ClickAttribuation, #ViewAttribuation, #CountingTypeAttribuation {
+                font: 400 13.3333px Arial;
+            }
+
+         
+        </style>
+
+
+
+
+
+
+
+
+
+        <div class="ad-filter-data" id="VendorsShow" style="padding-top:7px;">
+
+
+            <div class="data-row data-container">
+                <div class="label-container" style="min-height:1px;width: 15px;">
+
+
+
+
+
+                </div>
+
+                <div class="field-container">
+
+
+                    <span class="field-title required-field">@Html.GetResource("VendorID", "Global")</span>
+
+
+                </div>
+
+
+
+                <div class="label-container" style="min-height:1px;width:180px;text-align:center">
+
+                    @Html.Partial("MoreInfo", "VendorIDDesc", new ViewDataDictionary { { "Class_Tail", "tail-report" }, { "Style2", "float:none;" } })
+
+
+
+                </div>
+
+
+
+
+                <div class="field-container">
+
+
+                    <span class="field-title required-field">@Html.GetResource("ScriptURL", "Global")</span>
+
+                </div>
+
+
+
+                <div class="label-container" style="min-height:1px;width:230px; text-align:center">
+
+                    @Html.Partial("MoreInfo", "ScriptURLDesc", new ViewDataDictionary { { "Class_Tail", "tail-report" }, { "Style2", "float:none;" } })
+
+
+
+                </div>
+
+
+                <div class="field-container">
+
+
+                    <span class="field-title">@Html.GetResource("ExecutionErrorTrackerURL", "Global") </span>
+
+
+                </div>
+
+
+                <div class="label-container" style="min-height:1px; width:130px;text-align:center">
+
+                    @Html.Partial("MoreInfo", "ExecutionErrorTrackerURLDesc", new ViewDataDictionary { { "Class_Tail", "tail-report" }, { "Style2", "float:none;" } })
+
+
+                </div>
+
+
+                <div class="field-container">
+
+                    <span class="field-title">@Html.GetResource("URLParameters", "Global")</span>
+
+
+
+
+
+                </div>
+                <div class="label-container" style="min-height:1px; width:10px;text-align:center">
+
+                    @Html.Partial("MoreInfo", "URLParametersDesc", new ViewDataDictionary { { "Class_Tail", "tail-report" }, { "Style2", "float:none;" } })
+
+
+                </div>
+
+            </div>
+
+
+            @{
+
+
+                if (Model.ThirdPartyTrackers != null)
+
+
+                {
+
+
+                    for (int i = 0; i < Model.ThirdPartyTrackers.Count(); i++)
+
+
+                    {
+
+                        <div id='new-vendor-item-@i' indexelem="@i" class="newVen">
+                            <div class='data-row data-container'>
+
+
+
+                                <div class='label-container' style="min-height:1px; width: 15px;"> </div>
+
+
+                                <div class='field-container'>
+
+
+                                 
+
+
+                                        @{
+                                            object itemsToShow = new { maskType = "text", indexVendor = i, @class = "form-control newvend textbox ", @disabled = "", @style = "width: 200px;" };
+                                            <input id='ThirdPartyTrackers_@(i)__VendorID' name='ThirdPartyTrackers[@i].VendorID' type='hidden' value='@Model.ThirdPartyTrackers[i].VendorID'>
+                                       
+
+                                <div  disabled class="form-control newvend textbox "  title="@Model.ThirdPartyTrackers[i].VendorID"   style="cursor:unset; height:28px;width: 200px;overflow:hidden;text-overflow:ellipsis">@Model.ThirdPartyTrackers[i].VendorID</div>
+                                        }
+
+                             
+
+                                </div>
+
+
+                                <div class='label-container' style="min-height:1px; width: 40px;"> </div>
+                                <div class='field-container'>
+
+
+
+
+
+                                    @{
+                                        object itemsToShow1 = new { maskType = "text", indexVendor = i, @class = "form-control newvend textbox ", @disabled = "", @style = "width: 250px;" };
+                                        <input id='ThirdPartyTrackers_@(i)__ScriptURL' name='ThirdPartyTrackers[@i].ScriptURL' type='hidden' value='@Model.ThirdPartyTrackers[i].ScriptURL'>
+                               
+
+
+                                        <div disabled class="form-control newvend textbox " title="@Model.ThirdPartyTrackers[i].ScriptURL"   style="cursor:unset; height:28px;width: 250px;overflow:hidden;text-overflow:ellipsis">@Model.ThirdPartyTrackers[i].ScriptURL</div>
+                                    }
+
+
+
+                                </div>
+
+
+                                <div class='label-container' style="min-height:1px;width:46px;">
+                                </div>
+
+
+                                <div class='field-container'>
+
+
+
+
+                                    @{
+                                        object itemsToShow2 = new { maskType = "text", indexPixel = i, @class = "form-control width-lg textbox", @disabled = "", @style = "width: 250px !important;" };
+                                        <input id='ThirdPartyTrackers_@(i)__ExecutionErrorTrackerURL' name='ThirdPartyTrackers[@i].ExecutionErrorTrackerURL' type='hidden' value='@Model.ThirdPartyTrackers[i].ExecutionErrorTrackerURL'>
+                                
+
+
+                                        <div disabled class="form-control newvend textbox " title="@Model.ThirdPartyTrackers[i].ExecutionErrorTrackerURL"  style="cursor:unset; height:28px;overflow:hidden;text-overflow:ellipsis;width: 250px;">@Model.ThirdPartyTrackers[i].ExecutionErrorTrackerURL</div>
+                                    }
+
+
+                                </div>
+
+                                <div class='label-container' style="min-height:1px;width:35px;">
+                                </div>
+
+
+                                <div class='field-container'   >
+
+
+
+
+                                    @{
+
+
+                                        object itemsToShow3 = new { maskType = "text", indexPixel = i, @class = "form-control width-lg textbox", @disabled = "", @style = "width: 200px !important;" };
+
+                                        <input id='ThirdPartyTrackers_@(i)__ParametersURL' name='ThirdPartyTrackers[@i].ParametersURL' type='hidden' value='@Model.ThirdPartyTrackers[i].ParametersURL'>
+                                 
+
+                                        <div disabled class="form-control newvend textbox " title="@Model.ThirdPartyTrackers[i].ParametersURL" style="cursor:unset; height:28px; width: 250px;overflow:hidden;text-overflow:ellipsis">@Model.ThirdPartyTrackers[i].ParametersURL</div>
+
+
+                                    }
+
+
+
+                                </div>
+
+
+                                <div class='field-container' style="margin-left:2px;" >
+
+
+                                    <img name='iconImage' onclick='ShowConfirmationDialogForDeleteVendor("@Model.ThirdPartyTrackers[i].VendorID","new-vendor-item-@i",@i)' class='minusicon' id='del-ad-taggingBtn' alt='Remove Vendor Item' title='Remove Vendor Item'>
+
+
+                                </div>
+
+                                <div class='field-container' >
+
+
+                                    <img name='iconImage' onclick='showHideVendorsAdd(this)' style="display:none" class='plusicon addIconForVen' id='' alt='' title=''>
+
+
+                                </div>
+
+
+                            </div>
+
+
+
+                            @Html.HiddenFor(x => Model.ThirdPartyTrackers[i].IsDeleted)
+                            @Html.HiddenFor(x => Model.ThirdPartyTrackers[i].ID)
+                            @Html.HiddenFor(x => Model.ThirdPartyTrackers[i].IsNotChanged)
+
+                        </div>
+
+                    }
+
+
+                }
+
+
+            }
+
+            <div class="ad-filter-data" id="vendor" style="display:none;">
+
+
+                <div class="data-row data-container">
+                    <div class="label-container" style="min-height:1px;width: 15px;">
+
+
+
+
+
+                    </div>
+
+                    <div class="field-container">
+
+
+
+
+                        <input class="form-control width-lg textbox" id="VendorID" name="VendorID" style="width:200px !important;" type="text" value="">
+
+
+
+
+
+
+                    </div>
+
+
+
+                    <div class="label-container" style="min-height:1px;width:40px;">
+
+
+
+
+
+                    </div>
+
+
+
+
+                    <div class="field-container">
+
+
+
+
+
+                     
+
+
+
+                        <input class="form-control width-lg textbox" id="ScriptURL" name="ScriptURL" style="width:250px !important;" type="text" value="">
+
+
+
+                    </div>
+
+
+
+                    <div class="label-container" style="min-height:1px;width:46px;">
+
+
+
+
+
+                    </div>
+
+
+                    <div class="field-container">
+
+
+
+                        <input class="form-control width-lg textbox" id="ExecutionErrorTrackerURL" name="ExecutionErrorTrackerURL" style="width:250px !important;" type="text" value="">
+
+
+
+                        @*<input class="text-box" id="RevenueTxt" data-val="true" type="text" value="">*@
+
+
+
+
+
+                    </div>
+
+                    <div class="label-container" style="min-height:1px;width:35px;">
+
+
+
+
+
+                    </div>
+
+                    <div class="field-container">
+
+
+
+
+
+
+                        <input class="form-control width-lg textbox" id="ParametersURL" name="ParametersURL" style="width:250px !important;" type="text" value="">
+
+
+
+
+
+
+                        @*<input class="text-box" id="RevenueTxt" data-val="true" type="text" value="">*@
+
+
+
+
+
+                    </div>
+
+                    <div class='field-container' style="margin-left:2px;">
+
+
+                        <img name='iconImage' class='minusicon' id='cancel-addVendorBtn' alt='Cancel Add Third Party Open Measurement Verification' title='Cancel Add Third Party Open Measurement Verification'>
+
+
+                    </div>
+                    <div class="field-container" >
+
+
+                        <img name="iconImage" onclick=""   class="plusicon" id="addVendorBtn" alt="Add Third Party Open Measurement Verification" title="Add Third Party Open Measurement Verification">
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+
+       </div></div>
+
+<div id="ConfirmationDialog" style="display: none;">
+
+
+
+</div>

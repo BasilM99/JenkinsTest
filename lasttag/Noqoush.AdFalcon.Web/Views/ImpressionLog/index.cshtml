@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("ImpressionLogs", "DPP");
+    Layout = "~/Views/ImpressionLog/IndexMaster.cshtml";
+}
+@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Account.DPP.ImpressionLogListResultDto
+
+@section subheader
+   {
+}
+@section Grid {
+    @(Html.Telerik().Grid(Model.Items)
+			   .Name("ImpressionLogs")
+			   .Columns(columns =>
+			   {
+				   columns.Bound(o => o.Day).Format("{0:" + Noqoush.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Title(Html.GetResource("Day")).Width(100).HtmlAttributes(new { @class = "go-center" , @id = "LogDay" });
+				   columns.Bound(o => o.Path).Hidden().HtmlAttributes(new { @id = "path" });
+				   columns.Bound(o => o.Provider.Name).Hidden().HtmlAttributes(new { @id = "ProviderName" });
+				   columns.Bound(o => o.ID).Hidden().HtmlAttributes(new { @id = "RecordId" });
+				   columns.Bound(o => o.LogTypeString).Title(Html.GetResource("Type", "Global")).Width(50).HtmlAttributes(new { @class = "go-center" });
+				   columns.Bound(o => o.CreationDate).Title(Html.GetResource("CreationDate", "Campaign")).Format("{0:" + Noqoush.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(100).HtmlAttributes(new { @class = "go-center" });
+				   columns.Bound(o => o.LastUpdate).Title(Html.GetResource("LastEditDate", "AuditTrial")).Format("{0:" + Noqoush.AdFalcon.Web.Controllers.Utilities.Config.LongDateFormat + "}").Width(100).HtmlAttributes(new { @class = "go-center" });
+				   columns.Template(@<text>
+            <a href="javascript:void(0)" onclick='downloadImpLog(this); return false;' class='btncustom btncustom-default'>
+                @Html.GetResource("Download")
+            </a></text>)
+
+                                .ClientTemplate("<a href='javascript:void(0)' onclick='downloadImpLog(this); return false;' class='btncustom btncustom-default'>" + @Html.GetResource("Download") + "</a>").Width(100).HtmlAttributes(new { @class = "go-center",@id= "DownloadBtn" }).Title(Html.GetResource("Download"));
+
+               }).EnableCustomBinding(true)
+                                                        .DataBinding(dataBinding =>
+                                                        {
+                                                            dataBinding.Server().Select("ImpressionLogs", "User", new { ajax = true });
+                                                            dataBinding.Ajax().Select("_ImpressionLogs", "User");
+
+                                                        })
+                                                .ClientEvents(clientEvents => clientEvents.OnDataBinding("ImpressionLogsGridDataBinding").OnDataBound("ImpressionLogsGridDataBound").OnRowDataBound("onRowDataBound"))
+                                                .Scrollable(scrolling => scrolling.Enabled(false))
+                                                .Selectable().Pageable(paging => paging.PageSize(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.PageSize)
+                                                                        .Total(int.Parse(ViewData["total"].ToString()))
+                                                                        .Style(GridPagerStyles.NextPreviousAndNumeric)
+                                                                        .Position(GridPagerPosition.Bottom))
+                                                .Filterable(filtering => filtering.Enabled(false))
+                                                .Groupable(grouping => grouping.Enabled(true)).Footer(true))
+}
+

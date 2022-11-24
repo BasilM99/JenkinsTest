@@ -1,0 +1,975 @@
+﻿@{
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+}
+<script language="javascript">
+
+	  GlobalAdvertiserId = '@Model.AdvertiserId';
+	GlobalAdvertiserAccountId = '@Model.AdvertiserAccountId';
+    var result = false;
+    var ischecked = false;
+    var yesbtn = "@Html.GetResource("Yes", "Global")";
+    var nobtn = "@Html.GetResource("No", "Global")";
+    var ConfriamtionBoxTitle = "@Html.GetResource("Confirm")";
+    var close = "@Html.GetResource("Close","Commands")";
+	var rename = "@Html.GetResource("Rename", "Commands")";
+
+    var AdvertiserRequired = "@Html.GetResource("AdvertiserRequired", "Advertiser")";
+    var NameRequired = "@Html.GetResource("RequiredName")";
+
+
+     var ContentListItemsRequired = "@Html.GetResource("ContentMasterListsValidation")";
+    var ContentListItemsOutOfRange = "@Html.GetResource("ContentListItemsOutOfRange")";
+    var InvalidContent = "@Html.GetResource("InvalidContentOfMasterItems")";
+
+    var selectedName = "";
+    var selectednumber = 0;
+    var text;
+    var direction = "left";
+
+    var SegmentString = "";
+    var SegmentsId = "";
+
+    jQuery(document).ready(function () {
+
+        SetSelectedTap("ListMenuAdvertiser");
+
+		$("#addAdvertiserTrackingPixelEventDialog").dialog({
+			autoOpen: false,
+            width: 460,
+            height: 250,
+			modal: true,
+			resizable: false,
+			draggable: false,
+			open: function(){
+				clearErrorMessage("party-divErrorMessages");
+                countcallAdv = 0;
+                clearAudienceListSelect2();
+            },
+			//position: { my: "center top", at: "center top"},
+            buttons: [{
+
+                text: '@Html.GetResource("Save", "Commands")',
+                "class": 'primary-btn',
+
+                click: function () {
+                    SaveTrackingPixel();
+                }
+            }
+            ]
+		});
+
+        $("#tagsTrackingPixelEventDialog").dialog({
+            autoOpen: false,
+            width: 610,
+            height: 470,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            open: function(){
+                clearErrorMessage("party-divErrorMessages");
+                countcallAdv = 0;
+                Radio_check("UseHttpFormatRadio");
+                $('#ContentListItems').val("");
+                $('#tagsDDL').val("");
+            }//,
+            //position: { my: "center top", at: "center top"},
+            //buttons: [{
+            //
+            //        text: '@*@Html.GetResource("Save", "Commands")*@',
+            //        "class": 'primary-btn',
+            //
+            //        click: function () {
+            //            SaveTrackingPixel();
+            //        }
+            //    }
+            //]
+        });
+
+		$('#tagsDDL').on('change', function (e) {
+			var http = 3;
+			if ($("#UseHttpsFormatRadio").is(":checked")) {
+				http = 4;
+			}
+            $.ajax({
+                type: 'GET',
+				url: GetTagTextUrl + "?Id=" + $("#ListId").val() + "&TagId=" + $('#tagsDDL').val() + "&HttpType="+ http,
+            }).then(function (data) {
+
+                $('#ContentListItems').val(data);
+
+            });
+
+            if ($('#tagsDDL').val() == 4) {
+                $('#HttpHttps').hide();
+            } else {
+                $('#HttpHttps').show();
+            }
+        });
+    });
+
+    function changeUseHttpFormat(item, value) {
+
+        if ($("#UseHttpFormatRadio").is(":checked")) {
+            //$("#TrackingUrlss").val($("#TrackConversionsUrlHttp").val());
+            $.ajax({
+                type: 'GET',
+				url: GetTagTextUrl + "?Id=" + $("#ListId").val() + "&TagId=" + $('#tagsDDL').val() +"&HttpType=3" ,
+            }).then(function (data) {
+
+                $('#ContentListItems').val(data);
+
+            });
+        }
+        else
+            if ($("#UseHttpsFormatRadio").is(":checked")) {
+                //$("#TrackingUrlss").val($("#TrackConversionsUrlHttps").val());
+                $.ajax({
+                    type: 'GET',
+					url: GetTagTextUrl + "?Id=" + $("#ListId").val() + "&TagId=" + $('#tagsDDL').val() +"&HttpType=4" ,
+                }).then(function (data) {
+
+                    $('#ContentListItems').val(data);
+
+                });
+            }
+        //TrackConversionsChanged()
+    }
+
+    //function TrackConversionsChanged() {
+    //    if ($("#UseHttpRadio").is(":checked")) {
+    //        $("#TrackingUrlss").val($("#TrackConversionsUrlHttp").val());
+
+    //    }
+    //    else
+    //        if ($("#UseHttpsRadio").is(":checked")) {
+    //            $("#TrackingUrlss").val($("#TrackConversionsUrlHttps").val());
+
+    //        } else {
+    //            $("#TrackingUrlss").val('');
+    //        }
+
+    //}
+
+    function checked() {
+		$('.grid-container input').each(function () {
+
+            if ($(this).is(':checked')) {
+
+                var name = $(this).eq(0).parent().parent().find(".grid-title-container.floating-left").children().text().trim();
+
+                if (name.length > 30)
+                    name = name.substring(0, 30) + "..";
+                ischecked = true;
+                @{
+                    if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage=="ar")
+                    {
+
+                        <text>
+
+                selectedName += "<span style='float:" + direction + ";'>" + name + "-</span><br>";
+
+                </text>
+
+                    }else
+                    {
+                        <text>
+                selectedName += "<span style='float:" + direction + ";'>" + "-" + name + "</span><br>";
+                </text>
+                    }
+
+                }
+            }
+        });
+        return ischecked;
+    }
+
+    function popup(sender, SelectConfirmation, Confirmation) {
+
+        selectedName = "";
+        selectednumber = 0;
+        if (checked()) {
+            if (!result) {
+
+
+                jQuery('<div id ="ConfirmationDialog" style="min-width: 200px;" title="' + ConfriamtionBoxTitle + '"></div>').dialog({
+
+                    open: function () {
+                        text = Confirmation.format($("#MainHeader span").html().trim()) + " <br><br> <div style='float: " + direction + ";'>" + selectedName + "</div>";
+                        $(this).html(text);
+
+                    },
+                    close: function () {
+                        $(this).remove();
+                    },
+                    resizable: false,
+                    draggable: false,
+                    width: "450px",
+                    showCloseButton: false,
+                    buttons: [
+                 {
+                     text: yesbtn,
+                     click: function () {
+                         $(this).dialog("close");
+                         result = true;
+                         $(sender).click();
+                     }
+                 },
+                 {
+                     text: nobtn,
+                     click: function () {
+                         $(this).dialog('close');
+                         result = false;
+                     }
+                 }
+                    ],
+                    modal: true,
+
+                });
+
+
+
+            }
+        } else {
+            jQuery('<div id = "NoCampaignsareSelected"></div>').dialog({
+
+                open: function (event, ui) {
+                    $(this).html(SelectConfirmation);
+                },
+                close: function () {
+                    result = false;
+
+                    $(this).remove();
+                },
+                resizable: false,
+                draggable: false,
+                modal: true,
+            });
+
+        }
+        ischecked = false;
+        return result;
+    }
+
+
+    var LinkId = '@(Html.ViewContext.RouteData.Values["Id"]!=null&& Html.ViewContext.RouteData.Values["Id"].ToString()!="" ?Html.ViewContext.RouteData.Values["Id"]:0)';
+
+    var gridItemId = 0;
+    var ok_text = '@Html.GetResource("Ok", "Commands")';
+    var service_url = null;
+	var service_callback = null;
+    var editTrackingPixel = "@Html.GetResource("EditTrackingPixel", "Global")";
+    var GetTags = "@Html.GetResource("GetTags", "Pixel")";
+
+    var AddNewTrackingPixel = "@Html.GetResource("AddNewTrackingPixel", "Global")";
+    function callService(item, callback) {
+
+        gridToolTip.hide();
+        $('[name="valueRequiredErrorMsg"]').hide();
+        $('[name="MaxValueErrorMsg"]').hide();
+
+        $('[name="clone_name"]').val(jQuery(item).attr("item_extra_info"))
+        service_url = jQuery(item).attr("href2");
+        service_callback = callback;
+		if (jQuery(item).attr("type") == '@Noqoush.AdFalcon.Web.Controllers.Model.AjaxType.rename') {
+
+            EditTrackingPixel(jQuery(item).attr("item_extra_info"), jQuery(item).attr("valitem"));
+			return;
+		}
+		else if (jQuery(item).attr("type") == '@Noqoush.AdFalcon.Web.Controllers.Model.AjaxType.clone') {
+			//here show the dialog of GetTags
+            EditTrackingPixelTags(jQuery(item).attr("item_extra_info"), jQuery(item).attr("valitem"));
+			return;
+		}
+		else {
+            $('#ui-dialog-title-new-name-dialog-form').text('@Html.GetResource("Clone", "Commands")');
+            $('#ui-dialog-title-dialog-form').text('@Html.GetResource("Clone", "Commands")');
+            $('#new-name-dialog-form').dialog('option', 'title', '@Html.GetResource("Clone", "Commands")');
+
+        }
+       $('#new-name-dialog-form').dialog('open');
+    }
+    function old_callService(item, callback) {
+        gridToolTip.hide();
+        var url = jQuery(item).attr("href2");
+
+    }
+    function localInitilize() {
+
+        jQuery("#dialog-form").dialog({
+            autoOpen: false,
+            // height: 150,
+            width: 400,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            close: function () {
+            }
+        });
+
+
+        jQuery("#new-name-dialog-form").dialog({
+            autoOpen: false,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            buttons:
+                   [{
+
+                       text: '@Html.GetResource("Save")',
+                       click: function () {
+                           var new_name = $('[name="clone_name"]').val();
+                           if (!hasValue(new_name)) {
+                               $('[name="valueRequiredErrorMsg"]').show();
+                               return;
+                           }
+                           else {
+                               if (new_name.length > 255) {
+                                   $('[name="MaxValueErrorMsg"]').show();
+                                   return;
+                               }
+                           }
+                           var url = service_url + '?name=' + encodeURIComponent(new_name);
+                           if (service_url.indexOf('?') > -1) {
+                               url = service_url + '&name=' + encodeURIComponent(new_name);
+                           }
+
+                           jQuery.ajax(
+                                       {
+                                           dataType: "json",
+                                           contentType: 'application/json; charset=utf-8',
+                                           type: "POST",
+                                           //data: prams,
+                                           url: url,
+                                           success: function (result) {
+                                               jQuery.globalEval(callback);
+                                               jQuery('#dialogText').text(error.responseText);
+                                               jQuery('#dialog-form').dialog('open');
+                                           },
+                                           error: function (error) {
+                                               if (error.status == "200") {
+                                                   jQuery.globalEval(service_callback);
+                                               }
+                                               jQuery('#dialogText').text(error.responseText);
+                                               jQuery('#dialog-form').dialog('open');
+                                           }
+                                       });
+                           jQuery(this).dialog("close");
+                       },
+                       "class": 'primary-btn',
+
+                   }]
+
+        });
+    };
+    function refreshCampaignGrid() {
+        RefrashGrid('Grid');
+    }
+    function generateCampaignGrid() {
+        var grid = $("#Grid").data("tGrid");
+
+        if (typeof (grid) != "undefined") {
+            grid.rebind();
+
+        }
+    };
+    function TrackingPixelsGridDataBinding(args) {
+
+        args.data = $.extend(args.data,
+            {
+
+                Name: $('#Name').val(),
+				StatusId: $('input[name=StatusId]:checked').val(),
+				showArchived: typeof ($("#showArchived").attr("checked")) != "undefined" && $("#showArchived").attr("checked") == "checked"
+            });
+
+    };
+    function TrackingPixelsGridDataBound(e) {
+
+        var grid = $("#Grid").data("tGrid");
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(1);
+        }
+
+
+
+    };
+
+    function showfilter() {
+
+        if ($("#advfilterCamp").hasClass('maximize')) {
+
+            $("#advfilterCamp").attr("class", "minimize AdvanceFilterIcon");
+        }
+        else {
+
+            $("#advfilterCamp").attr("class", "maximize AdvanceFilterIcon");
+		}
+
+    }
+    var GetTrackingPixelUrl = '@Url.Action("GetTrackingPixel", "Campaign")';
+    function AddAdvertiser() {
+
+		$("#addAdvertiserTrackingPixelEventDialog").dialog("open");
+
+        $('#addAdvertiserTrackingPixelEventDialog').dialog('option', 'title', AddNewTrackingPixel);
+        clearDialog("addAdvertiserTrackingPixelEventDialog");
+		//$('input[name=TypeAddId]').val('1');
+		//Radio_uncheck("BlockListTypeAddId");
+		//Radio_uncheck("WhiteListTypeAddId");
+		//Radio_check("WhiteListTypeAddId");
+		//var input = document.getElementById("inputfile");
+		//input.value = '';
+		//if (!/safari/i.test(navigator.userAgent)) {
+		//	input.type = '';
+		//	input.type = 'file';
+		//}
+    }
+	function EditTrackingPixel(name, id) {
+
+
+		clearDialog("addAdvertiserTrackingPixelEventDialog");
+
+
+		$("#ListId").val(id);
+		$("#CustomName").val(name);
+
+		//Radio_uncheck("BlockListTypeAddId");
+		//Radio_uncheck("WhiteListTypeAddId");
+		//Radio_check("WhiteListTypeAddId");
+		//var input = document.getElementById("inputfile");
+		//input.value = '';
+		//if (!/safari/i.test(navigator.userAgent)) {
+		//	input.type = '';
+		//	input.type = 'file';
+		//}
+		$.ajax({
+			type: 'GET',
+            url: GetTrackingPixelUrl + "?Id=" + $("#ListId").val(),
+			cache: false,
+			success: function (data) {
+
+				//if (data.Type == "1" || data.Type == 1) {
+				//	Radio_uncheck("BlockListTypeAddId");
+				//	Radio_check("WhiteListTypeAddId");
+
+				//}
+				//else {
+				//	Radio_uncheck("WhiteListTypeAddId");
+				//	Radio_check("BlockListTypeAddId");
+
+
+				//}
+				$("#ContentListItems").val(data.Description);
+
+				$("#addAdvertiserTrackingPixelEventDialog").dialog("open");
+                $('#addAdvertiserTrackingPixelEventDialog').dialog('option', 'title', editTrackingPixel);
+                populateAudienceListselect2(data);
+            },
+			error: function (data) {
+				//alert("Somthing went worng please contact the admin");
+				showErrorMessage(data.Message, true, "party-divErrorMessages");
+				countcallAdv = 0;
+			}
+		})
+        clearAudienceListSelect2()
+	}
+
+      function EditTrackingPixelTags(name, id) {
+
+
+
+
+          $("#ListId").val(id);
+		  $("#PixelEventName").val(name);
+
+
+          $("#tagsTrackingPixelEventDialog").dialog("open");
+          $('#tagsTrackingPixelEventDialog').dialog('option', 'title', GetTags);
+
+      }
+
+    function AdvertisersChanged(event, item) {
+
+
+        if ((typeof (item) != "undefined") && (item != null)) {
+
+            $('[name="AdvertiserId"]').val(item.ID);
+        }
+        else {
+            $('[name="AdvertiserId"]').val('');
+        }
+        clearErrorMessage("party-divErrorMessages");
+
+        $('input[id="CustomName"]').val($('input[id="Advertisers_Name"]').val());
+    }
+    var SaveTrackingPixelUrl = '@Url.Action("SaveTrackingPixel", "Campaign")';
+    var countcallAdv = 0;
+
+
+    function SaveTrackingPixel() {
+        //debugger;
+		if (countcallAdv > 0) {
+			return;
+
+		}
+		else {
+
+
+			countcallAdv++;
+		}
+
+        //debugger;
+        //if ($('[name="AdvertiserId"]').val() != "") {
+
+        if ($('[name="CustomName"]').val().trim() != "") {
+
+            var value = $('[name="CustomName"]').val().trim().toString().replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/'/g, "&#39;").replace(/"/g, "&#34;");
+
+               // if ($('#ContentListItems').val().trim() != "") {
+					{
+						 {
+							var Type;
+
+							Spinner = getSpinnerType("addAdvertiserTrackingPixelEventDialog");
+                            Spinner.showSpinner();
+
+                    params = { Name: value, Id: $('input[id="ListId"]').val(), LinkId: LinkId, SegmentsId: SegmentsId, SegmentString: SegmentString };
+                            params = JSON.stringify(params);
+
+                            $.ajax({
+                                type: 'POST',
+                                url: SaveTrackingPixelUrl,
+
+
+                                contentType: 'application/json; charset=utf-8',
+                                dataType: 'json',
+                                data: params,
+                                cache: false,
+                                success: function (data) {
+                                    Spinner.hideSpinner();
+                                    //debugger;
+                                    if (data.status == "success") {
+
+                                        //refreshCampaignGrid();
+
+                                        $("#addAdvertiserTrackingPixelEventDialog").dialog("close");
+                                        //setTimeout(function () {
+                                        //    location.reload();
+                                        //}, 125);
+										if ($('input[id="ListId"]').val().length >= 1)
+											refreshCampaignGrid();
+										else
+											generateCampaignGrid();
+
+                                    } else if (data.status == "businessException") {
+                                        showErrorMessage(data.Message, true, "party-divErrorMessages");
+
+                                    } else {
+                                        showErrorMessage(data.Message, true, "party-divErrorMessages");
+
+                                    }
+                                    countcallAdv = 0;
+                                },
+                                error: function (data) {
+                                    //alert("Somthing went worng please contact the admin");
+									Spinner.hideSpinner();
+                                    showErrorMessage(data.Message, true, "party-divErrorMessages");
+                                    countcallAdv = 0;
+                                }
+                            });
+                        }
+
+                    }
+
+                //}
+                //else {
+                //    showErrorMessage(ContentListItemsRequired, true, "party-divErrorMessages");
+                //    countcallAdv = 0;
+                //}
+            } else {
+                showErrorMessage(NameRequired, true, "party-divErrorMessages");
+                countcallAdv = 0;
+            }
+		//}
+
+		//else {
+
+
+		//	showErrorMessage(AdvertiserRequired, true, "party-divErrorMessages");
+		//	countcallAdv = 0;
+		//}
+        clearAudienceListSelect2();
+    }
+
+    /// Select2 script
+
+
+    var ElemnetID2 = "";
+
+				var AdvaudieceListUrl = '@Url.Action("GetSegmentsList", "Campaign")';
+				var SegmentsByIdUrl = '@Url.Action("GetBySegmentsId", "Campaign")';
+				var GetTagTextUrl = '@Url.Action("GetTagText", "Campaign")';
+
+				var selectElemnt2;
+				var ListOfSegments = '';
+    $(document).ready(function () {
+        //$('#tokenize').tokenize();
+
+		ElemnetID2 = "#" + "AudienceListListDll";
+
+		selectElemnt2 = $(ElemnetID2);
+
+       // fillCountries();
+
+		$("#AudienceListListDll").select2({
+
+							placeholder: "@Html.GetResource("SelectAudienceListRequired", "Advertiser")",
+							tags: false,
+			dropdownParent: $("#AudienceListListDll").parent(),
+            multiple: true,
+						tokenSeparators: [',', ' '],
+					allowClear: true,
+						closeOnSelect:true,
+						ajax: {
+				delay:250,
+							url: AdvaudieceListUrl,
+                dataType: "json",
+						type: "GET",
+
+                data: function (params) {
+
+                    var queryParameters = {
+						q: params.term,
+
+						AdvAccId: GlobalAdvertiserAccountId
+                    }
+                    return queryParameters;
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+								text: item.en,
+								id: item.ID
+                            }
+                        })
+                    };
+                }
+
+
+
+            }
+
+		});
+
+
+
+
+
+
+		$('#AudienceListListDll').on("select2:select", function (e) {
+
+
+							//$('[name="list"]').val($('#CampListDll').val());
+			var split = $('#AudienceListListDll').val();
+
+		var stringis=	$('#AudienceListListDll').select2("data").map(function (val) {
+				return val.text;
+			}).join(',');
+
+                            var Ids=	$('#AudienceListListDll').select2("data").map(function (val) {
+                                return val.id;
+                            }).join(',');
+            SegmentString = stringis;
+            SegmentsId = Ids;
+
+
+
+
+						});
+        $('#AudienceListListDll').on("select2:unselect", function (e) {
+
+            SegmentString = "";
+            SegmentsId = "";
+
+
+						});
+
+
+
+
+
+						//CustomInitSelect2();
+
+						//$('#CampListDll').trigger('select2:opening');
+
+
+		//CustomTrackingEventInitSelect2();
+    });
+
+
+				function CustomTrackingEventInitSelect2() {
+					//var arrpush = [];
+					//if (typeof (ListOfSegments) != "undefined") {
+					//	$.each(ListOfSegments.split(","), function (i, e) {
+					//		if (e != "Not Set" && e != "" && e != null && e != undefined) {
+					//			//if (!/[0-9]+$/.test(e)) {
+					//			//    //var newList = $.merge($(nameoflist).select2('data'), [{
+					//			//    //    id: e,
+					//			//    //    tag: e
+					//			//    //}]);
+					//			//    //$(nameoflist).select2('data', newList);
+					//			//    //$(nameoflist).append('<option value="' + e + '">' + e + '</option>');
+
+					//			//    $(nameoflist).select2().val(e).trigger("change");
+					//			//}
+					//			//else {
+					//			//    $(nameoflist).select2().val(e).trigger("change");
+					//			//}
+
+					//			arrpush.push(e);
+					//			//$(nameoflist + " option[value='" + e + "']").prop("selected", true);
+
+					//		}
+					//	});
+
+
+						var arrResult = [];
+
+
+						$.ajax({
+							type: 'GET',
+							url: SegmentsByIdUrl + "?Ids=" + ListOfSegments,
+						}).then(function (data) {
+							// create the option and append to Select2
+							for (var i = 0; i < data.length; i++) {
+								var option = new Option(data[i].Name.Value, data[i].ID, true, true);
+								var resultData = {
+									text: data[i].en,
+									id: data[i].ID
+								}
+								selectElemnt2.append(option).trigger('change');
+								arrResult.push(resultData);
+
+							}
+							// manually trigger the `select2:select` event
+							selectElemnt2.trigger({
+								type: 'select2:select',
+								params: {
+									data: arrResult
+								}
+							});
+						});
+					}
+
+
+      function clearAudienceListSelect2() {
+          $("#AudienceListListDll").val(null).trigger("change");
+    }
+
+    function populateAudienceListselect2(data) {
+        clearAudienceListSelect2()
+        var arrResult = [];
+        if (data != null && data.SegmentsId != null && data.SegmentsId != undefined && data.SegmentsId != "" && data.SegmentString != "") {
+            var SegmentString = data.SegmentString.split(',').map(String);
+            var Ids = data.SegmentsId.split(',').map(Number);
+            for (var i = 0; i < Ids.length; i++) {
+                var option = new Option(SegmentString[i], Ids[i], true, true);
+                var resultData = {
+                    text: SegmentString[i],
+                    id: Ids[i]
+                }
+                $("#AudienceListListDll").append(option).trigger('change');
+                arrResult.push(resultData);
+
+            }
+        }
+    }
+
+</script>
+@model Noqoush.AdFalcon.Web.Controllers.Model.Advertiser.AdvertiserAccountListViewModelBase
+@using (Html.BeginForm())
+{
+
+    @RenderSection("subheader")
+    <div id="dialog-form" title="@Html.GetResource("Clone", "Commands")" style="display:none;">
+        <span id="dialogText"></span>
+    </div>
+
+    @*<div style="display:none;" id="new-name-dialog-form" class="small-dialog" title="@Html.GetResource("Clone", "Commands")">
+            <table>
+                <tr>
+                    <td>
+                        <span>@Html.GetResource("Name", "Global")</span>
+                    </td>
+                    <td>
+                        @Html.AdFalconTextBox("clone_name", "")
+                    </td>
+                    <td>
+                        <span name="valueRequiredErrorMsg" class="validation-arrow field-validation-error"
+                              style="display: none;">
+                            <span class="">@(string.Format(Html.GetResource("RequiredMessage", "ResourceSet"), 1, 100))</span>
+                        </span>
+                        <span name="MaxValueErrorMsg" class="validation-arrow field-validation-error"
+                              style="display: none;">
+                            <span class="">@Html.GetResource("GroupNamLengthMsg", "Msgs")</span>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </div>*@
+    <br />
+    <div class="data-row section-container">
+        <div class="data-row">
+            <div class="col-sm-7" style="padding: 0px;">
+
+                @if (Model.TopActions != null)
+                {
+                    Html.RenderPartial("PartialViews/Actions", Model.TopActions);
+                }
+            </div>
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-4 col-sm-push-4">
+
+                <table class="special-content">
+                    <tr>
+                        @*<td>
+                                <span class="go-bold">@Html.GetResource("From", "Global")</span>
+                            </td>
+                            <td style="width: 110px;">
+                                <input type="text" readonly="readonly" data-date="true" id="FromDate" name="FromDate"
+                                       class="text-box range-date-cntl" />
+                            </td>
+                            <td>
+                                <span class="go-bold">@Html.GetResource("To", "Global")</span>
+                            </td>
+                            <td style="width: 110px;">
+                                <input type="text" readonly="readonly" data-date="true" id="ToDate" name='ToDate'
+                                       class="text-box range-date-cntl left-range-cntrl" onchange="generateCampaignGrid()" />
+                            </td>*@
+                        <td>
+
+
+                            <div class="field-container dropdown-toggle" data-toggle="collapse" data-target="#CampFilterCollapse" aria-expanded="false" onclick="showfilter()">
+                                &nbsp;&nbsp;<a href="javaScript:void(0);" class="maximize AdvanceFilterIcon" onclick="" style="margin-top:0px" id="advfilterCamp"></a>
+
+                            </div>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+
+
+        <div class="data-row" style="overflow:visible">
+            <div class="col-sm-7 col-sm-push-3 customDealsFilterShiftRight floating-right" style="padding: 0px;">
+                @Html.Partial("TrackingPixel/TrackingPixelFilter")
+            </div>
+        </div>
+
+        <div class="grid-container">
+            @RenderSection("Grid2")
+        </div>
+        @if (Model.BelowAction != null)
+        {
+            Html.RenderPartial("PartialViews/Actions", Model.BelowAction);
+        }
+    </div>
+
+    @*<div id="addAdvertiserTrackingPixelEventDialog" class="adfalcon-dialog" title="@Html.GetResource("AddNewAdvertiser", "Advertiser")" style="display:none;overflow:visible">*@
+
+    <div id="addAdvertiserTrackingPixelEventDialog" class="adfalcon-dialog" title="@Html.GetResource("AddNewTrackingPixel", "Global")" style="display:none;overflow:visible">
+        <div class="data-row red-box" style="display:none" id="party-divErrorMessages">
+            @{
+
+                if (ViewBag.ErrorMessages != null)
+                {
+                    foreach (var item in ViewBag.ErrorMessages)
+                    {
+                        <div class="data-row">
+                            <span class="msg-img"></span><span>@Html.Raw(item)</span>
+                        </div>
+                    }
+                }
+                if (TempData["TempErrorMessages"] != null)
+                {
+                    var tempErrorMessages = TempData["TempErrorMessages"] as List<string>;
+                    foreach (var item in tempErrorMessages)
+                    {
+                        <div class="data-row">
+                            <span class="msg-img"></span><span>@Html.Raw(item)</span>
+                        </div>
+                    }
+                }
+            }
+            @if (ViewData.ModelState != null && ViewData.ModelState.Where(p => p.Value.Errors.Count != 0).Count() != 0)
+            {
+
+                foreach (var item in ViewData.ModelState.Where(p => p.Value.Errors.Count != 0))
+                {
+                    <div class="data-row">
+                        <span class="msg-img"></span><span>@Html.Raw(item.Value.Errors[0].ErrorMessage)</span>
+                    </div>
+                }
+            }
+        </div>
+        <br />
+
+
+        @*<div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("Advertiser", "Global")</span>
+                </div>
+                <div class="field-container">
+                    <input type="text" id="AdvertiserId" name='AdvertiserId'
+                           style="display:none;" />
+                    @{
+                        var AdvertiserAutoComplete = ViewBag.AdvertiserAutoComplete as Noqoush.AdFalcon.Web.Controllers.Model.AutoComplete;
+                        @Html.Partial("Autocomplete", AdvertiserAutoComplete)
+                        <span class="floating-left">
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        @Html.Partial("MoreInfo", "Selectadvertiser", new ViewDataDictionary { { "Class_Tail", "tail-report" }, { "Style2", "width: 380px; float:none;" } })
+
+                    }
+
+
+                </div>
+
+            </div>*@
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("Name", "Global")</span>
+            </div>
+            <div class="field-container">
+                <input type="hidden" name="ListId" id="ListId" />
+                <input type="text" name="CustomName" id="CustomName" maxlength="255" style="width: 150px;" />
+
+            </div>
+
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("CaptureAudience", "AudienceList")</span>
+            </div>
+            <div class="field-container">
+                @*@Html.TextArea("Description", new { @class = "text-box", @style = "width:430px;height:100px;" })*@
+                <select id="AudienceListListDll" name="AudienceListListDll" class="js-example-theme-multiple js-states form-control select2-hidden-accessible sss3 normal" style="width: 299px;" multiple="" tabindex="-1" aria-hidden="true"></select>
+            </div>
+
+        </div>
+
+
+    </div>
+    @Html.Partial("PartialViews/TagsTrackingPixel")
+    if (Model.ToolTips != null)
+    {
+        @Html.Partial("GridToolTop", Model.ToolTips)
+    }
+}

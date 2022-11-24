@@ -1,0 +1,41 @@
+{
+    "applyLabel": "Apply",
+    "cancelLabel": "Cancel",
+		  "fromLabel": "From",
+  "toLabel": "To",
+    "customRangeLabel": "Custom Range",
+
+    "daysOfWeek": [
+        "Su",
+        "Mo",
+        "Tu",
+        "We",
+        "Th",
+        "Fr",
+        "Sa"
+    ],
+		
+    "direction": "ltr",
+    "firstDay": 0,
+    "format": "DD-MM-YYYY",
+    "monthNames": [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+    ],
+    "separator": "-",
+    "maxYear": "2118",
+    "minYear": "2918",
+    "maxDate": false,
+    "maxSpan": false,
+    "minDate": false
+}

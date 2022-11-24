@@ -1,0 +1,59 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript">
+        function getQueryStrings() {
+          
+            var assoc = {};
+            var decode = function (s) { return decodeURIComponent(s.replace(/\+/g, " ")); };
+          
+            var queryString = location.search.substring(1);
+     
+            var keyValues = queryString.split('&');
+           
+            for (var i in keyValues) {
+                var key = keyValues[i].split('=');
+                if (key.length > 1) {
+                    assoc[decode(key[0])] = decode(key[1]);
+                }
+            }
+
+            return assoc;
+        };
+
+        $(document).ready(function () {
+            var query = getQueryStrings();
+            var request_id = query["rid"];
+            if ((typeof (request_id) != "undefined") && request_id != null) {
+                //call ad server
+                //var ad_unique_id = query["aduid"];
+                //var user_id = query["uid"];
+                var conversion_name = query["cnn"];
+                //var app_id = query["appid"];
+                var hostName = query["hn"];
+                //URL Template : http://{Host_Name}/CN/{AD_SESSION_ID}/?CN={conversion_name}
+                var url = "http://" + hostName + "/CN/" + request_id + "/?CN=" + conversion_name;
+
+                $.ajax({
+                    url: url,
+                    cache: false,
+                    success: function (data) {
+                        window.location.href = query["p"];
+                    },
+                    error: function (data) {
+                       
+                    }
+                });
+
+                //URL Template : http://{Host_Name}/CN/{APP_ID}/{USER_ID}/{AD_SESSION_ID}/{AD_UNIQUE_ID}/?CN={conversion_name}
+                //var url = "http://" + hostName + "/CN/" + app_id + "/" + user_id + "/" + request_id + "/" + ad_unique_id + "/?CN=" + conversion_name + "&callback=?";
+
+            }
+        });
+    </script>
+    <title>Recirection Page</title>
+</head>
+<body>  </body>
+</html>

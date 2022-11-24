@@ -1,0 +1,244 @@
+﻿@model ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.CampaignServerSettingDto
+@{
+    Layout = null;
+}
+
+<script type="text/javascript" language="javascript">
+    var deleteFrequencyCappingUrl = '@Url.Action("DeleteFrequencyCapping", "Campaign")';
+    var addFrequencyCappingUrl = '@Url.Action("SaveFrequencyCapping", "Campaign")';
+    var campaignId = @ViewData["CampaignId"];
+
+    var EventId="";
+    var FreqId="";
+	var EnumCapping = "@Convert.ToInt32(ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.CampignFrequencyCappingEnum.Capping)";
+
+	var EnumCappingLifeTime ="@Convert.ToInt32(ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.CampignFrequencyCappingEnum.CappingLifeTime)";
+    var EnumNoCapping ="@Convert.ToInt32(ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.CampignFrequencyCappingEnum.NoCapping)";
+    var EnumDefault ="@Convert.ToInt32(ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.CampignFrequencyCappingEnum.Default)";
+
+    function addEvents(Data)
+    {
+        
+        prams = $.toJSON(Data);
+        $.ajax({
+            type: 'POST',
+            url: addFrequencyCappingUrl,
+            contentType: 'application/json; charset=utf-8',
+
+            data: prams,
+
+            success: function (data) {
+               
+                $("#confirmMessage").find("span").html(data);
+
+                jQuery("#addFrequencyCapping").dialog("close");
+                $("#confirmMessage").dialog("open");
+
+
+            },
+            error:function(data){
+                $("#confirmMessage").find("span").html(data.response);
+                jQuery("#addFrequencyCapping").dialog("close");
+                $("#confirmMessage").dialog("open");
+            }
+        });
+
+
+    }
+
+
+
+
+
+    function localInitilize(){
+
+
+        $("#addFrequencyCapping").dialog({
+            autoOpen: false,
+            // width: 520,
+
+            modal: true,
+            resizable: false,
+            draggable:false,
+            buttons: {
+                '@Html.GetResource("Ok", "Commands")': function () {
+                    
+                    var Data = new Object();
+                    Data.id = campaignId;
+
+
+                    Data.frequencyCappingSave =new Object();
+
+                    Data.frequencyCappingSave.EventId =EventId;
+                    Data.frequencyCappingSave.Number = $("#Number").val();
+                    Data.frequencyCappingSave.Id= FreqId;
+                    Data.frequencyCappingSave.Interval =$("#Interval").val();
+                    Data.frequencyCappingSave.Type =$("#Type").val();
+
+
+                    if( $("#addFrequencyCapping").find("input[value='"+EnumDefault+"']").parent().hasClass("radio-button-checked"))
+                        Data.frequencyCappingSave.CampignFrequencyCappingStatus =$("#addFrequencyCapping").find("input[value='"+EnumDefault+"']").attr('customvalue');
+                    if( $("#addFrequencyCapping").find("input[value='"+EnumCapping+"']").parent().hasClass("radio-button-checked"))
+						Data.frequencyCappingSave.CampignFrequencyCappingStatus = $("#addFrequencyCapping").find("input[value='" + EnumCapping + "']").attr('customvalue');
+					//if ($("#addFrequencyCapping").find("input[value='" + EnumCappingLifeTime + "']").parent().hasClass("radio-button-checked"))
+					//	Data.frequencyCappingSave.CampignFrequencyCappingStatus = $("#addFrequencyCapping").find("input[value='" + EnumCappingLifeTime + "']").attr('customvalue');
+
+
+                    if( $("#addFrequencyCapping").find("input[value='"+EnumNoCapping+"']").parent().hasClass("radio-button-checked"))
+                        Data.frequencyCappingSave.CampignFrequencyCappingStatus =$("#addFrequencyCapping").find("input[value='"+EnumNoCapping+"']").attr('customvalue');
+
+
+                    addEvents(Data);
+
+                }
+            }
+        });
+
+
+        $("#confirmMessage").dialog({
+
+            autoOpen: false,
+            width: 300,
+            modal: true,
+            resizable: false,
+            showCloseButton:false,
+            open: function(event, ui) {
+                //hide close button.
+                $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
+            },
+            buttons: {
+                '@Html.GetResource("Close", "Commands")': function () {
+
+                    jQuery(this).dialog("close");
+                    location.reload();
+                }
+            }
+        });
+
+    }
+
+
+    function addFrequencyCapping(eventdes,eventid,freqid,freqnumber,intervalnumber,type,CappingStatus){
+        
+        var grid = $("#FrequencyCappingGrid").data("tGrid");
+
+        $("#cappingSection").hide();
+
+
+
+        EventId=eventid;
+        FreqId = freqid;
+
+
+        $("input[value='"+EnumDefault+"']").parent().attr('class',"radio-button-uncheck");
+        $("input[value='"+EnumDefault+"']").removeAttr('checked');
+        $("input[value='"+EnumCapping+"']").parent().attr('class',"radio-button-uncheck");
+        $("input[value='"+EnumCapping+"']").removeAttr('checked');
+        $("input[value='"+EnumNoCapping+"']").parent().attr('class',"radio-button-uncheck");
+		$("input[value='" + EnumNoCapping + "']").removeAttr('checked');
+
+		//$("input[value='" + EnumCappingLifeTime + "']").parent().attr('class', "radio-button-uncheck");
+		//$("input[value='" + EnumCappingLifeTime + "']").removeAttr('checked');
+		
+
+        if(CappingStatus==EnumCapping){
+            $("input[value='"+EnumCapping+"']").parent().attr('class',"radio-button-checked");
+            $("input[value='"+EnumCapping+"']").attr('checked', 'true');
+		}
+
+        if(CappingStatus==EnumNoCapping){
+            $("input[value='"+EnumNoCapping+"']").parent().attr('class',"radio-button-checked");
+            $("input[value='"+EnumNoCapping+"']").attr('checked', 'true');
+		}
+
+		//if (CappingStatus == EnumCappingLifeTime) {
+		//	$("input[value='" + EnumCappingLifeTime + "']").parent().attr('class', "radio-button-checked");
+		//	$("input[value='" + EnumCappingLifeTime + "']").attr('checked', 'true');
+		//}
+
+        if(CappingStatus==EnumDefault){
+            $("input[value='"+EnumDefault+"']").parent().attr('class',"radio-button-checked");
+            $("input[value='"+EnumDefault+"']").attr('checked', 'true');
+        }
+
+        $("#addFrequencyCapping").dialog("open");
+        $("#addFrequencyCapping").find("#EventName").html(eventdes);
+        $("#addFrequencyCapping").dialog('option', 'title', '@Html.GetResource("EventsDialog", "Campaign")');
+
+
+
+
+
+
+        if(CappingStatus==EnumCapping)
+        {
+
+            $("#cappingSection").show();
+            $("#Number").find("option[value='"+freqnumber+"']").attr('selected', true);
+            $("#Interval").find("option[value='"+intervalnumber+"']").attr('selected', true);
+            $("#Type").find("option[value='"+type+"']").attr('selected', true);
+
+        }else
+        {
+            $("#cappingSection").hide();
+        }
+
+    }
+
+
+
+</script>
+<div class="section-form-container" >
+    <div class="info-container data-row">
+        <h2>@Html.GetResource("FrequencyCapping", "AppSite")</h2>
+        <br />
+        <br />
+        <div class="grid-container" style="width: 730px; margin: 0 auto;">
+            &nbsp;
+            <div>
+                <div class="t-toolbar t-grid-toolbar t-grid-top" style="float:left;">
+                    <span id="MoreInfo"> @Html.Partial("MoreInfo", "EventsInfo")</span>
+                </div>
+            </div>
+
+
+            @(Html.Telerik().Grid(Model.DefultFrequencyCappingList)
+                                  .DataKeys(p => p.Add(o => o.EventId))
+
+                          .Name("FrequencyCappingGrid").Columns(columns =>
+                              {
+                                  columns.Bound(o => o.EventDescription).Title(Html.GetResource("EventName", "CampaignServerSetting")).Width("130px").HtmlAttributes(new { @class = "go-center" }).ReadOnly();
+                                  columns.Bound(o => o.NumberName).Title(Html.GetResource("FrequencyNumber", "CampaignServerSetting")).Width("150").HtmlAttributes(new { @class = "go-center" }).ReadOnly();
+                                  columns.Bound(o => o.IntervalName).Title(Html.GetResource("FrequencyInterval", "CampaignServerSetting")).Width("150").HtmlAttributes(new { @class = "go-center" }).ReadOnly();
+                                  columns.Bound(o => o.TypeName).Title(Html.GetResource("Type", "AppSite")).Width("150").HtmlAttributes(new { @class = "go-center" }).ReadOnly();
+                                    
+                                  columns.Bound(o => o.IsCappingValue).Title(Html.GetResource("IsCapping", "CampaignServerSetting"));
+
+                                  columns.Template(o => "<div><a class='t-button t-grid-edit t-button-icon t-button-icon t-button-bare' type='button' onclick=addFrequencyCapping('" + (o.EventDescription.Replace(" ", "&nbsp;")) + "','" + o.EventId + "','" + o.ID + "','" + o.Number + "','" + o.Interval + "','" + o.Type + "','" + (Int32)o.CampignFrequencyCappingStatus + "')><span class='t-icon t-edit'></span></button></div>").Width(40).HtmlAttributes(new { @class = "go-center" });
+
+                              })
+                                        .CellAction(cell =>
+                                        {
+                                            if (cell.DataItem.IsCapping == true)
+                                            {
+                                                cell.HtmlAttributes["style"] = "color: blue;";
+                                            }
+                                            else
+                                            {
+                                                cell.HtmlAttributes["style"] = "color: silver;";
+                                            }
+
+                                        })
+
+                                  .DataBinding(dataBinding =>
+                                  {
+                                      dataBinding.Ajax().Select("_FrequencyCappping", "Campaign");
+
+                                  }).EnableCustomBinding(true)
+
+                                  .Scrollable(scrolling => scrolling.Enabled(false))
+                                    .Footer(false))
+        </div>
+    </div>
+
+</div>

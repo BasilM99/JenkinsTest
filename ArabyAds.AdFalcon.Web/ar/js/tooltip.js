@@ -1,0 +1,4 @@
+$("[title]").colorTip( {
+color:"black"
+}
+);

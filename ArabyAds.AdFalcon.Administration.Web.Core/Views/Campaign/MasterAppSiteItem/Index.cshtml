@@ -1,0 +1,54 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Advertiser.MasterAppSiteItemListViewModel
+@{
+    //ViewBag.Title = Html.GetResource("Advertisers", "Global");
+    ViewBag.Title = Model.ListName + " : " + Html.GetResource("ContentAppSiteItems", "Global");
+
+    Layout = "~/Views/Campaign/MasterAppSiteItem/IndexMaster.cshtml";
+    string DeteleCheckBox = Model.PreventEdit ? "<input type = 'checkbox' name = 'checkedRecords' value = '#= Id #' disabled />" : "<input type = 'checkbox' name = 'checkedRecords' value = '#= Id #' />";
+
+
+}
+@*@using ArabyAds.Framework.DomainServices*@
+
+@*@await Html.PartialAsync("GridToolTop", Model.ToolTips)*@
+
+@section subheader
+   {
+}
+@section Grid2 {
+
+    @(Html.Kendo().Grid(Model.Items)
+            .Name("Grid")
+            .Columns(columns =>
+            {
+                columns.Template(DeteleCheckBox).Title("").Width(10).HtmlAttributes(new { style = "text-align:center" });
+
+                columns.Bound(o => o.AppSiteName).Title(Html.GetResource("Name")).Width(60).ClientTemplate("<div class='grid-title-container floating-left'><span class='trimed-span'>#= AppSiteName#</span></div>");
+            //columns.Bound(o => o.Name).Title(Html.GetResource("Advertiser", "Menu") + " " + Html.GetResource("Name")).Width(60);
+            columns.Bound(o => o.TypeString).Title(Html.GetResource("Type", "AppSite")).Width(60);
+            columns.Bound(o => o.BundleID).Title("Bundle").Width(60);
+            columns.Bound(o => o.Domain).Title(@Html.GetResource("Domain", "Global")).Width(60);
+
+            }).EnableCustomBinding(true)
+            .DataSource(dataBinding =>
+            {
+                dataBinding.Ajax().Read(read => read.Action("_MasterAppSiteItems", "Campaign").Data("AccountAdvertisersData")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+            })
+            .Events(clientEvents => clientEvents.DataBinding("AccountAdvertisersGridDataBinding").DataBound("AccountAdvertisersGridDataBound"))
+            .Scrollable(scrolling => scrolling.Enabled(false))
+            .Selectable().Pageable(paging => paging
+
+
+            .Input(false)
+            .Numeric(true)
+            .Info(true)
+            .PreviousNext(true)
+            .Refresh(true)
+
+            .Position(GridPagerPosition.Bottom))
+            .Filterable(filtering => filtering.Enabled(false))
+            .Groupable(grouping => grouping.Enabled(false)))
+    
+}
+

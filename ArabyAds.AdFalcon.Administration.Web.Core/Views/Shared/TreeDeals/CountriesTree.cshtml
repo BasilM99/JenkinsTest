@@ -1,0 +1,194 @@
+﻿@{
+    Layout = null;
+}
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //$('#tokenize').tokenize();
+
+
+
+        fillCountries();
+
+
+        // $('#PMPTargetingSaveDto_Geographies').select2('data', arr);
+        var valuesBeforeGohrapic = [];
+        $('#PMPTargetingSaveDto_Geographies').on("select2:selecting", function (e) {
+            
+            if ($("#PMPTargetingSaveDto_Geographies :selected").length > 5)
+            {
+
+                $("#CountriesP").find("span.select2-selection").attr("style", "width: 295px;height:75px; overflow:auto;");
+            }
+
+            valuesBeforeGohrapic = $("#PMPTargetingSaveDto_Geographies").val();
+        });
+
+        $('#PMPTargetingSaveDto_Geographies').on("select2:select", function (e) {
+       
+            var datas= $("#PMPTargetingSaveDto_Geographies").select2("data");
+            var indexsesDeleted = [];
+            var indexsesParent = [];
+            var ParentFiltered = [];
+            var newValues = [];
+
+            var IdToBeRemoved = [];
+            if(datas)
+            {
+                var values = $("#PMPTargetingSaveDto_Geographies").val();
+                for (var i = 0; i < datas.length; i++) {
+                    if (datas[i].parentId > 0) {
+                        var indextoBeRemoved = values.indexOf(datas[i].parentId);
+                        if (indextoBeRemoved >= 0) {
+                            if(!(indexsesParent.indexOf(datas[i].parentId)>=0))
+                            indexsesParent.push(datas[i].parentId);
+                        }
+
+                       
+                    }
+                }
+           
+                for (var i = 0; i < datas.length; i++)
+                {
+                   
+                    var indextoBeRemoved = valuesBeforeGohrapic.indexOf(datas[i].parentId);
+                    if (indextoBeRemoved >= 0) {
+                        if (!(ParentFiltered.indexOf(datas[i].parentId) >= 0))
+                            ParentFiltered.push(datas[i].parentId);
+                    }
+
+                   
+
+                }
+
+                for (var i = 0; i < ParentFiltered.length; i++)
+                {
+                    var indextoBeRemoved = values.indexOf(ParentFiltered[i]);
+                    if (indextoBeRemoved >= 0) {
+                        if (!(indexsesDeleted.indexOf(indextoBeRemoved) >= 0))
+                            indexsesDeleted.push(indextoBeRemoved);
+                        IdToBeRemoved.push(values[indextoBeRemoved]);
+                    }
+                
+                }
+             
+                for (var i = 0; i < datas.length; i++)
+                {
+                    if (datas[i].parentId > 0 && indexsesParent.indexOf(datas[i].parentId) >= 0 && !(IdToBeRemoved.indexOf(datas[i].parentId) >= 0))
+                    {
+
+                        var indextoBeRemoved = values.indexOf(datas[i].id);
+                        if (indextoBeRemoved >= 0) {
+                            if (!(indexsesDeleted.indexOf(indextoBeRemoved) >= 0))
+                                indexsesDeleted.push(indextoBeRemoved);
+
+                            IdToBeRemoved.push(values[indextoBeRemoved]);
+                        }
+                    }
+
+                }
+                if (indexsesDeleted) {
+
+                //    for (var i = 0; i < indexsesDeleted.length; i++)
+                //    {
+
+                //        var i = indexsesDeleted[i];
+                //if (i >= 0) {
+                //    values.splice(i, 1);
+
+                //}
+                //    }
+
+                    for (var i = 0; i < values.length; i++)
+                    {
+                        var indextoBeRemoved = indexsesDeleted.indexOf(i);
+                        if (!(indextoBeRemoved >= 0)) {
+                            newValues.push(values[i]);
+                            }
+                    
+                    }
+                    $("#PMPTargetingSaveDto_Geographies").val(newValues).change();
+               
+            }
+      
+    }
+        });
+    });
+    
+    var CountryUrl = '@Url.Action("GetTreeData", "Country")';
+
+    function fillCountries() {
+
+        $.ajax({
+            type: 'POST',
+            url: CountryUrl,
+            success: function (data) {
+
+                var group = "<optgroup label='{0}'>{1}</optgroup>";
+                var option = "<option value='{0}'>{1}</option>";
+                var optionhtml = "{1}";
+                var optionBold = "<option value='{0}'><strong>{1}</strong></option>";
+                var optionBoldHtml = "<strong>{1}</strong>";
+                var html = '';
+                var dataVar = [];
+                var childArr = [];
+                var Countries = '';
+                var selectElemnt = $("#PMPTargetingSaveDto_Geographies");
+                for (var i = 0 ; i < data.length; i++) {
+                     Countries = '';
+                   
+                     childArr.push({ id: data[i].attributes.id, text: data[i].data, html: '<strong>' + data[i].data + '</strong>', parentId: 0 });
+                    Countries += optionBold.format(data[i].attributes.id, data[i].data);
+                    for (var v = 0; v < data[i].children.length; v++) {
+                        childArr.push({ id: data[i].children[v].attributes.id, text: data[i].children[v].data, html: '' + data[i].children[v].data + '', parentId: data[i].attributes.id });
+                        Countries += option.format(data[i].children[v].attributes.id, data[i].children[v].data);
+
+                    }
+                    html += Countries;
+
+                }
+                selectElemnt.html(html);
+
+                $("#PMPTargetingSaveDto_Geographies").select2({
+                    data: childArr, escapeMarkup: function (markup) {
+                     
+                        return markup;
+                    }
+                    
+            ,
+                    templateResult: function (data) {
+                     
+                        return data.html;
+                    },
+                    templateSelection: function (data) {
+                        
+                        return data.text;
+                    },multiple:true
+                });
+                if (typeof (ListOfGehraichs) != "undefined" )
+                    fillselect2multipe(ListOfGehraichs, "#PMPTargetingSaveDto_Geographies");
+
+
+
+            },
+            error: function (data) {
+                alert(data);
+            }
+        });
+
+
+    }
+
+
+</script>
+
+
+<div id="CountriesDiv">
+    <div id="CountriesP">
+        <select id="PMPTargetingSaveDto_Geographies" name="PMPTargetingSaveDto.Geographies" class="js-example-theme-multiple js-states form-control select2-hidden-accessible multiselect2jq" style="width: 295px;" multiple="" tabindex="-1" aria-hidden="true"></select>
+    </div>
+</div>
+
+

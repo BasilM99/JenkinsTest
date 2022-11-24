@@ -1,0 +1,1943 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.QueryBuilder.FilterViewModel
+@using ArabyAds.AdFalcon.Web.Controllers.Model.QueryBuilder
+@using ArabyAds.AdFalcon.Web.Controllers.Model.Core;
+@{
+    /**/
+
+    ViewBag.Title = "Report Builder";
+    // string dropDwonListID =
+    int count = Model.Dimensions != null ? Model.Dimensions.Count() - 1 : 0;
+    //CampaignReportSchedulingViewModel CampaignReportSchaduling = new CampaignReportSchedulingViewModel();
+}
+
+@{
+
+    List<SelectListItem> summaryByItems = new List<SelectListItem>();
+
+    SelectListItem day = new SelectListItem();
+    day.Selected = false;
+    day.Text = Html.GetResource("Day", "Report");
+    day.Value = "1";
+
+    SelectListItem week = new SelectListItem();
+    week.Text = Html.GetResource("Week", "Report");
+    week.Value = "2";
+
+    SelectListItem month = new SelectListItem();
+    month.Text = Html.GetResource("Month", "Report");
+    month.Value = "3";
+
+    SelectListItem Accum = new SelectListItem();
+    Accum.Text = Html.GetResource("IsAccumulated", "Report");
+    Accum.Value = "4";
+    Accum.Selected = true;
+    SelectListItem Hourl = new SelectListItem();
+    Hourl.Text = Html.GetResource("Hour", "Global");
+    Hourl.Value = "0";
+
+    summaryByItems.Add(Accum);
+    summaryByItems.Add(Hourl);
+    summaryByItems.Add(day);
+    summaryByItems.Add(week);
+    summaryByItems.Add(month);
+
+    if (Model != null && Model.SchedulingViewModel.ReportSchedulerDto.ReportDto.SummaryBy == 4)
+    {
+        Accum.Selected = true;
+
+
+    }
+
+    if (Model != null && Model.SchedulingViewModel.ReportSchedulerDto.ReportDto.SummaryBy == 0)
+    {
+        Hourl.Selected = true;
+
+
+    }
+    if (Model != null && Model.SchedulingViewModel.ReportSchedulerDto.ReportDto.SummaryBy == 1)
+    {
+        day.Selected = true;
+
+
+    }
+    if (Model != null && Model.SchedulingViewModel.ReportSchedulerDto.ReportDto.SummaryBy == 2)
+    {
+        week.Selected = true;
+
+    }
+    if (Model != null && Model.SchedulingViewModel.ReportSchedulerDto.ReportDto.SummaryBy == 3)
+    {
+        month.Selected = true;
+
+    }
+
+}
+	<script type="text/javascript">
+    var wait = false;
+    var selectValuesDrop = [];
+    var droplength = @count;
+    var OptionalParameter;
+    var loader = "<i class='fa fa-spinner fa-spin' style='font-size:90px'></i>";
+    var initilizeLineURL = '@Url.Action("SubFilter")';
+    var SendURL = '@Url.Action("DownloadCSV")';
+    var getTableURL = '@Url.Action("GetTable")';
+    var getQueryUrl = '@Url.Action("GetQuery")';
+    var filterURL = '@Url.Action("Filter")';
+    //var danger = '<div class="alert alert-danger" id="Nwarning" role="alert">Something went wrong please contact the admin</div >';
+    var danger = 'Something went wrong please contact the admin';
+    var initilizeSelect2URL = '@Url.Action("MultiSelectQB")';
+    var SaveReportUrl = '@Url.Action("SaveReportSchedulingReport", "Filter")';
+    var columnsIdsString =  '@Model.SchedulingViewModel.ReportSchedulerDto.ReportDto.ColumnsIdsString';
+    var measuresIdsString = '@Model.SchedulingViewModel.ReportSchedulerDto.ReportDto.MeasuresIdsString';
+    var queryJsonData =   @Html.Raw(Json.Serialize(Model.SchedulingViewModel.ReportSchedulerDto.ReportDto.QueryJsonData != null && !string.IsNullOrEmpty(Model.SchedulingViewModel.ReportSchedulerDto.ReportDto.QueryJsonData) ? Model.SchedulingViewModel.ReportSchedulerDto.ReportDto.QueryJsonData : ""))
+	var fraudPreventIds = [24000];
+    var AdGroupOrCampaignInfoPreventIds = [2000, 1000,21000];
+    var AdvertiserIdsToWatch = [1000, 23,1,67];
+        @Html.Raw(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ConfigForMeasureDimensionFilter);
+    var criteriaIDs =   @Html.Raw(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ConfigForCriteriaReportBuilder);
+    var SearchstringCriteriaIDs= @Html.Raw(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ConfigForCriteriaSearchReportBuilder);
+    $(document).ready(function () {
+        initilization();
+        ShowSchdulingSearch();
+        PopulateForm();
+        //CheckDimensionsTree(columnsIdsString);
+		populateCriteriaContainer(queryJsonData);
+
+		showHideSummarize();
+		});
+	function callCheckMeasuresTree() {
+
+		CheckMeasureTree(measuresIdsString);
+		//checkDataForDimensionPreFilter();
+
+	}
+	function callCheckDimensionsTree() {
+
+		CheckDimensionsTree(columnsIdsString);
+//checkDataForDimensionPreFilter();
+	}
+          var measuretimer = 0;
+                var measuredelay = 200;
+        var measureprevent = false;
+
+
+        var measuretimer2 = 0;
+                var measuredelay2 = 200;
+              var measureprevent2 = false;
+	   function setupDimension(TreeName) {
+
+                if (TreeName == "Dimensions") {
+                    $("#DimensionsTreeContainer li>a[id='24']").bind("click", function () {
+                        showHideSummarize();
+                    });
+
+                    $("#DimensionsTreeContainer li>a[id='63']").bind("click", function () {
+                        showHideSummarize();
+                    });
+
+
+                    ConfigrableTreeBinding(IdsToWatchObject);
+
+                    IdsToWatchObject.forEach(obj => ConfigrableTreeControlling(obj));
+
+                    $("#DimensionsTreeContainer li>a[id='29019']").attr("class", "locked");
+
+
+
+                    
+                    $("#DimensionsTreeContainer li>a").bind("click", function () {
+                       
+
+                          measuretimer2 = setTimeout(function () {
+                        if (!measureprevent2) {
+                            ToggleSaveRunButtons();
+                        }
+                        measureprevent2 = false;
+                    }, measuredelay2);
+
+                    });
+                       $("#DimensionsTreeContainer li>a").bind("dblclick", function () {
+                        
+                    
+                    clearTimeout(measuretimer2);
+                    measureprevent2 = true;
+                    ToggleSaveRunButtons();
+                     
+                       });
+
+
+
+
+
+
+
+
+
+
+                } else if (TreeName == "Measures") {
+                    
+                    $("#MeasuresTreeContainer li>a").bind("click", function () {
+                       
+
+                          measuretimer = setTimeout(function () {
+                        if (!measureprevent) {
+                            ToggleSaveRunButtons();
+                        }
+                        measureprevent = false;
+                    }, measuredelay);
+
+                    });
+                       $("#MeasuresTreeContainer li>a").bind("dblclick", function () {
+                        
+                    
+                    clearTimeout(measuretimer);
+                    measureprevent = true;
+                    ToggleSaveRunButtons();
+                     
+                       });
+
+
+
+                      
+
+
+
+            
+           
+
+
+                
+                    ToggleSaveRunButtons();
+                                
+
+                }
+
+                $("#label0").text("@(Html.GetResource("Filter", "Global"))");
+        }
+      
+        function ToggleSaveRunButtons() {
+            // getTableBtn downloadCSVBtn
+         
+            let _measuresTreeCheckedElements = $("#MeasuresTreeContainer li").find('.checked');
+             let _dimenionsTreeCheckedElements = $("#DimensionsTreeContainer li").find('.checked');
+
+            if (_measuresTreeCheckedElements.length > 0 && _dimenionsTreeCheckedElements.length > 0) {
+                $('#getTableBtn').prop('disabled', false);
+                $('#downloadCSVBtn').prop('disabled', false);
+
+                
+                $('#getTableBtn').css('cssText','margin-left: 10px; background-color: #050505;border-color: #181818;');
+                $('#downloadCSVBtn').css('cssText','background-color: #050505;border-color: #181818;');
+
+
+            }
+            else {
+                $('#getTableBtn').prop('disabled', true);
+                $('#downloadCSVBtn').prop('disabled', true);
+
+                $('#getTableBtn').css('cssText', 'background-color:#8da079 !important;margin-left: 10px; background-color: #050505;border-color: #181818;');
+                $('#downloadCSVBtn').css('cssText', 'background-color:#8da079 !important;background-color: #050505;border-color: #181818; ');
+
+            }
+        }
+
+        function ConfigrableTreeBinding(objArray) {
+
+
+            objArray.forEach(function (obj) {
+
+
+                obj.timer = 0;
+                obj.delay = 200;
+                obj.prevent = false;
+                $("#" + obj.SourceElement + " li>a").bind("click", function () {
+
+
+
+
+                    var currelem = event.target;
+                    obj.timer = setTimeout(function () {
+                        if (!obj.prevent) {
+                            ConfigrableTreeControlling(obj,currelem);
+                        }
+                        obj.prevent = false;
+                    }, obj.delay);
+
+
+
+                });
+                $("#" + obj.SourceElement + " li>a").bind("dblclick", function () {
+
+
+
+
+                       var currelem = event.target;
+                    clearTimeout(obj.timer);
+                    obj.prevent = true;
+                    ConfigrableTreeControlling(obj,currelem);
+
+
+
+                });
+            });
+        }
+
+        function rulescheck(obj, allItemsofSource, allItemsofTarget, checkedItems, currentid) {
+            let allOtherSourceTree = [];
+            let allOtherTargetTree = [];
+            let TargetElements = [];
+            let SourceElements = [];
+            switch (obj.ProcessType) {
+                case "Prevent":
+                    let newarr = obj.SourceIDs.concat(obj.TargetedIDs);
+                    allOtherSourceTree = allItemsofSource.filter(item => !newarr.includes(item) && checkedItems.includes(item)); 
+                    TargetElements = obj.TargetedIDs.filter(item => checkedItems.includes(item)) ;
+                    SourceElements = obj.SourceIDs.filter(item => checkedItems.includes(item)) ;
+                    DepSourceIDs = null;
+                    if (obj.DepSourceIDs) {
+
+                        DepSourceIDs = obj.DepSourceIDs; //.filter(item => checkedItems.includes(item)) ;
+
+                    }
+
+              if (obj.TargetedNormalState == "disabled") {
+
+                        if (SourceElements.length > 0 && allOtherSourceTree.length == 0) {
+
+                             //  set disable to empty and remove it
+                            TargetElements = [];
+
+                        } else {
+                            //  set disable and remove checked items  to target elements and remove it from checked
+                            TargetElements;
+                      
+                      
+                        }
+                    }
+                    else if (obj.TargetedNormalState == "enabled") {
+
+                        if (allOtherSourceTree.length == 0 && SourceElements.length > 0) {
+
+                            if (DepSourceIDs) {
+
+                                if (DepSourceIDs.length > 0) {
+                                    //  set disable to empty
+                                    TargetElements=[]
+
+                                }
+                                else {
+
+                                //  set disable and remove checked to target elements and remove it from checked
+
+                                    TargetElements;
+                                }
+
+
+                            }
+
+                            else {
+                               
+                                // remove set disable
+                                TargetElements = []
+
+                            }
+
+
+                        } else {
+                            //  set disable and remove checked
+                            TargetElements;
+                        }
+                    }
+               
+                    break;
+                case "Allow":
+
+                    TargetElements = obj.TargetedIDs;
+                    SourceElements = obj.SourceIDs.filter(item => checkedItems.includes(item));
+
+                    /*
+                    var currentid;
+                    if (typeof (currelem) != "undefined" && currelem.nodeName == "INS")
+                        currentid = parseInt($(currelem.parentElement).attr("id"));
+                    else
+                        currentid = parseInt($(currelem).attr("id"));
+                        */
+
+                    if (!!currentid  &&  !obj.SourceIDs.includes(currentid)) {
+                        return;
+                    }
+                    //allOtherTargetTree = $('#' + obj.TargetedElement + " li>a").not('#' + obj.TargetedIDs.concat(obj.SourceIDs).join(',#'));
+                    let newarr = obj.SourceIDs.concat(obj.TargetedIDs);
+                    allOtherSourceTree = allItemsofTarget.filter(item => !newarr.includes(item)); 
+                    if (obj.TargetedNormalState == "disabled") {
+
+                    } else if (obj.TargetedNormalState == "enabled") {
+
+                        if (SourceElements.length > 0) {
+                           
+                            //  set disable and remove checked
+                            allOtherTargetTree;
+
+                        } else {
+                         
+
+
+                            //  remove disable and remove checked
+                            allOtherTargetTree;
+                        }
+                    }
+                    break;
+            }
+        }
+        function DisableMeasures() {
+            elementToChange = $("#MeasuresTreeContainer li>a").not($("#MeasuresTreeContainer li[id='7'],#MeasuresTreeContainer li[id='8'],#MeasuresTreeContainer li[id='135'],#MeasuresTreeContainer li[id='9'],#MeasuresTreeContainer li[id='33'],#MeasuresTreeContainer li[id='11'],#MeasuresTreeContainer li[id='12'],#MeasuresTreeContainer li[id='13'],#MeasuresTreeContainer li[id='14'],#MeasuresTreeContainer li[id='15'],#MeasuresTreeContainer li[id='10'],#MeasuresTreeContainer li[id='48'],#MeasuresTreeContainer li[id='58']").find('a'));
+            //elementToChange =  $("#MeasuresTreeContainer li").not($("#MeasuresTreeContainer li[id='33'], #MeasuresTreeContainer li[id='133'], #MeasuresTreeContainer li[id='48'], #MeasuresTreeContainer li[id='135'], #MeasuresTreeContainer li[id='8'], #MeasuresTreeContainer li[id='19']"))
+
+			let elementToWatch = $("#DimensionsTreeContainer li[id='29014'],#DimensionsTreeContainer li[id='29017']");
+            if (elementToWatch.find('a.checked').length > 0) {
+				//elementToChange.attr("class", "locked");
+                elementToChange.addClass("locked")
+            } else {
+				//elementToChange.attr("class", "closed");
+                elementToChange.addClass("clicked unchecked")
+                elementToChange.removeClass("locked")
+            }
+
+        }
+           function CheckAudienceSegmentDataProvider() {
+
+           let AdvertiserIdsToWatchItems = $(`
+						 #DimensionsTreeContainer li[id='1']
+						,#DimensionsTreeContainer li[id='67']
+						,#DimensionsTreeContainer li[id='25000']
+						,#DimensionsTreeContainer li[id='6000']
+						,#DimensionsTreeContainer li[id='2000']`);
+
+			let elementToWatch = $("#DimensionsTreeContainer li[id='29014'],#DimensionsTreeContainer li[id='29017']");
+           
+            let allOther = $("#DimensionsTreeContainer li>a.checked").not("#6000,#2000,#1000,#1,#67,#29014,#29017");
+
+            if (AdvertiserIdsToWatchItems.find('a.checked').length > 0 && allOther.length == 0) {
+				elementToWatch.attr("class", "");
+            } else {
+				elementToWatch.attr("class", "locked");
+                elementToWatch.find('a').addClass("clicked unchecked");
+                elementToWatch.find('a').removeClass("checked");
+
+            }
+        }
+
+	function checkDataForDimensionPreFilter()
+	{
+
+		//debugger;
+                       
+		let mesursIDs ="";
+
+
+		var ColumnsIds =  getTreeData("Dimensions", "columns", true).split(',');
+		var MeasuresIds = getTreeData("Measures", "measures", true).split(',');
+		var fraud=false;
+		var unique=false;
+		var exisits=false;
+		for(var i=0; i<ColumnsIds.length; i++)
+		{
+			if(ColumnsIds[i]=='' )
+			{
+				continue;
+			}
+			exisits=true;
+   			if (!AdGroupOrCampaignInfoPreventIds.includes(parseInt(ColumnsIds[i]))) {
+				console.log('test');
+				mesursIDs ='137,138';
+							
+					unCheckMeasureTree(mesursIDs)
+				mesursIDs = "";
+				unique=true;
+			}
+			if (fraudPreventIds.includes(parseInt(ColumnsIds[i]))) {
+				mesursIDs ='134,';
+				unCheckMeasureTree(mesursIDs)
+				mesursIDs = "";
+				fraud=true;
+			}
+		}
+
+		if(!exisits)
+		{
+
+			fraud=false;
+			unique=false;
+		}
+		if(!fraud)
+		{
+
+			mesursIDs ='134,';
+							
+			CheckMeasureTreeMo(mesursIDs)
+			mesursIDs = "";
+
+		}
+					
+		if(!unique)
+		{
+
+
+			mesursIDs ='137,138';
+							
+			CheckMeasureTreeMo(mesursIDs)
+			mesursIDs = "";
+		}
+                
+	}
+
+
+        
+	   function unCheckMeasureTree(Id) {
+                    if (!(Id && Id.length > 0)) { return; }
+                    let Ids = Id.split(',');
+                    //if ($("#MeasuresTree").find('ul').length == 0)
+                   
+
+                        console.log("wait for 5 secounds --")
+                        Ids.map(function (id) {
+                            if (id != "") {
+                                jQuery("#MeasuresTree").find("li[id=" + id + "]").each(function () {
+
+      console.log("map --");
+                                    //	debugger;
+                                    var item = jQuery(this);
+                                    //	var itemParentId = item.parents('li').attr("id");
+                                   // if (item.hasClass('leaf')) 
+									{
+                                        jQuery.tree.plugins.checkbox.uncheck(this, false);
+										if(this.attributes.state)
+                                        this.attributes.state = "locked";
+										   console.log("set state--")
+										if(!( this.className.indexOf("locked")>=0))
+                                        this.className += " locked";
+                                    }
+
+                                });
+                            }
+                        });
+
+                  
+
+                }
+
+				  function CheckMeasureTreeMo(Id) {
+                    if (!(Id && Id.length > 0)) { return; }
+                    let Ids = Id.split(',');
+                    //if ($("#MeasuresTree").find('ul').length == 0)
+                 
+
+                        console.log("wait for 5 secounds --")
+                        Ids.map(function (id) {
+                            if (id != "") {
+                                jQuery("#MeasuresTree").find("li[id=" + id + "]").each(function () {
+
+
+                                    //	debugger;
+                                    var item = jQuery(this);
+                                    //	var itemParentId = item.parents('li').attr("id");
+                                    if ( this.attributes.state && this.attributes.state =="locked") {
+                                       // jQuery.tree.plugins.checkbox.uncheck(this, false);
+                                      	if(this.attributes.state)
+									  this.attributes.state = "null";
+									    console.log("set state--")
+                                        this.className= this.className.replace("locked", " ");
+                                    }
+									else{
+									
+										if(this.attributes.state)
+									  this.attributes.state = "null";
+									    console.log("set state--")
+                                        this.className= this.className.replace("locked", " ");
+									}
+
+                                });
+                            }
+                        });
+
+             
+
+                }
+		function showHideSummarize()
+		{
+
+			
+
+			
+		
+		}
+    function downlaodByPostAction(path, params) {
+        method = "post"; // Set method to post by default if not specified.
+
+        // The rest of this code assumes you are not using a library.
+        // It can be made less wordy if you use one.
+        var form = document.createElement("form");
+
+        form.setAttribute("method", method);
+        form.setAttribute("action", path);
+
+        for (var key in params) {
+            if (params.hasOwnProperty(key)) {
+                var hiddenField = document.createElement("input");
+                hiddenField.setAttribute("type", "hidden");
+                hiddenField.setAttribute("name", key);
+                hiddenField.setAttribute("value", params[key]);
+
+                form.appendChild(hiddenField);
+            }
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    function downloadCSV() {
+        if (validate(getResult(2))) {
+            downlaodByPostAction(SendURL, getResult(2));
+        }
+    }
+
+    function clearSelect2(id) {
+        $("#" + id).select2("val", "()");
+
+    }
+
+    function DropChanged(id,list) {
+        initilizeSelect2(id, $("#Drop" + id).val(), list)
+        if(!selectValuesDrop.includes($("#Drop" + id).val()))
+        selectValuesDrop.push($("#Drop" + id).val());
+        //$("#Drop" + id).prop("disabled", true);
+		$("#PartyDto_"+id+"List").select2("data",null);
+	$("#PartyDto_"+id+"List").val(null);
+        $("#Plus" + id).show();
+        if (droplength - selectValuesDrop.length == 0) {
+            $("#Plus" + id).hide();
+
+        }
+      
+        if ($("#PartyDto_"+(parseInt(id)+1)+"List").length >0) {
+
+               $("#Plus" + id).hide();
+        }
+        //document.getElementById(id + 'Div').style.float = "right;";
+
+    }
+
+	
+	
+	
+	
+		
+  //      var criteriaIDs = { 6: [2, 1, 21], 21: [6, 2, 1], 2: [6, 1, 21], 1: [6, 2, 21], 7: [8, 9], 8: [7, 9], 9: [8, 7], 27: [12, 13, 11], 12: [27], 13: [27], 12: [27] };
+		//var SearchstringCriteriaIDs={
+		//1:'campaigns.Id in ({0})',
+		//2:'adgroups.Id in ({0})',
+		//6:'ads.Id in ({0})',
+		//21:'campaigns.AssociationAdvId in ({0})',
+		//7:'Country.Id in ({0})',
+		//9:'Region.Id in ({0})',
+		//8:'City.Id in ({0})',
+		//11:'manufacturerid in ({0})',
+		//12:'devicetypeid in ({0})',
+		//13:'platformid in ({0})',
+		//27:'dim_devices.Id in ({0})',
+		
+		
+		
+		
+		//};
+	
+				function collectSubDimen(CodeSelected) {
+					var things = "";
+					//debugger;
+                    var dropDwonLists = $('*[id^="Drop"]');
+
+					if (typeof (criteriaIDs[CodeSelected]) != "undefined") {
+
+
+                        for (let id of criteriaIDs[CodeSelected]) {
+							for (var i = 0; i < dropDwonLists.length; i++) {
+	                            if (typeof (dropDwonLists.eq(i)) != "undefined" && dropDwonLists.eq(i).val() != "-1" && dropDwonLists.eq(i).val() == id) {
+
+		                            var Select2List = dropDwonLists.eq(i).parent().parent().find("[id*='List']").eq(0).val().join(",");
+
+		                            things = Select2List;
+	                            }
+                            }
+                            if (things.length > 0) {
+	                                things = id +":" + SearchstringCriteriaIDs[id] +":" + things;
+								 break;
+                            }
+						  
+						}
+                    }
+
+				
+					return things;
+				}
+
+	
+	
+    function fixDrop() {
+        var alldrop = $('*[id^="Drop"]');
+        for (var z = 0; z < alldrop.length; z++) {
+            $(alldrop[z]).children().show();
+
+        }
+       var showexist = false;
+        for (var i = 0; i < selectValuesDrop.length; i++) {
+            showexist = false;
+            for (var z = 0; z < alldrop.length; z++) {
+                if (!($(alldrop[z]).children("option[value=" + selectValuesDrop[i] + "]").css('display') == 'none' || $(alldrop[z]).children("option[value=" + selectValuesDrop[i] + "]").css("visibility") == "hidden")) {
+                    showexist = true;
+                }
+            }
+            if (showexist) {
+                for (var z = 0; z < alldrop.length; z++) {
+                    $(alldrop[z]).children("option[value=" + selectValuesDrop[i] + "]").hide();
+
+                }
+            }
+        }
+    }
+
+    function initilizeSelect2(id, selectedId,list) {
+        jQuery.ajax({
+			url: initilizeSelect2URL + '?Id=' + id + "&selectedId=" + selectedId + "&ListOfIds=" + list,
+            cache: false,
+            success: function(html) {
+
+                html = html.toString();
+                if (html.includes('<div id="' + id +'Div">'))
+					html = html.replace('<div id="' + id + 'Div">', '<div id="' + id + 'Div" class="floating-right"')
+                var newelem = jQuery(html);
+                jQuery("#SCol" + id).append(newelem);
+                jQuery("#SCol" + id).show();
+                jQuery("#RCol" + id).show();
+
+                parseScript(html);
+
+            },
+            error: function(error) {}
+        });
+
+    }
+
+    function initilizeLine(id) {
+        jQuery.ajax({
+            url: initilizeLineURL + '?Id=' + id + "&factid=" + $("#FactId").val(),
+            cache: false,
+            success: function(html) {
+
+                html = html.toString();
+                var newelem = jQuery(html);
+                jQuery("#SectionOne").append(newelem);
+                parseScript(html);
+                fixDrop();
+                 $('*[id^="DCol"]').first().find('*[id^="label"]').text("@(Html.GetResource("Filter", "Global"))");
+
+            },
+            error: function(error) {}
+        });
+
+    }
+
+    function SwitchFact() {
+
+        //window.location = filterURL + "?factid=" + $("#FactId").val();
+		var scope = angular.element($("#QBGridDiv")).scope();
+		scope.resetAll();
+		scope.filterFirst();
+		Reset_Dimensions();
+		Reset_Measures();
+
+		showHideSummarize();
+	}
+
+
+	/*
+    function parseScript(strcode) {
+        var scripts = new Array(); // Array which will store the script's code
+
+        // Strip out tags
+        while (strcode.indexOf("<script") > -1 || strcode.indexOf("</script") > -1) {
+            var s = strcode.indexOf("<script"); var s_e=strcode.indexOf(">
+    ", s);
+    var e = strcode.indexOf("</script", s);
+    var e_e = strcode.indexOf(">", e);
+
+    // Add to scripts array
+    scripts.push(strcode.substring(s_e + 1, e));
+    // Strip from strcode
+    strcode = strcode.substring(0, s) + strcode.substring(e_e + 1);
+    }
+
+    // Loop through every script collected and eval it
+    for (var i = 0; i < scripts.length; i++) {
+    try {
+    jQuery.globalEval(scripts[i]);
+    //eval(scripts[i]);
+    } catch (ex) {
+    // do what you want here when a script fails
+    }
+    }
+    };
+    */
+    function remove(id) {
+    //debugger;
+    if (checkFrowNumber()) {
+    var index = selectValuesDrop.indexOf($("#Drop" + id).val());
+    if (index > -1) {
+    selectValuesDrop.splice(index, 1);
+    }
+    jQuery("#container" + id).remove();
+    jQuery("#br" + id).remove();
+    jQuery("#hr" + id).remove();
+    $('*[id^="Frow"]').last().find('*[id^="Plus"]').show();
+    fixDrop();
+    } else {
+    var index = selectValuesDrop.indexOf($("#Drop" + id).val());
+    if (index > -1) {
+    selectValuesDrop.splice(index, 1);
+    }
+    jQuery("#container" + id).remove();
+    jQuery("#br" + id).remove();
+    jQuery("#hr" + id).remove();
+    $('*[id^="Frow"]').last().find('*[id^="Plus"]').show();
+    fixDrop();
+    Plus(id);
+    }
+    $('*[id^="DCol"]').first().find('*[id^="label"]').text("@(Html.GetResource("Filter", "Global"))");
+    /**/
+}
+
+function initilization() {
+    $('#from').datepicker();
+    $('#to').datepicker();
+    /**/
+    $("#to").datepicker().val('@Model.Dto');
+    /**/
+    /**/
+    /**/
+    /**/
+    $("#from").datepicker().val('@Model.Dfrom');
+    /**/
+}
+
+
+function getDate(element) {
+    var date;
+    try {
+        date = $.datepicker.parseDate(dateFormat, element.value);
+    } catch (error) {
+        date = null;
+    }
+
+    return date;
+}
+
+function getResult(Type) {
+    var data = new Object();
+    data.from = $('[name=FromDate]').val();
+    data.to = $('[name=ToDate]').val();
+    data.ColumnsIdsString = getTreeData("Dimensions", "columns", true);
+    data.MeasuresIdsString = getTreeData("Measures", "measures", true);
+    data.ColumnsIds = getTreeData("Dimensions", "columns", true).split(',');
+    data.MeasuresIds = getTreeData("Measures", "measures", true).split(',');
+    data.QueryJsonData = JSON.stringify(getQuerydata());
+    data.function = Type;
+    data.fact = parseInt($("#FactId").val());
+    data.summaryBy = $('#SummaryBy').val();
+    data.IncludeId = $("#IncludeId").is(":checked");
+    data.pageNumber = 0;
+    data.page = 0;
+    data.size = 10;
+    return data;
+}
+
+var JSONFilter = {};
+function getTable() {
+    $('#gridContainer').show();
+    //var scope = angular.element($("#QBGridDiv")).scope();
+    if (Validater()) {
+
+        // $("#resultTableDiv").html('');
+        var scopeResults = getResult(1);
+        if (validate(scopeResults)) {
+
+            //	scopeResults.pageNumber = scope.getCount();
+            JSONFilter = scopeResults;
+            callGridData();
+
+            //gridConfigReportBuilderList[0].gridDataFilter =
+            //    $.extend({},
+            //        JSONFilter);
+            //gridConfigReportBuilderList[0].headers = [];
+
+
+            //gridConfigReportBuilderList[0].colDef = [];
+
+            //gridConfigReportBuilderList[0].haveFooter = false;
+            //gridConfigReportBuilderList[0].GlobalGridComponent.handelPageRefresh(true);
+            // $("#resultTableDiv").html(loader);
+            /*
+                            jQuery.ajax({
+                                url: getTableURL,
+                                data: JSONFilter,
+                                contentType: "application/json; charset=utf-8",
+                                type: 'POST',
+                                dataType: "json",
+                                success: function (data) {
+                                    if (data.Massage.length != 0) {
+                                        showErrorMessage(data.Massage, true);
+                                        //$("#warnings").html(data.Massage);
+                                        $("#resultTableDiv").html('');
+
+                                    } else {
+                                        $("#resultTableDiv").html(data.finalTable);
+                                        if (data.warnings != "") showErrorMessage(data.warnings, true);// $("#warnings").html(data.warnings);
+                                    }
+
+
+                                },
+                                error: function () {
+                                    showErrorMessage(danger, true);
+                                    $("#resultTableDiv").html('');
+
+                                }
+                            });
+                            */
+
+            //scope.resetAll();
+            //scope.filterFirst();
+        }
+    }
+}
+
+
+function showQuery() {
+    $("#loading").show();
+    $("#done").hide();
+    $("#resultTableDiv").html('');
+
+    var textarea = "<textarea rows='4' cols='50' style=\'background-color:#f1f1f1;max-width:none;width: 100%;height: 100%;resize: none;\' id='ResultBox'></textarea>"
+    if (validate(getResult(0))) {
+        $("#resultTableDiv").html(loader);
+
+        jQuery.ajax({
+            url: getQueryUrl,
+            data: JSON.stringify(getResult(0)),
+            contentType: "application/json; charset=utf-8",
+            type: 'POST',
+            dataType: "json",
+            success: function (data) {
+                $("#resultTableDiv").html(textarea);
+                $("#ResultBox").text(data.Query);
+                $("#copybtn").show();
+                if (data.warnings != "") showWarningMessage(data.warnings, true);// $("#warnings").html(data.warnings);
+            },
+            error: function () {
+                showErrorMessage(danger, true);
+                $('#gridContainer').hide();
+
+                //$("#warnings").html(danger);
+            }
+        });
+    }
+}
+
+function getQuerydata() {
+
+    var things = {};
+
+    var dropDwonLists = $('*[id^="Drop"]');
+    for (var i = 0; i < dropDwonLists.length; i++) {
+        if (typeof (dropDwonLists.eq(i)) != "undefined" && dropDwonLists.eq(i).val() != "-1") {
+
+            var Select2List = dropDwonLists.eq(i).parent().parent().find("[id*='List']").eq(0).val().join(",");
+            things[dropDwonLists.eq(i).val()] = Select2List;
+        }
+    }
+    return things;
+}
+
+function copyToClp(txt) {
+    txt = document.createTextNode(txt);
+    document.body.appendChild(txt);
+    if (document.body.createTextRange) {
+        var d = document.body.createTextRange();
+        d.moveToElementText(txt);
+        d.select();
+        document.execCommand('copy');
+    } else {
+        var d = document.createRange();
+        d.selectNodeContents(txt);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(d);
+        document.execCommand('copy');
+        window.getSelection().removeAllRanges();
+    }
+    txt.remove();
+}
+
+function Plus(id) {
+
+    $("#Plus" + id).hide();
+    initilizeLine(id);
+    // placeCaretAtEnd("#SectionOne");
+}
+
+function placeCaretAtEnd(el) {
+    el.focus();
+    if (typeof window.getSelection != "undefined" &&
+        typeof document.createRange != "undefined") {
+        var range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+    } else if (typeof document.body.createTextRange != "undefined") {
+        var textRange = document.body.createTextRange();
+        textRange.moveToElementText(el);
+        textRange.collapse(false);
+        textRange.select();
+    }
+}
+
+function collectDims() {
+    var things = "";
+
+    var dropDwonLists = $('*[id^="Drop"]');
+    for (var i = 0; i < dropDwonLists.length; i++) {
+        if (typeof (dropDwonLists.eq(i)) != "undefined" && dropDwonLists.eq(i).val() != "-1") {
+
+            things += dropDwonLists.eq(i).val() + ","
+        }
+    }
+    return things;
+}
+
+function validate(data) {
+
+    if (data.ColumnsIds.length == 0 && data.MeasuresIds.length == 0) {
+        //var warning = '<div class="alert alert-warning" id="Nwarning" role="alert">Please Select At least one Dimension or Measure</div >';
+        var warning = 'Please Select At least one Dimension or Measure';
+        showErrorMessage(warning, true);
+        //$("#warnings").html(warning);
+        $("#Nwarning").fadeTo(2000, 500).slideUp(500, function () {
+            $("#Nwarning").slideUp(500);
+        });
+        return false;
+
+    }
+    else {
+        //$("#warnings").html('');
+        return true;
+    }
+
+}
+function Validater() {
+    let val = false;
+    let FromDateVal = $('#FromDate').val();
+    let ToDateVal = $('#ToDate').val();
+    let treeElem = $('#MeasuresTree').find('.checked');
+
+    if ((FromDateVal != null && typeof (FromDateVal) != undefined && FromDateVal != "") &&
+        (ToDateVal != null && typeof (ToDateVal) != undefined && ToDateVal != "")) {
+        val = true;
+    }
+    else {
+        showErrorMessage("The date range is required.", true);
+        val = false;
+        return;
+    }
+    if (treeElem.length >= 1) {
+        val = true;
+    }
+    else {
+        showErrorMessage("The Measures are required.", true);
+        val = false;
+    }
+    if (!val)
+        $('#gridContainer').hide();
+    return val;
+}
+function checkFrowNumber() {
+    let Frowelements = $('#SectionOne').find('.Frow-element');
+    let val = false;
+    if (Frowelements.length > 1) {
+        val = true;
+    }
+    return val;
+}
+
+function ShowSchdulingSearch() {
+
+    if (!$("#Schedulingdiv").is(":visible")) {
+        $("#adv").attr("class", "minimize");
+
+
+        $("#Schedulingdiv").show();
+        //$("#Schedulingbutton").show();
+    } else {
+        $("#adv").attr("class", "maximize");
+
+        $("#Schedulingdiv").hide();
+        //$("#Schedulingbutton").hide();
+    }
+
+}
+
+function SaveReport(run) {
+    if (run) {
+        generateGoogleReport();
+    }
+    if ($("#ReportTempName").val() == "") {
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+    }
+    var ObjectModel = ReportdataCollector();
+    ObjectModel.ColumnsIdsString = getTreeData("Dimensions", "columns", true);
+    ObjectModel.MeasuresIdsString = getTreeData("Measures", "measures", true);
+    ObjectModel.fact = parseInt($("#FactId").val());
+    ObjectModel.FromDate = $('[name=FromDate]').val();
+    ObjectModel.ToDate = $('[name=ToDate]').val();
+    ObjectModel.summaryBy = $('#SummaryBy').val();
+
+    ObjectModel.QueryJsonData = JSON.stringify(getQuerydata());
+    ObjectModel.IncludeId = $("#IncludeId").is(":checked");
+    if ($("#IsActive").is(":checked")) {
+        $("#ReportSchedulerDto_PreferedName").removeClass("ValdationIgnored");
+        $("#msgReportSchedulerDtoPreferedName").show();
+
+        if (ObjectModel.CriteriaOpt == "specific") {
+            if (ObjectModel.ItemsList) {
+                // var str_array = ObjectModel.ItemsList.split(',');
+                if (ObjectModel.ItemsList.match(/,/g).length == 1) {
+                    $("#ReportSchedulerDto_PreferedName").addClass("ValdationIgnored");
+                    $("#msgReportSchedulerDtoPreferedName").hide();
+                }
+                //for (var i = 0; i < str_array.length; i++) {
+
+                //    str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+
+                //}
+
+            }
+        }
+    }
+    else {
+
+        $("#ReportSchedulerDto_PreferedName").addClass("ValdationIgnored");
+        $("#msgReportSchedulerDtoPreferedName").hide();
+
+    }
+    if ($("#ReportTempName").val() == '' || $("#ReportTempName").val() == null || $("#ReportTempName").val().trim() == '') {
+        $("#msgReportSchedulerDtoReportTempName").show();
+        return false;
+    }
+    else {
+
+        $("#msgReportSchedulerDtoReportTempName").hide();
+    }
+
+    //if ($("#reportForm").validate().form() && $("span[id*='URLErrorMsg']:visible").length < 1) {
+    if (!wait) {
+        wait = true;
+        $.ajax({
+            type: 'POST',
+            data: ObjectModel,
+            url: SaveReportUrl,
+            success: function (date) {
+                if (date.Result) {
+                    showSuccessfullyMessage(date.Message, false);
+                    $("#ReportSchedulerHId").val(date.id);
+                    wait = false;
+                }
+                else
+                    showErrorMessage(date.Message, false);
+
+            }
+        });
+    }
+    //}
+    return false;
+};
+
+function PopulateForm() {
+    @{ <text>
+            /**/
+            $('#FromDate').val("@Model.SchedulingViewModel.ReportSchedulerDto.ReportDto.FromDateString");
+            /**/
+            /**/
+            $('#ToDate').val("@Model.SchedulingViewModel.ReportSchedulerDto.ReportDto.ToDateString");
+            /**/
+
+            /**/
+            $('#ReportTempName').val("@Model.SchedulingViewModel.ReportSchedulerDto.Name");
+    </text>
+    }
+    /**/
+}
+
+function CheckMeasureTree(Id) {
+    if (!(Id && Id.length > 0)) { return; }
+    let Ids = Id.split(',');
+    //if ($("#MeasuresTree").find('ul').length == 0)
+    {
+
+        console.log("wait for 5 secounds")
+        Ids.map(function (id) {
+            if (id != "") {
+                jQuery("#MeasuresTree").find("li[id=" + id + "]").each(function () {
+
+
+                    //	debugger;
+                    var item = jQuery(this);
+                    //	var itemParentId = item.parents('li').attr("id");
+                    if (item.hasClass('leaf')) {
+                        jQuery.tree.plugins.checkbox.check(this, false);
+                    }
+
+                });
+            }
+        });
+
+    }
+
+}
+
+function CheckDimensionsTree(Id) {
+    if (!(Id && Id.length > 0)) { return; }
+    let Ids = Id.split(',');
+    //if ($("#DimensionsTree").find('ul').length == 0)
+
+    {
+
+        console.log("wait for 5 secounds")
+        Ids.map(function (id) {
+            if (id != "") {
+                jQuery("#DimensionsTree").find("li[id=" + id + "]").each(function () {
+
+                    //debugger;
+                    var item = jQuery(this);
+                    //	var itemParentId = item.parents('li').attr("id");
+                    if (item.hasClass('leaf')) {
+                        jQuery.tree.plugins.checkbox.check(this, false);
+                    }
+                });
+            }
+        });
+
+    }
+}
+
+var GlobalQueryJsonArray = {};
+
+function populateCriteriaContainer(QueryJson) {
+    // QueryJson = QueryJson.replace(/&quot;/g, "")
+    //QueryJson = QueryJson.replace(/}/g, "")
+    //QueryJson = QueryJson.replace(/{/g, "")
+    if (!QueryJson && !QueryJson.length > 0)
+        return;
+
+    let QueryJsonArray = JSON.parse(QueryJson);
+
+    GlobalQueryJsonArray = QueryJsonArray;
+    var index = [];
+    for (var x in QueryJsonArray) {
+        index.push(x);
+    }
+
+    if (!(index.length > 0)) {
+        return;
+    }
+
+
+    $('#Drop0').hide();
+
+
+
+    // build the index
+
+    // sort the index
+    index.sort(function (a, b) {
+        return a == b ? 0 : (a > b ? 1 : -1);
+    });
+    /*
+    for (var x in QueryJsonArray) {
+
+        initilizeLineCustom(tempVar);
+    }*/
+    for (var i = 0; i < index.length; i++) {
+        //var tempVar = QueryJsonArray[i].split(':');
+        initilizeLineCustom(index[i]);
+        //DropChanged(tempVar[0]);
+        var currId = index[i];
+
+
+    }
+
+
+
+
+}
+function initilizeLineCustom(id) {
+    var currId = id
+    jQuery.ajax({
+        url: initilizeLineURL + '?Id=' + id + "&factid=" + $("#FactId").val() + "&ListOfIds=" + GlobalQueryJsonArray[currId],
+        cache: false,
+        success: function (html) {
+
+            html = html.toString();
+            var newelem = jQuery(html);
+            jQuery("#SectionOne").append(newelem);
+            parseScript(html);
+            fixDrop();
+            let tempId = parseInt(currId);
+            tempId++;
+            $('#Drop' + tempId).val(currId);
+            DropChanged(tempId, GlobalQueryJsonArray[currId]);
+
+
+            $('.btn-primary:not(:last())').remove();
+
+            //var funcName = "CustomInitSelect2" + currId + "('" + GlobalQueryJsonArray[currId] + "')"
+            //eval(funcName);
+            //jQuery.globalEval(funcName);
+            //$('#PartyDto_' + tempId+'List').val(id);
+
+
+        },
+        error: function (error) { }
+    });
+
+}
+</script>
+	<div id="warnings">
+	</div>
+	<style>
+		#resultTable {
+			font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+			border-collapse: collapse;
+			width: 100%;
+		}
+
+			#resultTable td, #resultTable th {
+				border: 1px solid #ddd;
+				padding: 8px;
+			}
+
+			#resultTable tr:nth-child(even) {
+				background-color: #f2f2f2;
+			}
+
+			#resultTable tr:hover {
+				background-color: #ddd;
+			}
+
+			#resultTable th {
+				padding-top: 12px;
+				padding-bottom: 12px;
+				text-align: left;
+				background-color: #000000;
+				color: white;
+				text-align: center;
+			}
+
+		.loader {
+			border: 16px solid #f3f3f3;
+			border-radius: 50%;
+			border-top: 16px solid #3498db;
+			width: 120px;
+			height: 120px;
+			-webkit-animation: spin 2s linear infinite; /* Safari */
+			animation: spin 2s linear infinite;
+		}
+
+		.text-box-like-container {
+			width: 100%;
+		}
+
+		#DimensionstreeSearch, #MeasurestreeSearch {
+			width: 91%;
+		}
+
+		div.ui-grid-header.ng-scope > div > div > div > div > div {
+			color: white;
+		}
+
+
+		.ui-grid-header-cell-row {
+			background: linear-gradient(#283f60, #45638f) !important;
+			padding-right: 17px;
+			zoom: 1;
+			border-bottom-width: 1px;
+			border-bottom-style: solid;
+			border-color: #426682;
+		}
+
+		.ui-grid-top-panel {
+			background: linear-gradient(#283f60, #45638f) !important;
+		}
+	</style>
+    <form onsubmit="return false;">
+
+        <div class="container">
+            <div class="">
+
+                <div class="col-md-11" style="width:100%;">
+                    <div class="container" style="
+            padding-right: 0px;
+            padding-left: 0px;
+            margin-right: 0px;
+            margin-left: 0px;">
+                        <div class="row">
+                            <h2>
+                                @Html.GetResource("Criteria", "ReportBuilder")
+                            </h2>
+
+                            <div class="col-xs-12 col-sm-12 col-md-4">
+                                <label style="line-height: 3;" for="from">Duration</label>
+                                <div class="pull-right" style="width: 283px;">
+                                    @{await Html.RenderPartialAsync("daterangepicker");}
+                                </div>
+
+
+                            </div>
+
+                            <div class="col-xs-12 col-sm-12  col-md-4" style="margin-top:5px;">
+                                <div class="field-container" id="IsRequiredDiv">
+                                    @Html.GetCheckBox("IncludeId", @Html.GetResource("IncludeId", "Report"), Model.IncludeId, onChange: "", "", true, "", "", "style='display:none'")
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-12" style="padding-top: 2px;">
+                                <div class="container">
+
+                                    <div id="SectionOne">
+                                        @await Html.PartialAsync("SubFilter", Model)
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                <h2>
+                                    @Html.GetResource("Dimensions", "ReportBuilder")
+                                </h2>
+                                @await Html.PartialAsync("~/Views/Tree/Tree.cshtml", Model.DimensionsTree)
+
+                                @*<div class="btn-group text-center" style="width:100% !important">
+                                    <hr />
+                                    <input type="image" onclick="Tree@(Model.DimensionsTree.Code).collapseAll()" style="margin-right: 20px;width:7%;height:5%;" src="~/Content/images/Collapse.svg" title="Collapse All" />
+                                    <input type="image" onclick="Tree@(Model.DimensionsTree.Code).expandAll()" style="margin-right: 20px;width:7%;height:5%;" src="~/Content/images/expand.svg" title="Expand All" />
+                                    <input type="image" onclick="Tree@(Model.DimensionsTree.Code).checkAll()" style="margin-right: 20px;width:7%;height:5%;" src="~/Content/images/check-all-filled.png" title="Check All" />
+                                    <input type="image" onclick="Tree@(Model.DimensionsTree.Code).uncheckAll()" style="margin-right: 20px;width:7%;height:5%;" src="~/Content/images/uncheck.png" title="Uncheck All" />
+                                </div>*@
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                <h2>
+                                    @Html.GetResource("Measures", "ReportBuilder")
+                                </h2>
+                                @await Html.PartialAsync("~/Views/Tree/Tree.cshtml", Model.MeasuresTree)
+                                @*<div class="btn-group text-center" style="width:100% !important;">
+                                    <hr />
+                                    <input type="image" onclick="Tree@(Model.MeasuresTree.Code).collapseAll()" style="margin-right: 20px;width:7%;height:5%;" src="~/Content/images/Collapse.svg" title="Collapse All" />
+                                    <input type="image" onclick="Tree@(Model.MeasuresTree.Code).expandAll()" style="margin-right: 20px;width:7%;height:5%;" src="~/Content/images/expand.svg" title="Expand All" />
+                                    <input type="image" onclick="Tree@(Model.MeasuresTree.Code).checkAll()" style="margin-right: 20px;width:7%;height:5%;" src="~/Content/images/check-all-filled.png" title="Check All" />
+                                    <input type="image" onclick="Tree@(Model.MeasuresTree.Code).uncheckAll()" style="margin-right: 20px;width:7%;height:5%;" src="~/Content/images/uncheck.png" title="Uncheck All" />
+
+                                </div>*@
+                            </div>
+                        </div>
+
+                        <div class="row" style="">
+
+
+
+
+                            <div style="display:none" class="col-xs-12 col-sm-12 col-md-4">
+                                <label style="line-height: 3;" for="from">Fact</label>
+                                @Html.DropDownListFor(x => x.FactId, Model.Facts, new { onchange = "SwitchFact()", style = "float: right;margin-right: unset;" })
+                            </div>
+
+                        </div>
+
+
+
+
+                        <div class="row">
+
+
+                            <br />
+                            <br />
+
+
+
+
+                        </div>
+                        <div class="row" id="SummaryByDiv" style="display:none">
+
+
+                            <div class="data-row data-container">
+                                <div class="label-container ">
+                                    <span class="field-title required-field">@Html.GetResource("SummaryBy", "Global")</span>
+                                </div>
+                                <div class="field-container">
+                                    @Html.AdFalconDropDownList("SummaryBy", summaryByItems)
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        @if (ViewBag.SchadulingReportAllowed != null && ViewBag.SchadulingReportAllowed)
+                        {
+
+                            <div class="row">
+                                <h2>
+                                    <div class='grid-title-container floating-left'><span class='trimed-span'>@Html.GetResource("Scheduling", "Report")</span></div><div class='grid-cogwheel-container floating-right go-right'><a name='iconImage' onclick='ShowSchdulingSearch()' id='adv' class='maximize' style='display: inline;margin-right: 5px;margin-top: 10px;'></a></div>
+                                </h2>
+
+                                <div class="section-form-container" id="Schedulingdiv">
+
+                                    <div class="section-form-inner-container">
+                                        <div class="data-row data-container">
+                                            <div class="section-form-container">
+                                                <div class="section-form-inner-container">
+                                                    <div class="data-row data-container">
+                                                        <div class="label-container" style="width:407px">
+                                                            <span class="field-title required-field">@Html.GetResource("Name")</span>
+                                                        </div>
+                                                        <div class="field-container">
+                                                            @Html.AdFalconEditorFor(p => p.ReportTempName)
+                                                            <span id="msgReportSchedulerDtoReportTempName" style="display:none">
+                                                                <span class="validation-arrow field-validation-error">
+                                                                    <span id="ReportTempName-error" class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span>
+                                                                </span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @await Html.PartialAsync("PartialViews/Scheduling", Model.SchedulingViewModel)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12" style="padding-top: 2px;">
+                                <div class="container">
+                                    <div style="margin-top: 10px;" class="text-center">
+                                        <button type="button" id="downloadCSVBtn" onclick="downloadCSV()" style=" background-color: #050505;
+        border-color: #181818;" class="btn primary-btn btn-success">
+                                            @Html.GetResource("DownloadAsCSV", "ReportBuilder")
+                                        </button>
+
+                                        <button type="button" id="getTableBtn" onclick="getTable()" style="margin-left: 10px;    background-color: #050505;
+    border-color: #181818;" class="btn primary-btn btn-success">
+                                            @Html.GetResource("ShowGrid", "ReportBuilder")
+                                        </button>
+                                        @if (ViewBag.SchadulingReportAllowed != null && ViewBag.SchadulingReportAllowed)
+                                        {
+
+                                            <button type="button" onclick="SaveReport()" style="margin-left: 10px;    background-color: #050505;
+    border-color: #181818;" class="btn primary-btn btn-success">
+                                                @Html.GetResource("SaveReport", "ReportBuilder")
+                                            </button>
+                                        }
+                                        @*<button type="button" onclick="showQuery()" style="float: right;margin-left: 10px;    background-color: #050505;
+                                        border-color: #181818;" class="btn primary-btn btn-success">
+                                                                        Show Query
+                                                                    </button>*@
+                                        <button type="button" id="copybtn" onclick="copyToClp(document.getElementById('ResultBox').value)" style="display:none;float: right;margin-left: 10px;    background-color: #050505;
+    border-color: #181818;" class="btn primary-btn btn-success">
+                                            @Html.GetResource("CopyToClipboard", "ReportBuilder")
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="gridContainer" class="row" style="display:none;">
+
+
+                            <div class="col-sm-12" style=" margin-right: 0px; margin-left: 15px;padding-top: 2px;" id="resultTableDiv">
+                                <script type="text/javascript">
+       function showGridContainer(flag) {
+        if(flag)
+            $('#gridContainer').show();
+        else
+            $('#gridContainer').hide();
+    }
+
+    function showImgContainer(flag) {
+        if(flag)
+            $('#imgContainer').show();
+        else
+            $('#imgContainer').hide();
+    }
+
+        var gridConfigReportBuilderList= [{
+            headers: [
+                /*{
+                    style: { width: "1%" },
+                    value: " "
+                },
+                {
+                    style: { color: "#375278 ", width: "5%" },
+                    value: "\u0011"
+                },
+                {
+                    style: { width: "38%"},
+                    value: "Name"
+                },
+                {
+                    style: { width: "30%" },
+                    value: "Description"
+                }
+                ,
+                {
+                    style: { width: "9%" },
+                    value: "Hits"
+                },
+                {
+                    style: { width: "9%" },
+                    value: "Users"
+                }
+                ,
+                {
+                    style: { width: "9%"},
+                    value: "Status"
+                }*/
+            ], // use headers to define the headers of the table and set columns styles
+
+            gridDataUrl: "@Url.Action("GetPaginationGrid", "Filter")",
+            filters: [],
+            dataStyle: {
+                //"Name.Value": {"color": "red"},  // => "Name.Value"    the same name of column from colDef attribute.
+                //"StatusString":  "{ element == 'StatusString' ? row.StatusString == 'Active' ? {\"color\": \"green\"}  : {\"color\": \"red\"} : null }"  // => "StatusString " the same name of column from colDef attribute.
+            },
+            arrowMenu: [
+                /*{
+                    textToShow: "Edit",
+                    actionName: "Edit",
+                    columnName: "en", // this arrow will be placed at the columnName that you select
+                    functionToRun: "callService",
+                    className: "grid-tool-tip-edit", // classes of the icon that will appear
+                    urlString: "#",
+                    attributes: { 'customtype': "GridToolTip", 'valitem': "{{id}}", 'nohref': "true", 'type': "rename", 'item_extra_info': "{{val}}", "href2":"/ArabyAds.AdFalcon.Administration.Web/en/Campaign/Create/Dialog/{{id}}" }
+                },
+                {
+                    textToShow: "Upload Device IDs File",
+                    actionName: "Get Tags",
+                    columnName: "en",
+                    functionToRun: "callService",
+                    className: "grid-tool-tip-upload-devices-id",
+                    urlString: "#",
+                    attributes: { 'customtype': "GridToolTip", 'valitem': "{{id}}", 'nohref': "true", 'type': "clone", 'item_extra_info': "{{val}}", "href2": "/ArabyAds.AdFalcon.Administration.Web/en/Campaign/Create/Dialog/{{id}}" }
+                }*/
+            ],
+            Dynamic:true,
+            toolTip: [
+               /*{
+                    columnName: "Description", // this toolTip will be placed at the columnName that you select
+                }*/
+            ],
+            buttons: [
+               /* {
+                    columnName: "Description",// this button will be placed at the columnName that you select
+                    functionToRun: "test",
+                    className: "btnT primary-btnT btnT-primary btnT-target-ref pull-right",
+                    textToShow: "Target",
+                }*/
+            ],
+            pageSize: 10,
+        haveFooter:false,
+            gridDataFillter: {} , // this attribute will get data from the page filters
+            colDef: [
+                //"", "Name.Value", "Description", "Performance.NoOfHits", "Performance.UniqueUsers", "StatusString"
+            ], // these attributes names are literaly the same as their names in the response object
+            colDefObj: {
+                itemIds: "ID"
+            },
+            isTherecheckboxCol: false,
+            GlobalGridComponent: null,
+            RowsToFill:[]
+        }];
+
+
+
+                                </script>
+
+                                <div id="ReportBuilderGrid"></div>
+
+
+
+                            </div>
+
+                        </div>
+
+
+
+
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <script>
+        var tempColumns = [];
+        var tempRows = [];
+        var datajson = {};
+        function CheckToPutScrollInGrid(tempCol) {
+            let paginationElem = $("#ReportBuilderGrid > div.k-pager-wrap.k-grid-pager.k-widget.k-floatwrap > span.k-pager-sizes.k-label > span > select");
+            let sum = 0;
+            tempCol.map((x) => (sum += x.length));
+
+            if ( sum >= 130 ) {
+                $("#ReportBuilderGrid > .k-grid-content").css({
+                    "overflow-x": "scroll"
+                });
+                //return true;
+            } else {
+                $("#ReportBuilderGrid > .k-grid-content").css({
+                    "overflow-x": "hidden"
+                });
+                //return false;
+            }
+
+            if (paginationElem.val() == "all") {
+                $("#ReportBuilderGrid > .k-grid-content").css({
+                    "overflow-y": "scroll"
+                });
+            } else {
+                $("#ReportBuilderGrid > .k-grid-content").css({
+                    "overflow-y": "hidden"
+                });
+            }
+        }
+        function callGridData()
+        {
+            tempColumns = [];
+            tempRows = [];
+            datajson = $.extend({}, JSONFilter);
+
+            // make JSONP request to https://demos.telerik.com/kendo-ui/service/products
+            $.ajax({
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                type: 'POST',
+                url: "@Url.Action("GetPaginationGrid", "Filter")",
+                dataType: 'json',
+                //dataType: "jsonp", // "jsonp" is required for cross-domain requests; use "json" for same-domain requests
+                data: JSON.stringify($.extend({}, JSONFilter)),
+                success: function (result) {
+                    // notify the data source that the request succeeded
+                    //options.success(result);
+                    if (result.Massage.length != 0) {
+                        showErrorMessage(result.Massage, true);
+                        //$("#warnings").html(data.Massage);
+                        $("#resultTableDiv").html('');
+
+                    } else {
+                        //$("#resultTableDiv").html(result.finalTable);
+                        if (result.warnings != "") showErrorMessage(result.warnings, true);// $("#warnings").html(data.warnings);
+                    }
+                    if (typeof (result.data) != "undefined") {
+                        result.data.Columns.forEach(x => tempColumns.push({
+                            field: x.replaceAll(" ", ""),
+                            title: x,
+                            width: (x.length > 15 ? (x.length * 8+10 ): x.length > 5 ? (x.length * 11+10 ): (x.length * 16+10))
+                        }));
+                        //tempRows = result.data.Rows;
+                        for (var r = 0; r < result.data.Rows.length; r++) {
+                            var d = "";
+                            for (var i = 0; i < result.data.Columns.length; i++) {
+                                //debugger;
+                                var a, b;
+                                a = result.data.Columns[i].replaceAll(" ", "");
+                                b = result.data.Rows[r].Value[result.data.Columns[i]];
+                                 d += '"' + a + '":"' + b + '",';
+
+                            }
+                            d = d.substring(0, d.length - 1)
+                            tempRows.push(JSON.parse("{"+d+"}"));
+                        }
+
+                        //let sum = 0;
+                        //result.data.Columns.map((x) => (sum += x.length));
+
+                        $("#ReportBuilderGrid").html('');
+                        generateTable();
+                        //if (tempRows.length == 0 || (sum >= 130 && tempRows.length == 0 )) {
+                        //    $("#ReportBuilderGrid > div.k-grid-header > div").css({
+                        //        "overflow-x": "scroll"
+                        //    });
+                        //} else {
+                        //    $("#ReportBuilderGrid > div.k-grid-header > div").css({
+                        //        "overflow-x": "hidden"
+                        //    });
+                        //}
+                    }
+                },
+                error: function (result) {
+                    showErrorMessage(danger, true);
+                    $("#resultTableDiv").html('');
+                    // notify the data source that the request failed
+                    //options.error(result);
+                }
+            });
+
+        }
+
+        function generateTable() {
+            function toggleScrollbar(e) {
+                var gridWrapper = e.sender.wrapper;
+                var gridDataTable = e.sender.table;
+                var gridDataArea = gridDataTable.closest(".k-grid-content");
+                CheckToPutScrollInGrid(e.sender.columns.map(x => x.title), gridDataTable);
+                //gridWrapper.toggleClass("no-scrollbar", CheckToPutScrollInGrid(e.sender.columns.map(x => x.title)));
+            }
+
+            $("#ReportBuilderGrid").kendoGrid({
+                dataSource: {
+                    serverPaging: true,
+                    data: tempRows,
+
+                    transport: {
+
+                        read: function (options) {
+                            var grid = $("#ReportBuilderGrid").data("kendoGrid");
+                            if (typeof (grid) == "undefined") {
+                                JSONFilter.page = 0;
+                                JSONFilter.size = 10;
+                            } else {
+                                JSONFilter.page = grid.pager.dataSource._page - 1;
+                                JSONFilter.size = $("#ReportBuilderGrid > div.k-pager-wrap.k-grid-pager.k-widget.k-floatwrap > span.k-pager-sizes.k-label > span > select").val();
+                            }
+                            $.ajax({
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                },
+                                type: 'POST',
+                                url: "@Url.Action("GetPaginationGrid", "Filter")",
+                                dataType: 'json',
+                                //dataType: "jsonp", // "jsonp" is required for cross-domain requests; use "json" for same-domain requests
+                                data: JSON.stringify($.extend({}, JSONFilter))
+                                ,
+                                success: function (result) {
+                                    options.success(result);
+
+                                },
+                                error: function (result) {
+                                    showErrorMessage(danger, true);
+                                    $("#resultTableDiv").html('');
+
+                                }
+                            });
+
+
+
+                        },
+                    },
+                    schema: {
+                        data: function (response) {
+                            //turn response.statuses;
+
+                            // twitter's response is { "statuses": [ /* results */ ] }
+
+                            var tempRows = [];
+                            for (var r = 0; r < response.data.Rows.length; r++) {
+                                var d = "";
+                                for (var i = 0; i < response.data.Columns.length; i++) {
+                                    //debugger;
+                                    var a, b;
+                                    a = response.data.Columns[i].replaceAll(" ", "");
+                                    b = response.data.Rows[r].Value[response.data.Columns[i]];
+                                    d += '"' + a + '":"' + b + '",';
+
+                                }
+                                d = d.substring(0, d.length - 1)
+                                tempRows.push(JSON.parse("{" + d + "}"));
+                            }
+                            return tempRows;
+                        },
+                          total: function (response) {
+                              debugger
+                              return response.data.Count; // twitter's response is { "statuses": [ /* results */ ] }
+                        }
+                    },
+                    pageSize: 10,
+                    //change: function (e) {
+                    //    debugger;
+                    //    //var data = this.data();
+                    //    //console.log(data.length); // displays "77"
+                    //    if (typeof (e.sender._page) != "undefined" && e.items.length == 0) {
+                    //        datajson.page = e.sender._page;
+
+                    //        var grid = $("#ReportBuilderGrid").data("kendoGrid");
+                    //        //generateTable();
+                    //        //grid.dataSource.fetch()
+                    //    }
+                    //}
+                },
+                dataBound: toggleScrollbar,
+                //scrollable: true,
+                //height: 550,
+                //groupable: true,
+                //sortable: true,
+                pageable: {
+                    refresh: true,
+                    pageSizes: true,
+                    buttonCount: 5
+                },
+                columns: tempColumns
+            });
+        }
+        //$(document).ready();
+        </script>
+
+        <style type="text/css">
+            .customer-photo {
+                display: inline-block;
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                background-size: 32px 35px;
+                background-position: center center;
+                vertical-align: middle;
+                line-height: 32px;
+                box-shadow: inset 0 0 1px #999, inset 0 0 10px rgba(0,0,0,.2);
+                margin-left: 5px;
+            }
+
+            .customer-name {
+                display: inline-block;
+                vertical-align: middle;
+                line-height: 32px;
+                padding-left: 3px;
+            }
+        </style>
+
+
+        @*<script src="~/Scripts/js/build.js"></script>*@
+    </form>

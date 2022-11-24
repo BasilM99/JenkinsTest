@@ -1,0 +1,49 @@
+﻿
+
+<div class="go-left" style="width:13%;height:100%;padding:0px;position:absolute;">
+
+	<ul class="nav nav-tabs tabs-left  " style="padding-top:5px;height:100%; width:100%; font-size: 11px !important;">
+		<li class="active mainmenueli tab01 "><a tabindex="21" onclick="changeTab(this);" href="#InventorySourcesSection" data-toggle="tab">@Html.GetResource("InventorySource", "SSPDealCampaign")</a></li>
+		<li class="tab12"><a tabindex="20" onclick="changeTab(this);" href="#PMPDealSection" data-toggle="tab">@Html.GetResource("PMPDeals", "PMPDeal")</a></li>
+
+		<li class="mainmenueli tab02"><a href="#keywordSection" tabindex="0" onclick="changeTab(this);" data-toggle="tab">@Html.GetResource("General", "Global")</a></li>
+		<li class="mainmenueli tab03"><a href="#deviceSection" tabindex="1" onclick="changeTab(this);" data-toggle="tab">@Html.GetResource("DeviceTargeting", "Campaign")</a></li>
+
+		@*<li class="mainmenueli tab04"><a href="#geographicSection" tabindex="2" onclick="changeTab(this);" data-toggle="tab">@Html.GetResource("Geographic", "Campaign")</a></li>
+		<li class="mainmenueli tab05"><a href="#operatersSection" tabindex="3" onclick="changeTab(this);" data-toggle="tab">@Html.GetResource("NetworkAndOperators", "Campaign")</a></li>
+		<li class="mainmenueli tab06"><a href="#demographicSection" tabindex="4" onclick="changeTab(this);" data-toggle="tab">@Html.GetResource("Demographics", "Campaign")</a></li>*@
+		@*<li class="mainmenueli tab07"><a href="#urlSection" tabindex="6" onclick="changeTab(this);" data-toggle="tab">@Html.GetResource("UrlTargeting", "Campaign")</a></li>*@
+
+		<li class="mainmenueli tab08"><a href="#bidSection" tabindex="7" onclick="changeTab(this);" data-toggle="tab">@Html.GetResource("BudgetAndBid", "Global")</a></li>
+		<li id="ConversionSubItemMenu" class="mainmenueli tab16"><a tabindex="26" onclick="changeTab(this);" href="#ConversionsAndEventsSection" data-toggle="tab">Events & Conversions</a></li>
+
+		@if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsAdOpsAdminInAdminApp)
+		{
+			<li class="disabledCustom tab10" id="bidConfigSubItemMenu"><a tabindex="9" onclick="changeTab(this);" href="#CampaignBidConfig" data-toggle="tab">@Html.GetResource("BidConfigsTap", "Campaign")</a></li>
+
+			<li class="tab11"><a tabindex="12" onclick="changeTab(this);" href="#APIClientSection" data-toggle="tab">@Html.GetResource("APIClient", "AdRequests")</a></li>
+		}
+
+		<li id="AudienceSegmentSubItemMenu" class="disabledCustom tab13"><a tabindex="22" onclick="changeTab(this);" href="#AudienceSegmentSection" data-toggle="tab">@Html.GetResource("Audiance", "Audiances")</a></li>
+		<li class="tab14"><a tabindex="14" onclick="changeTab(this);" href="#ImpressionMetricsSection" data-toggle="tab">@Html.GetResource("ImpressionMetric", "Campaign")</a></li>
+		@{
+			if (ViewBag.IsVideoActionType)
+			{
+				<text>
+					<li class="mainmenueli tab15"><a tabindex="25" onclick="changeTab(this);" href="#VideoSection" data-toggle="tab">@Html.GetResource("VideoTargeting", "Targeting")</a></li>
+				</text>
+			}
+		}
+		@if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsAdOpsAdminInAdminApp)
+		{
+			<li class="mainmenueli tab09"><a tabindex="8" onclick="changeTab(this);" href="#costElemtnsSection" data-toggle="tab">@Html.GetResource("CostElements", "Titles")</a></li>
+
+		}
+
+
+
+	</ul>
+
+</div>
+
+

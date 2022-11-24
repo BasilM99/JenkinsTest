@@ -1,0 +1,14 @@
+﻿@model IList<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeUnitDto> 
+@foreach (var adCreativeUnitDto in Model)
+{
+    <div class="data-row info-container last-container">
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field reverse-link">@(adCreativeUnitDto.Name)</span>
+            </div>
+            <div class="field-container"  style="width: @(adCreativeUnitDto.CreativeUnit.PreviewWidth)px; height:@(adCreativeUnitDto.CreativeUnit.PreviewHeight)px;" >
+                <img  width="@(adCreativeUnitDto.CreativeUnit.PreviewWidth)" height="@(adCreativeUnitDto.CreativeUnit.PreviewHeight)" src='@(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + @adCreativeUnitDto.DocumentId.ToString())' />
+            </div>
+        </div>
+    </div>
+}

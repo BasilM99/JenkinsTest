@@ -1,0 +1,150 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.BusinessPartners.DealCampaignMappingListViewModel
+@{
+    if (ViewContext.FormContext == null)
+    {
+        ViewContext.FormContext = new FormContext();
+    }
+    //ViewData.TemplateInfo.HtmlFieldPrefix = "SaveDto";
+}
+@Html.Hidden("SaveDto.ID", Model.SaveDto == null ? "" : "" + Model.SaveDto.ID, new { @class = "ValdationIgnored" })
+@Html.Hidden("SaveDto.PartnerID", Model.BusinessId)
+
+<script language="javascript">
+    $(document).ready(function(){
+
+        localInitilize_CampaignName();
+        //
+        var setting = $.data($("#saveForm")[0], 'validator').settings;
+
+        setting.ignore = '';
+    });
+
+    var url = '@Url.Action("LookupSelect","lookup")';
+    function localInitilize_CampaignName() {
+        var target = $('#party-add-dialog-form');
+        jQuery("#party-search-dialog-form").dialog({
+            autoOpen: false,
+            title:'@Html.GetResource("CampaignSearch", "SSPDealCampaignMapping")',
+            //height: 450,
+            width: 700,
+            position:   {  my: "center", at: "center" , of:target },
+            modal: true,
+            draggable: false,
+            resizable: false,
+            open:function()
+            {
+
+                $("#party-add-dialog-form").parent().hide();
+
+            },
+            close: function()
+            {
+
+                $("#party-add-dialog-form").parent().show();
+                GridReset();
+
+            }
+
+        });
+
+
+    }
+    function GridReset()
+    {
+
+        $('#party-search-dialog-form #Name').val('');
+
+
+        generatePartyGrid();
+    }
+
+    function changeParty(partytId, partyDesc) {
+
+        if ((typeof (partytId) != "undefined") && (typeof (partyDesc) != "undefined")) {
+
+            jQuery('#CampaignNameLabel').text(partyDesc);
+            jQuery('[id="SaveDto_AdFalconCampaignId"]').val(partytId);
+            jQuery('[id="SaveDto_CampaignName"]').val(partyDesc);
+        }
+        jQuery('#party-search-dialog-form').dialog('close');
+        $("#saveForm").validate().form();
+
+    }
+    function showPartySearchDialog() {
+
+        showDialog('party-search-dialog-form');
+    }
+
+
+    var DialogTitle_Form = '@Model.DialogTitle';
+    var DialogWidth_Form = @Model.DialogWidth;
+    var DialogHeight_Form =  @Model.DialogHeight;
+
+    function DealIdKeyPress(event)
+    {
+        if(/^[a-zA-Z0-9- ]*$/.test(event.key) == false) {
+            event.preventDefault();
+        }
+    }
+
+</script>
+
+<div class="section-form-inner-container" id="firstdiv">
+
+    <div class="data-row red-box" style="display:none; " id="divErrorMessages_deal">
+        <div class="data-row"><span class="msg-img"></span><span style="width:450px!important">@Html.GetResource("Duplicated", "Global")</span></div>
+    </div>
+    <div class="data-row data-container" style="display:block;" id="SearchParty">
+        <div class="label-container3">
+            <span class="field-title required-field">
+                @Html.GetResource("CampaignName", "SSPDealCampaign")
+            </span>
+        </div>
+        <div class="field-container">
+            <div onclick="showPartySearchDialog();" style="line-height: 24px;">
+                <img class="find-icon" src='@Url.GetImagePath("find-icon.png")' />
+                @Html.HiddenFor(p => p.SaveDto.AdFalconCampaignId)
+                @Html.HiddenFor(p => p.SaveDto.CampaignName)
+                @Html.AdFalconValidationMessageFor(p => p.SaveDto.AdFalconCampaignId)
+                <span class="side-text" id="CampaignNameLabel" style="float: none;">@(Model != null && Model.SaveDto != null ? Model.SaveDto.CampaignName : string.Empty)</span>
+
+                <div class="adfalcon-dialog2  field-container  required-field iea-text-calender-margin" style="display:none">
+                    @Html.AdFalconTextBoxFor(p => p.SaveDto.AdFalconCampaignId)
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container3">
+            <span class="field-title required-field">@Html.GetResource("DealId", "SSPDealCampaign")</span>
+        </div>
+        <div class="adfalcon-dialog2 field-container">
+            @Html.AdFalconTextBoxFor(p => p.SaveDto.DealId, new { @class = "required", maskType = "decimal", @maxlength = "50", @onkeypress = "DealIdKeyPress(event)" })
+
+        </div>
+        @Html.AdFalconValidationMessageFor(p => p.SaveDto.DealId)
+    </div>
+
+
+
+
+</div>
+
+@*<div class="data-row button-container">
+    <input type="button" value="@Html.GetResource("Save", "Commands")" class="primary-btn" onclick="callSave()" />
+</div>*@
+<div id="party-search-dialog-form" title="@Html.GetResource("PartySearch", "Party")" style="display: none; ">
+    @if (Model.AccountId > 0)
+    {
+
+        @Html.Action("CampaignSearch", "Campaign", new { Id = Model.AccountId })
+    }
+    else
+    {
+
+        <div class="data-row red-box">
+            <div class="data-row"><span class="msg-img"></span><span style="width:450px!important">@Html.GetResource("NoAccountLinked", "SSPDealCampaignMapping")</span></div>
+        </div>
+    }
+</div>

@@ -1,0 +1,572 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("AccountFeeElement", "Global");
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+}
+<script language="javascript">
+
+
+    var SaveReportUrl = '@Url.Action("SaveCampaignReport", "Reports")';
+    var ItemIdVarInvSys = "@(Request.QueryString["ItemId"])";
+    var wait = false;
+
+    var confirmation = "@Html.GetResource("FeeElementConfriamtion",  "FeeElement")";
+    var saveFeeElementURL = '@Url.Action("SaveFee")';
+
+    var result = false;
+    var ischecked = false;
+    var yesbtn = "@Html.GetResource("Yes", "Global")";
+    var GeneralExceptionMsg = "@Html.GetResource("GeneralException", "Error")";
+    var nobtn = "@Html.GetResource("No", "Global")";
+    var ConfriamtionBoxTitle = "@Html.GetResource("Confirm")";
+    var close = "@Html.GetResource("Close","Commands")";
+    var rename = "@Html.GetResource("Rename", "Commands")";
+    var selectedName = "";
+    var selectednumber = 0;
+    var text;
+    var message = '@Html.GetResource("savedSuccessfully", "Global")';
+    var direction = "left";
+    var duplicatedAppSite = "@Html.GetResource("SelectConfirmation", "Appsite")";
+
+    $(document).ready(function () {
+
+        //var div = $("#divSuccessMessages")[0].outerHTML;
+
+        //$("#divSuccessMessages").remove();
+
+        //$(div).insertBefore("#MainHeader");
+
+        //div = $("#divErrorMessages")[0].outerHTML;
+
+        //$("#divErrorMessages").remove();
+        //$(div).insertBefore("#MainHeader");
+
+        if (ItemIdVarInvSys != "") {
+            onEntityChange('' + ItemIdVarInvSys);
+        }
+        colorTheGrid();
+        localInitilize_FeeElements();
+
+    });
+
+
+    function localInitilize_FeeElements() {
+
+        jQuery("#party-search-dialog-form").dialog({
+            autoOpen: false,
+            //height: 450,
+            width: 700,
+            modal: true,
+            resizable: false,
+            draggable: false
+        });
+        jQuery("#party-FeeElementSearch-dialog-form").dialog({
+            autoOpen: false,
+            //height: 450,
+            width: 650,
+            modal: true,
+            resizable: false,
+            draggable: false
+        });
+        jQuery("#party-add-dialog-form").dialog({
+            autoOpen: false,
+            //height: 230,
+            width: 550,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            buttons:   [{
+                    text: '@Html.GetResource("Save", "Commands")',
+                click: function () {
+                   
+                        if (!validation()) {
+                            return;
+                        }
+                        else {
+                            saveFeeElement();
+                        }
+                       
+                        jQuery(this).dialog("close");
+                    },
+                    "class": 'primary-btn',
+
+                }],
+        });
+      
+    }
+    function checked() {
+        $('input').each(function () {
+
+            if ($(this).is(':checked') && $(this).is(":visible")) {
+
+                var name = $(this).eq(0).parent().parent().find("#AccountFeeElement_FeeElment_Value").text().trim();
+
+                if (name.length > 30)
+                    name = name.substring(0, 30) + "..";
+                ischecked = true;
+                @{
+                    if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage=="ar")
+                    {
+
+                        <text>
+
+                selectedName += "<span style='float:" + direction + ";'>" + name + "-</span><br>";
+
+                </text>
+
+                    }else
+                    {
+                        <text>
+                selectedName += "<span style='float:" + direction + ";'>" + "-" + name + "</span><br>";
+                </text>
+                    }
+
+                }
+            }
+        });
+        return ischecked;
+    }
+
+    function popup(sender, SelectConfirmation, Confirmation) {
+
+        selectedName = "";
+        selectednumber = 0;
+        if (checked()) {
+            if (!result) {
+
+                $('<div id ="ConfirmationDialog" title="' + ConfriamtionBoxTitle + '"></div>').dialog({
+
+                    open: function () {
+
+                        text = Confirmation.format($("#MainHeader span").html().trim()) + " <br><br> <div style='float: " + direction + ";'>" + selectedName + "</div>";
+                        $(this).html(text);
+
+                    },
+                    close: function () {
+                        $(this).remove();
+                    },
+
+                    modal: true,
+                    showCloseButton: false,
+
+                    buttons: [
+            {
+                text: yesbtn,
+                click: function () {
+                    $(this).dialog("close");
+                    result = true;
+                    $(sender).click();
+                },
+             //   "class": 'primary-btn',
+
+
+            },
+            {
+                text: nobtn,
+                click: function () {
+                    $(this).dialog('close');
+                    result = false;
+                }
+                //, "class": 'delete-button',
+
+            }
+                    ],
+                    resizable: false,
+                    draggable: false
+                });
+
+
+
+            }
+        } else {
+            $('<div id = "NoCampaignsareSelected"></div>').dialog({
+
+                open: function (event, ui) {
+                    $(this).html(SelectConfirmation);
+                },
+                close: function () {
+                    result = false;
+                    $(this).remove();
+                },
+                resizable: false,
+                draggable: false,
+                // height: 140,
+                modal: true,
+            });
+
+        }
+        ischecked = false;
+        return result;
+    }
+
+
+
+    function refreshBusinessPartnersGrid() {
+        RefrashGrid('AccountFeeElementsGrid');
+    }
+    function generateBusinessPartnersGrid() {
+        var grid = $("#AccountFeeElementsGrid").data("tGrid");
+        grid.rebind();
+    };
+    function AccountFeeElementsGridDataBinding(args) {
+        args.data = $.extend(args.data,
+          {
+              Name: $('#Name').val()
+
+          });
+
+    };
+    function AccountFeeElementsGridDataBound(e) {
+
+        var grid = $("#AccountFeeElementsGrid").data("tGrid");
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(1);
+        }
+        colorTheGrid();
+
+    };
+    function onTextBoxChange(sender) {
+
+
+
+        var value = $(sender).val();
+        var REGULAR = new RegExp("^\\d{1,5}(\\.\\d{1,3})?$");
+
+        if (!REGULAR.test(value)) {
+            $(sender).val("");
+
+        }
+    }
+
+
+
+    function callSave() {
+
+
+        if ($("#saveForm").validate().form()) {
+            if (sp == undefined) {
+                sp = getSpinner("entityDetails");
+            }
+
+
+            sp.showSpinner();
+			var data = $('#saveForm').serialize();
+			data.FeeId = $('[name="FeeId"]').val();
+			data.ID = $("#AccountFeeElement_Id").val();
+            $.ajax({
+                type: 'POST',
+                url: save_party_URL,
+                cache: false,
+                data: data,
+                success: function (responce) {
+
+                    if (responce.Success) {
+                        if ((typeof (closeNewPartyDialog) != "undefined") && (closeNewPartyDialog != null)) {
+                            closeNewPartyDialog();
+
+                            showSuccessfullyMessage(message.format($("h1").text()), false);
+                        }
+                    } else {
+                        //alert(responce.ErrorMessage);
+                        $("#error_text").text(responce.ErrorMessage);
+                        DialogshowErrorMessage("divErrorMessages_partner");
+                    }
+                    sp.hideSpinner();
+                },
+                error: function (s, e, f) {
+                    //
+                    $("#error_text").text(GeneralExceptionMsg);
+                    DialogshowErrorMessage("divErrorMessages_partner");
+                    // alert(GeneralExceptionMsg);
+                    sp.hideSpinner();
+                }
+            });
+        }
+    }
+
+    function fnValidateDynamicContent(element) {
+        var currForm = element.closest("form");
+        currForm.removeData("validator");
+        currForm.removeData("unobtrusiveValidation");
+        $.validator.unobtrusive.parse(currForm);
+        currForm.validate(); // This line is important and added for client side validation to trigger, without this it didn't fire client side errors.
+    }
+    var urladd = '@Url.Action("AddAccountCostElement", "AccountManagement")';
+    function changeParty(FeeElmentId, costDescription) {
+
+        if (sp == undefined) {
+            sp = getSpinner("gridSection");
+        }
+
+        sp.showSpinner();
+
+        $.ajax(
+            {
+                url: urladd + '?FeeElementId=' + FeeElmentId,
+                cache: false,
+                success: function (data) {
+                    //
+
+                    closeNewPartyDialog();
+
+
+                    sp.hideSpinner();
+
+                    //$("#saveForm").validate().form();
+                    //$('#saveForm').serialize();
+                },
+                error: function (error) {
+                    sp.hideSpinner();
+                    //
+                    //spinner.hideSpinner();
+                }
+            });
+
+    }
+
+    function showCostElementSearchDialog() {
+        showDialog('party-FeeElementSearch-dialog-form');
+    }
+    function closeNewPartyDialog() {
+        closeDialog('party-add-dialog-form');
+        RefrashGrid("AccountFeeElementsGrid");
+    }
+
+
+
+    function generateFeeElementsGrid() {
+        var grid = $("#AccountFeeElementsGrid").data("tGrid");
+        grid.rebind();
+    };
+    function saveFeeElement(id) {
+        var data = new Object();
+        data.ID = $("#AccountFeeElement_Id").val();
+        data.FeeId = $('[name="FeeId"]').val();
+        data.partyId = $('[name="partyId"]').val();
+    
+        data.Enabled = Radio_IsChecked("#party-add-dialog-form #Enabled");
+        jQuery.ajax({
+            type: 'POST',
+            url: saveFeeElementURL,
+            data: data,
+
+            success: function (responce) {
+                if (responce.Success) {
+
+                    generateFeeElementsGrid();
+                    showSuccessfullyMessage(responce.Message);
+
+                } else {
+                    showErrorMessage(responce.Message, false);
+                    $(this).dialog('close');
+                }
+            },
+            error: function (s, e, f) {
+
+                alert(e);
+            }
+
+        });
+    }
+
+    function colorTheGrid() {
+        var grid = $("#AccountFeeElementsGrid").data("tGrid");
+        var htmlgrid = $("#AccountFeeElementsGrid tbody tr");
+        for (var i = 0 ; i < htmlgrid.length; i++) {
+            var row = $(htmlgrid).eq(i);
+
+            if (!$(row).find("#EnabledGrid input").is(":checked") && $(row).find("#EnabledGrid").text() != 'true') {
+                $(row).attr("style", "color:silver;!important");
+            }
+        }
+    }
+
+    function onEntityChange(entity) {
+        clearDialog("party-add-dialog-form");
+        $("#FeeElementName").text('');
+        $("#beneficiaryName").text('');
+        check("party-add-dialog-form #Enabled");
+
+        if (typeof (entity) != "undefined" && entity != null) {
+            var tr = $(entity).parent().parent().parent();
+            fillDialog(tr);
+        }
+        $("#required_signParty").hide();
+        $("#required_signCost").hide();
+
+        showDialog('party-add-dialog-form');
+    };
+
+    function fillDialog(tr) {
+
+        var feeElementName = $(tr).find("#AccountFeeElement_FeeElment_Value").text();
+        var feeElementID = $(tr).find("#AccountCostElement_FeeElment_Id").text();
+
+        var partyDesc = $(tr).find("#AccountCostElement_Party_Name").text();
+        var partytId = $(tr).find("#AccountCostElement_Party_Id").text();
+        var enabled = false;
+        if ($(tr).find("#EnabledGrid").text() == "") {
+            enabled = $(tr).find("#EnabledGrid input").is(":checked");
+        } else {
+            enabled = $(tr).find("#EnabledGrid input").is(":checked") || ($(tr).find("#EnabledGrid").text() == "true");
+
+        }
+        if (!enabled) {
+            uncheck("party-add-dialog-form #Enabled");
+        } else {
+            check("party-add-dialog-form #Enabled");
+        }
+        $("#AccountFeeElement_Id").val($(tr).find("#AccountFeeElement_Id").text());
+        jQuery('#FeeElementName').text(feeElementName);
+        jQuery('[name="FeeId"]').val(feeElementID);
+        jQuery('[name="Value"]').val(feeElementName);
+
+        jQuery('#beneficiaryName').text(partyDesc);
+        jQuery('[name="partyId"]').val(partytId);
+        jQuery('[name="partyName"]').val(partyDesc);
+    }
+
+</script>
+@model ArabyAds.AdFalcon.Web.Controllers.Model.AccountManagement.FeeListViewModel
+
+
+@using (Html.BeginForm())
+{
+
+
+    <div class="data-row sub-header">
+        <div class="sub-header-left">
+        </div>
+        <div class="sub-header-center iea-sub-header-width">
+            <div class="data-row">
+                <div class="floating-left iea-go-right sub-header-item-container objective-header">
+                    <div class="sub-header-title">
+                        @Html.GetResource("Account", "Menu")
+                    </div>
+                    <div class="sub-header-text">
+                        @Model.BusinessName
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="sub-header-right">
+        </div>
+    </div>
+
+
+    <div class="data-row section-container">
+
+
+        <br />
+        <div class="data-row go-center">
+            <div class="blue-filter-container">
+                <table class="special-content">
+                    <tr>
+                        <td>
+                            <span class="go-bold">@Html.GetResource("NameColumn", "AppSite")</span>
+                        </td>
+                        <td style="width: 110px;">
+                            <input type="text" id="Name" name="Name"
+                                   class="text-box " />
+                        </td>
+                        <td>
+                            <input type="submit" tabindex="0" onclick="generateBusinessPartnersGrid(); return false;" value='@Html.GetResource("Filter")' class="btn filter-button " />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="tail">
+            </div>
+        </div>
+        <br />
+        @if (Model.TopActions != null)
+        {
+            Html.RenderPartial("PartialViews/Actions", Model.TopActions);
+        }
+        <div class="grid-container" id="gridSection">
+            <script language="javascript">
+                var save_party_URL = '@Html.Raw(Model.SaveUrl)';
+                var get_party_URL = '@Html.Raw(Model.GetUrl)';
+            </script>
+            @(Html.Telerik().Grid(Model.Items)
+                            .Name("AccountFeeElementsGrid")
+                         .Columns(columns =>
+                            {
+                                columns.Template(
+                                    @<text>
+                                        <input name="checkedRecords" type="checkbox" value="@item.ID " title="checkedRecords" />
+                                    </text>)
+                                    .Title("").Width(36).HtmlAttributes(new { style = "text-align:center" })
+                                    .ClientTemplate("<input type='checkbox' name='checkedRecords' value='<#= ID #>' />");
+
+                            columns.Bound(o => o.Enabled).Hidden().HtmlAttributes(new { @id = "EnabledGrid" });
+
+
+                            columns.Bound(o => o.Value).Title(Html.GetResource("FeeElement", "Account")).Width("300px").ReadOnly().HtmlAttributes(new { @class = "go-center", @id = "AccountFeeElement_FeeElment_Value" });
+                            columns.Bound(o => o.FeeId).Hidden().HtmlAttributes(new { @class = "go-center", @id = "AccountCostElement_FeeElment_Id" });
+
+
+                            columns.Bound(o => o.ID).Hidden().HtmlAttributes(new { @class = "go-center", @id = "AccountFeeElement_Id" });
+                            columns.Bound(o => o.partyId).Hidden().HtmlAttributes(new { @class = "go-center", @id = "AccountCostElement_Party_Id" });
+                            columns.Bound(o => o.partyName).Width("300px").Title(Html.GetResource("Party", "Titles")).HtmlAttributes(new { @class = "go-center", @id = "AccountCostElement_Party_Name" });
+
+                            columns.Template(@<text>
+                <div class='go-center'><a class='t-button t-button-icon t-button-bare t-grid-edit' onclick="onEntityChange(this)"><span class='t-icon t-edit t-ip-Range-Section-edit-button'></span></a></div></text>).Width(45).HtmlAttributes(new { @class = "go-center" })
+                                 .ClientTemplate("<div class='go-center'><a class='t-button t-button-icon t-button-bare' type='button' onclick='onEntityChange(this)'><span class='t-icon t-edit t-ip-Range-Section-edit-button'></span></button></div>").Title(Html.GetResource("Edit", "Commands")).Width(45).HtmlAttributes(new { @class = "go-center" });
+
+
+                            })
+                                                                     .EnableCustomBinding(true).DataBinding(dataBinding =>
+                                                                     {
+                                                                         dataBinding.Server().Select("AccountCostElments", "AccountManagement", new { Ajax = true });
+                                                                         dataBinding.Ajax().Select("_AccountFees", "AccountManagement");
+
+                                                                     })
+
+
+                        .ClientEvents(clientEvents => clientEvents.OnDataBinding("AccountFeeElementsGridDataBinding").OnDataBound("AccountFeeElementsGridDataBound"))
+                        .Scrollable(scrolling => scrolling.Enabled(false))
+                        .Selectable()
+                                .Pageable(paging => paging.PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total(int.Parse(ViewData["total"].ToString())).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+
+                        .Footer(true))
+
+
+            <br />
+            <br />
+        </div>
+        @if (Model.BelowAction != null)
+        {
+            Html.RenderPartial("PartialViews/Actions", Model.BelowAction);
+        }
+    </div>
+    if (Model.ToolTips != null)
+    {
+        @Html.Partial("GridToolTop", Model.ToolTips)
+    }
+}
+
+
+<div id="party-add-dialog-form" class="adfalcon-dialog" title="@Html.GetResource("AddAccountFeeElement", "Titles")" style="display: none; ">
+    <div id="entityDetails" class="data-row data-container">
+        @*@Html.Action("AcountCostElement", new { id = ViewContext.RouteData.Values["id"], adGroupId = ViewContext.RouteData.Values["adGroupId"] })*@
+        @Html.Action("AccountFee")
+    </div>
+</div>
+
+<div id="party-search-dialog-form" title="@Html.GetResource("PartySearch", "Party")" style="display: none; ">
+</div>
+@*@Html.Partial("CostElement/CostElementConflictDialog")*@
+
+<div id="party-FeeElementSearch-dialog-form" class="section-form-inner-container" style="display: none; " title="@Html.GetResource("FeeElement", "Account")">
+
+
+    @{
+        ViewDataDictionary viewDataDoc = new ViewDataDictionary();
+        viewDataDoc.Add("total", "0");
+    }
+    @Html.Partial("FeeSearch", new ArabyAds.AdFalcon.Administration.Web.Controllers.Model.Lookup.ListViewModel { Items = new List<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core.LookupDto>() }, viewDataDoc)
+</div>

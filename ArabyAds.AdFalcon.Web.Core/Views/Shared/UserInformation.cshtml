@@ -1,0 +1,233 @@
+﻿
+@{
+    var visibilityValue = "hidden;";
+
+
+
+}
+
+@{
+
+    int OriginalAccountIdVar = 0;
+
+}
+<style>
+    .ggg.dropdown {
+        /*background: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;*/
+        width: 100%;
+    }
+
+    .ggg.dropdown-menu > li > a {
+        /*color: #428bca;*/
+    }
+
+    .ggg.dropdown ul.dropdown-menu {
+        /*border-radius: 4px;
+        box-shadow: none;*/
+        margin-top: 20px;
+        width: 100%;
+    }
+
+        .ggg.dropdown ul.dropdown-menu:before {
+            /*content: "";
+            border-bottom: 10px solid #fff;
+            border-right: 10px solid transparent;
+            border-left: 10px solid transparent;
+            position: absolute;
+            top: -10px;
+            right: 16px;*/
+            z-index: 10;
+        }
+
+        .ggg.dropdown ul.dropdown-menu:after {
+            /*content: "";
+            border-bottom: 12px solid #ccc;
+            border-right: 12px solid transparent;
+            border-left: 12px solid transparent;
+            position: absolute;
+            top: -12px;
+            right: 14px;*/
+            z-index: 9;
+        }
+
+    .ggg.dropdown-menu {
+        overflow: visible !important;
+        /*position: relative !important;*/
+    }
+
+    .ggg.navbar-nav > li > a {
+        padding-top: unset;
+        padding-bottom: unset;
+    }
+
+    .ggg.dropdown-toggle {
+        background-color: unset !important;
+        border-color: unset !important;
+    }
+</style>
+@if (ArabyAds.Framework.OperationContext.Current.CurrentPrincipal.Identity.IsAuthenticated)
+{
+
+    {
+
+        OriginalAccountIdVar = ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().AccountId.Value;
+
+
+
+        visibilityValue = "visibility;";
+
+    }
+
+    if ((ViewBag.ShowMenu != null) && ViewBag.ShowMenu)
+    {
+        visibilityValue = "visibility;";
+    }
+    else if ((ViewBag.ShowMenu != null) && !ViewBag.ShowMenu)
+    {
+        visibilityValue = "hidden;";
+
+    }
+    <div class="user-actions">
+        <div class="data-row trimed-info floating-right" style="width:175px;">
+
+            @{string name = ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.Framework.UserInfo.IUserInfo>().FirstName + " " + ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.Framework.UserInfo.IUserInfo>().LastName;
+
+
+                string fullname = name;
+
+
+
+
+                if ((fullname).Length > 25)
+                {
+                    fullname = fullname.Substring(0, 19) + "..";
+
+
+
+
+                }
+
+            }
+
+
+            <ul class="nav navbar-nav">
+                <li class="ggg dropdown" id="ADFalconuserName">
+                    <a href="#" title="@name-@(OriginalAccountIdVar)" class="ggg dropdown-toggle" data-toggle="dropdown" style="margin-top:5px;padding:unset;color:unset" @*data-target="#swithusermenueaccoit"*@>@fullname<span class="glyphicon glyphicon-user pull-left  user-logoIco" style="width:24px;height:24px; padding-left:2px;padding-right:2px;"></span><br /><span style="color:gray">ID:@OriginalAccountIdVar</span></a>
+
+
+
+                </li>
+            </ul>
+
+        </div>
+        <div class="go-right">
+            @if (visibilityValue == "hidden;")
+            {
+                <ul id="menu-nav" class="userinfoMenue">
+                    <li>
+                        <a class="parent gradient" href="@Url.Action("edit", "user")"></a>
+                        <ul class="dropdownAdFalcon">
+
+                            <li class="menu-last">@Html.ActionLink(Html.GetResource("Logout", "UserInformation"), "login", "user", new { method = "logout" }, null)</li>
+                        </ul>
+
+
+
+
+                    </li>
+
+
+                    <li>
+                        <a class="parent gradient" href="@Url.GetLangUrl()"></a>
+                    </li>
+                </ul>}
+            else
+
+            {
+                <ul id="menu-nav" class="userinfoMenue" style="visibility: @visibilityValue;">
+                    <li>
+                        <a class="parent gradient" href="@Url.Action("edit", "user")"></a>
+                        <ul class="dropdownAdFalcon">
+
+
+                            <li>@Html.ActionLink(Html.GetResource("Profile", "Menu").ToString(), "edit", "user")</li>
+                            @if (ArabyAds.Framework.OperationContext.Current.UserInfo
+<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+           ().AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP)
+                            {
+                                <li>@Html.ActionLink(Html.GetResource("ADMAccountSettings", "Global").ToString(), "ADMAccountSettings", "user")</li>
+                                <li>@Html.ActionLink(Html.GetResource("Settings", "Menu").ToString(), "Settings", "User")</li>
+                            }
+                            <li>@Html.ActionLink(Html.GetResource("ChangePassword", "Menu").ToString(), "changepassword", "user")</li>
+                            @if (ArabyAds.Framework.OperationContext.Current.UserInfo
+                   <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+                       ().AccountRole != (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DataProvider)
+                            {
+                                <li>@Html.ActionLink(Html.GetResource("AdFund", "Menu").ToString(), "adfundpgw", "user")</li>
+                            }
+
+                            <li>@Html.ActionLink(Html.GetResource("Header", "Audittrial").ToString(), "AuditTrial", "User")</li>
+
+
+                            @{if (ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().IsPrimaryUser)
+                                {
+                                    if (ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().AccountRole != 8)
+                                    {
+                                        <li>@Html.ActionLink(Html.GetResource("Transfer", "Menu").ToString(), "PaymentDetails", "user")</li>
+                                    }
+                                    <li>@Html.ActionLink(Html.GetResource("Payment", "Menu").ToString(), "AccountHistory", "user")</li>
+
+
+                                    <li>@Html.ActionLink(Html.GetResource("Invitations", "Invite").ToString(), "Invitation", "User")</li>
+                                    if (ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().IsPrimaryUser)
+                                    {
+                                        <li>@Html.ActionLink(Html.GetResource("UserManagement", "Menu").ToString(), "MyUsers", "User")</li>
+                                    }
+                                    if (ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().AllowAPIAccess)
+                                    {
+                                        <li>@Html.ActionLink(Html.GetResource("APIAccess", "Menu").ToString(), "apiaccess", "user")</li>
+                                    }
+                                }
+                            }
+
+
+                        </ul>
+                    </li>
+
+
+                    <li>
+                        <a class="parent gradient" href="@Url.GetLangUrl()"></a>
+                    </li>
+                </ul>}
+
+        </div>
+    </div>
+
+
+    <div id='wrapper'>
+        <div id='popOver'>
+            <img id='arrow' src='@Url.GetOverrideImagePath("poparrow.png")' />
+            <img id='x' src='@Url.GetOverrideImagePath("popcloseButton.png")' />
+            <h3>@Html.GetResource("POPOverSwitchAccountHeader", "Global")</h3>
+            <p>@Html.GetResource("POPOverSwitchAccountBoday", "Global")</p>
+            <img id='miniDemo' src='@Url.GetOverrideImagePath("popminiDemo.png")' />
+            <a href='#'><img src='@Url.GetOverrideImagePath("popgotit.png")' /></a>
+        </div>
+    </div>
+    @*@Html.RenderAction("SwitchAccount", "User");*@
+
+    @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.User.SwitchAccount))
+
+
+}
+else
+{
+    <div class="user-actions">
+        <div class="go-right RegisterLinkPage">
+            @Html.ActionLink(Html.GetResource("Register", "UserInformation"), "register", "user", null, new { @class = "reverse-link", id = "Register" })
+            | @Html.ActionLink(Html.GetResource("Login", "UserInformation"), "login", "user", null, new { id = "LoginLink" }) | <a href="@Url.GetLangUrl()" class="reverse-link language-link" id="Login">@Html.GetResource("AltLang")</a>
+        </div>
+    </div>
+}

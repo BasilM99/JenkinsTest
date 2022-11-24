@@ -1,0 +1,326 @@
+﻿
+@{
+	Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+
+
+}
+
+@model Noqoush.AdFalcon.Web.Controllers.Model.Audiance.DataProvider
+@{
+
+	ViewBag.Title = Model.TitlePageHeader;
+
+}
+<script language="javascript" type="text/javascript">
+
+    jQuery(document).ready(function () {
+
+        SetSelectedTap("ListMenuDataProviders");
+    });
+</script>
+<script language="javascript" type="text/javascript">
+    var ReadListId = "#Select2_ReadList";
+
+    var SiteProviderURL = '@Model.SitePoviderURL';
+    var SiteProvidrId = '@Model.Id';
+	var BaseSiteProviderURL = '@Model.BaseSitePoviderURL';
+
+
+</script>
+
+
+<script type="text/javascript">
+	var remote = null;
+	 var AdvertiserUrl = '@Url.Action("GetAccountAdvertisersbyUser", "Advertiser")';
+	var transport = null;
+	window.CurrentTitle = null;
+	window.ptransport = true;
+	$(document).ready(function () {
+
+		//$("#DataProviderMenuName").text('@Model.Name');
+
+		$("#MainHeader").hide();
+		
+		setupeasyForAudianceList();
+		// check for browser support
+		//if (window.addEventListener) {
+
+		//	// message handler
+		//	window.addEventListener('message', function (e) { alert("hi"); })
+		//};
+	});
+	function setupeasyForAudianceList() {
+
+
+	//	debugger;
+		//var xhreasyXDM = { easyXDM: window.easyXDM.noConflict("xhreasyXDM") };
+		//window.xhreasyXDM = { easyXDM: window.easyXDM.noConflict("xhreasyXDM") };
+		
+		if (transport) {
+			transport.destroy();
+		}
+
+		//var xhreasyXDM = new window.xhreasyXDM.easyXDM.Rpc({
+
+		//	local: "~/scripts/EasyXDM/name.html",
+		//	swf: BaseSiteProviderURL + "/scripts/EasyXDM/easyxdm.swf",
+		//	remoteHelper: BaseSiteProviderURL + "/scripts/EasyXDM/name.html",
+
+		//	remote: SiteProviderURL
+		//}, { remote: {}, local: {} });
+		//transport = new easyXDM.Socket(/** The configuration */{
+		//	local: "~/scripts/EasyXDM/name.html",
+		//	swf: BaseSiteProviderURL + "/scripts/EasyXDM/easyxdm.swf",
+		//	remoteHelper: BaseSiteProviderURL + "/scripts/EasyXDM/name.html",
+
+		//	remote: BaseSiteProviderURL + "/remotetransport.html",
+		//	onReady: function () {
+		//		/**
+		//		 * If we want to do something once the transport is ready then we can place it here
+		//		 */
+
+
+		//	}
+		//	, onMessage: function (message, origin) {
+
+
+		//		if (message == "false") {
+		//			$("#DataProviderMenuRegister" + SiteProvidrId).show();
+		//			$("#DataProviderMenuLogin" + SiteProvidrId).show();
+		//			$("#DataProviderMenuForgetpassword" + SiteProvidrId).show();
+		//		}
+		//		else if (message == "true") {
+
+		//			$("#DataProviderMenuRegister" + SiteProvidrId).hide();
+		//			$("#DataProviderMenuLogin" + SiteProvidrId).hide();
+		//			$("#DataProviderMenuForgetpassword" + SiteProvidrId).hide();
+		//		}
+				
+		//	 }
+		//});
+
+		//transport.postMessage(LoggedInUserObject.CurrentLanguage + ";" + LoggedInUserObject.Email + ";" + LoggedInUserObject.Name + ";" + "/audience-list" + ";" + LoggedInUserObject.Company + ";" + LoggedInUserObject.CurrentAccountId + ";" + LoggedInUserObject.FirstName + ";" + LoggedInUserObject.LastName);
+
+
+		LoggedInUserObject.DefaultRedirect= "/audience-list";
+		LoggedInUserObject.AccountId = LoggedInUserObject.CurrentAccountId;
+		
+		setupRemote();
+	}
+
+	 var AudienceListCounterUrl = '@Url.Action("GetAudienceListCounter", "Campaign")';
+
+	function setupRemote() {
+		if (remote) {
+			remote.destroy();
+			remote = undefined;
+		}
+
+		if (SiteProviderURL.includes("?")) {
+			SiteProviderURL = SiteProviderURL + "&lang=" + LoggedInUserObject.CurrentLanguage
+		}
+		else {
+
+			SiteProviderURL = SiteProviderURL + "?lang=" + LoggedInUserObject.CurrentLanguage
+		}
+		remote = new easyXDM.Rpc(/** The channel configuration */{
+
+			local: "~/scripts/EasyXDM/name.html",
+			swf: BaseSiteProviderURL + "/scripts/EasyXDM/easyxdm.swf",
+			remoteHelper: BaseSiteProviderURL + "/scripts/EasyXDM/name.html",
+
+			remote: SiteProviderURL ,
+
+			/**
+			 * Register the DOMElement that the generated IFrame should be inserted into
+			 */
+			container: "embedded",
+			props: {
+				style: {
+					border: "solid 3px #45638f",
+					height: "700px"
+				}
+			},
+			onReady: function () {
+				/**
+				 * Call a method on the other side
+				 */
+				//remote.setLanguage('ar');
+
+				var isAuth = false;
+
+				//remote.IsAuthenticated(function (result) {
+				//	isAuth = result;
+
+				//	if (isAuth) {
+				//		$("#DataProviderMenuRegister" + SiteProvidrId).show();
+				//		$("#DataProviderMenuLogin" + SiteProvidrId).show();
+				//		$("#DataProviderMenuForgetpassword" + SiteProvidrId).show();
+				//	}
+
+				//});
+		
+				//get autnication 
+
+
+
+			}
+		}, /** The interface configuration */ {
+				remote: {
+					IsAuthenticated: {},
+					fillAllAdvertisers: {},
+					SendUserInformation: {},
+					NotifyforError: {},
+					NotifyforSucess: {},
+                handelLogOut: {},
+                         setImpersonatedAccount: {},
+					fillAudienceListCounter: {},
+				},
+				local: {
+					alertMessage: function (msg) {
+						alert(msg);
+					},
+					NotifyAuthenticate: function () {
+					
+
+						$("#DataProviderMenuRegister" + SiteProvidrId).hide();
+						$("#DataProviderMenuLogin" + SiteProvidrId).hide();
+						$("#DataProviderMenuForgetpassword" + SiteProvidrId).hide();
+						$("#DataProviderMenuChangePassword" + SiteProvidrId).show();
+
+						$("#DataProviderMenuAudiance" + SiteProvidrId).show();
+						
+						$("#DataProviderMenuLogOut" + SiteProvidrId).show();
+                    },
+                    GetImpersonatedAccount: function () {
+                                remote.setImpersonatedAccount(LoggedInUserObject.ImpersonatedAccountId);
+                    },
+					GetAudienceListCounter: function (filter) {
+						jQuery.ajax({
+							url: AudienceListCounterUrl + "?dpName=" + filter,
+							dataType: "json",
+							contentType: 'application/json; charset=utf-8',
+							type: "GET",
+							data: {
+
+							}
+							, success: function (data) {
+
+								remote.fillAudienceListCounter(data.latestCounter);
+
+							}
+						}
+
+
+
+						);
+					},
+					getAllAdvertisers: function (filter) {
+						jQuery.ajax({
+							url: AdvertiserUrl + "?userId=" + LoggedInUserObject.CurrentUserId,
+							dataType: "json",
+							contentType: 'application/json; charset=utf-8',
+							type: "GET",
+							data: {
+								q: filter
+							}
+							, success: function (data) {
+							
+								var arr = [];
+								if (data && data.length > 0) {
+
+									for (var k = 0; k < data.length; k++) {
+										arr.push({ Id: data[k].Id, Name: data[k].Name });
+									}
+
+								}
+								remote.fillAllAdvertisers(arr);
+
+							}
+						}
+
+
+
+						);
+					},
+					SaveExternalAudienceSegments: function () { },
+                    	SaveExternalAudienceSegmentDels: function () { },
+					RefreshLocation: function (source , title) {
+
+	   
+						setTimeout(function () {
+							SiteProviderURL = BaseSiteProviderURL + source;
+							$("#BreadCrum3").text(title);
+							setupRemote();
+						}, 500);
+						return true;
+					}
+					, ReloadLocation: function () {
+						window.location.reload(true);
+					}
+					, getUserInformation: function(){
+						remote.SendUserInformation(LoggedInUserObject);
+
+					}
+				}
+			});
+		return true;
+	}
+	//function add(a, b) {
+	//	remote.addNumbers(a, b, function (result) {
+	//		alert(a + " + " + b + " = " + result);
+	//	});
+	//}
+
+	//function multiply(a, b) {
+	//	remote.multiplyNumbers(a, b, function (result) {
+	//		alert(a + " x " + b + " = " + result);
+	//	});
+	//}
+
+	function HandleDataProviderMenuLogOut(dataPId) {
+		if ((dataPId == (SiteProvidrId+''))) {
+			remote.handelLogOut();
+			setTimeout(function () {
+				$("#DataProviderMenuRegister" + SiteProvidrId).show();
+				$("#DataProviderMenuLogin" + SiteProvidrId).show();
+				$("#DataProviderMenuForgetpassword" + SiteProvidrId).show();
+				$("#DataProviderMenuChangePassword" + SiteProvidrId).hide();
+				$("#DataProviderMenuAudiance" + SiteProvidrId).hide();
+				
+				$("#DataProviderMenuLogOut" + SiteProvidrId).hide();
+			}, 500);
+		}
+		else {
+			return true;
+		}
+
+		return false;
+	}
+</script>
+<style type="text/css">
+
+
+	#embedded iframe {
+		width: 100%;
+		height: 100%;
+		margin-top: 5px;
+		padding-top: 4px;
+		padding-left: 4px;
+		padding-right: 4px;
+
+	}
+</style>
+@using (Html.BeginForm())
+{
+
+
+	<div class="data-row section-container">
+	
+		<div class="section-form-container">
+			<div class="info-container data-row">
+				<div id="embedded"></div>
+			</div>
+		</div>
+	</div>
+}

@@ -1,0 +1,329 @@
+﻿
+@model ArabyAds.AdFalcon.Services.Interfaces.DTOs.Account.AccountDSPRequestDto
+@{
+
+    Layout = "~/Views/Shared/MasterLayouts/MainNoFooter.cshtml";
+}
+@{
+    ViewBag.Title = Html.GetResource("Register", "AccountDSPRequest");
+
+    SelectListItem optionalItem = new SelectListItem();
+    optionalItem.Value = "";
+    optionalItem.Text = Html.GetResource("Select");
+
+
+
+    ArabyAds.AdFalcon.Services.Interfaces.Services.ICountryService countryService = ArabyAds.Framework.IoC.Instance.Resolve<ArabyAds.AdFalcon.Services.Interfaces.Services.ICountryService>();
+    List<SelectListItem> countriesList = new List<SelectListItem>();
+    countriesList.Add(optionalItem);
+
+    int countryId = 0;
+
+    if (Model != null)
+    {
+
+        countryId = Model.Country;
+    }
+
+
+
+    List<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core.CountryDto> countriesDtos = countryService.GetAll().ToList().OrderBy(p => p.Name.Value)
+.ToList();
+    foreach (var item in countriesDtos)
+    {
+        var selectItem = new SelectListItem();
+        selectItem.Value = item.ID.ToString();
+        selectItem.Text = item.Name.ToString();
+
+        if (countryId == item.ID)
+        {
+            selectItem.Selected = true;
+        }
+
+        countriesList.Add(selectItem);
+    }
+
+
+
+}
+<script language="javascript">
+
+    var ThankYouDSP = "@Html.GetResource("ThankYouDSP", "Titles")";
+
+
+    $(document).ready(function () {
+        if ('@Model.Result' == "True") {
+           // showSuccessfullyMessage(ThankYouDSP, true);
+        }
+
+    });
+
+</script>
+
+@{
+    if (!Model.Result && @Context.Request.IsHttps)
+    {
+
+        using (Html.BeginForm("AccountDSPRequest", "user", FormMethod.Post))
+
+        {
+            @*<h2>
+                    @Html.GetResource("AccountInformation", "AccountDSPRequest")
+                </h2>*@
+            <div class="section-form-container">
+                <input name="Id" id="Id" type="hidden" value="0" />
+
+                <input name="Invitationcode" id="Invitationcode" type="hidden" value="@ViewData["Invitationcode"]" />
+                <div class="section-form-inner-container">
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("email", "Global")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.AdFalconEditorFor(p => p.EmailAddress)
+                            @Html.AdFalconValidationMessageFor(p => p.EmailAddress)
+                        </div>
+                    </div>
+
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("FirstName", "Register")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.AdFalconEditorFor(p => p.FirstName)
+                            @Html.AdFalconValidationMessageFor(p => p.FirstName)
+                        </div>
+                    </div>
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("LastName", "Register")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.AdFalconEditorFor(p => p.LastName)
+                            @Html.AdFalconValidationMessageFor(p => p.LastName)
+                        </div>
+                    </div>
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title">@Html.GetResource("Phone", "Register")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.AdFalconTextBoxFor(p => p.Phone, new { maskType = "phone" })
+                            @Html.AdFalconValidationMessageFor(p => p.Phone)
+                        </div>
+                    </div>
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title  required-field">@Html.GetResource("Company", "Global")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.AdFalconEditorFor(p => p.Company)
+                            @Html.AdFalconValidationMessageFor(p => p.Company)
+                        </div>
+                    </div>
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title">@Html.GetResource("Address", "Party")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.AdFalconEditorFor(p => p.Address1)
+                            @Html.AdFalconValidationMessageFor(p => p.Address1)
+                        </div>
+                    </div>
+
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("Country", "Global")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.DropDownList("Country", countriesList.ToList())
+                            @Html.AdFalconValidationMessageFor(p => p.Country)
+                        </div>
+                    </div>
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title ">@Html.GetResource("Note", "Campaign") </span>
+                        </div>
+                        <div class="field-container">
+                            @Html.TextAreaFor(p => p.Note, new { @class = "text-box", rows = 5, cols = 5 })
+                            @Html.AdFalconValidationMessageFor(p => p.Note)
+                        </div>
+                    </div>
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("CompanyType", "Global")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.DropDownList("CompanyType", (Model.CompanyTypes as List<SelectListItem>).ToList())
+                            @Html.AdFalconValidationMessageFor(p => p.CompanyType)
+                        </div>
+                    </div>
+                    <div class="data-row button-container btn-register-margin-container">
+                        <input value="@Html.GetResource("submit", "Global")" id="saveBtn" type="submit" class="primary-btn" />
+                    </div>
+                </div>
+            </div>
+            @*<div class="section-footer"></div>*@
+
+
+        }
+
+    }
+
+    else if (!Model.Result )
+        {
+
+            using (Html.BeginForm("AccountDSPRequest", "misc", FormMethod.Post))
+
+            {
+                @*<h2>
+                        @Html.GetResource("AccountInformation", "AccountDSPRequest")
+                    </h2>*@
+                <div class="section-form-container">
+                    <input name="Id" id="Id" type="hidden" value="0" />
+
+                    <input name="Invitationcode" id="Invitationcode" type="hidden" value="@ViewData["Invitationcode"]" />
+                    <div class="section-form-inner-container">
+                        <div class="data-row data-container">
+                            <div class="label-container">
+                                <span class="field-title required-field">@Html.GetResource("email", "Global")</span>
+                            </div>
+                            <div class="field-container">
+                                @Html.AdFalconEditorFor(p => p.EmailAddress)
+                                @Html.AdFalconValidationMessageFor(p => p.EmailAddress)
+                            </div>
+                        </div>
+
+                        <div class="data-row data-container">
+                            <div class="label-container">
+                                <span class="field-title required-field">@Html.GetResource("FirstName", "Register")</span>
+                            </div>
+                            <div class="field-container">
+                                @Html.AdFalconEditorFor(p => p.FirstName)
+                                @Html.AdFalconValidationMessageFor(p => p.FirstName)
+                            </div>
+                        </div>
+                        <div class="data-row data-container">
+                            <div class="label-container">
+                                <span class="field-title required-field">@Html.GetResource("LastName", "Register")</span>
+                            </div>
+                            <div class="field-container">
+                                @Html.AdFalconEditorFor(p => p.LastName)
+                                @Html.AdFalconValidationMessageFor(p => p.LastName)
+                            </div>
+                        </div>
+                        <div class="data-row data-container">
+                            <div class="label-container">
+                                <span class="field-title">@Html.GetResource("Phone", "Register")</span>
+                            </div>
+                            <div class="field-container">
+                                @Html.AdFalconTextBoxFor(p => p.Phone, new { maskType = "phone" })
+                                @Html.AdFalconValidationMessageFor(p => p.Phone)
+                            </div>
+                        </div>
+                        <div class="data-row data-container">
+                            <div class="label-container">
+                                <span class="field-title  required-field">@Html.GetResource("Company", "Global")</span>
+                            </div>
+                            <div class="field-container">
+                                @Html.AdFalconEditorFor(p => p.Company)
+                                @Html.AdFalconValidationMessageFor(p => p.Company)
+                            </div>
+                        </div>
+                        <div class="data-row data-container">
+                            <div class="label-container">
+                                <span class="field-title">@Html.GetResource("Address", "Party")</span>
+                            </div>
+                            <div class="field-container">
+                                @Html.AdFalconEditorFor(p => p.Address1)
+                                @Html.AdFalconValidationMessageFor(p => p.Address1)
+                            </div>
+                        </div>
+
+                        <div class="data-row data-container">
+                            <div class="label-container">
+                                <span class="field-title required-field">@Html.GetResource("Country", "Global")</span>
+                            </div>
+                            <div class="field-container">
+                                @Html.DropDownList("Country", countriesList.ToList())
+                                @Html.AdFalconValidationMessageFor(p => p.Country)
+                            </div>
+                        </div>
+                        <div class="data-row data-container">
+                            <div class="label-container">
+                                <span class="field-title ">@Html.GetResource("Note", "Campaign") </span>
+                            </div>
+                            <div class="field-container">
+                                @Html.TextAreaFor(p => p.Note, new { @class = "text-box", rows = 5, cols = 5 })
+                                @Html.AdFalconValidationMessageFor(p => p.Note)
+                            </div>
+                        </div>
+                        <div class="data-row data-container">
+                            <div class="label-container">
+                                <span class="field-title required-field">@Html.GetResource("CompanyType", "Global")</span>
+                            </div>
+                            <div class="field-container">
+                                @Html.DropDownList("CompanyType", (Model.CompanyTypes as List<SelectListItem>).ToList())
+                                @Html.AdFalconValidationMessageFor(p => p.CompanyType)
+                            </div>
+                        </div>
+                        <div class="data-row button-container btn-register-margin-container">
+                            <input value="@Html.GetResource("submit", "Global")" id="saveBtn" type="submit" class="primary-btn" />
+                        </div>
+                    </div>
+                </div>
+                @*<div class="section-footer"></div>*@
+
+
+            }
+
+        }
+
+    
+    else
+    {
+
+        @Html.HiddenFor(M => M.Result)
+        <div class="section-form-container">
+
+            <div class="section-form-inner-container">
+                <div class="data-row data-container">
+
+
+
+                </div>
+                <div class="data-row data-container">
+                </div>
+
+                <div class="data-row data-container">
+
+                </div>
+                <div class="data-row data-container">
+                    <div class="field-container">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </div>
+                    <div class="label-container">
+                        @*<h2>
+
+                            </h2>*@
+                        <label class="field-title ">
+                            @Html.GetResource("ThankYouDSP", "Titles")
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    }
+
+}
+

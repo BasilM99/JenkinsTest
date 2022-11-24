@@ -1,0 +1,120 @@
+﻿<script language="javascript" type="text/javascript">
+    function generateCostElementGrid() {
+        var grid = $("#SearchCostElement").data("kendoGrid");
+        if (typeof (grid) != "undefined") {
+            grid.dataSource.read();
+            grid.refresh();
+        }
+    };
+    @*function costElementGridDataBinding(args) {
+        args.data = $.extend(args.data,
+            {
+
+                Name: $('#NameCostElementSearch').val(),
+                LookupId: '@Html.ViewContext.RouteData.Values["LookupId"]'
+
+            });
+    };*@
+    function costElementGridDataBinding(args) {
+      
+    }
+    function costElementGridData() {
+        var j =
+            {
+
+                Name: $('#NameCostElementSearch').val(),
+                LookupId: '@Html.ViewContext.RouteData.Values["LookupId"]'
+
+            };
+    };
+
+    function costElementGridDataBound(e) {
+        var grid = $("#SearchCostElement").data("kendoGrid");
+        //if not first page and the no data then try load first page
+        if ((grid._data.length == 0) && (grid.dataSource.page() > 1)) {
+            e.preventDefault();
+            if (grid.dataSource.page() != 1) {
+                grid.dataSource.page(1);
+            }
+        }
+    };
+    var costElementID, costElementName;
+    function onRowCostElementSelected(e) {
+        var rows = e.sender.select();
+        //  var dataItem = null;
+        //  var grid = $("#MasterListItemGrid").data("kendoGrid");
+        dataItem = e.sender.dataItem(rows);
+
+        costElementID = dataItem.ID;
+        costElementName = dataItem.Name.Value;
+        costElementScope = dataItem.Scope;
+        selectCostElement();
+    }
+    function selectCostElement() {
+        AddCostElement(costElementID, costElementName, costElementScope);
+    }
+
+
+</script>
+
+
+<div>
+    <div class="data-row go-center">
+        <div class="blue-filter-container">
+            <table class="special-content">
+                <tr>
+                    <td>
+                        <span class="go-bold">@Html.GetResource("Name", "Global")</span>
+                    </td>
+                    <td style="width: 110px;">
+                        <input type="text" id="NameCostElementSearch" name="NameCostElementSearch" class="text-box " />
+                    </td>
+
+                    <td>
+                        <input type="button" onclick="generateCostElementGrid()" value='@Html.GetResource("Filter")' class="btn filter-button " />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="tail">
+        </div>
+    </div>
+
+
+    @*@await Html.PartialAsync(Model.FilterView)*@
+    @model ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core.CostElementResultDto
+<div class="grid-container">
+    @(Html.Kendo().Grid(Model.Items)
+            .Name("SearchCostElement")
+            .Columns(columns =>
+            {
+                columns.Bound(o => o.ID);
+                columns.Bound(o => o.Name.Value).ClientTemplate("<div class='grid-title-container floating-left'><span>#= Name.Value#</span> </div>").Title(Html.GetResource("Name"));
+                columns.Bound(o => o.Scope).Hidden().HtmlAttributes(new { @id = "Scope" });
+
+            }).EnableCustomBinding(true)
+            .DataSource(dataBinding =>
+            {
+                //  dataBinding.Server().Select("Index", "Campaign", new { ajax = true });
+                // dataBinding.Ajax().Select("_Index", "Campaign");
+                dataBinding.Ajax().Read(read => read.Action("CostElemetntPage", "Lookup").Data("costElementGridData")).Total((int)ViewData["total"]).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+            })
+            .Events(clientEvents => clientEvents.DataBinding("costElementGridDataBinding").DataBound("costElementGridDataBound").Change("onRowCostElementSelected"))
+            .Scrollable(scrolling => scrolling.Enabled(false))
+            .Selectable().Pageable(paging => paging
+
+
+            .Input(false)
+            .Numeric(true)
+            .Info(true)
+            .PreviousNext(true)
+            .Refresh(true).Responsive(false)
+
+            .Position(GridPagerPosition.Bottom))
+            .Filterable(filtering => filtering.Enabled(false))
+            .Groupable(grouping => grouping.Enabled(false)))
+
+</div>
+
+</div>

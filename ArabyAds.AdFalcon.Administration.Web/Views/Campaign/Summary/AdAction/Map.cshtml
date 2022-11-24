@@ -1,0 +1,12 @@
+﻿@model  ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeSummaryDto
+<div class="data-row info-container last-container">
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("Keywords", "Campaign")</span>
+        </div>
+        <div class="field-container">
+            <span class="side-text">@Model.ActionValue.Value</span>
+        </div>
+    </div>
+</div>
+ @Html.Partial("Summary/AdAction/AdActionValueTracker/Tracker")

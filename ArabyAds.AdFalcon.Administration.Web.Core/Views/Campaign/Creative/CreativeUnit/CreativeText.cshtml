@@ -1,0 +1,44 @@
+﻿@using ArabyAds.AdFalcon.Web.Controllers.Model.Core
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.TileImageViewModel
+<script>
+
+    jQuery(document).ready(
+        function () {
+            var tileImgeList = jQuery('#tileImage');
+            tileImgeList.change(TileImageChanged);
+            //tileImgeList.val('@Model.SelectedValue');
+            @if (Model.SelectedValue != "-1")
+            {
+            <text>TileImageChanged();</text>
+            }
+        }
+    );
+</script>
+<div class="section-form-inner-container info-container">
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field campaign-upload">@Html.GetResource("TileImage")</span>
+        </div>
+        <div class="field-container">
+            <div class="floating-left campaign-upload">
+            </div>
+            <div class="floating-left ">@Html.DropDownList("tileImage", Model.TileImageList)
+            </div>
+        </div>
+    </div>
+    @{
+        foreach (var tileImage in Model.TileImages)
+        {
+            tileImage.IsAllowedToSaveImpressionTracker = Model.IsAllowedToSaveImpressionTracker;
+            ViewDataDictionary viewDataDoc = new ViewDataDictionary(ViewData);
+            if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.IsAdOpsAdmin || (tileImage.DocumentId.HasValue && !string.IsNullOrEmpty(tileImage.ImpressionTrackerRedirect)))
+            {
+                if ( !viewDataDoc.Keys.Contains("ShowImpressionTracker"))
+                {
+                    viewDataDoc.Add("ShowImpressionTracker", true);
+                }
+            }
+            @await Html.PartialAsync("TileImage",UploadViewModel.ParseTileImage(tileImage),viewDataDoc)
+        }
+    }
+</div>

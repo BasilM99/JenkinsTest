@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <facilities>
+    <facility id="wcf"
+							type="Castle.Facilities.WcfIntegration.WcfFacility,
+										Castle.Facilities.WcfIntegration" />
+
+    <facility id="RegistrationFacility"
+							type="Noqoush.Framework.WCF.IOC.RegistrationFacility,
+										Noqoush.Framework.WCF">
+      <assemblies>
+        <assembqly id="IntegrationServiceImplementation" value="Noqoush.AdFalcon.AdServer.Integration.Services"/>
+        <assembly id="IntegrationServiceInterfaces" value="Noqoush.AdFalcon.AdServer.Integration"/>
+        
+        <assembly id="ServiceImplementation" value="Noqoush.AdFalcon.Services"/>
+        <assembly id="ServiceInterfaces" value="Noqoush.AdFalcon.Services.Interfaces"/>
+        <assembly id="RepositorysImplementation" value="Noqoush.AdFalcon.Persistence"/>
+   
+
+        <assembly id="RepositorysReportsImplementation" value="Noqoush.AdFalcon.Persistence.Reports"/>
+        <assembly id="RepositorysGPReportsImplementation" value="Noqoush.AdFalcon.Persistence.ReportsGP"/>
+        <assembly id="RepositorysInterfaces" value="Noqoush.AdFalcon.Domain"/>
+        <assembly id="DomainServices" value="Noqoush.Framework.DomainServices"/>
+      </assemblies>
+      <Mapping>
+        <Map id="Services" Suffix="Service" LifeStyle="Singleton">
+          <interceptors >
+            <interceptor id="PersistenceManager" value="Noqoush.Framework.Persistence.PersistenceManager,Noqoush.Framework"/>
+            <interceptor id="ServiceInterceptor" value="Noqoush.Framework.WCF.ServiceOperationContextPolicy, Noqoush.Framework.WCF"/>
+            <interceptor id="BehaviorInvoker" value="Noqoush.Framework.Behaviors.BehaviorInvoker,Noqoush.Framework"/>
+          </interceptors>
+        </Map>
+        <Map id="Repository" Suffix="Repository" LifeStyle="Singleton"/>
+      </Mapping>
+    </facility>
+  </facilities>
+  <components>
+    <component id="ObjectMetaDataManager"
+			 service="Noqoush.Framework.DomainServices.AuditTrial.ObjectMetaDataManagement.IObjectMetaDataManager,Noqoush.Framework.DomainServices"
+		 type="Noqoush.Framework.DomainServices.AuditTrial.ObjectMetaDataManagement.ObjectMetaDataManager,Noqoush.Framework.DomainServices">
+    </component>
+    
+
+    <component id="ConfigurationManager"
+  service="Noqoush.Framework.ConfigurationSetting.IConfigurationManager,Noqoush.Framework"
+  type="Noqoush.Framework.ConfigurationSetting.ConfigurationManager,Noqoush.Framework"></component>
+  <component id="AccountStatistic"
+                service="Noqoush.AdFalcon.Domain.Services.IAccountStatistic,Noqoush.AdFalcon.Domain"
+                type="Noqoush.AdFalcon.Domain.Services.AccountStatistic,Noqoush.AdFalcon.Domain"
+                lifestyle="Singleton">
+    </component>
+    <component id="ConfigurationSettings"
+     type="Noqoush.Framework.ConfigurationSetting.IConfigurationSettingService,Noqoush.Framework"
+     wcfEndpointConfiguration="ConfigurationSettingService">
+    </component>
+    <component id="UserInfoStorage"
+  service="Noqoush.Framework.Storage.IStorage,Noqoush.Framework"
+type="Noqoush.Framework.WCF.Storage.WcfStorage,Noqoush.Framework.WCF"  lifestyle="Singleton">
+    </component>
+    <component id="UserInfoProvider"
+   service="Noqoush.Framework.UserInfo.IUserInfoProvider,Noqoush.Framework"
+ type="Noqoush.AdFalcon.Common.WCF.UserInfo.AdFalconUserInfoProvider,Noqoush.AdFalcon.Common.WCF"  lifestyle="Singleton">
+    </component>
+    <component id="ClientInterceptor" service="Noqoush.Framework.WCF.ClientAdapter, Noqoush.Framework.WCF"
+          type="Noqoush.Framework.WCF.ClientAdapter, Noqoush.Framework.WCF"
+          lifestyle="Singleton" />
+    <component id="ResourceManager"
+			 service="Noqoush.Framework.Resources.IResourceManager,Noqoush.Framework"
+		 type="Noqoush.Framework.Resources.ResourceManager,Noqoush.Framework">
+    </component>
+    <component id="SecurityContent"
+     service="Noqoush.Framework.Security.ISecurityContext,Noqoush.Framework"
+   type="Noqoush.Framework.WCF.Context.WcfSecurityContext,Noqoush.Framework.WCF"  lifestyle="Singleton">
+    </component>
+    <component id="RepositoryImpl"
+         service="Noqoush.Framework.Persistence.RepositoryImplBase`2,Noqoush.Framework"
+         type="Noqoush.Framework.Persistence.NHibernate.NHRepository`2,Noqoush.Framework.Persistence"
+         lifestyle="Singleton">
+    </component>
+    <component id="FrameworkBehaviorInvoker" service="Noqoush.Framework.Behaviors.BehaviorInvoker, Noqoush.Framework"
+     type="Noqoush.Framework.Behaviors.BehaviorInvoker, Noqoush.Framework"
+     lifestyle="Singleton" />
+    <component id="PersistenceManager" service="Noqoush.Framework.Persistence.PersistenceManager,Noqoush.Framework"
+						 type="Noqoush.Framework.Persistence.PersistenceManager,Noqoush.Framework"
+						 lifestyle="Singleton" />
+    <component id="STSService"
+          type="Noqoush.Framework.Security.ISecurityService,Noqoush.Framework"
+          wcfEndpointConfiguration="STSClient">
+    </component>
+    <component id="ServiceInterceptor" service="Noqoush.Framework.WCF.ServiceOperationContextPolicy, Noqoush.Framework.WCF"
+         type="Noqoush.Framework.WCF.ServiceOperationContextPolicy, Noqoush.Framework.WCF"
+         lifestyle="Singleton" />
+    <component id="ResourceService"
+									type="Noqoush.Framework.Resources.IResourceService,Noqoush.Framework"
+									wcfEndpointConfiguration="ResourceService">
+    </component>
+    <component id="CallContext"
+            service="Noqoush.Framework.ICallContext,Noqoush.Framework"
+            type="Noqoush.Framework.WCF.WCFCallContext,Noqoush.Framework.WCF"
+            lifestyle="Singleton">
+    </component>
+    <component id="BidManager"
+            service="Noqoush.AdFalcon.Domain.Services.IBidManager,Noqoush.AdFalcon.Domain"
+            type="Noqoush.AdFalcon.Domain.Services.BidManager,Noqoush.AdFalcon.Domain"
+            lifestyle="Singleton">
+    </component>
+    
+
+    <component id="EventBroker"
+            service="Noqoush.Framework.EventBroker.IEventBroker,Noqoush.Framework"
+            type="Noqoush.Framework.EventBroker.EventBroker,Noqoush.Framework"
+            lifestyle="Singleton">
+    </component>
+    <component id="EventBrokerProvider"
+               service="Noqoush.Framework.EventBroker.Provider.IEventBrokerProvider,Noqoush.Framework"
+               type="Noqoush.Framework.EventBroker.Provider.DBEventBrokerProvider,Noqoush.Framework"
+               lifestyle="Singleton">
+    </component>
+    <component id="MailSender"
+            service="Noqoush.Framework.Utilities.EmailsSender.IMailSender,Noqoush.Framework"
+           		type="Noqoush.Framework.Utilities.EmailsSender.MailSender,Noqoush.Framework"  lifestyle="Singleton" >
+    </component>
+    <!--<component id="EventBrokerHandler"
+        service="Noqoush.Framework.DomainServices.EventBroker.IEventBrokerHandler,Noqoush.Framework.DomainServices"
+          type="Noqoush.AdFalcon.Services.Utility.EventBrokerHandler,Noqoush.AdFalcon.Services"  lifestyle="transient" >
+    </component>-->
+    <component id="AppFabric"
+         service="Noqoush.Framework.Caching.ICacheProviderFactory,Noqoush.Framework"
+         type="Noqoush.Framework.Caching.MemoryCaching.MemoryCacheProviderFactory,Noqoush.Framework"
+         lifestyle="Singleton">
+
+    </component>
+   <component id="Redis"
+    service="Noqoush.Framework.Caching.ICacheProviderFactory,Noqoush.Framework"
+    type="Noqoush.Framework.Caching.RedisCache.RedisCacheProviderFactory,Noqoush.Framework"
+    lifestyle="Singleton">
+
+    </component>
+    <component id="AdServerCachingService"
+            type="Noqoush.AdFalcon.Server.CommunicationService.Services.ICommunicationService,Noqoush.AdFalcon.Server.CommunicationService.Services"
+            wcfEndpointConfiguration="AdServerCachingService">
+    </component>
+    <component id="FTPProvider"
+         service="Noqoush.Framework.Ftp.IFtpProvider,Noqoush.Framework"
+         type="Noqoush.Framework.Ftp.FtpProvider,Noqoush.Framework"
+         lifestyle="Singleton">
+
+    </component>
+    <component id="SFTPProvider"
+        service="Noqoush.Framework.Ftp.IFtpProvider,Noqoush.Framework"
+        type="Noqoush.Framework.Ftp.SFtpProvider,Noqoush.Framework"
+        lifestyle="Singleton">
+
+    </component>
+  </components>
+</configuration>

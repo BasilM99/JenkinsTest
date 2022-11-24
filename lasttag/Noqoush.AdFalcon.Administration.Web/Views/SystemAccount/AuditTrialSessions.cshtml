@@ -1,0 +1,194 @@
+﻿<script language="javascript" type="text/javascript">
+
+    function generateLookupGrid() {
+        var grid = $("#LookUpGrid").data("tGrid");
+        grid.rebind();
+    }
+    $(document).ready(function () {
+
+        jQuery('input[id="#LookUpGrid-ToDate, #LookUpGrid-FromDate"]')
+           .daterangepicker({ dateFormat: '@Noqoush.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat' });
+
+
+    });
+
+    function generateAuditTrialSessionsGrid() {
+        
+        var grid = $("#LookUpGrid").data("tGrid");
+        RefrashGrid('LookUpGrid');
+        //if ((grid.data.length == 0) ) {
+        //    e.preventDefault();
+        //    grid.pageTo(1);
+        //}
+    };
+    function PartyGridDataBinding(args) {
+        @*args.data = $.extend(args.data,
+          {
+
+              objectRootId: '@Html.ViewContext.RouteData.Values["RootId"]',
+              objectRootTypeId: '@Html.ViewContext.RouteData.Values["ObjectRootTypeId"]',
+              userId: '@Html.ViewContext.RouteData.Values["UserId"]'
+          });
+        if (typeof (getCustomFilter) != "undefined") {
+            args.data = $.extend(args.data, getCustomFilter());
+        }*@
+    };
+    function PartyGridDataBound(e) {
+        var grid = $("#LookUpGrid").data("tGrid");
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(1);
+        }
+    };
+
+    function onRowDataBoundChild(e) {
+        var grid = $(this).data('tGrid');
+        // Expand the first row only
+        if (grid.$rows().index(e.row) == 0) {
+            grid.expandRow(e.row);
+        }
+    }
+
+</script>
+@model  Noqoush.AdFalcon.Web.Controllers.Model.User.ListViewModel
+
+@*@helper AdGroupSummaryDetailViewTemplate(WebViewPage page, Noqoush.AdFalcon.Services.Interfaces.DTOs.Account.TrialDto o)
+    {
+        @(Html.Telerik().Grid(o.Childs).Name("AdSummary_" + o.ID + "_")
+                                           .Columns(columns =>
+                                           {
+                                               columns.Bound(x => x.Name).HtmlAttributes(new { @class = "trimed-info2" }).Template(r => Html.ActionLink(r.Name, "AdDetails", "Campaign", new { id = r.Campaign.ID, adGroupId = r.Group.ID, adId = r.ID }, new { title = r.Name })).Title(Html.GetResource("Name", "Ad")).Width(200);
+                                               columns.Bound(x => x.AdText).Title(Html.GetResource("AdText", "Campaign")).Width(200).Template(@<text>
+                <span title="@item.AdText" class="trimed-span">
+                    @item.AdText
+                </span>
+
+                                            </text>);
+                                               columns.Bound(x => x.Status).Title(Html.GetResource("Status"));
+                                               columns.Bound(x => x.Bid).Title(Html.GetResource("Bid", "Campaign"));
+                                           })
+
+
+
+                                                                                                            .Footer(false))
+    }*@
+<div>
+
+    @using (Html.BeginForm())
+    {
+        <div class="data-row go-center">
+            <div class="blue-filter-container" style="height: 90px;">
+                <table class="special-content">
+                    <tr>
+                        <td>
+                            <span class="go-bold">@Html.GetResource("From", "Global")</span>
+                        </td>
+                        <td style="width: 110px;">
+                            <input type="text" readonly="readonly" value="" data-date="true" name="LookUpGrid-FromDate" id="LookUpGrid-FromDate"
+                                   class="text-box range-date-cntl" />
+                        </td>
+                        <td>
+                            <span class="go-bold">@Html.GetResource("To", "Global")</span>
+                        </td>
+                        <td style="width: 110px;">
+                            <input type="text" readonly="readonly" value="" data-date="true" name="LookUpGrid-ToDate" id="LookUpGrid-ToDate"
+                                   class="text-box range-date-cntl left-range-cntrl" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="go-center" colspan="5">
+                            <input type="button" onclick="generateAudittrialGrid('LookUpGrid')" value='@Html.GetResource("Filter")' class="btn filter-button " />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="tail">
+            </div>
+        </div>
+    }
+
+    <div class="grid-container">
+        @(Html.Telerik().Grid(Model.Items).DataKeys(keys => keys.Add(k =>
+        k.SessionId))
+                            .Name("LookUpGrid")
+                    .Columns(columns =>
+                    {
+                        columns.Bound(o => o.SessionId);
+                        columns.Bound(o => o.ActionTime);
+                    }).DetailView(detailView => detailView.Template(
+                        @<text>
+                            @(Html.Telerik().Grid(item.Childs).Name("Sessions_" + item.SessionId)
+                .Columns(columns =>
+                {
+                    columns.Bound(o => o.Details).Hidden();
+                    columns.Bound(o => o.ObjectId);
+                    columns.Bound(o => o.Type);
+
+                    columns.Bound(o => o.ObjectActionString);
+                    columns.Template(o => "<div><a class='t-button t-grid-edit t-button-icon t-button-icon t-button-bare' type='button' onclick='showXML(this)'><span class='t-icon t-edit'></span></button></div>").Width(40).HtmlAttributes(new { @class = "go-center" });
+                }
+                                    )
+
+
+                                                                                                                                                                                                                                                                  .Footer(false)
+                            )
+                        </text>
+).ClientTemplate(
+                // Define a grid bound to the Order object
+                Html.Telerik().Grid<Noqoush.AdFalcon.Services.Interfaces.DTOs.Account.TrialDto>()
+                     //Ensure the Name of each grid is unique
+                     .Name("Sessions_<#= SessionId #>")
+                     .DataBinding(dataBinding => dataBinding.Ajax()
+
+                     .Select("_AuditTrialSession", "SystemAccount", new { Id = "<#= SessionId #>" })).EnableCustomBinding(true)
+                     .Columns(columns =>
+                     {
+                         columns.Bound(o => o.Details).Hidden();
+                         columns.Bound(o => o.ObjectId);
+                         columns.Bound(o => o.Type);
+
+                         columns.Bound(o => o.ObjectActionString);
+                         columns.Template(o => "<div><a class='t-button t-grid-edit t-button-icon t-button-icon t-button-bare' type='button' onclick='showXML(this)'><span class='t-icon t-edit'></span></button></div>").Width(40).HtmlAttributes(new { @class = "go-center" })
+
+                                .ClientTemplate("<div><a class='t-button t-grid-edit t-button-icon t-button-icon t-button-bare' type='button' onclick='showXML(this)'><span class='t-icon t-edit'></span></button></div>").Width(40).HtmlAttributes(new { @class = "go-center" });
+
+                     }).
+                     Pageable(paging =>
+                                                                   paging.Enabled(false))
+                     // The client detail view template requires a string so we are using the ToHtmlString method
+                     .ToHtmlString()
+            ))
+            // Handle the OnRowDataBound event in order to expand certain rows
+            .ClientEvents(events => events.OnRowDataBound("onRowDataBoundChild")
+
+
+
+            ).RowAction(row =>
+            {
+                if (row.Index == 0)
+                {
+                    row.DetailRow.Expanded = true;
+                }
+                else
+                {
+                    var requestKeys = Request.QueryString.Keys.Cast<string>();
+                    var expanded =
+                        requestKeys.Any(key => key.StartsWith("Sessions_" + row.DataItem.SessionId));
+                    row.DetailRow.Expanded = expanded;
+                }
+            })
+
+
+          .DataBinding(dataBinding => dataBinding.Ajax().Select("_AuditTrialSessions", "SystemAccount", new { objectRootId = Model.RootId, objectRootTypeId = Model.ObjectRootTypeId, userId = Model.UserId })).EnableCustomBinding(true)
+                        .ClientEvents(clientEvents => clientEvents.OnRowDataBound("onRowDataBound").OnDataBinding("PartyGridDataBinding").OnDataBound("PartyGridDataBound").OnRowDataBound("onRowDataBound"))
+
+                        .Scrollable(scrolling => scrolling.Enabled(false))
+                        .Selectable()
+                                .Pageable(paging => paging.PageSize(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total(int.Parse(ViewData["Total"].ToString())).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+                        .Filterable(filtering => filtering.Enabled(false))
+                        .Groupable(grouping => grouping.Enabled(false)).Footer(true))
+    </div>
+
+</div>

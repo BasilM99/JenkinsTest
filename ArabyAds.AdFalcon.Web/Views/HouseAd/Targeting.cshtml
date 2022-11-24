@@ -1,0 +1,159 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("Targeting", "Titles");
+}
+@using System.Globalization
+@using Noqoush.AdFalcon.Domain.Common.Model.Core
+@using Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.Targeting
+@model Noqoush.AdFalcon.Web.Controllers.Model.Campaign.TargetingViewModel
+<script type="text/javascript">
+    var targetingContinueFlag = false;
+     var targetingContinueFlagUpper = false;
+    var isNew = false;
+    var treeFalgs = new Array();
+    var firstbid=true;
+    var minBid = null;
+    var ad_action_type_id = @Model.AdActionTypeId;
+    var has_device_targeting = @(Model.DeviceTargetingView.Devices != null ? "true" : "false");
+    var minBidErrMsg = '@Html.GetResource("MinBidErrMsg")';
+    var bid_value_string = @(Model.Bid.ToString("F2"));
+    var noDeviceErrMsg = '@Html.GetResource("NoDeviceErrMsg")';
+    var wifiOperatorId =@Noqoush.AdFalcon.Web.Controllers.Utilities.Config.WIFIOperaterId ;
+    var discountedBidDesc = '@Html.GetResource("DiscountedBidDesc", "Campaign")';
+    var has_discount = @((Model.DiscountDto != null).ToString().ToLower());
+    var discount_value = @(Model.DiscountDto != null ? Model.DiscountDto.Value : 0);
+    var discount_value_string = @(Model.DiscountedBid.Value.ToString("F2"));
+
+    var discount_type = @(Model.DiscountDto != null ? Model.DiscountDto.TypeId : 0);
+    var change_cost_model_warning = '@(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsShowAdminSection ? Html.GetResource("AdminChangeCostModelWarning", "Campaign") : Html.GetResource("ChangeCostModelWarning", "Campaign"))';
+    var locked_warning = '@Html.GetResource("LockedWarning", "Campaign")';
+	var is_client_locked = @((!Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsShowAdminSection &&  Model.IsClientLocked).ToString().ToLower());
+
+			 var readOnly_warning = '@Html.GetResource("LockedCampWarning", "Campaign")';
+	var is_client_readOnly = @((!Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsShowAdminSection && Model.IsClientReadOnly).ToString().ToLower());
+
+    var campaign_id =@(Model.CampaignId);
+    var ad_group_id = @(Model.AdGroupId);
+    var ad_less_url = '@Url.Action("AdsLessBid")';
+        var ad_more_url = '@Url.Action("AdsMoreBid")';
+    var set_ads_bid_url = '@Url.Action("SetAdsBid")';
+    var search_device_url = '@Url.Action("SearchTree", "Device")/?query=';
+    var operater_tree_url = '@Html.Raw(Model.OperaterTargetingView.Operaters.Url)';
+
+    var device_tree_name= '@(Model.DeviceTargetingView.DevicesTree.Name)';
+    var geographics_tree_name= '@(Model.Geographics.GeographicalAreas.Name)';
+    var operater_tree_name= '@(Model.OperaterTargetingView.Operaters.Name)';
+        var resource_minBidDesc1 = '@Html.GetResource("minBidDesc1","Campaign")';
+    var resource_minBidDesc2 = '@Html.GetResource("minBidDescMore1","Campaign")';
+
+    var geographics_type_id = @Model.Geographics.GeographicalAreas.IsAll;
+    var operater_type_id=@Model.OperaterTargetingView.Operaters.IsAll;
+    var device_type_id = @Model.DeviceTargetingView.Type;
+    var resource_campaign= '@Html.GetResource("Campaign")';
+    var resource_old_bid= '@Html.GetResource("OldBid", "Campaign")';
+    var resource_select_command= '@Html.GetResource("SelectComman")';
+    var resource_cancel_command = '@Html.GetResource("Cancel")';
+    var resource_yes_command = '@Html.GetResource("Yes")';
+    var resource_no_command = '@Html.GetResource("No")';
+    var disableSaveButtonForAjax = false;
+
+  @{ if (Model.Bid == 0)
+     {
+         <text>  isNew = true;</text>
+     } }
+
+    $(document).ready(function () {
+
+        if (AccountRole == "DSP") {
+            SetSelectedTap("");
+        } else {
+            SetSelectedTap("ListMenuPublisher");
+
+        }
+
+    });
+
+
+
+</script>
+<style>
+    .fields-nextto-cloud {
+        width: 500px;
+    }
+
+    .ad-filter-text {
+        width: 225px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+        .ad-filter-text h3 {
+            font-size: 17.5px;
+        }
+
+    h3 {
+        font-size: 18px;
+    }
+</style>
+@using (Html.BeginForm("Targeting", "HouseAd", null, FormMethod.Post, new { enctype = "multipart/form-data", name = "targetingForm", id = "targetingForm" }))
+{
+    @Html.Hidden("AdGroupId", Model.AdGroupId)
+    @Html.Hidden("CampaignId", Model.CampaignId)
+    @Html.Hidden("DeviceTargetingTypeId", Model.DeviceTargetingView.Type)
+    @Html.Hidden("GeographicTargetingIsAll", Model.Geographics.GeographicalAreas.IsAll)
+    @Html.Hidden("OperatorTargetingIsAll", Model.OperaterTargetingView.Operaters.IsAll)
+    @Html.Hidden("Models", "")
+    @Html.Hidden("DeviceCapabilities", "")
+    @Html.Hidden("ExcludeDeviceCapability", "")
+    @Html.Hidden("DeletedIPRanges", "")
+    @Html.Hidden("InsertedIPRanges", "")
+    @Html.Hidden("returnUrl", Request.QueryString["returnUrl"])
+    <div class="data-row section-container">
+        <div class="data-row section-container">
+            <div class="ie-margin">
+            </div>
+            @Html.Partial("Targeting/Slider")
+            <div class=" data-row " id="ContentOfTabTargeting">
+                @Html.Partial("HouseCampaignInfo")
+                <br />
+                <div id="targetingArea" class="tab-content " style="width:100%;margin-bottom:0px; border:0px;position:relative;border:solid 1px #d1d1d3">
+
+                    @Html.Partial("Targeting/HouseAdSubTab")
+                    <div class="section-form-container targeting-section-form-container CustomOffsetTargeting" style="padding:2px;border:none">
+                        <br />
+                        @Html.Partial("Targeting/HouseAdDevice", Model.DeviceTargetingView)
+                        <div class="section-form-inner-container info-container tab-pane fade in" tabsection="2" id="geographicSection"
+                             style="display:none;">
+                            @Html.Partial("Targeting/Geographic", Model.Geographics)
+                            </div>
+                            @Html.Partial("Targeting/HouseAdOperator", Model.OperaterTargetingView)
+                            <br />
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="">
+        <br />
+    </div>
+    <div class="data-row button-container">
+
+        @{
+			if (!(Model.IsClientLocked || Model.IsClientReadOnly))
+			{
+				if (!Model.IsHasAds)
+				{
+                    <input type="submit" value="@Html.GetResource("Continue", "Commands")" name="Continue" class="continue-button" onclick="return checkStatus();" />
+                    <input type="submit" value="@Html.GetResource("Save", "Commands")" name="Save" class="primary-btn" onclick="return checkStatus();" />
+
+
+                }
+                else
+                {
+                    <input type="submit" value="@Html.GetResource("Save", "Commands")" name="Save" class="primary-btn" onclick="return checkStatus();" />
+                }
+            }
+
+        }
+        <input type="button" value='@Html.GetResource("Close", "Commands")' class="btn" onclick="redirect('@(string.IsNullOrWhiteSpace(Request.QueryString["returnUrl"]) ? Url.Action("Groups", "HouseAd", new { id = Model.CampaignId }) : Request.QueryString["returnUrl"])    ')" />
+    </div>
+            }

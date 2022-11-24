@@ -1,0 +1,14 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Advertiser.AdvertiserAssignmentModel
+@{
+    /**/
+
+
+    Layout = "~/Views/Shared/MasterLayouts/InnerReact.cshtml";
+    ViewBag.Title = Html.GetResource("Settings", "AppSite");
+    string OpenMassage = string.Format(Html.GetResource("Open", "AdvSecurity"), @"<span style='font-weight:bold'>" + Model.AdvertiserName + "</span>");
+    string RestrictedMassage = string.Format(Html.GetResource("Restricted", "AdvSecurity"), @"<span style='font-weight:bold'>" + Model.AdvertiserName + "</span>");
+
+}
+<div id="APP-Root">
+</div>
+<script src="~/ClientReactJs/Dashboard.js.gz" asp-append-version="true"></script>

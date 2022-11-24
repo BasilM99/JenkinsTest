@@ -1,0 +1,74 @@
+﻿@model IEnumerable<ArabyAds.AdFalcon.Web.Controllers.Model.AppSite.Performance.BaseChartDashboardView>
+
+<script type="text/javascript">
+    function topAccountsGridBinding(args) {
+        //args.data = $.extend(args.data,
+        //    {
+        //        FromDate: $('#DateFrom').val(),
+        //        ToDate: $('#DateTo').val(),
+        //        MetricValue: $('#metric').val()
+        //    });
+
+        //if (loadingTopAccountsCounter == 0) {
+        //    args.preventDefault();
+        //    loadingTopAccountsCounter = 1;
+        //}
+    };
+
+    function topAccountsGridData() {
+        var j =
+        {
+            FromDate: $('#DateFrom').val(),
+            ToDate: $('#DateTo').val(),
+            MetricValue: $('#metric').val()
+        };
+        return j;
+
+    };
+</script>
+<div id="topAppSitesGrid" class="floating-left">
+    <br />
+    <br />
+    <br />
+
+
+    @(Html.Kendo().Grid(Model)
+                 .Name("TopAccountsGrid")
+                 .Columns(columns =>
+                 {
+                     columns.Bound(p => p.Name).Title(Html.GetResource("AccountName", "TopAccounts")).Width("200px").Sortable(false);
+                     columns.Bound(p => p.MetricValueText).Title(Html.GetResource("MetricValue", "Global")).Width("160px").HtmlAttributes(new { style = "text-align:center !important" });
+
+                 })
+                 .EnableCustomBinding(true)
+                    .DataSource(dataBinding =>
+                    {
+
+                        dataBinding.Ajax().Read(read => read.Action("TopAccountsGrid", "AppOps").Data("topAccountsGridData")).Total((int)ViewData["total"]).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+                    })
+                .Events(clientEvents => clientEvents.DataBinding("topAccountsGridBinding").DataBound("topAccountsGridBinding"))
+                .Scrollable(scrolling => scrolling.Enabled(false))
+                .Sortable(sorting => sorting.Enabled(false))
+                .Selectable().Pageable(paging => paging
+
+
+                .Input(false)
+                .Numeric(true)
+                .Info(true)
+                .PreviousNext(true)
+                .Refresh(true)
+
+                .Position(GridPagerPosition.Bottom))
+                .Filterable(filtering => filtering.Enabled(false))
+                .Groupable(grouping => grouping.Enabled(false)))
+
+
+    <p style="clear:both">
+        @Html.ActionLink(@Html.GetResource("TopAccountsLink", "TopAccounts"), "AccountsPerformance", "AppOps", new { id = "accountsPerformanceLink" })
+    </p>
+</div>
+<div id="topAccountsChart" class="floating-right">
+
+  <div id="topAccountsChartContainer" class="chartContainer"></div>
+</div>

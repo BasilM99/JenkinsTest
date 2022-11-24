@@ -1,0 +1,954 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <root>
+  
+  <product_info>
+    <brand_name></brand_name>
+    <model_name></model_name>
+   <unique></unique>
+    
+  <ununiqueness_handler></ununiqueness_handler>
+<is_wireless_device></is_wireless_device>
+    <device_claims_web_support></device_claims_web_support>
+  
+<has_qwerty_keyboard></has_qwerty_keyboard>
+    <can_skip_aligned_link_row></can_skip_aligned_link_row>
+   <uaprof></uaprof>
+
+
+<uaprof2></uaprof2>
+    <uaprof3></uaprof3>
+   <nokia_series></nokia_series>
+
+    
+  
+
+<nokia_edition></nokia_edition>
+    <device_os></device_os>
+   <mobile_browser></mobile_browser>
+
+  
+<mobile_browser_version></mobile_browser_version>
+    <device_os_version></device_os_version>
+   <pointing_method></pointing_method>
+
+
+
+<release_date></release_date>
+    <marketing_name></marketing_name>
+   <model_extra_info></model_extra_info>
+
+
+    
+  <nokia_feature_pack></nokia_feature_pack>
+    <can_assign_phone_number></can_assign_phone_number>
+   <is_tablet></is_tablet>
+
+
+
+<manufacturer_name></manufacturer_name>
+    <is_bot></is_bot>
+   <is_google_glass></is_google_glass>
+
+  </product_info>
+
+  <wml_ui>
+    <proportional_font></proportional_font>
+    <built_in_back_button_support></built_in_back_button_support>
+   <card_title_support></card_title_support>
+    
+  <softkey_support></softkey_support>
+<table_support></table_support>
+    <numbered_menus></numbered_menus>
+  
+<menu_with_select_element_recommended></menu_with_select_element_recommended>
+    <menu_with_list_of_links_recommended></menu_with_list_of_links_recommended>
+   <icons_on_menu_items_support></icons_on_menu_items_support>
+
+
+<break_list_of_links_with_br_element_recommended></break_list_of_links_with_br_element_recommended>
+    <access_key_support></access_key_support>
+   <wrap_mode_support></wrap_mode_support>
+
+    
+  
+
+<times_square_mode_support></times_square_mode_support>
+    <deck_prefetch_support></deck_prefetch_support>
+   <elective_forms_recommended></elective_forms_recommended>
+
+  
+<wizards_recommended></wizards_recommended>
+    <image_as_link_support></image_as_link_support>
+   <insert_br_element_after_widget_recommended></insert_br_element_after_widget_recommended>
+
+
+
+<wml_can_display_images_and_text_on_same_line></wml_can_display_images_and_text_on_same_line>
+    <wml_displays_image_in_center></wml_displays_image_in_center>
+   <opwv_wml_extensions_support></opwv_wml_extensions_support>
+
+
+    
+  <wml_make_phone_call_string></wml_make_phone_call_string>
+
+
+  </wml_ui>
+
+  <chtml_ui>
+  <chtml_display_accesskey></chtml_display_accesskey>
+  <emoji></emoji>
+  <chtml_can_display_images_and_text_on_same_line></chtml_can_display_images_and_text_on_same_line>
+  
+  
+  
+  <chtml_displays_image_in_center></chtml_displays_image_in_center>
+  <imode_region></imode_region>
+  <chtml_make_phone_call_string></chtml_make_phone_call_string>
+  
+  <chtml_table_support></chtml_table_support>
+
+</chtml_ui>
+
+  <xhtml_ui>
+  
+  <xhtml_honors_bgcolor></xhtml_honors_bgcolor>
+  <xhtml_supports_forms_in_table></xhtml_supports_forms_in_table>
+  <xhtml_support_wml2_namespace></xhtml_support_wml2_namespace>
+  
+  <xhtml_autoexpand_select></xhtml_autoexpand_select>
+  <xhtml_select_as_dropdown></xhtml_select_as_dropdown>
+  <xhtml_select_as_radiobutton></xhtml_select_as_radiobutton>
+  
+  <xhtml_select_as_popup></xhtml_select_as_popup>
+  <xhtml_display_accesskey></xhtml_display_accesskey>
+  <xhtml_supports_invisible_text></xhtml_supports_invisible_text>
+  
+  
+  <xhtml_supports_inline_input></xhtml_supports_inline_input>
+  <xhtml_supports_monospace_font></xhtml_supports_monospace_font>
+  <xhtml_supports_table_for_layout></xhtml_supports_table_for_layout>
+  
+  <xhtml_supports_css_cell_table_coloring></xhtml_supports_css_cell_table_coloring>
+  <xhtml_format_as_css_property></xhtml_format_as_css_property>
+  <xhtml_format_as_attribute></xhtml_format_as_attribute>
+  
+  
+  <xhtml_nowrap_mode></xhtml_nowrap_mode>
+  <xhtml_marquee_as_css_property></xhtml_marquee_as_css_property>
+  <xhtml_readable_background_color1></xhtml_readable_background_color1>
+  
+  
+  <xhtml_readable_background_color2></xhtml_readable_background_color2>
+  <xhtml_allows_disabled_form_elements></xhtml_allows_disabled_form_elements>
+  <xhtml_document_title_support></xhtml_document_title_support>
+  
+  <xhtml_preferred_charset></xhtml_preferred_charset>
+  <opwv_xhtml_extensions_support></opwv_xhtml_extensions_support>
+  <xhtml_make_phone_call_string></xhtml_make_phone_call_string>
+  
+  <xhtmlmp_preferred_mime_type></xhtmlmp_preferred_mime_type>
+  <xhtml_table_support></xhtml_table_support>
+  <xhtml_send_sms_string></xhtml_send_sms_string>
+  
+  
+  <xhtml_send_mms_string></xhtml_send_mms_string>
+  <xhtml_file_upload></xhtml_file_upload>
+  <cookie_support></cookie_support>
+  
+  <accept_third_party_cookie></accept_third_party_cookie>
+  <xhtml_supports_iframe></xhtml_supports_iframe>
+  <xhtml_avoid_accesskeys></xhtml_avoid_accesskeys>
+  
+ <xhtml_can_embed_video></xhtml_can_embed_video>
+
+</xhtml_ui>
+
+  <html_ui>
+  
+  
+
+<html_preferred_dtd></html_preferred_dtd>
+<viewport_supported></viewport_supported>
+<viewport_width></viewport_width>  
+ 
+  
+<viewport_userscalable></viewport_userscalable>
+<viewport_initial_scale></viewport_initial_scale>
+<viewport_maximum_scale></viewport_maximum_scale> 
+
+
+<viewport_minimum_scale></viewport_minimum_scale>
+<mobileoptimized></mobileoptimized>
+<handheldfriendly></handheldfriendly>  
+ 
+
+<canvas_support></canvas_support>
+<image_inlining></image_inlining>
+
+</html_ui>
+
+  <css>
+    
+<css_supports_width_as_percentage></css_supports_width_as_percentage>  
+<css_border_image></css_border_image>  
+<css_rounded_corners></css_rounded_corners>  
+  
+     
+<css_gradient></css_gradient>  
+<css_spriting></css_spriting>  
+<css_gradient_linear></css_gradient_linear>   
+  
+
+
+
+  </css>
+
+  <ajax>
+  <ajax_support_javascript></ajax_support_javascript>
+    <ajax_manipulate_css></ajax_manipulate_css>
+  <ajax_support_getelementbyid></ajax_support_getelementbyid>
+  
+  
+   <ajax_support_inner_html></ajax_support_inner_html>
+    <ajax_xhr_type></ajax_xhr_type>
+  <ajax_manipulate_dom></ajax_manipulate_dom>
+
+  
+ <ajax_support_events></ajax_support_events>
+    <ajax_support_event_listener></ajax_support_event_listener>
+  <ajax_preferred_geoloc_api></ajax_preferred_geoloc_api>
+
+
+
+</ajax>
+
+  <markup>
+  
+<xhtml_support_level></xhtml_support_level>
+<preferred_markup></preferred_markup>
+<wml_1_1></wml_1_1>
+  
+<wml_1_2></wml_1_2>
+<wml_1_3></wml_1_3>
+<html_wi_w3_xhtmlbasic></html_wi_w3_xhtmlbasic>
+  
+<html_wi_oma_xhtmlmp_1_0></html_wi_oma_xhtmlmp_1_0>
+<html_wi_imode_html_1></html_wi_imode_html_1>
+<html_wi_imode_html_2></html_wi_imode_html_2>
+  
+  
+<html_wi_imode_html_3></html_wi_imode_html_3>
+<html_wi_imode_html_4></html_wi_imode_html_4>
+<html_wi_imode_html_5></html_wi_imode_html_5>
+
+
+<html_wi_imode_htmlx_1></html_wi_imode_htmlx_1>
+<html_wi_imode_htmlx_1_1></html_wi_imode_htmlx_1_1>
+<html_wi_imode_compact_generic></html_wi_imode_compact_generic>
+  
+  
+
+<html_web_3_2></html_web_3_2>
+<html_web_4_0></html_web_4_0>
+<voicexml></voicexml>  
+  
+<multipart_support></multipart_support>   
+</markup>
+
+  <cache>
+   <total_cache_disable_support></total_cache_disable_support>
+   <time_to_live_support></time_to_live_support>
+
+ </cache> 
+  
+  <display>
+    <resolution_width></resolution_width>
+    <resolution_height></resolution_height>
+    <columns></columns>
+    
+    
+    <max_image_width></max_image_width>
+    <max_image_height></max_image_height>
+    <rows></rows>
+    
+    <physical_screen_width></physical_screen_width>
+    <physical_screen_height></physical_screen_height>
+    <dual_orientation></dual_orientation>
+    
+    <density_class></density_class>
+
+  </display>
+  
+  <image_format>
+    
+    <wbmp></wbmp>
+    <bmp></bmp>
+    <epoc_bmp></epoc_bmp>
+    
+    <gif_animated></gif_animated>
+    <jpg></jpg>
+    <png></png>
+
+    <tiff></tiff>
+    <transparent_png_alpha></transparent_png_alpha>
+    <transparent_png_index></transparent_png_index>
+
+    <svgt_1_1></svgt_1_1>
+    <svgt_1_1_plus></svgt_1_1_plus>
+    <greyscale></greyscale>
+
+    
+    <gif></gif>
+    <colors></colors>
+    <webp_lossy_support></webp_lossy_support>
+    
+    <webp_lossless_support></webp_lossless_support>
+  
+  </image_format>
+
+  <bugs>
+    
+  <post_method_support></post_method_support>
+  <basic_authentication_support></basic_authentication_support>
+  <empty_option_value_support></empty_option_value_support>
+  
+   <emptyok></emptyok>
+
+  </bugs>
+
+  <wta>
+    
+  <nokia_voice_call></nokia_voice_call>
+  <wta_voice_call></wta_voice_call>
+  <wta_phonebook></wta_phonebook>
+  <wta_misc></wta_misc>
+  <wta_pdc></wta_pdc>
+    
+  </wta>
+
+  <security>
+    
+    <https_support></https_support>
+    <phone_id_provided></phone_id_provided>
+  
+  </security>
+
+  <bearer>
+    
+    <max_data_rate></max_data_rate>
+    <wifi></wifi>
+    <sdio></sdio>
+    
+    <vpn></vpn>
+    <has_cellular_radio></has_cellular_radio>
+  
+  </bearer>
+  
+  <storage>
+    
+    <max_deck_size></max_deck_size>
+    <max_url_length_in_requests></max_url_length_in_requests>
+    <max_url_length_homepage></max_url_length_homepage>
+    
+    <max_url_length_bookmark></max_url_length_bookmark>
+    <max_url_length_cached_page></max_url_length_cached_page>
+    <max_no_of_connection_settings></max_no_of_connection_settings>
+    
+    <max_no_of_bookmarks></max_no_of_bookmarks>
+    <max_length_of_username></max_length_of_username>
+    <max_length_of_password></max_length_of_password>
+  
+    <max_object_size></max_object_size>
+  
+  </storage>
+
+  <object_download>
+     
+    <downloadfun_support></downloadfun_support>
+    <directdownload_support></directdownload_support>
+    <inline_support></inline_support>
+
+    <oma_support></oma_support>
+    <ringtone></ringtone>
+    <ringtone_3gpp></ringtone_3gpp>
+    
+    <ringtone_midi_monophonic></ringtone_midi_monophonic>
+    <ringtone_midi_polyphonic></ringtone_midi_polyphonic>
+    <ringtone_imelody></ringtone_imelody>
+  
+    <ringtone_digiplug></ringtone_digiplug>
+    <ringtone_compactmidi></ringtone_compactmidi>
+    <ringtone_mmf></ringtone_mmf>
+    
+    <ringtone_rmf></ringtone_rmf>
+    <ringtone_xmf></ringtone_xmf>
+    <ringtone_amr></ringtone_amr>
+  
+    <ringtone_awb></ringtone_awb>
+    <ringtone_aac></ringtone_aac>
+    <ringtone_wav></ringtone_wav>
+    
+  
+    <ringtone_mp3></ringtone_mp3>
+    <ringtone_spmidi></ringtone_spmidi>
+    <ringtone_qcelp></ringtone_qcelp>
+
+  
+    <ringtone_voices></ringtone_voices>
+    <ringtone_df_size_limit></ringtone_df_size_limit>
+    <ringtone_directdownload_size_limit></ringtone_directdownload_size_limit>
+    
+  
+    <ringtone_inline_size_limit></ringtone_inline_size_limit>
+    <ringtone_oma_size_limit></ringtone_oma_size_limit>
+    <wallpaper></wallpaper>
+  
+    
+    <wallpaper_max_width></wallpaper_max_width>
+    <wallpaper_max_height></wallpaper_max_height>
+    <wallpaper_preferred_width></wallpaper_preferred_width>
+  
+    <wallpaper_preferred_height></wallpaper_preferred_height>
+    <wallpaper_resize></wallpaper_resize>
+    <wallpaper_wbmp></wallpaper_wbmp>
+  
+  
+    <wallpaper_bmp></wallpaper_bmp>
+    <wallpaper_gif></wallpaper_gif>
+    <wallpaper_jpg></wallpaper_jpg>
+    
+    <wallpaper_png></wallpaper_png>
+    <wallpaper_tiff></wallpaper_tiff>
+    <wallpaper_greyscale></wallpaper_greyscale>
+  
+    <wallpaper_colors></wallpaper_colors>
+    <wallpaper_df_size_limit></wallpaper_df_size_limit>
+    <wallpaper_directdownload_size_limit></wallpaper_directdownload_size_limit>
+    
+  
+    <wallpaper_inline_size_limit></wallpaper_inline_size_limit>
+    <wallpaper_oma_size_limit></wallpaper_oma_size_limit>
+    <screensaver></screensaver>  
+  
+    
+    <screensaver_max_width></screensaver_max_width>
+    <screensaver_max_height></screensaver_max_height>
+    <screensaver_preferred_width></screensaver_preferred_width>
+  
+    
+    <screensaver_preferred_height></screensaver_preferred_height>
+    <screensaver_resize></screensaver_resize>
+    <screensaver_wbmp></screensaver_wbmp>
+  
+
+    <screensaver_bmp></screensaver_bmp>
+    <screensaver_gif></screensaver_gif>
+    <screensaver_jpg></screensaver_jpg>
+
+    <screensaver_png></screensaver_png>
+    <screensaver_greyscale></screensaver_greyscale>
+    <screensaver_colors></screensaver_colors>
+      
+    
+    <screensaver_df_size_limit></screensaver_df_size_limit>
+    <screensaver_directdownload_size_limit></screensaver_directdownload_size_limit>
+    <screensaver_inline_size_limit></screensaver_inline_size_limit>
+    
+
+    <screensaver_oma_size_limit></screensaver_oma_size_limit>
+    <picture></picture>
+    <picture_max_width></picture_max_width>
+
+    
+    <picture_max_height></picture_max_height>
+    <picture_preferred_width></picture_preferred_width>
+    <picture_preferred_height></picture_preferred_height>
+  
+    <picture_resize></picture_resize>
+    <picture_wbmp></picture_wbmp>
+    <picture_bmp></picture_bmp>
+    
+ 
+    <picture_gif></picture_gif>
+    <picture_jpg></picture_jpg>
+    <picture_png></picture_png>
+    
+    <picture_greyscale></picture_greyscale>
+    <picture_colors></picture_colors>
+    <picture_df_size_limit></picture_df_size_limit>
+    
+    <picture_directdownload_size_limit></picture_directdownload_size_limit>
+    <picture_inline_size_limit></picture_inline_size_limit>
+    <picture_oma_size_limit></picture_oma_size_limit>
+    
+    <video></video>
+
+  </object_download>
+
+  <playback>
+    
+    <progressive_download></progressive_download>
+    <playback_vcodec_h263_0></playback_vcodec_h263_0>
+    <playback_vcodec_h263_3></playback_vcodec_h263_3>
+  
+    <playback_vcodec_mpeg4_sp></playback_vcodec_mpeg4_sp>
+    <playback_vcodec_mpeg4_asp></playback_vcodec_mpeg4_asp>
+    <playback_vcodec_h264_bp></playback_vcodec_h264_bp>
+    
+    <playback_real_media></playback_real_media>
+    <playback_3gpp></playback_3gpp>
+    <playback_3g2></playback_3g2>
+    
+    <playback_mp4></playback_mp4>
+    <playback_mov></playback_mov>
+    <playback_acodec_amr></playback_acodec_amr>
+    
+    <playback_acodec_aac></playback_acodec_aac>
+    <playback_df_size_limit></playback_df_size_limit>
+    <playback_directdownload_size_limit></playback_directdownload_size_limit>
+  
+    <playback_inline_size_limit></playback_inline_size_limit>
+    <playback_oma_size_limit></playback_oma_size_limit>
+    <playback_acodec_qcelp></playback_acodec_qcelp>
+
+
+    <playback_wmv></playback_wmv>
+    <hinted_progressive_download></hinted_progressive_download>
+    
+  </playback>
+  
+  <streaming>
+    <streaming_video></streaming_video>
+    <streaming_3gpp></streaming_3gpp>
+    <streaming_mp4></streaming_mp4>
+    
+    <streaming_mov></streaming_mov>
+    <streaming_video_size_limit></streaming_video_size_limit>
+    <streaming_real_media></streaming_real_media>
+    
+    <streaming_flv></streaming_flv>
+    <streaming_3g2></streaming_3g2>
+    <streaming_vcodec_h263_0></streaming_vcodec_h263_0>
+
+    <streaming_vcodec_h263_3></streaming_vcodec_h263_3>
+    <streaming_vcodec_mpeg4_sp></streaming_vcodec_mpeg4_sp>
+    <streaming_vcodec_mpeg4_asp></streaming_vcodec_mpeg4_asp>
+
+    
+    <streaming_vcodec_h264_bp></streaming_vcodec_h264_bp>
+    <streaming_acodec_amr></streaming_acodec_amr>
+    <streaming_acodec_aac></streaming_acodec_aac>
+  
+    <streaming_wmv></streaming_wmv>
+    <streaming_preferred_protocol></streaming_preferred_protocol>
+    <streaming_preferred_http_protocol></streaming_preferred_http_protocol>
+
+  </streaming>
+  
+  <drm>
+    
+  <oma_v_1_0_forwardlock></oma_v_1_0_forwardlock>
+  <oma_v_1_0_combined_delivery></oma_v_1_0_combined_delivery>
+  <oma_v_1_0_separate_delivery></oma_v_1_0_separate_delivery>
+  
+  </drm>
+  
+  <wap_push>
+    <wap_push_support></wap_push_support>
+    <connectionless_service_indication></connectionless_service_indication>
+    <connectionless_service_load></connectionless_service_load>
+    
+    <connectionless_cache_operation></connectionless_cache_operation>
+    <connectionoriented_unconfirmed_service_indication></connectionoriented_unconfirmed_service_indication>
+    <connectionoriented_unconfirmed_service_load></connectionoriented_unconfirmed_service_load>
+  
+    
+    <connectionoriented_unconfirmed_cache_operation></connectionoriented_unconfirmed_cache_operation>
+    <connectionoriented_confirmed_service_indication></connectionoriented_confirmed_service_indication>
+    <connectionoriented_confirmed_service_load></connectionoriented_confirmed_service_load>
+
+    <connectionoriented_confirmed_cache_operation></connectionoriented_confirmed_cache_operation>
+    <utf8_support></utf8_support>
+    <ascii_support></ascii_support>
+      
+     <iso8859_support></iso8859_support>
+    <expiration_date></expiration_date>
+  
+  </wap_push>
+  
+  <j2me>
+    <j2me_cldc_1_0></j2me_cldc_1_0>
+     <j2me_cldc_1_1></j2me_cldc_1_1>
+     <j2me_midp_1_0></j2me_midp_1_0>
+    
+    <j2me_midp_2_0></j2me_midp_2_0>
+     <doja_1_0></doja_1_0>
+     <doja_1_5></doja_1_5>
+    
+    
+   <doja_2_0></doja_2_0>
+     <doja_2_1></doja_2_1>
+     <doja_2_2></doja_2_2>
+
+
+ <doja_3_0></doja_3_0>
+     <doja_3_5></doja_3_5>
+     <doja_4_0></doja_4_0>
+
+
+ <j2me_jtwi></j2me_jtwi>
+     <j2me_mmapi_1_0></j2me_mmapi_1_0>
+     <j2me_mmapi_1_1></j2me_mmapi_1_1>
+
+
+ <j2me_wmapi_1_0></j2me_wmapi_1_0>
+     <j2me_wmapi_1_1></j2me_wmapi_1_1>
+     <j2me_wmapi_2_0></j2me_wmapi_2_0>
+
+
+ <j2me_btapi></j2me_btapi>
+     <j2me_3dapi></j2me_3dapi>
+     <j2me_locapi></j2me_locapi>
+
+
+ <j2me_nokia_ui></j2me_nokia_ui>
+     <j2me_motorola_lwt></j2me_motorola_lwt>
+     <j2me_siemens_color_game></j2me_siemens_color_game>
+
+
+ <j2me_siemens_extension></j2me_siemens_extension>
+     <j2me_heap_size></j2me_heap_size>
+     <j2me_max_jar_size></j2me_max_jar_size>
+
+
+ <j2me_storage_size></j2me_storage_size>
+     <j2me_max_record_store_size></j2me_max_record_store_size>
+     <j2me_screen_width></j2me_screen_width>
+
+
+
+ <j2me_screen_height></j2me_screen_height>
+     <j2me_canvas_width></j2me_canvas_width>
+     <j2me_canvas_height></j2me_canvas_height>
+
+
+
+     <j2me_bits_per_pixel></j2me_bits_per_pixel>
+     <j2me_audio_capture_enabled></j2me_audio_capture_enabled>
+
+<j2me_video_capture_enabled></j2me_video_capture_enabled>
+     <j2me_photo_capture_enabled></j2me_photo_capture_enabled>
+     <j2me_capture_image_formats></j2me_capture_image_formats>
+
+
+<j2me_http></j2me_http>
+     <j2me_https></j2me_https>
+     <j2me_socket></j2me_socket>
+
+
+<j2me_udp></j2me_udp>
+     <j2me_serial></j2me_serial>
+     <j2me_gif></j2me_gif>
+
+<j2me_gif89a></j2me_gif89a>
+     <j2me_jpg></j2me_jpg>
+     <j2me_png></j2me_png>
+
+
+<j2me_bmp></j2me_bmp>
+     <j2me_bmp3></j2me_bmp3>
+     <j2me_wbmp></j2me_wbmp>
+
+
+<j2me_midi></j2me_midi>
+     <j2me_wav></j2me_wav>
+     <j2me_amr></j2me_amr>  
+  
+    
+  <j2me_mp3></j2me_mp3>
+     <j2me_mp4></j2me_mp4>
+     <j2me_imelody></j2me_imelody>  
+
+
+<j2me_rmf></j2me_rmf>
+     <j2me_au></j2me_au>
+     <j2me_aac></j2me_aac>  
+
+
+<j2me_realaudio></j2me_realaudio>
+     <j2me_xmf></j2me_xmf>
+     <j2me_wma></j2me_wma>  
+
+
+<j2me_3gpp></j2me_3gpp>
+     <j2me_h263></j2me_h263>
+     <j2me_svgt></j2me_svgt>  
+
+
+<j2me_mpeg4></j2me_mpeg4>
+     <j2me_realvideo></j2me_realvideo>
+     <j2me_real8></j2me_real8>  
+
+
+<j2me_realmedia></j2me_realmedia>
+     <j2me_left_softkey_code></j2me_left_softkey_code>
+     <j2me_right_softkey_code></j2me_right_softkey_code>  
+
+  
+  
+<j2me_middle_softkey_code></j2me_middle_softkey_code>
+     <j2me_select_key_code></j2me_select_key_code>
+     <j2me_return_key_code></j2me_return_key_code>  
+
+
+<j2me_clear_key_code></j2me_clear_key_code>
+     <j2me_datefield_no_accepts_null_date></j2me_datefield_no_accepts_null_date>
+     <j2me_datefield_broken></j2me_datefield_broken>  
+
+
+  </j2me>
+    
+  <mms>
+    
+  <receiver></receiver>  
+  <sender></sender>
+  <mms_max_size></mms_max_size>  
+  
+
+  <mms_max_height></mms_max_height>  
+  <mms_max_width></mms_max_width>
+  <built_in_recorder></built_in_recorder> 
+    
+    
+  <built_in_camera></built_in_camera>  
+  <mms_jpeg_baseline></mms_jpeg_baseline>
+  <mms_jpeg_progressive></mms_jpeg_progressive>  
+  
+
+  <mms_gif_static></mms_gif_static>  
+  <mms_gif_animated></mms_gif_animated>
+  <mms_png></mms_png>
+    
+    
+  <mms_bmp></mms_bmp>  
+  <mms_wbmp></mms_wbmp>
+  <mms_amr></mms_amr>  
+  
+
+  <mms_wav></mms_wav>  
+  <mms_midi_monophonic></mms_midi_monophonic>
+  <mms_midi_polyphonic></mms_midi_polyphonic>
+  
+    
+  <mms_midi_polyphonic_voices></mms_midi_polyphonic_voices>  
+  <mms_spmidi></mms_spmidi>
+  <mms_mmf></mms_mmf> 
+  
+  
+  <mms_mp3></mms_mp3>  
+  <mms_evrc></mms_evrc>
+  <mms_qcelp></mms_qcelp> 
+
+
+
+  <mms_ota_bitmap></mms_ota_bitmap>  
+  <mms_nokia_wallpaper></mms_nokia_wallpaper>
+  <mms_nokia_operatorlogo></mms_nokia_operatorlogo> 
+
+
+  <mms_nokia_3dscreensaver></mms_nokia_3dscreensaver>  
+  <mms_nokia_ringingtone></mms_nokia_ringingtone>
+  <mms_rmf></mms_rmf> 
+
+
+  <mms_xmf></mms_xmf>  
+  <mms_symbian_install></mms_symbian_install>
+  <mms_jar></mms_jar> 
+  
+     <mms_jad></mms_jad>  
+  <mms_vcard></mms_vcard>
+  <mms_vcalendar></mms_vcalendar> 
+  
+  
+ <mms_wml></mms_wml>  
+  <mms_wbxml></mms_wbxml>
+  <mms_wmlc></mms_wmlc> 
+
+
+ <mms_video></mms_video>  
+  <mms_mp4></mms_mp4>
+  <mms_3gpp></mms_3gpp> 
+
+
+ <mms_3gpp2></mms_3gpp2>  
+  <mms_max_frame_rate></mms_max_frame_rate>
+ 
+
+  </mms>
+
+  <sms>
+    
+    <nokiaring></nokiaring> 
+    <picturemessage></picturemessage> 
+    <operatorlogo></operatorlogo> 
+  
+    <largeoperatorlogo></largeoperatorlogo> 
+    <callericon></callericon> 
+    <nokiavcard></nokiavcard> 
+    
+    <nokiavcal></nokiavcal> 
+    <sckl_ringtone></sckl_ringtone> 
+    <sckl_operatorlogo></sckl_operatorlogo> 
+    
+    <sckl_groupgraphic></sckl_groupgraphic> 
+    <sckl_vcard></sckl_vcard> 
+    <sckl_vcalendar></sckl_vcalendar> 
+    
+    <text_imelody></text_imelody> 
+    <ems></ems> 
+    <ems_variablesizedpictures></ems_variablesizedpictures> 
+  
+    <ems_imelody></ems_imelody> 
+    <ems_odi></ems_odi> 
+    <ems_upi></ems_upi> 
+    
+    
+    <ems_version></ems_version> 
+    <siemens_ota></siemens_ota> 
+    <siemens_logo_width></siemens_logo_width> 
+    
+    <siemens_logo_height></siemens_logo_height> 
+    <siemens_screensaver_width></siemens_screensaver_width> 
+    <siemens_screensaver_height></siemens_screensaver_height> 
+    
+    <gprtf></gprtf> 
+    <sagem_v1></sagem_v1> 
+    <sagem_v2></sagem_v2> 
+    
+    <panasonic></panasonic> 
+    <sms_enabled></sms_enabled> 
+  
+  </sms>
+  
+  <sound_format>
+    
+    <wav></wav> 
+    <mmf></mmf>  
+    <smf></smf>  
+    
+     <mld></mld> 
+    <midi_monophonic></midi_monophonic>  
+    <midi_polyphonic></midi_polyphonic>
+    
+     <sp_midi></sp_midi> 
+    <rmf></rmf>  
+    <xmf></xmf>
+    
+   <compactmidi></compactmidi> 
+    <digiplug></digiplug>  
+    <nokia_ringtone></nokia_ringtone>
+
+ <imelody></imelody> 
+    <au></au>  
+    <amr></amr>
+    
+    
+     <awb></awb> 
+    <aac></aac>  
+    <mp3></mp3>
+    
+     <voices></voices> 
+    <qcelp></qcelp>  
+    <evrc></evrc>
+ 
+  
+  </sound_format>
+
+  <flash_lite>
+    
+  <flash_lite_version></flash_lite_version>
+  <fl_wallpaper></fl_wallpaper>  
+  <fl_screensaver></fl_screensaver>  
+    
+  <fl_standalone></fl_standalone>
+  <fl_browser></fl_browser>  
+  <fl_sub_lcd></fl_sub_lcd> 
+  
+  <full_flash_support></full_flash_support>
+ 
+
+  </flash_lite>
+
+  <transcoding>
+  
+<is_transcoder></is_transcoder>
+
+<transcoder_ua_header></transcoder_ua_header>
+  
+</transcoding>
+
+  <rss>
+  <rss_support></rss_support>
+  
+</rss>
+  
+  <pdf>
+    
+<pdf_support></pdf_support>  
+  
+  </pdf>
+  
+  <smarttv>
+    <is_smarttv></is_smarttv>
+    <is_console></is_console>
+  </smarttv>
+  
+  <chips>
+    <nfc_support></nfc_support>
+  </chips>
+  
+  <user_experience>
+    
+  <ux_full_desktop></ux_full_desktop>
+
+</user_experience>
+
+  <third_party>
+ <jqm_grade> </jqm_grade>
+<is_sencha_touch_ok></is_sencha_touch_ok>
+
+</third_party>
+
+  <virtual>
+    <controlcap_is_smartphone></controlcap_is_smartphone>
+     <controlcap_is_ios></controlcap_is_ios>
+     <controlcap_is_android></controlcap_is_android>
+    
+   <controlcap_is_robot></controlcap_is_robot>
+   <controlcap_is_app></controlcap_is_app>
+   <controlcap_advertised_device_os></controlcap_advertised_device_os>
+
+ <controlcap_advertised_device_os_version></controlcap_advertised_device_os_version>
+  <controlcap_advertised_browser></controlcap_advertised_browser>
+   <controlcap_advertised_browser_version></controlcap_advertised_browser_version>
+   
+   <controlcap_is_windows_phone></controlcap_is_windows_phone>
+   <controlcap_is_full_desktop></controlcap_is_full_desktop>
+ <controlcap_is_largescreen></controlcap_is_largescreen>
+
+ <controlcap_is_mobile></controlcap_is_mobile>
+ <controlcap_is_touchscreen></controlcap_is_touchscreen>
+ <controlcap_is_wml_preferred></controlcap_is_wml_preferred>
+    
+  
+     <controlcap_is_xhtmlmp_preferred></controlcap_is_xhtmlmp_preferred>
+ <controlcap_is_html_preferred></controlcap_is_html_preferred>
+ <controlcap_form_factor></controlcap_form_factor>
+  
+   <controlcap_complete_device_name></controlcap_complete_device_name>
+ 
+    
+  </virtual>
+
+
+</root>

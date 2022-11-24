@@ -1,0 +1,386 @@
+﻿@{
+    var visibilityValue = "hidden;";
+    if ((ViewBag.ShowMenu != null) && ViewBag.ShowMenu)
+    {
+        visibilityValue = "visible";
+    }
+}
+
+@{
+    //var homeBaseController = ViewContext.Controller as ArabyAds.AdFalcon.Web.Controllers.Core.ControllerBase;
+    var homeBaseController = ViewData["Controller"] as ArabyAds.AdFalcon.Web.Controllers.Core.ControllerBase;
+
+    <script type="text/javascript">
+        var isDSP = @(ArabyAds.Framework.OperationContext.Current.UserInfo <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP ? "true" : "false")
+        var isDataProvider = @((ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DataProvider) ? "true" : "false")
+        var isNormal = @((ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().AccountRole != (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP && ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().AccountRole != (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DataProvider) ? "true" : "false")
+        var ReportScheduleCount = @((ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().Permissions != null && ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().Permissions.Where(x => x == (int)ArabyAds.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.ReportSchedule).Count() > 0) ? "true" : "false")
+        var PMPDealCount = @((ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().Permissions != null && ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().Permissions.Where(x => x == (int)ArabyAds.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.PMPDeal).Count() > 0) ? "true" : "false")
+        var externalList = @((homeBaseController.GetExternalDataProviderQueryResultAllResult().ToList() != null && homeBaseController.GetExternalDataProviderQueryResultAllResult().ToList().Count > 0) ? "true" : "false")
+        var TrafficPlannerCount = @((ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().Permissions != null && ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().Permissions.Where(x => x == (int)ArabyAds.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.TrafficPlanner).Count() > 0) ? "true" : "false")
+        var visibilityValue = "@visibilityValue";
+        var dashBoardUrl = "@Url.Action("index", "dashboard", new { chartType = "app",id = "" })";
+        var dashboardadUrl = "@Url.Action("index", "dashboard", new { chartType = "ad", id = "" })";
+        var dashBoardUrllmpressionlog = "@Url.Action("index", "dashboard", new { chartType = "lmpressionlog" ,id = ""})";
+        var ImpressionLogsUrl = "@Url.Action("ImpressionLogs", "User")";
+        var AccountAdvertisersUrl = "@Url.Action("AccountAdvertisers", "campaign", new { @id = "" })";
+        var MasterAppSitesUrl = "@Url.Action("MasterAppSites", "campaign", new { @id = "" })";
+    </script>
+
+    <div id="MenuComponent" data-translations='{"componentTranslations": {"Dashboard_Tran":"@Html.GetResource("Dashboard", "Menu")","Advertisers_Tran":"@Html.GetResource("Advertisers")","TrafficPlanner_Tran":"@Html.GetResource("TrafficPlanner")","ContentLists_Tran":"@Html.GetResource("ContentLists", "Global")","Reports_Tran":"@Html.GetResource("Reports", "Menu")","DealMonitoring_Tran":"@Html.GetResource("DealMonitoring", "PMPDeal")","Deals_Tran":"@Html.GetResource("Deals", "PMPDeal")","PMPDeals_Tran":"@Html.GetResource("PMPDeals", "Menu")","Providers_Tran":"@Html.GetResource("Providers", "Audience")","Forgetpassword_Tran":"@Html.GetResource("Forgetpassword", "Titles")","Login_Tran":"@Html.GetResource("Login", "Titles")","ChangePassword_Tran":"@Html.GetResource("ChangePassword", "Titles")","Register_Tran":"@Html.GetResource("Register", "UserInformation")","Logout_Tran":"@Html.GetResource("Logout", "UserInformation")","AudienceLists_Tran":"@Html.GetResource("AudienceLists", "Global")","ImpressionLogs_Tran":"@Html.GetResource("ImpressionLogs", "DPP")","Advertiser_Tran":"@Html.GetResource("Advertiser", "Menu")","Publisher_Tran":"@Html.GetResource("Publisher", "Menu")","SDKs_Tran":"@Html.GetResource("SDKs", "Menu")","Apps_Tran":"@Html.GetResource("Apps", "Menu")","HouseAd_Tran":"@Html.GetResource("HouseAd", "Menu")"}}'></div>
+    @*<script src="~/publish/Menu.bundle.js"></script>*@
+
+    <script asp-src-include="~/dist/vendors/vendors.js"></script>
+    @*<script asp-src-include="~/dist/vendors~**.js"></script>*@
+    <script asp-src-include="~/dist/vendors-node_modules_axios_index_js.js"></script>
+    <script asp-src-include="~/dist/Menu.js"></script>
+
+
+
+
+
+    if ((ArabyAds.Framework.OperationContext.Current.UserInfo
+<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+().AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP))
+    {
+
+        var externalList = homeBaseController.GetExternalDataProviderQueryResultAllResult().ToList();
+
+        if (externalList != null && externalList.Count > 0)
+        {
+
+
+
+            @foreach (var item in externalList)
+            {
+
+
+
+                <text>
+
+                    <script type="text/javascript">
+
+                                            var transport@(item.ID) = null;
+                                $(document).ready(function () {
+
+
+                                 transport@(item.ID) = new easyXDM.Socket(/** The configuration */{
+                                local: "~/scripts/EasyXDM/name.html",
+                                    swf:  "/@(item.SiteProviderURL)/scripts/EasyXDM/easyxdm.swf",
+                                    remoteHelper: "@(item.SiteProviderURL)/scripts/EasyXDM/name.html",
+
+                                remote: "@(item.SiteProviderURL)/remotetransport.html?username=" + LoggedInUserObject.Email  + "&lang=" + LoggedInUserObject.CurrentLanguage,
+                                    onMessage: function (message, origin) {
+                                        /**
+                                        * If we want to do something once the transport is ready then we can place it here
+                                        */
+                                        //debugger
+                                        if (message == "false") {
+                                            $("#DataProviderMenuRegister" +@(item.ID)).show();
+                                            $("#DataProviderMenuLogin" + @(item.ID)).show();
+                                            $("#DataProviderMenuForgetpassword" + @(item.ID)).show();
+                                            $("#DataProviderMenuChangePassword" + @(item.ID)).hide();
+                                            $("#DataProviderMenuLogOut" + @(item.ID)).hide();
+                                            $("#DataProviderMenuAudiance" + @(item.ID)).hide();
+                                        }
+                                        else {
+
+                                                $("#DataProviderMenuRegister" +@(item.ID)).hide();
+                                            $("#DataProviderMenuLogin" + @(item.ID)).hide();
+                                            $("#DataProviderMenuForgetpassword" + @(item.ID)).hide();
+                                            $("#DataProviderMenuChangePassword" + @(item.ID)).show();
+                                            $("#DataProviderMenuLogOut" + @(item.ID)).show();
+                                    $("#DataProviderMenuAudiance" + @(item.ID)).show();
+
+                                        }
+                                }
+                                });
+
+                                });
+                                        function HandleDataProviderMenuLogOut@(item.ID)() {
+                                            if (!(typeof HandleDataProviderMenuLogOut === "function")) { transport@(item.ID).postMessage("LogOut"); }
+                                            else if (!(window.remote == undefined)) {
+                                                var result = HandleDataProviderMenuLogOut('@(item.ID)');
+                                                if (result) {
+
+                                                    transport@(item.ID).postMessage("LogOut");
+                                                }
+
+                                            }
+
+                                            else { transport@(item.ID).postMessage("LogOut"); }
+                                                                                return false;
+                                    }
+                    </script>
+                </text>
+            }
+        }
+
+        @*<ul id="menu-nav" style="visibility: @visibilityValue">
+                <li id="ListMenuDashboard">
+                    <a class="parent gradient" href="@Url.Action("index", "dashboard", new { chartType = "ad", id = "" })">@Html.GetResource("Dashboard", "Menu")</a>
+                </li>
+                <li id="ListMenuAdvertiser">
+                    <a class="parent gradient" href="@Url.Action("AccountAdvertisers", "campaign", new { @id = "" })">@Html.GetResource("Advertisers")</a>
+
+                    <ul class="dropdownAdFalcon">
+
+
+                        @if (ArabyAds.Framework.OperationContext.Current.UserInfo
+                     <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+                         ().Permissions != null && ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+                             ().Permissions.Where(x => x == (int)ArabyAds.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.TrafficPlanner).Count() > 0)
+                        {
+                            <li>@Html.ActionLink(Html.GetResource("TrafficPlanner"), "TrafficPlanner", "Campaign")</li>
+                        }
+                        <li><a class="" href="@Url.Action("MasterAppSites", "campaign", new { @id = "" })">@Html.GetResource("ContentLists", "Global")</a></li>
+                    </ul>
+                </li>
+                <li id="ListMenuReports">
+
+                    @{
+                        if (ArabyAds.Framework.OperationContext.Current.UserInfo
+                        <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+                        ().Permissions != null && ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+                        ().Permissions.Where(x => x == (int)ArabyAds.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.ReportSchedule).Count() > 0)
+                        {
+                            <a class="parent gradient" href="@Url.Action("IndexReportsJob", "reports", new { reportType = "ad" })">@Html.GetResource("Reports", "Menu")</a>
+                        }
+                        else
+                        {
+                            <a class="parent gradient" href="@Url.Action("index", "reports", new { reportType = "ad" })">@Html.GetResource("Reports", "Menu")</a>
+
+                        }
+
+
+                    }
+                </li>
+
+                @{if (ArabyAds.Framework.OperationContext.Current.UserInfo
+                          <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+                          ().Permissions != null && ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+                          ().Permissions.Where(x => x == (int)ArabyAds.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.PMPDeal).Count() > 0)
+                    {
+
+
+                        <li id="ListMenuDeals">
+                            <a class="parent gradient">@Html.GetResource("Deals", "PMPDeal")</a>
+                            <ul class="dropdownAdFalcon">
+                                <li>@Html.ActionLink(Html.GetResource("PMPDeals", "Menu").ToString(), "index", "deals", new { @id = "" }, new { })</li>
+                                <li>@Html.ActionLink(Html.GetResource("DealMonitoring", "PMPDeal").ToString(), "index", "dashboard", new { chartType = "deal", id = "" }, null)</li>
+                            </ul>
+
+                        </li>
+                    }
+                }
+
+                @{
+
+                    var externalList = homeBaseController.GetExternalDataProviderQueryResultAllResult().ToList();
+
+                    if (externalList != null && externalList.Count > 0)
+                    {
+
+                        <li id="ListMenuDataProviders">
+                            <a class="parent gradient" href="#">@Html.GetResource("Providers", "Audience")</a>
+                            <ul class="dropdownAdFalcon">
+
+
+                                @foreach (var item in externalList)
+                                {
+
+                                    <li id="DataProviderMenuNameLink">
+                                        <a id="DataProviderMenuName">@item.Name</a>
+
+                                        <ul class="dropdownAdFalcon nextlevel" style="left:190px">
+                                            <li id="DataProviderMenuForgetpassword@(item.ID)" style="display:none">@Html.ActionLink(Html.GetResource("Forgetpassword", "Titles").ToString(), "LandingDataProvider", "DataProvider", new { Id = item.ID, Source = "Forgetpassword" }, new { id = "DataProviderMenuForgetpasswordURL" })</li>
+                                            <li id="DataProviderMenuChangePassword@(item.ID)" style="display:none">@Html.ActionLink(Html.GetResource("ChangePassword", "Titles").ToString(), "LandingDataProvider", "DataProvider", new { Id = item.ID, Source = "ChangePassword" }, new { id = "DataProviderMenuChangePasswordURL" })</li>
+
+                                            <li id="DataProviderMenuLogin@(item.ID)">@Html.ActionLink(Html.GetResource("Login", "Titles").ToString(), "LandingDataProvider", "DataProvider", new { Id = item.ID, Source = "Login" }, new { id = "DataProviderMenuLoginURL" })</li>
+                                            <li id="DataProviderMenuRegister@(item.ID)" style="display:none">@Html.ActionLink(Html.GetResource("Register", "UserInformation").ToString(), "LandingDataProvider", "DataProvider", new { Id = item.ID, Source = "Register" }, new { id = "DataProviderMenuRegisterURL" })</li>
+
+                                            <li id="DataProviderMenuAudiance@(item.ID)" style="display:none">@Html.ActionLink(Html.GetResource("AudienceLists", "Global").ToString(), "LandingDataProvider", "DataProvider", new { Id = item.ID, Source = "Audiance" }, new { id = "DataProviderMenuAudianceURL" })</li>
+
+                                            <li id="DataProviderMenuLogOut@(item.ID)" style="display:none"><a class="" href="#" onclick="return HandleDataProviderMenuLogOut@(item.ID)();">@Html.GetResource("Logout", "UserInformation")</a></li>
+                                        </ul>
+                                    </li>
+
+                                    <text>
+
+                                        <script type="text/javascript">
+
+                                        var transport@(item.ID) = null;
+                            $(document).ready(function () {
+
+
+                             transport@(item.ID) = new easyXDM.Socket(/** The configuration */{
+                            local: "~/scripts/EasyXDM/name.html",
+                                swf:  "/@(item.SiteProviderURL)/scripts/EasyXDM/easyxdm.swf",
+                                remoteHelper: "@(item.SiteProviderURL)/scripts/EasyXDM/name.html",
+
+                            remote: "@(item.SiteProviderURL)/remotetransport.html?username=" + LoggedInUserObject.Email  + "&lang=" + LoggedInUserObject.CurrentLanguage,
+                                onMessage: function (message, origin) {
+                                    /**
+                                    * If we want to do something once the transport is ready then we can place it here
+                                    */
+                                    //debugger
+                                    if (message == "false") {
+                                        $("#DataProviderMenuRegister" +@(item.ID)).show();
+                                        $("#DataProviderMenuLogin" + @(item.ID)).show();
+                                        $("#DataProviderMenuForgetpassword" + @(item.ID)).show();
+                                        $("#DataProviderMenuChangePassword" + @(item.ID)).hide();
+                                        $("#DataProviderMenuLogOut" + @(item.ID)).hide();
+                                        $("#DataProviderMenuAudiance" + @(item.ID)).hide();
+                                    }
+                                    else {
+
+                                            $("#DataProviderMenuRegister" +@(item.ID)).hide();
+                                        $("#DataProviderMenuLogin" + @(item.ID)).hide();
+                                        $("#DataProviderMenuForgetpassword" + @(item.ID)).hide();
+                                        $("#DataProviderMenuChangePassword" + @(item.ID)).show();
+                                        $("#DataProviderMenuLogOut" + @(item.ID)).show();
+                                $("#DataProviderMenuAudiance" + @(item.ID)).show();
+
+                                    }
+
+
+
+
+                            }
+                            });
+
+
+
+
+
+
+                            });
+                                        function HandleDataProviderMenuLogOut@(item.ID)() {
+                                            if (!(typeof HandleDataProviderMenuLogOut === "function")) { transport@(item.ID).postMessage("LogOut"); }
+                                            else if (!(window.remote == undefined)) {
+                                                var result = HandleDataProviderMenuLogOut('@(item.ID)');
+                                                if (result) {
+
+                                                    transport@(item.ID).postMessage("LogOut");
+                                                }
+
+                                            }
+
+                                            else { transport@(item.ID).postMessage("LogOut"); }
+                                                                                return false;
+                                    }
+                                        </script>
+                                    </text>
+
+                                }
+
+
+                            </ul>
+                        </li>
+                    }
+                }
+
+            </ul>*@
+
+    }
+    else if ((ArabyAds.Framework.OperationContext.Current.UserInfo
+    <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+        ().AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DataProvider))
+    {
+
+
+        @*<ul id="menu-nav" style="visibility: @visibilityValue">
+
+
+                <li id="ListMenuDashboard">
+
+
+                    <a class="parent gradient" href="@Url.Action("index", "dashboard", new { chartType = "lmpressionlog" ,id = ""})">@Html.GetResource("Dashboard", "Menu")</a>
+                </li>
+                <li id="ListMenuAdvertiser">
+                    <a class="parent gradient" href="@Url.Action("ImpressionLogs", "User")">@Html.GetResource("ImpressionLogs", "DPP")</a>
+                </li>
+
+            </ul>*@
+    }
+    else
+    {
+        @*<ul id="menu-nav" style="visibility: @visibilityValue">
+                        <li id="ListMenuAdvertiser">
+                            <a class="parent gradient" href="@Url.Action("index", "dashboard", new { chartType = "ad",id = "" })">@Html.GetResource("Advertiser", "Menu").ToString()</a>
+                            <ul class="dropdownAdFalcon">
+                                <li>@Html.ActionLink(Html.GetResource("Dashboard", "Menu").ToString(), "index", "dashboard", new { chartType = "ad", id = "" }, null)</li>
+                                <li>@Html.ActionLink(Html.GetResource("Advertisers"), "AccountAdvertisers", "campaign", new { @id = "" }, new { })</li>
+                                <li><a class="" href="@Url.Action("MasterAppSites", "campaign", new { @id = "" })">@Html.GetResource("ContentLists", "Global")</a></li>
+                                @{
+                                    if (ArabyAds.Framework.OperationContext.Current.UserInfo
+                                    <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+                                    ().Permissions != null && ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+                                    ().Permissions.Where(x => x == (int)ArabyAds.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.ReportSchedule).Count() > 0)
+                                    {
+                                        <li>@Html.ActionLink(Html.GetResource("Reports", "Menu"), "IndexReportsJob", "reports", new { reportType = "ad" }, null)</li>
+
+                                    }
+                                    else
+                                    {
+                                        <li>@Html.ActionLink(Html.GetResource("Reports", "Menu").ToString(), "index", "reports", new { reportType = "ad" }, null)</li>
+
+                                    }
+                                }
+
+
+
+                                @{if (ArabyAds.Framework.OperationContext.Current.UserInfo
+            <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+            ().Permissions != null && ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+            ().Permissions.Where(x => x == (int)ArabyAds.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.PMPDeal).Count() > 0)
+                                    {
+
+                                        <li class="menu-last">
+                                            <a>@Html.GetResource("Deals", "PMPDeal").ToString()</a>
+
+                                            <ul class="dropdownAdFalcon nextlevel" style="left:190px">
+                                                <li>@Html.ActionLink(Html.GetResource("PMPDeals", "Menu").ToString(), "index", "deals", new { @id = "" }, new { })</li>
+                                                <li>@Html.ActionLink(Html.GetResource("DealMonitoring", "PMPDeal").ToString(), "index", "dashboard", new { chartType = "deal", id = "" }, null)</li>
+
+                                            </ul>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </li>
+
+                        @{ if (ArabyAds.Framework.OperationContext.Current.UserInfo
+                  <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+                  ().AccountRole != (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP)
+                            {
+                                <li id="ListMenuPublisher">
+                                    <a class="parent gradient" href="@Url.Action("index", "dashboard", new { chartType = "app",id = "" })">@Html.GetResource("Publisher", "Menu").ToString()</a>
+                                    <ul class="dropdownAdFalcon">
+                                        <li>@Html.ActionLink(Html.GetResource("Dashboard", "Menu").ToString(), "index", "dashboard", new { chartType = "app", id = "" }, null)</li>
+                                        <li>@Html.ActionLink(Html.GetResource("Apps", "Menu").ToString(), "index", "appsite")</li>
+                                        <li>@Html.ActionLink(Html.GetResource("HouseAd", "Menu").ToString(), "index", "HouseAd")</li>
+                                        @{
+                                            if (ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().Permissions != null && ArabyAds.Framework.OperationContext.Current.UserInfo<ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>().Permissions.Where(x => x == (int)ArabyAds.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.ReportSchedule).Count() > 0)
+                                            {
+                                                <li>@Html.ActionLink(Html.GetResource("Reports", "Menu"), "IndexReportsJob", "reports", new { reportType = "app" }, null)</li>
+
+                                            }
+                                            else
+                                            {
+                                                <li>@Html.ActionLink(Html.GetResource("Reports", "Menu"), "index", "reports", new { reportType = "app" }, null)</li>
+
+                                            }
+                                        }
+
+
+                                        <li class="menu-last"><a href='@Url.GetPublicPageUrl("download-sdk.html")'>@Html.GetResource("SDKs", "Menu").ToString()</a></li>
+                                    </ul>
+                                </li>
+                            }
+                        }
+
+
+                    </ul>*@
+    }
+}

@@ -1,0 +1,35 @@
+﻿@{
+    var noqoushUrl = "https://www.arabyads.com/";
+    if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage == "ar")
+    {
+        noqoushUrl = "https://www.arabyads.com/ar/";
+    }
+}
+<div class="footer-container">
+    <div class="center-piece">
+        <div class="floating-right go-right">
+            <div class="data-row iee-float-none copyright-line">
+                @string.Format(Html.GetResource("CopyRight", "Footer"), ArabyAds.Framework.Utilities.Environment.GetServerTime().Year, Html.GetResource("SiteName")) <a href="@noqoushUrl" target="_blank">@Html.GetResource("CompanyName")</a>
+            </div>
+        </div>
+        <div class="floating-left">
+            <a href='@Url.GetPublicPageUrl("about.html")' target="_blank">@Html.GetResource("AboutUs", "Footer") -  </a>
+            @{
+                if ((ArabyAds.Framework.OperationContext.Current.UserInfo
+                <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+                    ().AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP))
+                {
+                    <a href='@Url.Action("UserAgreement", "User")' target="_blank">@Html.GetResource("Privacy", "Footer") - </a>
+
+                }
+                else
+                {
+                    <a href='@Url.GetPublicPageUrl("terms.html", "en")' target="_blank">@Html.GetResource("Privacy", "Footer") - </a>
+
+                }
+            }
+            <a href='@Url.GetPublicPageUrl("contact.html")' target="_blank">@Html.GetResource("ContactUs", "Footer")</a>
+
+        </div>
+    </div>
+</div>

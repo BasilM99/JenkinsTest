@@ -1,0 +1,13 @@
+﻿@{
+    //ViewBag.Title = Html.GetResource("Advertisers", "Global");
+    ViewBag.Title = Html.GetResource("AudienceList", "Global");
+    Layout = "~/Views/Campaign/AudienceList/IndexMaster.cshtml";
+    string DeteleCheckBox = Model.PreventEdit ? "<input type = 'checkbox' name = 'checkedRecords' value = '#= ID #' disabled />" : "<input type = 'checkbox' name = 'checkedRecords' value = '#= ID #' />";
+
+
+}
+
+
+<div id="APP-Root">
+</div>
+<script src="~/ClientReactJs/Dashboard.js.gz" asp-append-version="true"></script>

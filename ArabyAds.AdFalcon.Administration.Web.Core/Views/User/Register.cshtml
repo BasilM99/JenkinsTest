@@ -1,0 +1,23 @@
+﻿@model ArabyAds.AdFalcon.Services.Interfaces.DTOs.Account.UserDto
+@{
+
+    Layout = "~/Views/Shared/MasterLayouts/InnerReact.cshtml";
+}
+    <script>
+        window.Invitationcode = '@ViewData["Invitationcode"]';
+
+        window.requestCode = '@ViewData["requestCode"]';
+        window.AcceptTermsANdCondition = '@ViewData["AcceptTermsANdCondition"]';
+        window.Country =@ViewData["Country"];
+        window.email = '@ViewData["email"]';
+        window.FirstName = '@ViewData["FirstName"]';
+        window.LastName = '@ViewData["LastName"]';
+        window.CompanyName = '@ViewData["CompanyName"]';
+        window.TermsNonDSP = '@JavaScriptEncoder.Default.Encode(Html.Raw(Html.GetResource("AcceptTerms", "Register").Replace("[pub]", Url.GetPublicPageUrl("pubterms.html", "en").ToString()).Replace("[adv]", Url.GetPublicPageUrl("terms.html", "en").ToString())).ToHtmlString())'
+        window.TermsDSP = '@JavaScriptEncoder.Default.Encode(Html.Raw(Html.GetResource("DSPAcceptTerms", "Register").Replace("[pub]", Url.GetPublicPageUrl("pubterms.html", "en").ToString()).Replace("[adv]", Url.GetPublicPageUrl("terms.html", "en").ToString())).ToHtmlString())';
+    </script>
+
+<div id="APP-Root">
+</div>
+
+<script src="~/ClientReactJs/Dashboard.js.gz" asp-append-version="true"></script>

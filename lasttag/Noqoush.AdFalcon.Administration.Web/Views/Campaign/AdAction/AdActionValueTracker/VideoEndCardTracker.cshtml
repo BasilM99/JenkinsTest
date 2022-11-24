@@ -1,0 +1,158 @@
+﻿@model  Noqoush.AdFalcon.Web.Controllers.Model.Campaign.CreativeViewModel
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    var maxAllowedTrackersNumber = 9;
+    var ClickTrackerDuplicatedMsg = '@Html.GetResource("DuplicatedClickTrackerMsg")';
+    function onCopyTrackerEndCard(originalItem, clonedItem) {
+        
+        var textBox = clonedItem.find(":text");
+        var validationSpan = $(clonedItem.find("span[id$='-URLErrorMsg2']")); 
+        validationSpan.hide();
+        validationSpan.attr("id", textBox.attr("id") + "-URLErrorMsg2");
+
+        var validationSpan2 = $(clonedItem.find("span[id$='-URLErrorMsg3']"));
+        validationSpan2.hide();
+        validationSpan2.attr("id", textBox.attr("id") + "-URLErrorMsg3");
+
+        textBox.change(validateClickTrackers);
+        textBox.keyup(function () { onUrlTextKeyUpEndCard("#" + clonedItem.attr("id"), false); });
+
+        var containerId = originalItem[0].id;
+
+        var plusicon = $(clonedItem.find(".plusicon"));
+        plusicon.attr("onclick", "");
+        plusicon.click(function () { EndCardCloneClickTracker("#" + containerId); });
+
+        clonedItem.find("span.field-title").html("&nbsp;");
+
+    }
+
+    function onUrlTextKeyUpEndCard(itemContainer, isShowPlus) {
+        EndCardManagePlusIcon(itemContainer);
+    }
+
+    function EndCardManagePlusIcon(itemContainer) {
+     
+        var container = GetContainerUrlEndCard(itemContainer);
+        var containers = container.parent().find("[id^='EndCardtrackerContainer']");
+        if (containers.length > 0 && containers.length < maxAllowedTrackersNumber) {
+            containers.find(".plusicon").hide();
+            if (validateAllClickTrackersEndCard(itemContainer)) {
+                lastUrl.find(".plusicon").show();
+            }
+            else {
+                lastUrl.find(".plusicon").hide();
+            }
+        }
+    }
+
+    function validateAllClickTrackersEndCard(itemContainer) {
+      
+        var container = GetContainerUrlEndCard(itemContainer);
+        var containers = container.parent().find("[id^='EndCardtrackerContainer']");
+        if (containers.length > 0) {
+            containers.find(".plusicon").hide();
+            lastUrl = containers.last();
+            
+            lastUrlTextBox = GetContainerUrlTextboxEndCard(lastUrl);
+            
+            var validateUrlValue = validateClickTrackers(lastUrlTextBox.attr('id'),true, "EndCardClickTracker");
+            if (validateUrlValue && lastUrlTextBox.val() != '') {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+    function EndCardCloneClickTracker(_containerIdValue) {
+   
+
+        var container = GetContainerUrlEndCard(_containerIdValue);
+        if (validateAllClickTrackersEndCard(_containerIdValue)) {
+            cloneElement(container, onCopyTrackerEndCard, onRemovedClonedTrackerEndCard, true, true, "EndCardtrackerContainer1");
+        }
+    }
+
+    function GetContainerUrlTextboxEndCard(container) {
+        
+        var TextBoxContentEndCard = container.find("input");
+        return TextBoxContentEndCard;
+    }
+
+    function GetContainerUrlEndCard(containerID) {
+        var container = $(containerID);
+        if (container == null || container.length == 0) {
+            containerID = "#" + containerID;
+            container = $(containerID);
+        }
+        return container;
+    }
+
+    function onRemovedClonedTrackerEndCard(itemContainer) {
+        
+        EndCardManagePlusIcon(itemContainer);
+    }
+   
+</script>
+@if (Model.AdCreativeDto.ID == 0 || (Model.AdCreativeDto.AdActionValueVideoEndCard != null && Model.AdCreativeDto.AdActionValueVideoEndCard.Trackers.Count == 0)  ||(Model.AdCreativeDto.AdActionValueVideoEndCard==null))
+{
+    <div class="data-row data-container" id="EndCardtrackerContainer1">
+        <div class="label-container">
+            <span class="field-title ">@Html.GetResource("EndCardTrackingURL", "Video")</span>
+        </div>
+        <div class="field-container">
+
+            <input class="text-box" id="EndCardClickTracker1" name="EndCardClickTracker" type="text" value="" onkeyup="EndCardManagePlusIcon('EndCardtrackerContainer1');">
+            <img name="iconImage" onclick="EndCardCloneClickTracker(EndCardtrackerContainer1) ;" class="plusicon" style="display: none">
+        </div>
+        <span class="validation-arrow field-validation-error" id="EndCardClickTracker1-URLErrorMsg2"
+              style="display: none;"><span class="">@Html.GetResource("UrlMsg")</span></span>
+            <span class="validation-arrow field-validation-error" id="EndCardClickTracker1-URLErrorMsg3"
+                  style="display: none;"><span class="">@Html.GetResource("DuplicatedClickTrackerMsg")</span></span>
+            </div>
+}
+else
+{
+    if (Model.AdCreativeDto.AdActionValueVideoEndCard != null)
+    {
+        int i = 0;
+        int counter = Model.AdCreativeDto.AdActionValueVideoEndCard.Trackers.Count;
+        foreach (var item in Model.AdCreativeDto.AdActionValueVideoEndCard.Trackers)
+        {
+            <div class="data-row data-container" id="EndCardtrackerContainer@(i)">
+                <div class="label-container">
+                    <span class="field-title">
+                        @if (i == 0)
+                        {
+                            @Html.GetResource("EndCardTrackingURL","Video")
+                        }
+                        else
+                        {
+                            <text>&nbsp;</text>
+                        }
+                    </span>
+                </div>
+                <div class="field-container">
+                    <input class="text-box" id="EndCardClickTracker@(i)" name="EndCardClickTracker" type="text" value="@item.URL" onkeyup="EndCardManagePlusIcon('EndCardtrackerContainer@(i)');">
+                    @if (i != 0)
+                    {
+                        <img name="iconImage" onclick="removeClonedElement('EndCardtrackerContainer@(i)');" class="minusicon" style="display: inline;">
+                    }
+                    <img name="iconImage" onclick="EndCardCloneClickTracker(EndCardtrackerContainer@(i));" class="plusicon" style="display: @(i + 1 == counter ? "inline" : "none")">
+                </div>
+                <span class="validation-arrow field-validation-error" id="EndCardClickTracker@(i)-URLErrorMsg2"
+                      style="display: none;"><span class="">@Html.GetResource("UrlMsg")</span></span>
+
+                    <span class="validation-arrow field-validation-error" id="EndCardClickTracker@(i)-URLErrorMsg3"
+                          style="display: none;"><span class="">@Html.GetResource("DuplicatedClickTrackerMsg")</span></span>
+                    </div>
+                    {
+                        i++;
+                    }
+        }
+    }
+}

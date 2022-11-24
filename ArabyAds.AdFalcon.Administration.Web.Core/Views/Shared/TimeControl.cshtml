@@ -1,0 +1,57 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Core.TimeViewModel
+
+@{
+    var hours = new List<SelectListItem>();
+    var mins = new List<SelectListItem>
+           {
+                       new SelectListItem() { Text = "00", Value ="0",Selected = Model.Min.HasValue&&Model.Min.Value==0},
+                       new SelectListItem() { Text = "15", Value ="15",Selected = Model.Min.HasValue&&Model.Min.Value==15},
+                       new SelectListItem() { Text = "30", Value ="30",Selected = Model.Min.HasValue&&Model.Min.Value==30},
+                       new SelectListItem() { Text = "45", Value ="45",Selected = Model.Min.HasValue&&Model.Min.Value==45}
+                   };
+    if (Model.action == null)
+    {
+        mins.Insert(0, new SelectListItem() { Text = "", Value = "" });
+        hours.Insert(0, new SelectListItem() { Text = "", Value = "" });
+    }
+
+    for (int h = 0; h <= 23; h++)
+    {
+        hours.Add(new SelectListItem()
+        {
+            Text = h.ToString(),
+            Value = h.ToString(),
+            Selected = Model.Hour.HasValue && Model.Hour.Value == h ? true : !Model.Hour.HasValue && h == 12 && Model.action == "report" ? true : false
+        });
+    }
+}
+<div id="time-control">
+    @Html.Hidden(Model.Name)
+    <table>
+        <tr>
+            <td></td>
+            <td>
+                @if (!string.IsNullOrEmpty(Model.callBackFunction))
+                    @Html.AdFalconDropDownList(Model.Name + "_hour", hours, new { @class = "time-control-select", onchange = "update_time_from_control('" + Model.Name + "');" + Model.callBackFunction + "(" + @Model.Code + ",'" + Model.Name + "');" })
+                    else
+                        @Html.AdFalconDropDownList(Model.Name + "_hour", hours, new { @class = "time-control-select", onchange = "update_time_from_control('" + Model.Name + "');" })
+
+            </td>
+            <td></td>
+            <td>
+                @if (!string.IsNullOrEmpty(Model.callBackFunction))
+                    @Html.AdFalconDropDownList(Model.Name + "_min", mins, new { @class = "time-control-select", onchange = "update_time_from_control('" + Model.Name + "');" + Model.callBackFunction + "(" + @Model.Code + ",'" + Model.Name + "');" })
+                    else
+                        @Html.AdFalconDropDownList(Model.Name + "_min", mins, new { @class = "time-control-select", onchange = "update_time_from_control('" + Model.Name + "');" })
+
+            </td>
+            <td id="@Model.Name-time-control-clear-td" style="display:none;">
+                <div>
+                    <a class="t-button t-button-icon t-button-bare t-grid-delete" type="button" onclick="reset_time_control('@Model.Name');">
+                        <span class="t-icon t-delete"></span>
+                    </a>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

@@ -1,0 +1,19 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Pgw.ReceiptViewModel
+@{
+    ViewBag.Title = Model.Title;
+
+    Layout = "~/Views/Shared/MasterLayouts/InnerReact.cshtml";
+}
+
+<script>
+
+    window.TransactionFailedMessage= '@Model.Message';
+</script>
+
+<div id="APP-Root">
+</div>
+
+<script src="~/ClientReactJs/Dashboard.js.gz" asp-append-version="true"></script>
+
+
+

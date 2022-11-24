@@ -1,0 +1,55 @@
+﻿@model IList<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeUnitDto>
+@foreach (var adCreativeUnitDto in Model)
+{
+	
+		@await Html.PartialAsync("Summary/CreativeUnit/Units/BannerUnit", adCreativeUnitDto)
+
+		@if (!string.IsNullOrEmpty(adCreativeUnitDto.ImpressionTrackerRedirect))
+		{
+			<div class="impression-tracker-high MarginBannerAdSummaryRow2" >
+				<div class="label-container impression-tracker-URL-lable-width">
+					<span class="field-title required-field">
+						@Html.GetResource("ImpressionTrackerRedirect", "CreativesSettings"):
+					</span>
+				</div>
+				<div class="field-container">
+					<span class="side-text">@adCreativeUnitDto.ImpressionTrackerRedirect</span>
+				</div>
+			</div>
+
+
+
+		}
+
+
+
+		@if (!string.IsNullOrEmpty(adCreativeUnitDto.ImpressionTrackerJSRedirect))
+		{
+			@Html.Hidden((string.Format("{0}-ImpressionTrackerJSRedirect", adCreativeUnitDto.ID)), adCreativeUnitDto.ImpressionTrackerJSRedirect, new { @id = (string.Format("{0}-ImpressionTrackerJSRedirect", adCreativeUnitDto.ID)) })
+			<div class="impression-tracker-high MarginBannerAdSummaryRow3" >
+				<div class="label-container">
+
+
+		            <span class="field-title required-field">
+		                @Html.GetResource("ImpressionTrackerScript"):
+		            </span>
+				</div>
+
+
+				<div class="field-container">
+
+					<span class="side-text">
+						<a id="dialoglnk" href="javascript:void(0)" ImpressionTrackerJSRedirectName="@(string.Format("{0}-ImpressionTrackerJSRedirect", adCreativeUnitDto.ID))" class="clear-form impression-tracker-url Impression-Tracker-padding-adObs" style="margin: unset;margin-left: -10px;" Mo onclick="OpenImpressionTrackerDialog(this)"></a>
+					</span>
+
+				</div>
+
+
+			</div>
+
+
+
+		}
+
+	
+}

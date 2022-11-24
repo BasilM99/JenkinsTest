@@ -1,0 +1,106 @@
+﻿@*@using ArabyAds.AdFalcon.Domain.Model.Campaign AhmadComment*@
+@using ArabyAds.Framework.DomainServices
+@*@using ArabyAds.AdFalcon.Domain.Model.Account AhmadComment*@
+
+
+@{
+
+    var selectItems = Enum.GetValues(typeof(ArabyAds.AdFalcon.Domain.Common.Model.Account.UserType)).Cast<ArabyAds.AdFalcon.Domain.Common.Model.Account.UserType>().Select(p => new SelectListItem() { Text = p.ToText(), Value = ((int)p).ToString() }).ToList();
+    //selectItems.Insert(0, new SelectListItem() { Text = Html.GetResource("Select", "Global"), Value = string.Empty });
+    selectItems.RemoveAt(0); 
+
+}
+
+
+<div id="AdvertisersDialog" class="adfalcon-dialog" title="@Html.GetResource("UserTypeSelection", "Invitation")" style="display:none;overflow:visible">
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field" id="NameAdvertisersDialog">@Html.GetResource("Email", "AdFund")</span>
+        </div>
+        <div class="field-container">
+            @Html.TextBox("email-text", string.Empty, new { @class = "", @disabled = "disabled", @readonly = "readonly" })
+            @*<span id="email-text"></span>*@
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("UserType", "Invitation")</span>
+        </div>
+
+        <div class="field-container">
+
+            @Html.DropDownList("UserTypesDDL", selectItems) 
+
+        </div>
+
+    </div>
+    <div id="AdvertisersListDllDive" class="data-row data-container" style="display:none;">
+
+
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("Advertisers", "Global")</span>
+        </div>
+        <div class="field-container">
+
+            <select id="AdvertisersListDll" name="AdvertisersListDll" class="js-example-theme-multiple js-states form-control select2-hidden-accessible sss3 normal" style="width: 299px;" multiple="" tabindex="-1" aria-hidden="true"></select>
+
+        </div>
+
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+
+
+
+		$("#AdvertisersListDll").select2({
+
+							placeholder: "@Html.GetResource("SelectAdvertiserRequired", "Advertiser")",
+							tags: false,
+			dropdownParent: $("#AdvertisersListDll").parent(),
+            multiple: true,
+						tokenSeparators: [',', ' '],
+					allowClear: true,
+						closeOnSelect:true,
+						ajax: {
+				delay:250,
+							url: AdvaudieceListUrl,
+                dataType: "json",
+						type: "GET",
+
+                data: function (params) {
+
+                    var queryParameters = {
+						q: params.term,
+
+						AdvAccId: GlobalAdvertiserAccountId
+                    }
+                    return queryParameters;
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                text: item.Name,
+								id: item.Id
+                            }
+                        })
+                    };
+                }
+
+
+
+            }
+
+        });
+
+        $('#UserTypesDDL').on('change', function () {
+            if ($('#UserTypesDDL').val() == "2") {
+                $('#AdvertisersListDllDive').show();
+            } else {
+                $('#AdvertisersListDllDive').hide();
+            }
+        });
+    });
+</script>

@@ -1,0 +1,263 @@
+﻿@model ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.AdGroupDynamicBiddingConfigDto
+@{
+    if (ViewContext.FormContext == null)
+    {
+        ViewContext.FormContext = new FormContext();
+    }
+}
+<script language="javascript" type="text/javascript">
+
+    $( document ).ready(function() {
+
+        localInitilizeDynamic();
+    });
+	function localInitilizeDynamic() {
+
+       
+    };
+
+    function validationDynamic ()
+    {
+        var result = true;
+        var result_CostElementDD = true;
+        var result_Value = true;
+       
+        
+		if ($("#BidOptimizationTypeList").val()=='0')
+        {
+			$("#required_sign_BidType").show();
+            result_CostElementDD =false;
+        }
+     
+		
+		if ($("#BidOptimizationValue").val() == '' || parseFloat($("#BidOptimizationValue").val()) <= 0)
+        {
+			$("#required_sign_BidOptimizationValue").show();
+            result_Value =false;
+        }
+		if ($("#DefaultBidPrice").val() == '' || parseFloat($("#DefaultBidPrice").val()) <= 0) {
+			$("#required_sign_DefaultBidPrice").show();
+			result_Value = false;
+		} 
+
+		if ($("#MaxBidPrice").val() == '' || parseFloat($("#MaxBidPrice").val()) <= 0) {
+			$("#required_sign_MaxBidPrice").show();
+			result_Value = false;
+		}
+
+		if ($("#MinBidPrice").val() == '' || parseFloat($("#MinBidPrice").val()) <= 0) {
+			$("#required_sign_MinBidPrice").show();
+			result_Value = false;
+		}
+		if ($("#BidStep").val() == '' || parseFloat($("#BidStep").val()) <= 0) {
+			$("#required_sign_BidStep").show();
+			result_Value = false;
+		}
+        
+        if( result_Value &&  result_CostElementDD)
+        {
+            result = true;
+        }else
+        {
+            result = false;
+        }
+
+        return result;
+    }
+
+    function reset_dynamic_element() {
+		$(".BidOptimizationTypeList").hide();
+    
+	
+      
+		//$('#BidOptimizationTypeList').val('0');
+		$("#AdGruopDynamicBiddingID").val('0');
+
+		$('#BidOptimizationValue').val('0');
+		$('#DefaultBidPrice').val('0');
+		$('#MaxBidPrice').val('0');
+		$('#MinBidPrice').val('0');
+		$('#BidStep').val('0');
+		$('#KeepBiddingAtMinimum').val(false);
+
+
+		
+		
+		
+		
+		
+		
+    
+    }
+    function DynamicChanged(elem) {
+	
+
+		$(".BidOptimizationTypeList").hide();
+   
+		dynamic_bidding_type=$("#BidOptimizationTypeList").val();
+		switch (dynamic_bidding_type) {
+            case 1: //percentage
+                $('[name="dynamic_type_sign"]').text('%');
+                break;
+            case 2: //fixed
+                $('[name="dynamic_type_sign"]').text('$');
+                break;
+            default:
+                $('[name="dynamic_type_sign"]').text('$');
+        }
+		setDefaultValueDynamic();
+
+    
+      
+	}
+
+	function setDefaultValueDynamic() {
+
+		switch (dynamic_bidding_type) {
+			case 1: //percentage
+				$('#BidOptimizationValue').val('5');
+				$('#DefaultBidPrice').val('');
+				$('#MaxBidPrice').val('');
+				$('#MinBidPrice').val('');
+				$('#BidStep').val('0.1');
+				//BidOptimizationTypeList
+				break;
+			case 2: //fixed
+				$('#BidOptimizationValue').val('5');
+				$('#DefaultBidPrice').val('');
+				$('#MaxBidPrice').val('');
+				$('#MinBidPrice').val('');
+				$('#BidStep').val('0.1');
+				break;
+			default:
+				$('#BidOptimizationValue').val('5');
+				$('#DefaultBidPrice').val('');
+				$('#MaxBidPrice').val('');
+				$('#MinBidPrice').val('');
+				$('#BidStep').val('0.1');
+		}
+
+	}
+	function onValueChange_DynamicBiddingUpdatePerc(e,elementname, percentaceege) {
+
+		var value = $(e).val();
+
+		$("#" + elementname).val((parseInt(value) * (percentaceege / 100)).toFixed(2));
+
+	}
+
+
+
+
+
+  
+</script>
+<div class="section-form-inner-container">
+
+    @Html.Hidden("AdGruopDynamicBiddingID")
+   
+	<div id="DynamicBiddingfrom">
+
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("Type", "Global")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconDropDownList("BidOptimizationTypeList", (ViewData["BidOptimizationTypeList"] as List<SelectListItem>), new { onchange = "DynamicChanged(this);" })
+			</div>
+			<div class="field-container">
+				<span class="field-validation-error" data-valmsg-for="Code" data-valmsg-replace="true" style="display:none;padding-top:5px;" name="required_sign_BidType" id="required_sign_BidType">
+					<span htmlfor="Code" generated="true" class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span>
+				</span>
+			</div>
+		</div>
+
+		<div class="data-row data-container">
+			<div class="label-container required-field">
+				<span class="field-title ">@Html.GetResource("BidOptimizationValue", "DynamicBidding")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconTextBox("BidOptimizationValue", Model == null ? string.Empty : Model.BidOptimizationValue.ToString("F2"), new { maskType = "decimal", onkeypress = "onValuepress_DynamicBidding(event,this)", onchange = "onValueChange_DynamicBidding(this);" })
+				<span name="dynamic_type_sign" class="side-text">$</span>
+			</div>
+			<div class="field-container">
+				<span class="field-validation-error requiredSignC" data-valmsg-for="Code" data-valmsg-replace="true" style="display:none;padding-top:5px;" name="required_sign_BidOptimizationValue" id="required_sign_BidOptimizationValue">
+					<span htmlfor="Code" generated="true" class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span>
+				</span>
+			</div>
+		</div>
+
+
+
+		<div class="data-row data-container">
+			<div class="label-container required-field">
+				<span class="field-title ">@Html.GetResource("MaxBidPrice", "DynamicBidding")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconTextBox("MaxBidPrice", Model == null ? string.Empty : Model.MaxBidPrice.ToString("F2"), new { maskType = "decimal", onchange= "onValueChange_DynamicBiddingUpdatePerc(this,'DefaultBidPrice',50);", onkeypress = "onpress_DynamicBidding(event,this,'required_sign_MaxBidPrice');" })
+				<span name="dynamic_type_sign" class="side-text">$</span>
+			</div>
+			<div class="field-container">
+				<span class="field-validation-error requiredSignC" data-valmsg-for="Code" data-valmsg-replace="true" style="display:none;padding-top:5px;" name="required_sign_MaxBidPrice" id="required_sign_MaxBidPrice">
+					<span htmlfor="Code" generated="true" class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span>
+				</span>
+			</div>
+		</div>
+
+
+		<div class="data-row data-container">
+			<div class="label-container required-field">
+				<span class="field-title ">@Html.GetResource("DefaultBidPrice", "DynamicBidding")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconTextBox("DefaultBidPrice", Model == null ? string.Empty : Model.DefaultBidPrice.ToString("F2"), new { maskType = "decimal", onkeypress = "onpress_DynamicBidding(event,this,'required_sign_DefaultBidPrice');" })
+				<span name="dynamic_type_sign" class="side-text">$</span>
+			</div>
+			<div class="field-container">
+				<span class="field-validation-error requiredSignC" data-valmsg-for="Code" data-valmsg-replace="true" style="display:none;padding-top:5px;" name="required_sign_DefaultBidPrice" id="required_sign_DefaultBidPrice">
+					<span htmlfor="Code" generated="true" class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span>
+				</span>
+			</div>
+		</div>
+		<div class="data-row data-container">
+			<div class="label-container required-field">
+				<span class="field-title ">@Html.GetResource("MinBidPrice", "DynamicBidding")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconTextBox("MinBidPrice", Model == null ? string.Empty : Model.MinBidPrice.ToString("F2"), new { maskType = "decimal", onkeypress = "onpress_DynamicBidding(event,this,'required_sign_MinBidPrice');" })
+				<span name="dynamic_type_sign" class="side-text">$</span>
+			</div>
+			<div class="field-container">
+				<span class="field-validation-error requiredSignC" data-valmsg-for="Code" data-valmsg-replace="true" style="display:none;padding-top:5px;" name="required_sign_MinBidPrice" id="required_sign_MinBidPrice">
+					<span htmlfor="Code" generated="true" class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span>
+				</span>
+			</div>
+		</div>
+		<div class="data-row data-container">
+			<div class="label-container required-field">
+				<span class="field-title ">@Html.GetResource("BidStep", "DynamicBidding")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconTextBox("BidStep", Model == null ? string.Empty : Model.BidStep.ToString("F2"), new { maskType = "decimal", onkeypress = "onpress_DynamicBidding(event,this,'required_sign_BidStep');" })
+				<span name="dynamic_type_sign" class="side-text">$</span>
+			</div>
+			<div class="field-container">
+				<span class="field-validation-error requiredSignC" data-valmsg-for="Code" data-valmsg-replace="true" style="display:none;padding-top:5px;" name="required_sign_BidStep" id="required_sign_BidStep">
+					<span htmlfor="Code" generated="true" class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span>
+				</span>
+			</div>
+		</div>
+
+		<div class="data-row data-container">
+			<div class="label-container required-field">
+				<span class="field-title ">&nbsp;</span>
+			</div>
+			<div class="field-container">
+				@Html.GetCheckBox("KeepBiddingAtMinimum", Html.GetResource("KeepBiddingAtMinimum", "DynamicBidding"), Model.KeepBiddingAtMinimum)
+			</div>
+
+		</div>
+
+
+	</div>
+</div>

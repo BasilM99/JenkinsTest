@@ -1,0 +1,55 @@
+﻿@model  ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeSummaryDto
+<div id="urlDetailsContainer">
+
+    @*<div class="data-row info-container last-container">
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("CTAURL")</span>
+            </div>
+            <div class="field-container">
+                <a class="side-text" href="@Model.ActionValue.Value" target="_tab">@Model.ActionValue.Value</a>
+            </div>
+        </div>
+    </div>*@
+    @*<div class="data-row info-container last-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("DisplayURL")</span>
+                </div>
+                <div class="field-container">
+                    <a class="side-text" href="@Model.ActionValue.Value" target="_tab">@Model.ActionValue.Value2</a>
+                </div>
+            </div>
+        </div>*@
+    @*<h2>
+
+        </h2>*@
+    @{
+        <div class="data-row data-container">
+            <h2>
+                @*Instream Video Tracker*@
+                @Html.GetResource("InsteamVideoTracker", "Campaign")
+            </h2>
+        </div>
+        foreach (var creativeUnit in Model.CreativeUnitsContent)
+        {
+            foreach (var item in creativeUnit.InStreamVideoCreativeUnit.ImpressionTrackerRedirectList)
+            {
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">
+
+                        </span>
+                    </div>
+                    <div class="field-container">
+                        @await Html.PartialAsync("Summary/AdAction/AdActionValueTracker/InstreamVideoTracker", item)
+
+                    </div>
+                </div>
+            }
+        }
+
+
+    }
+  
+</div>

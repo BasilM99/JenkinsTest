@@ -1,0 +1,67 @@
+﻿@model ArabyAds.AdFalcon.Services.Interfaces.DTOs.Account.UserDto
+
+
+
+@{
+	ViewBag.Title = Html.GetResource("EditInformation", "Titles");
+	ViewData.Add("status", "edit");
+}
+<script type="text/javascript">
+
+
+
+	 //function validateTxt() {
+		//
+		//    $("input[type='text']").change(function () {
+		//
+		//        var textbobvalue = $(this).val();
+
+
+		//        textbobvalue = textbobvalue.replace(/</g, "&lt;");
+		//        textbobvalue = textbobvalue.replace(/>/g, "&gt;");
+		//        textbobvalue=textbobvalue.trim();
+		//        $(this).val(textbobvalue);
+		//    });
+		//}
+		//$(document).ready(function () {
+
+		//    //validateTxt();
+		//});
+</script>
+@using (Html.BeginForm("edit", "user", FormMethod.Post, new { id = "editUserInfo", name = "editUserInfo" }))
+{
+	@Html.HiddenFor(P => Model.Id)
+	@Html.HiddenFor(P => Model.MyUsers)
+	@Html.Partial("userinfo", ViewData.Model, ViewData)
+<div class="data-row button-container">
+	<input value="@Html.GetResource("Save", "Global")" id="saveBtn" type="submit" class="primary-btn" />
+	@{
+		if (Model.MyUsers)
+		{
+			<input type="button" value='@Html.GetResource("Close", "Commands")' class="btn" onclick="redirect('@(string.IsNullOrWhiteSpace(Request.QueryString["returnUrl"]) ? Url.Action("MyUsers", "User") : Request.QueryString["returnUrl"])')" />
+			}
+		}
+		</div>
+}
+
+@{
+	if (!Model.MyUsers)
+	{
+		<h2>
+			@Html.GetResource("ChangePassword", "Edit")
+		</h2>
+		<div class="section-form-container">
+			<div class="section-form-inner-container last-container">
+				@Html.GetResource("ChangePasswordMessage", "Edit") @Html.ActionLink(@Html.GetResource("ChangePasswordNow", "Edit"), "changepassword", "user", null, new { Class = "reverse-link" })
+			</div>
+		</div>
+		<div class="section-footer"></div>
+		<br>
+		@*<h2>
+				@Html.GetResource("CancelAccount", "Edit")
+			</h2>
+			<div class="section-form-inner-container last-container">
+				@Html.GetResource("CancelAccountMessage", "Edit") @Html.ActionLink(@Html.GetResource("CancelAccount", "Edit"), "delete", "user",null, new { Class = "reverse-link" })
+			</div>*@
+	}
+}

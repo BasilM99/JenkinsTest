@@ -1,0 +1,234 @@
+﻿<span id='@ViewData["ControlId"]pagilbl' class="floating-left" />
+<script type="text/javascript">
+    if(typeof(pagingControls) == "undefined")
+    {
+        
+        var pagingControls = [];
+    }
+    var currentObject =
+          {
+              id:'@ViewData["ControlId"]',
+              pagelimit : '5',
+              pageSize : @Noqoush.AdFalcon.Web.Controllers.Utilities.Config.PageSize,
+              fpage : '1', //first page
+              lpage : 5,// last page number by default can be viewed( 1-2-3 Next> )
+              actpage : 1, // active page
+              rows : 0, // Total number of rows returned by query
+              totalpage : 1,// total number of pages in pagination
+              currentpage : 1,// current paginated page
+              currentDivPaging :'@ViewData["ControlId"]'+'pagilbl',
+              bindListFunct  : '@ViewData["BindListFunct"]'};
+
+    pagingControls.push(currentObject);
+
+    function getCurentObject(controlId)
+    {
+        for (i=0; i < pagingControls.length; i++)
+        {
+            if(pagingControls[i].id == controlId )
+                return pagingControls[i];
+        }
+        return null;
+    }
+
+    function resetPageination(controlID) {
+        
+        getCurentObject(controlID).pagelimit=3;
+        getCurentObject(controlID).pageSize= @Noqoush.AdFalcon.Web.Controllers.Utilities.Config.PageSize;
+        getCurentObject(controlID).fpage =1; //first page
+        getCurentObject(controlID).lpage = 3;// last page number by default can be viewed( 1-2-3 Next> )
+        getCurentObject(controlID).actpage= 1; // active page
+        getCurentObject(controlID).rows = 0;// Total number of rows returned by query
+        getCurentObject(controlID).totalpage = 1;// total number of pages in pagination
+        getCurentObject(controlID).currentpage = 1;// current paginated page
+        // getCurentObject(controlID).currentDivPaging ='@ViewData["ControlId"]'+'pagilbl';
+        document.getElementById(getCurentObject(controlID).currentDivPaging).innerHTML ='';
+    }
+
+    function loadPage(pageNum,controlID) {
+        loadTable(pageNum,controlID);
+    }
+
+    function getNumberOfRows(totalCount,controlID) {
+        //currentControlObject= getCurentObject(controlID)
+        getCurentObject(controlID).rows = totalCount;
+        if (totalCount > getCurentObject(controlID).pagelimit) {
+            pageRange(controlID);
+            renderPagination(controlID);
+        }
+    }
+
+    function pageRange(controlID) {
+        if ( getCurentObject(controlID).rows >  getCurentObject(controlID).pagelimit) {
+            getCurentObject(controlID).totalpage = Math.ceil( getCurentObject(controlID).rows /  getCurentObject(controlID).pageSize);
+        }
+        else
+            getCurentObject(controlID).totalpage = 1;
+    }
+
+    function renderPagination(controlID) {
+
+        var subcontent = '', content = '';
+
+        if ( getCurentObject(controlID).totalpage <=  getCurentObject(controlID).lpage)
+        {
+            getCurentObject(controlID).lpage =  getCurentObject(controlID).totalpage;
+        }
+        if (getCurentObject(controlID).fpage > 1 && getCurentObject(controlID).totalpage >= getCurentObject(controlID).lpage) {
+            subcontent += linkFirstPage(controlID);
+            subcontent += linkPrevious(getCurentObject(controlID).actpage - 1,controlID);
+            subcontent += linkPrevView(getCurentObject(controlID).fpage - 1,controlID);
+        }else
+        {
+
+
+            subcontent += linkFirstPageNotActive();
+            subcontent += linkPreviousNotActive();
+
+        }
+
+        subcontent+="<div class='t-numeric'>";
+
+        var lastPageIndex =  getCurentObject(controlID).fpage;
+        for (var i = getCurentObject(controlID).fpage; i <= getCurentObject(controlID).lpage; i++) {
+            if (i == getCurentObject(controlID).actpage)
+                subcontent += spanActive(i);
+            else
+                subcontent += linkGeneral(i,controlID);
+            lastPageIndex++;
+        }
+
+        if( getCurentObject(controlID).totalpage >  getCurentObject(controlID).lpage)
+        {
+            subcontent += linkNextView(lastPageIndex,controlID);
+            subcontent += linkNext( getCurentObject(controlID).actpage + 1,controlID);
+            subcontent += linkLastPage( getCurentObject(controlID).totalpage,controlID);
+        }
+        else{
+            subcontent += linkNextViewNotActive();
+            subcontent += linkNextNotActive();
+            subcontent += linkLastPageNotActive();
+        }
+        subcontent+="</div>";
+        content = divMain(subcontent);
+        document.getElementById(getCurentObject(controlID).currentDivPaging).innerHTML = content;
+    }
+
+    function linkGeneral(d,controlID) {
+        return "<a href=\"javascript:getList(" + d + ",'" +  controlID +  "')\" class=\"button2\" style='font-size: 10px;'>" + d + "</a>\n";
+    }
+
+    function spanActive(d) {
+        return "<span class=\"t-state-active\">" + d + "</span>\n";
+    }
+
+    function linkPrevView(d,controlID) {
+        return "<a href=\"javascript:updatePrevPage(" + d + ",'" +  controlID + "')\" class=\"t-link\">---</a>\n";
+    }
+    function linkPreviousNotActive(d) {
+        return "<a class=\"t-link  t-state-disabled\"><span class='t-icon t-arrow-prev'>Previous</span></a>\n";
+    }
+    function linkFirstPageNotActive(d) {
+        return "<a class=\"t-link t-state-disabled\"><span class=\"t-icon t-arrow-first\" >First Page</span></a>\n";
+
+    }
+    function linkNext(d,controlID) {
+        return "<a href=\"javascript:updateNext(" + d + ",'" +  controlID + "')\" class=\"t-link\"><span class='t-icon t-arrow-next' style='background-position-y: -188px !important;'>Next</span></a>\n";
+    }
+    function linkNextView(d,controlID) {
+        return "<a href=\"javascript:updateNextPage(" + d + ",'" +  controlID + "')\" class=\"t-link\">---</a>\n";
+    }
+    function linkNextNotActive(d,controlID) {
+        return "<a class=\"t-link t-state-disabled\"><span class=\"t-icon t-arrow-next\">Next</span></a>\n";
+    }
+    function linkNextViewNotActive(d,controlID) {
+        return "<a class=\"t-link t-state-disabled\">---</a>\n";
+    }
+    function linkPrevious(d,controlID) {
+        return "<a href=\"javascript:updatePrev(" + d + ",'" +  controlID + "')\" class=\"t-icon t-arrow-prev\">Previous</a>\n";
+    }
+    function linkFirstPage(controlID) {
+        return "<a href=\"javascript:updateFirst(1,'" + controlID +"')\" class=\"t-icon t-arrow-first\">First Page</a>\n";
+    }
+    function linkLastPage(d,controlID) {
+        return "<a href=\"javascript:updateNextPage(" + d + ",'" +  controlID + "')\" class=\"t-link\"><span class=\"t-icon t-arrow-last\" style='background-position-y: -188px !important;'>Last</span></a>\n";
+    }
+    function linkLastPageNotActive() {
+        return "<a class=\"t-link t-state-disabled\"><span class=\"t-icon t-arrow-last\">Last</span></a>\n";
+    }
+    function divMain(d) {
+
+        return "<div class='t-grid-pager t-grid-bottom'style='width:@ViewData["Width"]'><div class='t-pager t-reset'>" + d + "</div></div>\n";
+
+    }
+
+    function updateNext(counter,controlID) {
+        if (counter >  getCurentObject(controlID).lpage &&  getCurentObject(controlID).totalpage >  getCurentObject(controlID).lpage) {
+            getCurentObject(controlID).fpage = counter;
+            getCurentObject(controlID).lpage = counter +  getCurentObject(controlID).pagelimit;
+        }
+        if (counter <= getCurentObject(controlID).totalpage)
+            getList(counter,controlID);
+    }
+    function updateNextPage(counter,controlID) {
+
+        if ( counter >  getCurentObject(controlID).lpage &&  getCurentObject(controlID).totalpage >  getCurentObject(controlID).lpage) {
+            getCurentObject(controlID).fpage = counter;
+            getCurentObject(controlID).lpage = counter +  getCurentObject(controlID).pagelimit;
+        }
+        if (counter <=  getCurentObject(controlID).totalpage)
+            getList(counter,controlID);
+    }
+    function updatePrevPage(counter,controlID) {
+        if( counter <=  getCurentObject(controlID).pagelimit)
+        {
+            getCurentObject(controlID).fpage=1;
+            getCurentObject(controlID).lpage= getCurentObject(controlID).pagelimit;
+        }else
+        {
+            getCurentObject(controlID).fpage = counter -  getCurentObject(controlID).pagelimit + 1;
+            getCurentObject(controlID).lpage = counter;
+        }
+        getCurentObject(controlID).actpage=  getCurentObject(controlID).fpage;
+        if (counter <=  getCurentObject(controlID).totalpage)
+            getList(counter,controlID);
+    }
+    function updatePrev(counter,controlID) {
+        if( counter <=  getCurentObject(controlID).pagelimit)
+        {
+            getCurentObject(controlID).fpage=1;
+            getCurentObject(controlID).lpage= getCurentObject(controlID).pagelimit;
+        }else
+        {
+            if (counter <  getCurentObject(controlID).fpage) {
+                getCurentObject(controlID).fpage = counter -  getCurentObject(controlID).pagelimit + 1;
+                getCurentObject(controlID).lpage = counter;
+            } else {
+                getCurentObject(controlID).actpage--;
+            }
+        }
+        getCurentObject(controlID).actpage=  getCurentObject(controlID).fpage;
+        getList( getCurentObject(controlID).actpage,controlID);
+    }
+    function updateFirst(counter,controlID) {
+
+        getCurentObject(controlID).fpage = counter;
+        getCurentObject(controlID).actpage = counter;
+        getCurentObject(controlID).lpage = getCurentObject(controlID).pagelimit;
+        getList( getCurentObject(controlID).actpage,controlID);
+    }
+
+    function getList(currnum,controlID) {
+        getCurentObject(controlID).currentpage = currnum;
+
+        getCurentObject(controlID).actpage = currnum;
+
+        loadPage(currnum,controlID);
+    }
+
+    function loadTable(offset,controlID) {
+        //   eval ("@ViewData["BindListFunct"]" + "('"+ offset +"','"+  getCurentObject(controlID).pageSize+"')");
+        eval ( getCurentObject(controlID).bindListFunct + "('"+ offset +"','"+  getCurentObject(controlID).pageSize+"')");
+        // rebindList;bindListFunct
+    }
+</script>

@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("AdCreative", "ThanksTitle");
+    ViewData.Add("HideCreative", false);
+}
+@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeSummaryDto
+           @{
+               ViewData["ControllerName"] = Model.Campaign.CampaignTypeEnum == (int)Noqoush.AdFalcon.Domain.Common.Model.Campaign.CampaignType.Normal ? "Campaign" : "HouseAd";
+           }
+
+
+<script>
+
+		      GlobalAdvertiserId = '@Model.AdvertiserId';
+	 GlobalAdvertiserAccountId = '@Model.AdvertiserAccountId';
+</script>
+<div class="section-form-container">
+@Html.Partial("Summary/CampaignSummary", Model.Campaign)
+@Html.Partial("Summary/AdGroupSummary", Model.Group)
+    <h2>@Html.GetResource("AdCreation", "Titles") @Html.ActionLink(Html.GetResource("Edit", "Commands"), "Creative", ViewData["ControllerName"].ToString(), new { id = Model.Campaign.ID, adGroupId = Model.Group.ID, adId = Model.ID, returnUrl = Request.RawUrl }, new { @class = "grid-tool-tip-edit floating-right ie-edit-ads" })</h2>
+
+@Html.Partial("Summary/AdSummary", Model)
+</div>
+
+<div class="section-footer">
+</div>
+<div class="data-row go-center">
+   
+@if (Model.TypeId != Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.TrackingAd)
+    {
+    <input type="button" value="@Html.GetResource("AddNewAds", "Commands")" class="primary-btn" onclick="redirect('@(Url.Action("Creative", ViewBag.ControllerName, new { id = Model.Campaign.ID, adGroupId = Model.Group.ID,returnurl=Request.QueryString["returnUrl"]}))')"/>
+
+    }
+else
+{
+    <input type="button" value="@Html.GetResource("AddNewTrackerAd", "Commands")" class="primary-btn" onclick="redirect('@(Url.Action("Creative", ViewBag.ControllerName, new { id = Model.Campaign.ID, adTypeId = (int)Model.TypeId, adGroupId = Model.Group.ID, returnurl = Request.QueryString["returnUrl"] }))')" />
+
+
+}
+
+    <input type="button" value="@Html.GetResource("Close", "Commands")" class="btn" onclick="redirect('@(string.IsNullOrWhiteSpace(Request.QueryString["returnUrl"]) ? Url.Action("Ads", ViewBag.ControllerName, new { id = Model.Campaign.ID, adGroupId = Model.Group.ID }) : Request.QueryString["returnUrl"])')"/>
+</div>
+

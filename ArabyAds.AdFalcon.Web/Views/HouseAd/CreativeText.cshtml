@@ -1,0 +1,34 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.Campaign.TileImageViewModel
+<script>
+
+    jQuery(document).ready(
+        function () {
+            var tileImgeList = jQuery('#tileImage');
+            tileImgeList.change(TileImageChanged);
+            //tileImgeList.val('@Model.SelectedValue');
+            @if (Model.SelectedValue != "-1")
+            {
+            <text>TileImageChanged();</text>
+            }
+        }
+    );
+</script>
+<div class="section-form-inner-container info-container">
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field campaign-upload">@Html.GetResource("TileImage")</span>
+        </div>
+        <div class="field-container">
+            <div class="floating-left campaign-upload">
+            </div>
+            <div class="floating-left ">@Html.DropDownList("tileImage", Model.TileImageList)
+            </div>
+        </div>
+    </div>
+    @{
+        foreach (var uploadViewModel in Model.TileImages)
+        {
+            @Html.Partial("TileImage", uploadViewModel)
+        }
+    }
+</div>

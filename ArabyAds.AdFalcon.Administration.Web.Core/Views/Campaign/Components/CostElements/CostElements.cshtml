@@ -1,0 +1,428 @@
+﻿
+@{
+    ViewBag.Title = Html.GetResource("IndexAppSite", "Titles");
+}
+@using ArabyAds.AdFalcon.Administration.Web.Controllers.Core.ViewComponents.Campaign
+
+@model ArabyAds.AdFalcon.Administration.Web.Controllers.Model.CostElemnts.CostElementsListViewModel
+<script language="javascript" type="text/javascript">
+    var value_error = '@Html.GetResource("ValueError", "CostElements")';
+    var cost_element_error = '@Html.GetResource("CostElementError", "CostElements")';
+    var costElementURL = '@Url.Action("CostElement", new { id = ViewContext.RouteData.Values["id"], adGroupId = ViewContext.RouteData.Values["adGroupId"] })'; //'/Campaign/CostElement';
+    var saveCostElementURL = '@Url.Action("SaveCostElement", new { id = ViewContext.RouteData.Values["id"], adGroupId = ViewContext.RouteData.Values["adGroupId"] })';
+    var campaignId=@(ViewContext.RouteData.Values["id"]);
+    var adGroupId=@(ViewContext.RouteData.Values["adGroupId"]);
+
+
+    var Partyurl = '@Url.Action("search", "Party")';
+    var FirstTimePartyurl =false;
+    var close = "@Html.GetResource("Close","Commands")";
+    var yesbtn = "@Html.GetResource("Yes", "Global")";
+    var nobtn = "@Html.GetResource("No", "Global")";
+    var confirmation  = "@Html.GetResource("CostElementConfriamtion", "CostElement")";
+
+    var ConfriamtionBoxTitle = "@Html.GetResource("Confirm")";
+    var costElementName;
+    @{ long numberOfRecordes = Model.Elements.TotalCount;}
+
+    var date = '@ArabyAds.Framework.Utilities.Environment.GetServerTime()';
+    $(document).ready(function () {
+
+        $("#FromDate").val('');
+        $("#ToDate").val('');
+        colorTheGrid();
+    });
+
+
+    function refreshPartyGrid()
+    {
+
+
+        $.ajax(
+           {
+               url: Partyurl,
+               cache: false,
+               success: function (html) {
+
+                   //
+                   html = html.toString();
+                   $("#party-search-dialog-form").html('');
+                   var newelem = jQuery(html);
+                   $("#party-search-dialog-form").append(newelem);
+                   parseScript(html);
+                   initilize();
+                   /*if (typeof (localInitilize) != "undefined") {
+                   localInitilize();
+                   }*/
+                   //fnValidateDynamicContent($("#entityDetails"));
+                   //$.validator.unobtrusive.parseDynamicContent("#party-search-dialog-form");
+                   //$.validator.unobtrusive.parse("#entityDetails");
+                   //attachValidation();
+
+                   //$.validator.setDefaults({
+                   //    ignore: '.ValdationIgnored'
+                   //});
+                   $("#SearchParty").show();
+                   // sp.hideSpinner();
+
+                   //$("#saveForm").validate().form();
+                   //$('#saveForm').serialize();
+               },
+               error: function (error) {
+                   //sp.hideSpinner();
+                   //
+                   //spinner.hideSpinner();
+               }
+           });
+    }
+    function EditCostElement(element)
+    {
+
+        var tr = $(element).parents('tr');
+        if($(tr).find("#isStoped input").is(":checked") || $(tr).find("#isStoped").text()=='true')
+        {
+            return false;
+        }
+        reset_cost_element();
+        $("#CostElementfrom").show();
+        $("#AdGruopCostElementID").val($(tr).find("#IdCostElementLable").text());
+		selectDropDownListItem($(tr).find("#CostElementLable").text());
+		if ($(tr).find("#ValueStrLable").text().includes("$"))
+			$("#party-add-dialog-form #Value").val($(tr).find("#ValueStrLable").text().substring(1, $(tr).find("#ValueStrLable").text().length));
+		else
+			$("#party-add-dialog-form #Value").val($(tr).find("#ValueStrLable").text().substring(0, $(tr).find("#ValueStrLable").text().length-1));
+        $("#party-add-dialog-form #beneficiaryName").text($(tr).find("#BeneficiaryLable").text());
+        $("#party-add-dialog-form #ProvidersList").val($(tr).find("#ProviderIdLable").text());
+        $("#party-add-dialog-form #BeneficiaryId").val($(tr).find('#BeneficiaryIdLable').text());
+
+        $("#party-add-dialog-form #FromDate").val($(tr).find("#FromDateLable").text());
+        $("#party-add-dialog-form #ToDate").val($(tr).find("#ToDateLable").text());
+        $("#Stop").attr('checked', false);
+        showDialog('party-add-dialog-form');
+    }
+    function selectDropDownListItem(text)
+    {
+
+        var dropdownlist = $("#party-add-dialog-form #CostElementDD");
+        var dropdownlistItems = $(dropdownlist).find("option");
+        for(var i=0 ;i < dropdownlistItems.length; i++)
+        {
+            if(dropdownlistItems.eq(i).text()==text)
+            {
+                // $(dropdownlist).attr('selectedIndex', i);
+                // dropdownlistItems.eq(i).attr('selected',"true");
+                $(dropdownlist).val(dropdownlistItems.eq(i).val());
+                CostElementChanged(dropdownlist);
+                break;
+            }
+        }
+    }
+    function StopCostElement(element)
+    {
+        var tr = $(element).parents('tr');
+        costElementName = $(tr).find("#CostElementLable").text();
+        if($(tr).find("#isStoped input").is(":checked") || $(tr).find("#isStoped").text()=='true')
+        {
+            return false;
+        }
+        confirmationFunc($(tr).find("#IdCostElementLable").text());
+    }
+
+    // add-stop-edit
+    function saveCostElement(stop,id)
+    {
+
+
+        var data = getData(stop,id);
+
+        jQuery.ajax({
+            type: 'POST',
+            url: saveCostElementURL + "?stop="+stop,
+            data: data,
+            success: function (responce) {
+                if (responce.Success) {
+                    // change the value to stop submit without checking the costmodel and ask user to update
+                    // cost elements values if necesary
+                    costElementContinueFlag = false;
+                    generateCostElementsGrid();
+                    showSuccessfullyMessage(responce.Message);
+
+                } else {
+                    showErrorMessage(responce.ErrorMessage, false);
+                    $(this).dialog('close');
+                }
+            },
+            error: function (s, e, f) {
+
+                alert(e);
+            }
+
+        });
+    }
+
+    function localInitilize_CostElements() {
+
+        jQuery("#party-search-dialog-form").dialog({
+            autoOpen: false,
+            //height: 450,
+            width: 700,
+            modal: true,
+            resizable: false,
+            draggable: false
+        });
+        jQuery("#party-add-dialog-form").dialog({
+            autoOpen: false,
+            //height: 230,
+            width: 480,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            buttons: [{
+                text: '@Html.GetResource("Save", "Commands")',
+                click: function () {
+
+                    if(!validation() || !validationProvider())
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        saveCostElement();
+                    }
+                    jQuery(this).dialog("close");
+                },
+                "class": 'primary-btn',
+
+            }],
+        });
+    }
+    function confirmationFunc(id) {
+        //confirmation
+        $('<div id ="confirmation" title="' + ConfriamtionBoxTitle + '"></div>').dialog({
+            open: function() {
+                $(this).html(confirmation.format('"'+costElementName+'"'));
+            },
+            close: function() {
+                $(this).remove();
+            },
+            resizable: false,
+            draggable:false,
+            modal: true,
+        });
+        //CostElementConfriamtion
+        $("#confirmation").dialog({
+            buttons: [{
+                text: yesbtn,
+                click: function() {
+                    saveCostElement(true,id);
+
+                    $(this).dialog('close');
+                },
+                "class": 'primary-btn',
+
+            }, {
+                text: nobtn,
+                click: function() {
+                    $(this).remove();
+                },
+                "class": 'delete-button',
+
+            }]
+        });
+
+    }
+
+    function getData(stop,id)
+    {
+
+        var data = new Object();
+        data.ID = stop ? id :$("#AdGruopCostElementID").val();
+        data.CampaignId = campaign_id;
+        data.AdGroupId = ad_group_id;
+        data.CostElementId = $('[name="CostElementId"]').val();
+        data.BeneficiaryId =   $("#party-add-dialog-form #BeneficiaryId").val();
+        data.Value = $("#Value").val();
+        data.FromDate = $("#FromDate").val();
+        data.ToDate = $("#ToDate").val();
+        data.CostModelWrapperId = $("#CostModelWrapper").val();
+        data.ProviderId = $('[id="ProviderId"]').val();
+        return data;
+    }
+
+    function showPartySearchDialog() {
+
+
+        if(FirstTimePartyurl==false)
+            refreshPartyGrid();
+
+        FirstTimePartyurl=true;
+        showDialog('party-search-dialog-form');
+    }
+    function showNewPartyDialog() {
+
+        if(FirstTimePartyurl==false)
+            refreshPartyGrid();
+
+        FirstTimePartyurl=true;
+        if (hasValue(reset_cost_element))
+            reset_cost_element();
+        showDialog('party-add-dialog-form');
+        var queryDate = date;
+        var dateParts = queryDate.match(/(\d+)/g);
+        realDate = new Date(dateParts[2], dateParts[1]-1, dateParts[0]);
+        $('#FromDate').datepicker( "setDate" , realDate );
+    }
+    function changeParty(partytId, partyDesc) {
+
+        if ((typeof (partytId) != "undefined") && (typeof (partyDesc) != "undefined")) {
+            jQuery('#beneficiaryName').text(partyDesc);
+            jQuery('[name="BeneficiaryId"]').val(partytId);
+            jQuery('[name="Beneficiary"]').val(partyDesc);
+        }
+        jQuery('#party-search-dialog-form').dialog('close');
+    }
+
+    function onEntityChange(entityId) {
+        showNewPartyDialog();
+    };
+    function generateCostElementsGrid() {
+        debugger;
+        var grid = $("#CostElementsGrid").data("kendoGrid");
+        //grid.dataSource.read();
+        //grid.refresh();
+        if (typeof (grid) != "undefined") {
+            grid.dataSource.read();
+            grid.refresh();
+        }
+    };
+    function colorTheGrid()
+    {
+        var grid = $("#CostElementsGrid").data("kendoGrid");
+        var htmlgrid = $("#CostElementsGrid tbody tr");
+        for(var i =0 ; i <htmlgrid.length; i++ )
+        {
+            var row = $(htmlgrid).eq(i);
+            if($(row).find("#isStoped input").is(":checked") ||$(row).find("#isStoped").text()=='true')
+            {
+                $(row).attr("style","color:silver;!important");
+            }
+        }
+    }
+
+    function costElementsGridDataBound(e) {
+
+        var grid = $("#CostElementsGrid").data("kendoGrid");
+        //colorTheGrid();
+        //if not first page and the no data then try load first page
+        if ((grid._data.length == 0) && (grid.dataSource.page() > 1)) {
+            e.preventDefault();
+            if (grid.dataSource.page() != 1) {
+                grid.dataSource.page(1);
+            }
+        }
+        $(".t-no-data").addClass("go-center");
+    }
+
+
+    function callService(item, callback) {
+        gridToolTip.hide();
+        var url = jQuery(item).attr("href2");
+        jQuery.ajax(
+            {
+                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                type: "POST",
+                //data: prams,
+                url: url,
+                success: function (result) {
+                    jQuery.globalEval(callback);
+                },
+                error: function (error) {
+                    if (error.status == "200") {
+                        jQuery.globalEval(callback);
+                    }
+                }
+            });
+    }
+
+
+</script>
+<div>
+    @await Html.PartialAsync("GridToolTop", Model.ToolTips)
+    <div class="section-form-inner-container">
+
+        <div class="data-row data-container">
+            <div class="go-left floating-left">
+
+                <a class="primary-btn" href="javascript:void(0)" onclick="onEntityChange('')">@Html.GetResource("AddCostElement", "Global")</a>
+            </div>
+            <div>
+                <div class="grid-container">
+                    &nbsp;
+
+                    @(Html.Kendo().Grid<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.AdGroupCostElementDto>()
+                          //.DataKeys(p => p.Add(o => o.ID))
+                          // .ToolBar(commands => commands.Insert().ButtonType(GridButtonType.BareImage))
+                          .Name("CostElementsGrid").Columns(columns =>
+                          {
+                              columns.Bound(o => o.Stoped).Hidden().HtmlAttributes(new { @id = "isStoped" });
+                              columns.Bound(o => o.ID).Hidden().HtmlAttributes(new { @id = "IdCostElementLable" });
+                              columns.Bound(o => o.ProviderId).Hidden().HtmlAttributes(new { @id = "ProviderIdLable" });
+                              columns.Bound(o => o.BeneficiaryId).Hidden().HtmlAttributes(new { @id = "BeneficiaryIdLable" });
+
+                              columns.Bound(o => o.CostElement).Title(Html.GetResource("CostElement", "CostElements")).Width("300px").HtmlAttributes(new { @class = "go-center", @id = "CostElementLable" });
+                              columns.Bound(o => o.Beneficiary).Title(Html.GetResource("Beneficiary", "CostElements")).Width("150px").HtmlAttributes(new { @class = "go-center", @id = "BeneficiaryLable" });
+                              columns.Bound(o => o.Provider).Title(Html.GetResource("DPPartner", "DPPartners")).Width("150px").HtmlAttributes(new { @class = "go-center", @id = "ProviderLable" });
+
+                              columns.Bound(o => o.ValueStr).Title(Html.GetResource("Value", "CostElements")).Width("70px").HtmlAttributes(new { @class = "go-center", @id = "ValueStrLable" });
+                              columns.Bound(o => o.FromDate).Title(Html.GetResource("FromDate", "CostElements")).Format("{0:" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(120).HtmlAttributes(new { @id = "FromDateLable", @class = "go-center" });
+                              columns.Bound(o => o.EndDate).Title(Html.GetResource("EndDate", "Campaign")).Format("{0:" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(120).HtmlAttributes(new { @id = "ToDateLable", @class = "go-center" });
+                              columns.Template("<div><a class='t-button t-button-icon t-button-bare' type='button' onclick='EditCostElement(this)'><span class='t-icon t-edit t-ip-Range-Section-edit-button'></span></button></div>").Title(Html.GetResource("Edit", "Commands")).Width(45).HtmlAttributes(new { @class = "go-center" });
+                              columns.Template("<div><a class='t-button t-button-icon t-button-bare' type='button' onclick='StopCostElement(this,true)'><span class='t-icon t-stop t-ip-Range-Section-edit-button'></span></button></div>").Title(Html.GetResource("Stop", "Commands")).Width(45).HtmlAttributes(new { @class = "go-center" });
+                          })
+
+
+                            .DataSource(dataBinding =>
+                            {
+                                dataBinding.Ajax().Read("_CostElements", "Campaign",new {  id=Model.CampaignId,  adGroupId =Model.AdGroupId }).Model(model =>
+                                {
+                                    model.Id(d => d.ID);
+                                });
+                                //  dataBinding.Ajax().Insert("_CostElements", "Campaign");
+
+                            }).EnableCustomBinding(true)
+                              .Events(clientEvents => clientEvents.DataBound("costElementsGridDataBound"))
+
+
+                              .Scrollable(scrolling => scrolling.Enabled(false))
+                                             .Pageable(paging => paging
+
+
+                            .Input(false)
+                            .Numeric(true)
+                            .Info(true)
+                            .PreviousNext(true)
+                            .Refresh(true)
+
+                            .Position(GridPagerPosition.Bottom).Responsive(false)) )
+
+
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="party-add-dialog-form" class="adfalcon-dialog" title="@Html.GetResource("AddCostElement", "Titles")" style="display: none; ">
+    <div id="entityDetails" class="data-row data-container">
+        @*@Html.RenderAction("CostElement", new { id = ViewContext.RouteData.Values["id"], adGroupId = ViewContext.RouteData.Values["adGroupId"] })*@
+        @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Administration.Web.Controllers.Core.ViewComponents.Campaign.CostElement), new { id = Convert.ToInt32(ViewContext.RouteData.Values["id"]), adGroupId = Convert.ToInt32(ViewContext.RouteData.Values["adGroupId"]) })
+
+
+    </div>
+</div>
+<div id="party-search-dialog-form" title="@Html.GetResource("PartySearch", "Party")" style="display: none; ">
+</div>
+@await Html.PartialAsync("CostElement/CostElementConflictDialog")

@@ -1,0 +1,280 @@
+﻿<Sites>
+  <Site name="AdFalcon Public" URL="http://192.168.2.25:1111" 
+        LoginURL="https://192.168.2.25:5555/user/Login"
+        CookieDomain="http://192.168.2.25"
+        >
+    <URLs>
+      <url name="DocumentType Index" value="campaign"/>
+      <url name="Theme Index" value="Theme"/>
+      <url name="Theme Themes" value="Theme/Themes"/>
+      <url name="Platform Tree" value="Platform/GetTreeData"/>
+      <url name="Operator Tree" value="Operator/GetTreeData"/>
+      <url name="Manufacturer Tree" value="Manufacturer/GetTreeData"/>
+      <url name="Device Search" value="Device/Search?query="/>
+      <url name="Device Tree" value="Device/SearchTree?query="/>
+      <url name="Device Tree IOS" value="Device/GetTreeData?PlatformId=1"/>
+      <url name="Device Tree IOS Phones" value="Device/GetTreeData?PlatformId=1&amp;DeviceConstraint=1"/>
+      <url name="Device Tree IOS Tablet" value="Device/GetTreeData?PlatformId=1&amp;DeviceConstraint=2"/>
+      <url name="Device Tree Android" value="Device/GetTreeData?PlatformId=2"/>
+      <url name="Device Tree Android Phones" value="Device/GetTreeData?PlatformId=2&amp;DeviceConstraint=1"/>
+      <url name="Device Tree Android Tablet" value="Device/GetTreeData?PlatformId=2&amp;DeviceConstraint=2"/>
+      <url name="Country Tree" value="Country/GetTreeData"/>
+      <url name="Keyword GetKeywords" value="Keyword/GetKeywords?q="/>
+      <url name="Resource (Menu)-EN" value="WarmUp/Resources??setName=Menu&amp;cultureName=en-US"/>
+      <url name="Resource (Menu)-AR" value="WarmUp/Resources??setName=Menu&amp;cultureName=ar-JO"/>
+      <url name="Resource (Footer)-EN" value="WarmUp/Resources??setName=Footer&amp;cultureName=en-US"/>
+      <url name="Resource (Footer)-AR" value="WarmUp/Resources??setName=Footer&amp;cultureName=ar-JO"/>
+      <url name="Resource (Global)-EN" value="WarmUp/Resources??setName=Global&amp;cultureName=en-US"/>
+      <url name="Resource (Global)-AR" value="WarmUp/Resources??setName=Global&amp;cultureName=ar-JO"/>
+      <url name="Resource (Titles)-EN" value="WarmUp/Resources??setName=Titles&amp;cultureName=en-US"/>
+      <url name="Resource (Titles)-AR" value="WarmUp/Resources??setName=Titles&amp;cultureName=ar-JO"/>
+      <url name="Resource (Login)-EN" value="WarmUp/Resources??setName=Login&amp;cultureName=en-US"/>
+      <url name="Resource (Login)-AR" value="WarmUp/Resources??setName=Login&amp;cultureName=ar-JO"/>
+      <url name="Resource (GlobalErrors)-EN" value="WarmUp/Resources??setName=GlobalErrors&amp;cultureName=en-US"/>
+      <url name="Resource (GlobalErrors)-AR" value="WarmUp/Resources??setName=GlobalErrors&amp;cultureName=ar-JO"/>
+      <url name="Resource (UserInformation)-EN" value="WarmUp/Resources??setName=UserInformation&amp;cultureName=en-US"/>
+      <url name="Resource (UserInformation)-AR" value="WarmUp/Resources??setName=UserInformation&amp;cultureName=ar-JO"/>
+      <url name="Resource (Emails)-EN" value="WarmUp/Resources??setName=Emails&amp;cultureName=en-US"/>
+      <url name="Resource (Emails)-AR" value="WarmUp/Resources??setName=Emails&amp;cultureName=ar-JO"/>
+      <url name="Resource (Forgetpassword)-EN" value="WarmUp/Resources??setName=Forgetpassword&amp;cultureName=en-US"/>
+      <url name="Resource (Forgetpassword)-AR" value="WarmUp/Resources??setName=Forgetpassword&amp;cultureName=ar-JO"/>
+      <url name="Resource (Register)-EN" value="WarmUp/Resources??setName=Register&amp;cultureName=en-US"/>
+      <url name="Resource (Register)-AR" value="WarmUp/Resources??setName=Register&amp;cultureName=ar-JO"/>
+      <url name="Resource (Errors)-EN" value="WarmUp/Resources??setName=Errors&amp;cultureName=en-US"/>
+      <url name="Resource (Errors)-AR" value="WarmUp/Resources??setName=Errors&amp;cultureName=ar-JO"/>
+      <url name="Resource (Activation)-EN" value="WarmUp/Resources??setName=Activation&amp;cultureName=en-US"/>
+      <url name="Resource (Activation)-AR" value="WarmUp/Resources??setName=Activation&amp;cultureName=ar-JO"/>
+      <url name="Resource (ThanksMessages)-EN" value="WarmUp/Resources??setName=ThanksMessages&amp;cultureName=en-US"/>
+      <url name="Resource (ThanksMessages)-AR" value="WarmUp/Resources??setName=ThanksMessages&amp;cultureName=ar-JO"/>
+      <url name="Resource (AppSite)-EN" value="WarmUp/Resources??setName=AppSite&amp;cultureName=en-US"/>
+      <url name="Resource (AppSite)-AR" value="WarmUp/Resources??setName=AppSite&amp;cultureName=ar-JO"/>
+      <url name="Resource (Filters)-EN" value="WarmUp/Resources??setName=Filters&amp;cultureName=en-US"/>
+      <url name="Resource (Filters)-AR" value="WarmUp/Resources??setName=Filters&amp;cultureName=ar-JO"/>
+      <url name="Resource (TextFilter)-EN" value="WarmUp/Resources??setName=TextFilter&amp;cultureName=en-US"/>
+      <url name="Resource (TextFilter)-AR" value="WarmUp/Resources??setName=TextFilter&amp;cultureName=ar-JO"/>
+      <url name="Resource (Keywords)-EN" value="WarmUp/Resources??setName=Keywords&amp;cultureName=en-US"/>
+      <url name="Resource (Keywords)-AR" value="WarmUp/Resources??setName=Keywords&amp;cultureName=ar-JO"/>
+      <url name="Resource (AppSiteSettings)-EN" value="WarmUp/Resources??setName=AppSiteSettings&amp;cultureName=en-US"/>
+      <url name="Resource (AppSiteSettings)-AR" value="WarmUp/Resources??setName=AppSiteSettings&amp;cultureName=ar-JO"/>
+      <url name="Resource (Commands)-EN" value="WarmUp/Resources??setName=Commands&amp;cultureName=en-US"/>
+      <url name="Resource (Commands)-AR" value="WarmUp/Resources??setName=Commands&amp;cultureName=ar-JO"/>
+      <url name="Resource (EmailHeader)-EN" value="WarmUp/Resources??setName=EmailHeader&amp;cultureName=en-US"/>
+      <url name="Resource (EmailHeader)-AR" value="WarmUp/Resources??setName=EmailHeader&amp;cultureName=ar-JO"/>
+      <url name="Resource (Edit)-EN" value="WarmUp/Resources??setName=Edit&amp;cultureName=en-US"/>
+      <url name="Resource (Edit)-AR" value="WarmUp/Resources??setName=Edit&amp;cultureName=ar-JO"/>
+      <url name="Resource (DeleteAccount)-EN" value="WarmUp/Resources??setName=DeleteAccount&amp;cultureName=en-US"/>
+      <url name="Resource (DeleteAccount)-AR" value="WarmUp/Resources??setName=DeleteAccount&amp;cultureName=ar-JO"/>
+      <url name="Resource (UrlFilters)-EN" value="WarmUp/Resources??setName=UrlFilters&amp;cultureName=en-US"/>
+      <url name="Resource (UrlFilters)-AR" value="WarmUp/Resources??setName=UrlFilters&amp;cultureName=ar-JO"/>
+      <url name="Resource (ResourceSet)-EN" value="WarmUp/Resources??setName=ResourceSet&amp;cultureName=en-US"/>
+      <url name="Resource (ResourceSet)-AR" value="WarmUp/Resources??setName=ResourceSet&amp;cultureName=ar-JO"/>
+      <url name="Resource (LanguageFilters)-EN" value="WarmUp/Resources??setName=LanguageFilters&amp;cultureName=en-US"/>
+      <url name="Resource (LanguageFilters)-AR" value="WarmUp/Resources??setName=LanguageFilters&amp;cultureName=ar-JO"/>
+      <url name="Resource (ChangePassword)-EN" value="WarmUp/Resources??setName=ChangePassword&amp;cultureName=en-US"/>
+      <url name="Resource (ChangePassword)-AR" value="WarmUp/Resources??setName=ChangePassword&amp;cultureName=ar-JO"/>
+      <url name="Resource (Resend)-EN" value="WarmUp/Resources??setName=Resend&amp;cultureName=en-US"/>
+      <url name="Resource (Resend)-AR" value="WarmUp/Resources??setName=Resend&amp;cultureName=ar-JO"/>
+      <url name="Resource (AppChart)-EN" value="WarmUp/Resources??setName=AppChart&amp;cultureName=en-US"/>
+      <url name="Resource (AppChart)-AR" value="WarmUp/Resources??setName=AppChart&amp;cultureName=ar-JO"/>
+      <url name="Resource (Chart)-EN" value="WarmUp/Resources??setName=Chart&amp;cultureName=en-US"/>
+      <url name="Resource (Chart)-AR" value="WarmUp/Resources??setName=Chart&amp;cultureName=ar-JO"/>
+      <url name="Resource (Campaign)-EN" value="WarmUp/Resources??setName=Campaign&amp;cultureName=en-US"/>
+      <url name="Resource (Campaign)-AR" value="WarmUp/Resources??setName=Campaign&amp;cultureName=ar-JO"/>
+      <url name="Resource (Error)-EN" value="WarmUp/Resources??setName=Error&amp;cultureName=en-US"/>
+      <url name="Resource (Error)-AR" value="WarmUp/Resources??setName=Error&amp;cultureName=ar-JO"/>
+      <url name="Resource (AdGroup)-EN" value="WarmUp/Resources??setName=AdGroup&amp;cultureName=en-US"/>
+      <url name="Resource (AdGroup)-AR" value="WarmUp/Resources??setName=AdGroup&amp;cultureName=ar-JO"/>
+      <url name="Resource (Msgs)-EN" value="WarmUp/Resources??setName=Msgs&amp;cultureName=en-US"/>
+      <url name="Resource (Msgs)-AR" value="WarmUp/Resources??setName=Msgs&amp;cultureName=ar-JO"/>
+      <url name="Resource (Descs)-EN" value="WarmUp/Resources??setName=Descs&amp;cultureName=en-US"/>
+      <url name="Resource (Descs)-AR" value="WarmUp/Resources??setName=Descs&amp;cultureName=ar-JO"/>
+      <url name="Resource (CampaignsReport)-EN" value="WarmUp/Resources??setName=CampaignsReport&amp;cultureName=en-US"/>
+      <url name="Resource (CampaignsReport)-AR" value="WarmUp/Resources??setName=CampaignsReport&amp;cultureName=ar-JO"/>
+      <url name="Resource (Report)-EN" value="WarmUp/Resources??setName=Report&amp;cultureName=en-US"/>
+      <url name="Resource (Report)-AR" value="WarmUp/Resources??setName=Report&amp;cultureName=ar-JO"/>
+      <url name="Resource (Reports)-EN" value="WarmUp/Resources??setName=Reports&amp;cultureName=en-US"/>
+      <url name="Resource (Reports)-AR" value="WarmUp/Resources??setName=Reports&amp;cultureName=ar-JO"/>
+      <url name="Resource (AdChart)-EN" value="WarmUp/Resources??setName=AdChart&amp;cultureName=en-US"/>
+      <url name="Resource (AdChart)-AR" value="WarmUp/Resources??setName=AdChart&amp;cultureName=ar-JO"/>
+      <url name="Resource (CampaignReport)-EN" value="WarmUp/Resources??setName=CampaignReport&amp;cultureName=en-US"/>
+      <url name="Resource (CampaignReport)-AR" value="WarmUp/Resources??setName=CampaignReport&amp;cultureName=ar-JO"/>
+      <url name="Resource (AdGroupObjective)-EN" value="WarmUp/Resources??setName=AdGroupObjective&amp;cultureName=en-US"/>
+      <url name="Resource (AdGroupObjective)-AR" value="WarmUp/Resources??setName=AdGroupObjective&amp;cultureName=ar-JO"/>
+      <url name="Resource (AppReport)-EN" value="WarmUp/Resources??setName=AppReport&amp;cultureName=en-US"/>
+      <url name="Resource (AppReport)-AR" value="WarmUp/Resources??setName=AppReport&amp;cultureName=ar-JO"/>
+      <url name="Resource (BankAccount)-EN" value="WarmUp/Resources??setName=BankAccount&amp;cultureName=en-US"/>
+      <url name="Resource (BankAccount)-AR" value="WarmUp/Resources??setName=BankAccount&amp;cultureName=ar-JO"/>
+      <url name="Resource (Ad)-EN" value="WarmUp/Resources??setName=Ad&amp;cultureName=en-US"/>
+      <url name="Resource (Ad)-AR" value="WarmUp/Resources??setName=Ad&amp;cultureName=ar-JO"/>
+      <url name="Resource (Upload)-EN" value="WarmUp/Resources??setName=Upload&amp;cultureName=en-US"/>
+      <url name="Resource (Upload)-AR" value="WarmUp/Resources??setName=Upload&amp;cultureName=ar-JO"/>
+      <url name="Resource (SiteMapLocalizations)-EN" value="WarmUp/Resources??setName=SiteMapLocalizations&amp;cultureName=en-US"/>
+      <url name="Resource (SiteMapLocalizations)-AR" value="WarmUp/Resources??setName=SiteMapLocalizations&amp;cultureName=ar-JO"/>
+      <url name="Resource (Dashboard)-EN" value="WarmUp/Resources??setName=Dashboard&amp;cultureName=en-US"/>
+      <url name="Resource (Dashboard)-AR" value="WarmUp/Resources??setName=Dashboard&amp;cultureName=ar-JO"/>
+      <url name="Resource (AccountHistory)-EN" value="WarmUp/Resources??setName=AccountHistory&amp;cultureName=en-US"/>
+      <url name="Resource (AccountHistory)-AR" value="WarmUp/Resources??setName=AccountHistory&amp;cultureName=ar-JO"/>
+      <url name="Resource (TextFilters)-EN" value="WarmUp/Resources??setName=TextFilters&amp;cultureName=en-US"/>
+      <url name="Resource (TextFilters)-AR" value="WarmUp/Resources??setName=TextFilters&amp;cultureName=ar-JO"/>
+      <url name="Resource (ThanksTitle)-EN" value="WarmUp/Resources??setName=ThanksTitle&amp;cultureName=en-US"/>
+      <url name="Resource (ThanksTitle)-AR" value="WarmUp/Resources??setName=ThanksTitle&amp;cultureName=ar-JO"/>
+      <url name="Resource (AdFund)-EN" value="WarmUp/Resources??setName=AdFund&amp;cultureName=en-US"/>
+      <url name="Resource (AdFund)-AR" value="WarmUp/Resources??setName=AdFund&amp;cultureName=ar-JO"/>
+      <url name="Resource (Undefined)-EN" value="WarmUp/Resources??setName=Undefined&amp;cultureName=en-US"/>
+      <url name="Resource (Undefined)-AR" value="WarmUp/Resources??setName=Undefined&amp;cultureName=ar-JO"/>
+      <url name="Resource (PGW)-EN" value="WarmUp/Resources??setName=PGW&amp;cultureName=en-US"/>
+      <url name="Resource (PGW)-AR" value="WarmUp/Resources??setName=PGW&amp;cultureName=ar-JO"/>
+      <url name="Resource (AddPayment)-EN" value="WarmUp/Resources??setName=AddPayment&amp;cultureName=en-US"/>
+      <url name="Resource (AddPayment)-AR" value="WarmUp/Resources??setName=AddPayment&amp;cultureName=ar-JO"/>
+      <url name="Resource (Impersonate)-EN" value="WarmUp/Resources??setName=Impersonate&amp;cultureName=en-US"/>
+      <url name="Resource (Impersonate)-AR" value="WarmUp/Resources??setName=Impersonate&amp;cultureName=ar-JO"/>
+      <url name="Resource (Clone)-EN" value="WarmUp/Resources??setName=Clone&amp;cultureName=en-US"/>
+      <url name="Resource (Clone)-AR" value="WarmUp/Resources??setName=Clone&amp;cultureName=ar-JO"/>
+      <url name="Resource (EventBroker_Emails)-EN" value="WarmUp/Resources??setName=EventBroker_Emails&amp;cultureName=en-US"/>
+      <url name="Resource (EventBroker_Emails)-AR" value="WarmUp/Resources??setName=EventBroker_Emails&amp;cultureName=ar-JO"/>
+      <url name="Resource (AddFund)-EN" value="WarmUp/Resources??setName=AddFund&amp;cultureName=en-US"/>
+      <url name="Resource (AddFund)-AR" value="WarmUp/Resources??setName=AddFund&amp;cultureName=ar-JO"/>
+      <url name="Resource (Lookup)-EN" value="WarmUp/Resources??setName=Lookup&amp;cultureName=en-US"/>
+      <url name="Resource (Lookup)-AR" value="WarmUp/Resources??setName=Lookup&amp;cultureName=ar-JO"/>
+    </URLs>
+  </Site>
+  <Site name="AdFalcon Admin" 
+        URL="http://192.168.2.25:2222"
+        LoginURL="https://192.168.2.25:5555/user/Login"
+        CookieDomain="http://192.168.2.25">
+  <URLs>
+    <url name="DocumentType Index" value="campaign"/>
+    <url name="Theme Index" value="Theme"/>
+    <url name="Theme Themes" value="Theme/Themes"/>
+    <url name="Platform Tree" value="Platform/GetTreeData"/>
+    <url name="Operator Tree" value="Operator/GetTreeData"/>
+    <url name="Manufacturer Tree" value="Manufacturer/GetTreeData"/>
+    <url name="Device Search" value="Device/Search?query="/>
+    <url name="Device Tree" value="Device/SearchTree?query="/>
+    <url name="Device Tree IOS" value="Device/GetTreeData?PlatformId=1"/>
+    <url name="Device Tree IOS Phones" value="Device/GetTreeData?PlatformId=1&amp;DeviceConstraint=1"/>
+    <url name="Device Tree IOS Tablet" value="Device/GetTreeData?PlatformId=1&amp;DeviceConstraint=2"/>
+    <url name="Device Tree Android" value="Device/GetTreeData?PlatformId=2"/>
+    <url name="Device Tree Android Phones" value="Device/GetTreeData?PlatformId=2&amp;DeviceConstraint=1"/>
+    <url name="Device Tree Android Tablet" value="Device/GetTreeData?PlatformId=2&amp;DeviceConstraint=2"/>
+    <url name="Country Tree" value="Country/GetTreeData"/>
+    <url name="Keyword GetKeywords" value="Keyword/GetKeywords?q="/>
+    <url name="Resource (Menu)-EN" value="WarmUp/Resources??setName=Menu&amp;cultureName=en-US"/>
+    <url name="Resource (Menu)-AR" value="WarmUp/Resources??setName=Menu&amp;cultureName=ar-JO"/>
+    <url name="Resource (Footer)-EN" value="WarmUp/Resources??setName=Footer&amp;cultureName=en-US"/>
+    <url name="Resource (Footer)-AR" value="WarmUp/Resources??setName=Footer&amp;cultureName=ar-JO"/>
+    <url name="Resource (Global)-EN" value="WarmUp/Resources??setName=Global&amp;cultureName=en-US"/>
+    <url name="Resource (Global)-AR" value="WarmUp/Resources??setName=Global&amp;cultureName=ar-JO"/>
+    <url name="Resource (Titles)-EN" value="WarmUp/Resources??setName=Titles&amp;cultureName=en-US"/>
+    <url name="Resource (Titles)-AR" value="WarmUp/Resources??setName=Titles&amp;cultureName=ar-JO"/>
+    <url name="Resource (Login)-EN" value="WarmUp/Resources??setName=Login&amp;cultureName=en-US"/>
+    <url name="Resource (Login)-AR" value="WarmUp/Resources??setName=Login&amp;cultureName=ar-JO"/>
+    <url name="Resource (GlobalErrors)-EN" value="WarmUp/Resources??setName=GlobalErrors&amp;cultureName=en-US"/>
+    <url name="Resource (GlobalErrors)-AR" value="WarmUp/Resources??setName=GlobalErrors&amp;cultureName=ar-JO"/>
+    <url name="Resource (UserInformation)-EN" value="WarmUp/Resources??setName=UserInformation&amp;cultureName=en-US"/>
+    <url name="Resource (UserInformation)-AR" value="WarmUp/Resources??setName=UserInformation&amp;cultureName=ar-JO"/>
+    <url name="Resource (Emails)-EN" value="WarmUp/Resources??setName=Emails&amp;cultureName=en-US"/>
+    <url name="Resource (Emails)-AR" value="WarmUp/Resources??setName=Emails&amp;cultureName=ar-JO"/>
+    <url name="Resource (Forgetpassword)-EN" value="WarmUp/Resources??setName=Forgetpassword&amp;cultureName=en-US"/>
+    <url name="Resource (Forgetpassword)-AR" value="WarmUp/Resources??setName=Forgetpassword&amp;cultureName=ar-JO"/>
+    <url name="Resource (Register)-EN" value="WarmUp/Resources??setName=Register&amp;cultureName=en-US"/>
+    <url name="Resource (Register)-AR" value="WarmUp/Resources??setName=Register&amp;cultureName=ar-JO"/>
+    <url name="Resource (Errors)-EN" value="WarmUp/Resources??setName=Errors&amp;cultureName=en-US"/>
+    <url name="Resource (Errors)-AR" value="WarmUp/Resources??setName=Errors&amp;cultureName=ar-JO"/>
+    <url name="Resource (Activation)-EN" value="WarmUp/Resources??setName=Activation&amp;cultureName=en-US"/>
+    <url name="Resource (Activation)-AR" value="WarmUp/Resources??setName=Activation&amp;cultureName=ar-JO"/>
+    <url name="Resource (ThanksMessages)-EN" value="WarmUp/Resources??setName=ThanksMessages&amp;cultureName=en-US"/>
+    <url name="Resource (ThanksMessages)-AR" value="WarmUp/Resources??setName=ThanksMessages&amp;cultureName=ar-JO"/>
+    <url name="Resource (AppSite)-EN" value="WarmUp/Resources??setName=AppSite&amp;cultureName=en-US"/>
+    <url name="Resource (AppSite)-AR" value="WarmUp/Resources??setName=AppSite&amp;cultureName=ar-JO"/>
+    <url name="Resource (Filters)-EN" value="WarmUp/Resources??setName=Filters&amp;cultureName=en-US"/>
+    <url name="Resource (Filters)-AR" value="WarmUp/Resources??setName=Filters&amp;cultureName=ar-JO"/>
+    <url name="Resource (TextFilter)-EN" value="WarmUp/Resources??setName=TextFilter&amp;cultureName=en-US"/>
+    <url name="Resource (TextFilter)-AR" value="WarmUp/Resources??setName=TextFilter&amp;cultureName=ar-JO"/>
+    <url name="Resource (Keywords)-EN" value="WarmUp/Resources??setName=Keywords&amp;cultureName=en-US"/>
+    <url name="Resource (Keywords)-AR" value="WarmUp/Resources??setName=Keywords&amp;cultureName=ar-JO"/>
+    <url name="Resource (AppSiteSettings)-EN" value="WarmUp/Resources??setName=AppSiteSettings&amp;cultureName=en-US"/>
+    <url name="Resource (AppSiteSettings)-AR" value="WarmUp/Resources??setName=AppSiteSettings&amp;cultureName=ar-JO"/>
+    <url name="Resource (Commands)-EN" value="WarmUp/Resources??setName=Commands&amp;cultureName=en-US"/>
+    <url name="Resource (Commands)-AR" value="WarmUp/Resources??setName=Commands&amp;cultureName=ar-JO"/>
+    <url name="Resource (EmailHeader)-EN" value="WarmUp/Resources??setName=EmailHeader&amp;cultureName=en-US"/>
+    <url name="Resource (EmailHeader)-AR" value="WarmUp/Resources??setName=EmailHeader&amp;cultureName=ar-JO"/>
+    <url name="Resource (Edit)-EN" value="WarmUp/Resources??setName=Edit&amp;cultureName=en-US"/>
+    <url name="Resource (Edit)-AR" value="WarmUp/Resources??setName=Edit&amp;cultureName=ar-JO"/>
+    <url name="Resource (DeleteAccount)-EN" value="WarmUp/Resources??setName=DeleteAccount&amp;cultureName=en-US"/>
+    <url name="Resource (DeleteAccount)-AR" value="WarmUp/Resources??setName=DeleteAccount&amp;cultureName=ar-JO"/>
+    <url name="Resource (UrlFilters)-EN" value="WarmUp/Resources??setName=UrlFilters&amp;cultureName=en-US"/>
+    <url name="Resource (UrlFilters)-AR" value="WarmUp/Resources??setName=UrlFilters&amp;cultureName=ar-JO"/>
+    <url name="Resource (ResourceSet)-EN" value="WarmUp/Resources??setName=ResourceSet&amp;cultureName=en-US"/>
+    <url name="Resource (ResourceSet)-AR" value="WarmUp/Resources??setName=ResourceSet&amp;cultureName=ar-JO"/>
+    <url name="Resource (LanguageFilters)-EN" value="WarmUp/Resources??setName=LanguageFilters&amp;cultureName=en-US"/>
+    <url name="Resource (LanguageFilters)-AR" value="WarmUp/Resources??setName=LanguageFilters&amp;cultureName=ar-JO"/>
+    <url name="Resource (ChangePassword)-EN" value="WarmUp/Resources??setName=ChangePassword&amp;cultureName=en-US"/>
+    <url name="Resource (ChangePassword)-AR" value="WarmUp/Resources??setName=ChangePassword&amp;cultureName=ar-JO"/>
+    <url name="Resource (Resend)-EN" value="WarmUp/Resources??setName=Resend&amp;cultureName=en-US"/>
+    <url name="Resource (Resend)-AR" value="WarmUp/Resources??setName=Resend&amp;cultureName=ar-JO"/>
+    <url name="Resource (AppChart)-EN" value="WarmUp/Resources??setName=AppChart&amp;cultureName=en-US"/>
+    <url name="Resource (AppChart)-AR" value="WarmUp/Resources??setName=AppChart&amp;cultureName=ar-JO"/>
+    <url name="Resource (Chart)-EN" value="WarmUp/Resources??setName=Chart&amp;cultureName=en-US"/>
+    <url name="Resource (Chart)-AR" value="WarmUp/Resources??setName=Chart&amp;cultureName=ar-JO"/>
+    <url name="Resource (Campaign)-EN" value="WarmUp/Resources??setName=Campaign&amp;cultureName=en-US"/>
+    <url name="Resource (Campaign)-AR" value="WarmUp/Resources??setName=Campaign&amp;cultureName=ar-JO"/>
+    <url name="Resource (Error)-EN" value="WarmUp/Resources??setName=Error&amp;cultureName=en-US"/>
+    <url name="Resource (Error)-AR" value="WarmUp/Resources??setName=Error&amp;cultureName=ar-JO"/>
+    <url name="Resource (AdGroup)-EN" value="WarmUp/Resources??setName=AdGroup&amp;cultureName=en-US"/>
+    <url name="Resource (AdGroup)-AR" value="WarmUp/Resources??setName=AdGroup&amp;cultureName=ar-JO"/>
+    <url name="Resource (Msgs)-EN" value="WarmUp/Resources??setName=Msgs&amp;cultureName=en-US"/>
+    <url name="Resource (Msgs)-AR" value="WarmUp/Resources??setName=Msgs&amp;cultureName=ar-JO"/>
+    <url name="Resource (Descs)-EN" value="WarmUp/Resources??setName=Descs&amp;cultureName=en-US"/>
+    <url name="Resource (Descs)-AR" value="WarmUp/Resources??setName=Descs&amp;cultureName=ar-JO"/>
+    <url name="Resource (CampaignsReport)-EN" value="WarmUp/Resources??setName=CampaignsReport&amp;cultureName=en-US"/>
+    <url name="Resource (CampaignsReport)-AR" value="WarmUp/Resources??setName=CampaignsReport&amp;cultureName=ar-JO"/>
+    <url name="Resource (Report)-EN" value="WarmUp/Resources??setName=Report&amp;cultureName=en-US"/>
+    <url name="Resource (Report)-AR" value="WarmUp/Resources??setName=Report&amp;cultureName=ar-JO"/>
+    <url name="Resource (Reports)-EN" value="WarmUp/Resources??setName=Reports&amp;cultureName=en-US"/>
+    <url name="Resource (Reports)-AR" value="WarmUp/Resources??setName=Reports&amp;cultureName=ar-JO"/>
+    <url name="Resource (AdChart)-EN" value="WarmUp/Resources??setName=AdChart&amp;cultureName=en-US"/>
+    <url name="Resource (AdChart)-AR" value="WarmUp/Resources??setName=AdChart&amp;cultureName=ar-JO"/>
+    <url name="Resource (CampaignReport)-EN" value="WarmUp/Resources??setName=CampaignReport&amp;cultureName=en-US"/>
+    <url name="Resource (CampaignReport)-AR" value="WarmUp/Resources??setName=CampaignReport&amp;cultureName=ar-JO"/>
+    <url name="Resource (AdGroupObjective)-EN" value="WarmUp/Resources??setName=AdGroupObjective&amp;cultureName=en-US"/>
+    <url name="Resource (AdGroupObjective)-AR" value="WarmUp/Resources??setName=AdGroupObjective&amp;cultureName=ar-JO"/>
+    <url name="Resource (AppReport)-EN" value="WarmUp/Resources??setName=AppReport&amp;cultureName=en-US"/>
+    <url name="Resource (AppReport)-AR" value="WarmUp/Resources??setName=AppReport&amp;cultureName=ar-JO"/>
+    <url name="Resource (BankAccount)-EN" value="WarmUp/Resources??setName=BankAccount&amp;cultureName=en-US"/>
+    <url name="Resource (BankAccount)-AR" value="WarmUp/Resources??setName=BankAccount&amp;cultureName=ar-JO"/>
+    <url name="Resource (Ad)-EN" value="WarmUp/Resources??setName=Ad&amp;cultureName=en-US"/>
+    <url name="Resource (Ad)-AR" value="WarmUp/Resources??setName=Ad&amp;cultureName=ar-JO"/>
+    <url name="Resource (Upload)-EN" value="WarmUp/Resources??setName=Upload&amp;cultureName=en-US"/>
+    <url name="Resource (Upload)-AR" value="WarmUp/Resources??setName=Upload&amp;cultureName=ar-JO"/>
+    <url name="Resource (SiteMapLocalizations)-EN" value="WarmUp/Resources??setName=SiteMapLocalizations&amp;cultureName=en-US"/>
+    <url name="Resource (SiteMapLocalizations)-AR" value="WarmUp/Resources??setName=SiteMapLocalizations&amp;cultureName=ar-JO"/>
+    <url name="Resource (Dashboard)-EN" value="WarmUp/Resources??setName=Dashboard&amp;cultureName=en-US"/>
+    <url name="Resource (Dashboard)-AR" value="WarmUp/Resources??setName=Dashboard&amp;cultureName=ar-JO"/>
+    <url name="Resource (AccountHistory)-EN" value="WarmUp/Resources??setName=AccountHistory&amp;cultureName=en-US"/>
+    <url name="Resource (AccountHistory)-AR" value="WarmUp/Resources??setName=AccountHistory&amp;cultureName=ar-JO"/>
+    <url name="Resource (TextFilters)-EN" value="WarmUp/Resources??setName=TextFilters&amp;cultureName=en-US"/>
+    <url name="Resource (TextFilters)-AR" value="WarmUp/Resources??setName=TextFilters&amp;cultureName=ar-JO"/>
+    <url name="Resource (ThanksTitle)-EN" value="WarmUp/Resources??setName=ThanksTitle&amp;cultureName=en-US"/>
+    <url name="Resource (ThanksTitle)-AR" value="WarmUp/Resources??setName=ThanksTitle&amp;cultureName=ar-JO"/>
+    <url name="Resource (AdFund)-EN" value="WarmUp/Resources??setName=AdFund&amp;cultureName=en-US"/>
+    <url name="Resource (AdFund)-AR" value="WarmUp/Resources??setName=AdFund&amp;cultureName=ar-JO"/>
+    <url name="Resource (Undefined)-EN" value="WarmUp/Resources??setName=Undefined&amp;cultureName=en-US"/>
+    <url name="Resource (Undefined)-AR" value="WarmUp/Resources??setName=Undefined&amp;cultureName=ar-JO"/>
+    <url name="Resource (PGW)-EN" value="WarmUp/Resources??setName=PGW&amp;cultureName=en-US"/>
+    <url name="Resource (PGW)-AR" value="WarmUp/Resources??setName=PGW&amp;cultureName=ar-JO"/>
+    <url name="Resource (AddPayment)-EN" value="WarmUp/Resources??setName=AddPayment&amp;cultureName=en-US"/>
+    <url name="Resource (AddPayment)-AR" value="WarmUp/Resources??setName=AddPayment&amp;cultureName=ar-JO"/>
+    <url name="Resource (Impersonate)-EN" value="WarmUp/Resources??setName=Impersonate&amp;cultureName=en-US"/>
+    <url name="Resource (Impersonate)-AR" value="WarmUp/Resources??setName=Impersonate&amp;cultureName=ar-JO"/>
+    <url name="Resource (Clone)-EN" value="WarmUp/Resources??setName=Clone&amp;cultureName=en-US"/>
+    <url name="Resource (Clone)-AR" value="WarmUp/Resources??setName=Clone&amp;cultureName=ar-JO"/>
+    <url name="Resource (EventBroker_Emails)-EN" value="WarmUp/Resources??setName=EventBroker_Emails&amp;cultureName=en-US"/>
+    <url name="Resource (EventBroker_Emails)-AR" value="WarmUp/Resources??setName=EventBroker_Emails&amp;cultureName=ar-JO"/>
+    <url name="Resource (AddFund)-EN" value="WarmUp/Resources??setName=AddFund&amp;cultureName=en-US"/>
+    <url name="Resource (AddFund)-AR" value="WarmUp/Resources??setName=AddFund&amp;cultureName=ar-JO"/>
+    <url name="Resource (Lookup)-EN" value="WarmUp/Resources??setName=Lookup&amp;cultureName=en-US"/>
+    <url name="Resource (Lookup)-AR" value="WarmUp/Resources??setName=Lookup&amp;cultureName=ar-JO"/>
+  </URLs>
+</Site>
+</Sites>

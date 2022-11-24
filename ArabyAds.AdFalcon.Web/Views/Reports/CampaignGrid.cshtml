@@ -1,0 +1,153 @@
+﻿@using Noqoush.AdFalcon.Services.Interfaces.DTOs.Reports
+@model     Noqoush.AdFalcon.Web.Controllers.Model.Report.GridReportModel
+@{
+    var columnsList = new List<GridColumnSettings>()
+{
+    new GridColumnSettings
+    {
+        Member = "DateRange",
+       Title = Html.GetResource("DateRange", "Report"),
+    },
+    new GridColumnSettings
+    {
+            Member = "Name",
+            Title = Html.GetResource("Name", "CampaignReport")
+    },
+    new GridColumnSettings
+          {
+              Title = Html.GetResource("CampaignName", "AdChart"),
+              Member  = "SubName"
+          },
+   new GridColumnSettings
+    {
+        Member = "Impress",
+        Title = Html.GetResource("Impress", "AdChart"),
+    },
+
+        new GridColumnSettings
+    {
+        Member = "UniqueImp",
+        Title = Html.GetResource("UniqueImp", "Report")
+
+
+    },
+     new GridColumnSettings
+    {
+        Member = "Clicks",
+        Title = Html.GetResource("Clicks", "AdChart"),
+    },
+        new GridColumnSettings
+    {
+        Member = "UniqueClicks",
+        Title =Html.GetResource("UniqueClicks", "Report")
+
+
+    },
+     new GridColumnSettings
+    {
+        Member = "CtrText",
+        Title = Html.GetResource("CTR", "AdChart"),
+    },
+       new GridColumnSettings
+    {
+        Member = "AvgCPCText",
+        Title = Html.GetResource("AvgCPC", "AdChart"),
+    },
+        new GridColumnSettings
+    {
+        Member = "SpendText",
+        Title = Html.GetResource("Spend", "AdChart"),
+    },
+          //new GridColumnSettings
+          //{
+          //    Title = Html.GetResource("SubAppSite", "AppSite"),
+          //    Member  = "SubAppSiteName"
+          //}
+          //    ,
+          new GridColumnSettings
+          {
+               Title = Html.GetResource("WinRateText", "PMPDeal"),
+              Member  = "WinRate",
+
+          }
+          ,
+          new GridColumnSettings
+          {
+          Title = Html.GetResource("DisplayRateText", "PMPDeal"),
+              Member  = "DisplayRate",
+
+          }
+           ,
+          new GridColumnSettings
+          {
+          Title = "DataProvider",
+              Member  = "DataProvider",
+
+          }
+           ,
+          new GridColumnSettings
+          {
+          Title = "PageViews",
+              Member  = "PageViews",
+
+          }
+
+    };
+
+
+}
+@{
+	string CustomWidth = string.Empty;
+	if (Model.GridColumnSettings.Count > 13 && Model.GridColumnSettings.Count <= 16 )
+	{
+		CustomWidth = ";width:1500px;";
+	}
+	else if (Model.GridColumnSettings.Count > 30)
+	{
+		CustomWidth = ";width:4500px;";
+	}
+	else if (Model.GridColumnSettings.Count > 20)
+	{
+		CustomWidth = ";width:3000px;";
+	}
+	else if (Model.GridColumnSettings.Count > 16)
+	{
+		CustomWidth = ";width:2000px;";
+	}
+	else
+	{
+		CustomWidth = ";width:auto";
+	}
+}
+<div class="grid-container" id="gridSection" style="overflow:visible   ;overflow-x:auto @CustomWidth">
+    @(Html.Telerik().Grid(Model.CampData)
+                      .Name("ReportGrid")
+                    .Columns(columns =>
+                                 {
+                                     columns.LoadSettings(Model.GridColumnSettings);
+                                 })
+                    .DataBinding(dataBinding =>
+                    {
+                        dataBinding.Ajax().Select("CampaignReport", "Reports");
+
+                    })
+                        .Scrollable(scrolling => scrolling.Enabled(false))
+                        .EnableCustomBinding(true)
+                              .Pageable(paging => paging.PageSize(10).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+                                              .Groupable(grouping => grouping.Enabled(false)).Footer(true).ClientEvents(p => p.OnDataBound("gridReportSuccess").OnDataBinding("reportDataBinding").OnError("gridReportError")))
+
+    </div>
+    <br />
+    <div class="data-row">
+        <a href="javascript:void(0)" onclick='reportExport("excel")' class="export-icon-excel floating-left">
+        </a><a href="javascript:void(0)" onclick='reportExport("csv")' class="export-icon-cvs floating-left">
+        </a><a href="javascript:void(0)" onclick='reportExport("pdf")' class="export-icon-pdf floating-left">
+        </a>
+    </div>
+    @Html.RegisterScriptBlock(string.Format("var reportExportUrl = '{0}';", Url.Action("CampaignReportExport", "Reports"))
+
+
+   + string.Format("var reportRefrshGridURL = '{0}';", Url.Action("CampaignGrid", "Reports"))
+
+
+    )

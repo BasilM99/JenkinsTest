@@ -1,0 +1,226 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("LookupManagement", "Titles");
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+}
+@model Noqoush.AdFalcon.Administration.Web.Controllers.Model.Lookup.ListViewModel
+@*@using (Html.BeginForm())*@
+<script language="javascript" type="text/javascript">
+    var lookupItemURL = '@Url.Action("Item")';
+    var lookupIndexURL = '/Lookup/Index';
+    var entityType = '@(Model == null ? string.Empty : Model.EntityType)';
+    var GetListParentUrl = '@Url.Action("GetListParent", "Lookup")';
+    var Save = "@Html.GetResource("Save", "Commands")";
+    $(document).ready(function () {
+        SetSelectedTap("ListMenuAdmin");
+    });
+    function localInitilize() {
+        // get your select element and listen for a change event on it
+        $('#LookupTypes').change(function () {
+            // set the window's location property to the value of the option the user has selected
+            var url = ($(this).val());
+            window.open(url, '_top');
+        });
+        
+
+        jQuery("#lookup-add-dialog-form").dialog({
+            autoOpen: false,
+            width: 610,
+            modal: true,
+            draggable: false,
+            resizable: false
+
+        });
+        var Orgbuttons = $("#lookup-add-dialog-form").dialog("option", "buttons");
+        jQuery("#lookup-add-dialog-form").dialog({
+            buttons: [
+                {
+                    text: Save,
+                    click: function () {
+                        callSave();
+                    },
+                    "class": 'primary-btn',
+
+                },
+                            Orgbuttons[Orgbuttons.length - 1]],
+        });
+
+        $("#generalMessage").dialog({
+            autoOpen: false,
+            width: 400,
+            modal: true,
+            draggable: false,
+            resizable: false
+        });
+    }
+
+
+    function GetListParent(e) {
+
+        var typeId = $("#LookupDto_Type").val();
+
+        if (typeId == 1 || typeof (typeId) == "undefined" || typeId == "") {
+            $("#LookupDto_ParentId").empty();
+            $("#ParentIdDiv").attr("style", "display:none;");
+        } else {
+            var form = "lookup-add-dialog-form";
+            var spinner = getSpinnerType(form);
+            spinner.showSpinner();
+            var offset = getPosition('#' + form);
+            spinner.css("top", offset.top - $("#" + form).parent().offset().top);
+            spinner.css(getPositionProperty(), offset.left - $("#" + form).parent().offset().left);
+
+            $.ajax({
+                type: 'POST',
+                url: GetListParentUrl + "?typeId=" + typeId,
+                success: function (data) {
+
+                    $("#LookupDto_ParentId").empty();
+                    $("#ParentIdDiv").attr("style", "display:block;");
+                    var list = data.list;
+                    $.each(list, function (key, value) {
+                        $("#LookupDto_ParentId").append($("<option></option>").val
+                        (value.Value).html(value.Text));
+                    });
+                    spinner.hideSpinner();
+                }
+            });
+        }
+    }
+
+
+    function onRowSelect(e) {
+        var entityId = jQuery(e.row.cells[0]).text();
+        onEntityChange(entityId);
+    }
+    function generateLookupGrid() {
+        var grid = $("#Grid").data("tGrid");
+        grid.rebind();
+    };
+    function lookupGridDataBinding(args) {
+        args.data = $.extend(args.data,
+            {
+                Name: $('#Name').val(),
+                LookupId: '@Html.ViewContext.RouteData.Values["LookupId"]'
+            });
+        if (typeof (getCustomFilter) != "undefined") {
+            args.data = $.extend(args.data, getCustomFilter());
+        }
+    };
+    function lookupGridDataBound(e) {
+        var grid = $("#Grid").data("tGrid");
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(1);
+        }
+    };
+    function closeLookupDialog() {
+        jQuery('#lookup-add-dialog-form').dialog("close");
+        RefrashGrid("Grid");
+    }
+
+    function onEntityChange(entityId) {
+        //spinner.showSpinner();
+
+        jQuery("#entityDetails").html('');
+        jQuery.ajax(
+            {
+                url: lookupItemURL + '/' + entityId + '?type=' + entityType,
+                cache: false,
+                success: function (html) {
+
+                    html = html.toString();
+                    jQuery("#entityDetails").html('');
+                    var newelem = jQuery(html);
+                    jQuery("#entityDetails").append(newelem);
+                    parseScript(html);
+                    initilize();
+                    if (typeof (localInitilize) != "undefined") {
+                        localInitilize();
+                    }
+                    jQuery.validator.unobtrusive.parseDynamicContent("#entityDetails");
+                    attachValidation();
+                    jQuery('#lookup-add-dialog-form').dialog("open");
+                },
+                error: function (error) {
+                    spinner.hideSpinner();
+                }
+            });
+    };
+</script>
+<h2>
+    @Html.GetResource("LookupManagement", "Titles")
+</h2>
+<div class="section-form-container">
+    <div class="section-form-inner-container">
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("Type", "Lookup")</span>
+            </div>
+            <div class="field-container">
+                <select id="LookupTypes" name="LookupTypes">
+                    @foreach (var type in Model.LookupTypes)
+                    {
+                        var selected = string.Empty;
+                        if (type.Selected)
+                        {
+                            selected = "selected='selected'";
+                        }
+                        <option value="@type.Value" @selected>@type.Text</option>
+                        @*@Html.ActionLink(type.Text, "Index", new { id = type .Value})*@
+                    }
+                </select>
+            </div>
+        </div>
+
+        @Html.Partial(Model.FilterView)
+
+        <div class="data-row data-container">
+
+            <div class=" go-left floating-left">
+                @*<h3>@Html.GetResource("CostElements", "Titles")</h3>*@
+
+                <a class="primary-btn" href="javascript:void(0)" onclick="onEntityChange(-1)">@Html.GetResource("Add", "Keywords")</a>
+            </div>
+            <div class="grid-container" style="width: 400px;">
+                &nbsp;
+                @*<div>
+                        <div class="t-toolbar t-grid-toolbar t-grid-top">
+                            <a class="t-button t-button-icon t-button-bare t-grid-add" href="javascript:void(0)"
+                               onclick="onEntityChange(-1)"><span class="t-icon t-add"></span></a>
+                        </div>
+                    </div>*@
+                @(Html.Telerik().Grid(Model.Items)
+           .Name("Grid").Columns(columns =>
+                                     {
+                                         columns.Bound(o => o.ID).Title(Html.GetResource("ID", "Lookup")).Width("30px").HtmlAttributes(new { @class = "go-center" });
+                                         columns.Bound(o => o.Name.Value).Title(Html.GetResource("Value", "Lookup")).Width("150px").HtmlAttributes(new { @class = "go-center" });
+                                     })
+           .DataBinding(dataBinding =>
+                            {
+                                dataBinding.Ajax().Select(Model.SearchAction, "Lookup");
+
+                            }).EnableCustomBinding(true)
+           .ClientEvents(clientEvents => clientEvents.OnDataBinding("lookupGridDataBinding").OnDataBound("lookupGridDataBound").OnRowDataBound("onRowDataBound").OnRowSelect("onRowSelect"))
+           .Scrollable(scrolling => scrolling.Enabled(false))
+           .Selectable()
+           .Pageable(paging => paging.PageSize(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total(int.Parse(ViewData["total"].ToString())).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+           .Filterable(filtering => filtering.Enabled(false))
+           .Groupable(grouping => grouping.Enabled(true)).Footer(true))
+            </div>
+        </div>
+        <div id="lookup-add-dialog-form" class="adfalcon-dialog" title="@Html.GetResource("SaveLookupDialog", "Titles")" style="display: none; ">
+            <div id="lookup-add-form">
+                @using (Html.BeginForm())
+                {
+                    <div id="entityDetails" class="data-row data-container">
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="generalMessage" style="display:none;">
+    <span></span>
+</div>

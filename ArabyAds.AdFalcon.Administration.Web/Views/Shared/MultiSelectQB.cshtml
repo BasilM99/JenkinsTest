@@ -1,0 +1,146 @@
+﻿@model  ArabyAds.AdFalcon.Web.Controllers.Model.QueryBuilder.Select2ViewModel
+@{
+    Layout = null;
+
+}
+
+<script type="text/javascript">
+
+    var ElemnetID@(Model.Code) = "";
+    var Type@(Model.Code) = '@Model.Code';
+    var CreativeFormatsUrl@(Model.Code) = '@Url.Action(Model.ActionName)';
+    var selectElemnt@(Model.Code);
+	var OptionalParameter@(Model.Code);
+	var ListOfIds@(Model.Id)= '@Model.ListOfIds';
+	var FirstTime@(Model.Id)= false;
+    $(document).ready(function () {
+        ElemnetID@(Model.Code) = "#" + "PartyDto_" + Type@(Model.Code) + "List";
+        selectElemnt@(Model.Code) = $(ElemnetID@(Model.Code));
+        $(ElemnetID@(Model.Code)).select2({
+            tags: false,
+            multiple: true,
+            tokenSeparators: [',', ' '],
+            ajax: {
+            url: CreativeFormatsUrl@(Model.Code) + "?id=" +@Model.Id+"&selectedFactIdVar=" + $('#FactId').val(),
+                dataType: "json",
+                type: "GET",
+                delay: 250,
+
+                data: function (params) {
+                    var OptionalParameter = "";
+                    if ('@Model.Code' == "DimensionsColumns"  ||  '@Model.Id' == '2'  ||  '@Model.Id' == '6' ||  '@Model.Id' == '1'  || '@Model.Id' == '8' || '@Model.Id' == '7' ||  '@Model.Id' == '9' ||  '@Model.Id' == '21' ||    '@Model.Id' == '13' ||  '@Model.Id' == '12' ||  '@Model.Id' == '11' ||  '@Model.Id' == '27') {
+						OptionalParameter = collectSubDimen('@Model.Id');
+                    }
+                    var queryParameters = {
+                        q: params.term,
+						t: OptionalParameter,
+						page: params.page || 1
+                    }
+                    return queryParameters;
+                },
+				processResults: function (result, params) {
+					params.page = params.page || 1;
+					var totalPages = 0;
+					if (result && result.length > 0)
+						totalPages = result[0].TotalCount;
+                    /*var DataSource = $.map(result, function (item) {
+						
+						return {
+                            text: item.Text,
+                            id: parseInt(item.Value)
+                        }
+                    });*/
+                    return {
+						results: result
+						,
+						pagination: {
+							more: (params.page * 10) < totalPages
+						}
+                       };
+                }
+
+            }
+
+		});
+
+
+        var valuesBefore = [];
+        selectElemnt@(Model.Code).on("select2:selecting", function (e) {
+
+            $("#" + Type@(Model.Code) + "P").find("span.select2-selection").attr("style", "width: 460px;height:33px; overflow:auto;");
+
+            valuesBefore = selectElemnt@(Model.Code).val();
+		});
+
+
+		CustomInitSelect2@(Model.Id)(ListOfIds@(Model.Id));
+
+    });
+
+
+
+	function CustomInitSelect2@(Model.Id)(ListOfIds) {
+		if (!FirstTime@(Model.Id)) {
+
+			FirstTime@(Model.Id)= true;
+		}
+		else {
+			return;
+		}
+		var arrpush = [];
+		if (typeof (ListOfIds) != "undefined" && ListOfIds != "undefined" && ListOfIds && ListOfIds.length>0) {
+			$.each(ListOfIds.split(","), function (i, e) {
+				if (e != "Not Set" && e != "" && e != null && e != undefined) {
+				
+
+					arrpush.push(e);
+					
+
+				}
+			});
+
+
+			var arrResult = [];
+
+			if (!(arrpush.length > 0))
+				return;
+			$.ajax({
+				type: 'GET',
+				url: CreativeFormatsUrl@(Model.Code) + "?id=" +@Model.Id+"&selectedFactIdVar=" + $('#FactId').val() + "&page=1&Ids=" + ListOfIds,
+			}).then(function (data) {
+				// create the option and append to Select2
+				for (var i = 0; i < data.length; i++) {
+					var option = new Option(data[i].text, parseInt(data[i].id), true, true);
+					var resultData = {
+						text: data[i].text,
+						id: parseInt(data[i].id)
+					}
+					selectElemnt@(Model.Code).append(option).trigger('change');
+					arrResult.push(resultData);
+
+				}
+				// manually trigger the `select2:select` event
+				selectElemnt@(Model.Code).trigger({
+					type: 'select2:select',
+					params: {
+						data: arrResult
+					}
+				});
+			});
+		}
+
+
+	
+
+	}
+
+</script>
+
+
+<div id="@(Model.Code)Div">
+    <div id="@(Model.Code)P">
+        <select id="PartyDto_@(Model.Code)List" name="PartyDto.@(Model.Code)List" class="js-example-theme-multiple js-states form-control select2-hidden-accessible multiselect2jq" style="width: 460px;" multiple="" tabindex="-1" aria-hidden="true"></select>
+    </div>
+</div>
+
+

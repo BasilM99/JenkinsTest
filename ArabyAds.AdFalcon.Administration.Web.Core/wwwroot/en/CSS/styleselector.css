@@ -1,0 +1,141 @@
+    #style-selector {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        z-index: 9999;
+		
+    }
+    .style-selector-wrapper {
+        position: relative;
+        z-index: 9999;
+        display: inline-block;
+        background: #fff;
+		border-radius: 0 3px 3px 0;
+		 -webkit-box-shadow: 0 3px 12px rgba(0, 0, 0, .2);
+                box-shadow: 0 3px 12px rgba(0, 0, 0, .2);
+				border:1px solid #ddd;
+    }
+    .style-selector-wrapper > div {
+        margin: 25px 0px 25px 0px;
+		
+    }
+    #style-selector a.close {
+        position: absolute;
+        top: 55px;
+        left: 210px;
+        width: 34px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        background: #fff;
+        border-radius: 0 3px 3px 0;
+        -webkit-box-shadow: 0 3px 12px rgba(0, 0, 0, .2);
+                box-shadow: 0 3px 12px rgba(0, 0, 0, .2);
+				border:1px solid #ddd;
+    }
+    #style-selector a.active {
+		-webkit-transition: all 0.2s ease 0s;
+		-moz-transition: all 0.2s ease 0s;
+		-o-transition: all 0.2s ease 0s;
+		-ms-transition: all 0.2s ease 0s;
+		transition: all 0.2s ease 0s;
+		-webkit-transform: scale(1.05, 1.05);
+		-moz-transform: scale(1.05, 1.05);
+		-ms-transform: scale(1.05, 1.05);
+		-o-transform: scale(1.05, 1.05);
+		transform: scale(1.15, 1.15);
+    }
+    #style-selector h2 {
+        height: 40px;
+        background: #ccc;
+		border-bottom:1px solid #ddd;
+		color:#666;
+        text-align: center;
+        font-size: 14px;
+		font-weight: bold;
+        line-height: 40px;
+		border-radius: 0 3px 0 0;
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f7f7f7'); /* for IE */
+		background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#f7f7f7)); /* for webkit browsers */
+		background: -moz-linear-gradient(top, #ffffff, #eeeeee); /* for firefox 3.6+ */
+    }
+    #style-selector h3 {
+        margin-top: 20px;
+        margin-bottom: 10px;
+        color: #666;
+        text-align: center;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    #style-selector ul {
+        width: 170px;
+		border-bottom:1px solid #e5e5e5;
+		padding:0 20px 20px;
+    }
+    #style-selector .styles {
+        overflow: hidden;
+        margin: 0px 0px 10px 0px;
+    }
+    #style-selector .styles li {
+        float: left;
+		
+    }
+    #style-selector .styles li a {
+        display: block;
+        margin: 3px;
+        width: 25px;
+        height: 25px;
+        cursor: pointer;
+		border-radius: 3px;
+    }
+	.layout{
+        border-bottom:1px solid #e5e5e5;
+		padding:0 0 20px;
+    }
+    .layout select {
+        margin: 0 0 0 15px;
+        width: 180px;
+        font-size: 12px;
+		border:1px solid #e5e5e5;
+		padding:3px;
+    }
+    #bg-image img {
+        width: auto;
+        height: 100%;
+		border-radius: 3px!important;
+    }
+	
+
+    .color-green        { background: #64c85f; }
+    .color-orange       { background: #fe9601; }
+    .color-blue         { background: #14a0e6; }
+    .color-red          { background: #f53333; }
+    .color-cream        { background: #e0dac9; }
+    .color-lightgreen   { background: #c3d700; }
+	.color-yellow       { background: #fce200; }
+    .color-cyan         { background: #58d4ca; }
+    .color-pink         { background: #ff8bb1; }
+    .color-tan          { background: #d7ad7c; }
+	
+	.bg-pat01 { background: url("../images/backgrounds/wild_oliva.png"); }
+    .bg-pat02 { background: url("../images/backgrounds/arches.png"); }
+    .bg-pat03 { background: url("../images/backgrounds/escheresque_ste.png"); }
+    .bg-pat04 { background: url("../images/backgrounds/bedge_grunge.png"); }    
+    .bg-pat05 { background: url("../images/backgrounds/subtlenet.png"); }
+    .bg-pat06 { background: url("../images/backgrounds/pw_maze_black.png"); }
+    .bg-pat07 { background: url("../images/backgrounds/px_by_Gre3g.png"); }
+	.bg-pat08 { background: url("../images/backgrounds/leather.png"); }
+    .bg-pat09 { background: url("../images/backgrounds/retina_wood.png"); }
+    .bg-pat10 { background: url("../images/backgrounds/tileable_wood_texture.png"); }
+	
+    .bg-img01 { background: url("../images/backgrounds/bg_img01.jpg"); }
+    .bg-img02 { background: url("../images/backgrounds/bg_img02.jpg"); }
+    .bg-img03 { background: url("../images/backgrounds/bg_img03.jpg"); }
+    .bg-img04 { background: url("../images/backgrounds/bg_img04.jpg"); }
+    .bg-img05 { background: url("../images/backgrounds/bg_img05.jpg"); }
+    
+    
+
+
+
+

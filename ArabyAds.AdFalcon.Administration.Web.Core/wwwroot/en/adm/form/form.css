@@ -1,0 +1,100 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background: #fff;
+	text-align: center;
+	font-family: sans-serif;
+	font-size: 12px;
+	color: #666;
+}
+
+label {
+	font-size: 12px;
+	display: block;
+	width: 320px;
+	text-align: center;
+	color: red;
+}
+
+h1 {
+	font-size: 16px;
+	font-weight: bold;
+	text-align: center;
+	margin-bottom: 15px;
+}
+
+p {
+	text-align: center;
+}
+
+#client-logo {
+	max-width: 250px;
+	max-height: 80px;
+	margin: 15px 0;
+}
+
+.hidden {
+	display: none;
+}
+
+#container {
+	width: 320px;
+	height: 372px;
+	margin: auto;
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+
+input {
+	width: 280px;
+	text-align: center;
+	height: 30px;
+	margin: 5px 0;
+	border: 1px solid #999;
+	border-radius: 4px;
+	-webkit-appearance: none;
+}
+
+.validInput {
+	border: 1px solid grey;
+	background: url(images/validInputIndicator.png) no-repeat 95% center rgba(0, 0, 0, 0) !important;
+}
+
+.invalidInput {
+	border: 1px solid red;
+	background: url(images/invalidInputIndicator.png) no-repeat 95% center rgba(0, 0, 0, 0) !important;
+}
+
+#catwebformbutton {
+	font-weight: bold;
+	margin-top: 15px;
+	background-color: #003f7d;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	width: 160px;
+	height: 40px;
+	-webkit-appearance: none;
+}
+
+.ty-body {
+	color: #000;
+}
+
+.ty-body a {
+	color: #a70060;
+}
+
+.ty-body h1 {
+	font-size: 24px;
+}
+
+.ty-body iframe {
+	display: none;
+}

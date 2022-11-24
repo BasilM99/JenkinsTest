@@ -1,0 +1,167 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("AdvancedSettings", "Commands");
+}
+@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.CampaignServerSettingDto
+<script language="javascript" type="text/javascript">
+    jQuery(document).ready(function () {
+
+        SetSelectedTap("ListMenuAdvertiser");
+    });
+    @*GlobalAdvertiserId = '@Model.AdvertiserId';*@
+
+</script>
+
+@using (Html.BeginForm("ServerSetting"))
+{
+    <div class="data-row section-container">
+        <div class="data-row section-container">
+
+            @{
+                var tabs = new List<Noqoush.AdFalcon.Web.Controllers.Model.Tab>
+                                               {
+                                                   new Noqoush.AdFalcon.Web.Controllers.Model.Tab
+                                                       {
+                                                           IsSelected = false,
+                                                           Action = new Noqoush.AdFalcon.Web.Controllers.Model.Action()
+                                                                        {
+                                                                            DisplayText = Html.GetResource("Campaigninfo", "Titles"),
+                                                                            ActionName = "Create",
+                                                                            ExtraPrams = ViewData["AdvertiserAccountIdForTab"]+"/"+ViewContext.RouteData.Values["id"],
+                                                                            IsSelected = true
+                                                                        }
+                                                       },
+                                                   new Noqoush.AdFalcon.Web.Controllers.Model.Tab
+                                                       {
+                                                           IsSelected = false,
+                                                           Action = new Noqoush.AdFalcon.Web.Controllers.Model.Action()
+                                                                        {
+                                                                            DisplayText = Html.GetResource("Settings", "Commands"),
+                                                                            ActionName = "Settings",
+                                                                            ExtraPrams = ViewContext.RouteData.Values["id"],
+                                                                            IsSelected = true
+                                                                        }
+                                                       },
+                                                        new Noqoush.AdFalcon.Web.Controllers.Model.Tab
+                                                       {
+                                                           IsSelected = true,
+                                                           Action = new Noqoush.AdFalcon.Web.Controllers.Model.Action()
+                                                                        {
+                                                                            DisplayText = Html.GetResource("AdvancedSettings", "Commands"),
+                                                                            ActionName = "ServerSetting",
+
+                                                                            IsSelected = true
+                                                                        }
+                                                       }
+                                                       ,
+                                                        new Noqoush.AdFalcon.Web.Controllers.Model.Tab
+                                                       {
+                                                           IsSelected = false,
+                                                           Action = new Noqoush.AdFalcon.Web.Controllers.Model.Action()
+                                                                        {
+                                                            DisplayText =Html.GetResource("CampaignAssignAppsites", "Commands"),
+                                                            ActionName = "CampaignAssignAppsites",
+                                                            ExtraPrams = ViewContext.RouteData.Values["id"],
+                                                            IsSelected = true
+                                                                        }
+                                                       }
+                                               };
+
+
+                var costModels = ViewBag.CostModels as List<SelectListItem>;
+            }
+            @Html.Partial("Tabs", tabs)
+            <div class="section-form-container">
+				<div class="info-container data-row">
+					<h2>@Html.GetResource("BasicInformation")</h2>
+					<br />
+
+					<div class="data-row data-container">
+						<div class="label-container">
+							<span class="field-title required-field">@Html.GetResource("AdRequestCacheTime", "AppSite")</span>
+						</div>
+						<div class="field-container">
+							<span class="small-big-field">@Html.AdFalconTextBox("AdRequestCacheLifeTime", Model.AdRequestCacheLifeTime, new { maskType = "Int", onchange = "onbidchange6(this)", onkeypress = "onbidpress6(event,this)" })</span>
+							<span class="side-text">@Html.GetResource("InSeconds", "Global")</span>
+							@Html.AdFalconValidationMessageFor(p => p.AdRequestCacheLifeTime)
+						</div>
+					</div>
+
+					@if ((Noqoush.Framework.OperationContext.Current.UserInfo
+				<Noqoush.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+				().AccountRole == (int)Noqoush.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP))
+					{
+						<div class="data-row data-container">
+
+							<div class="label-container required-field">
+								<span class="field-title required-field ">@Html.GetResource("AgencyCommission", "Global")</span>
+
+							</div>
+
+
+							<div class="field-container">
+								@{
+
+									var isunCPMSelected = (int)Model.AgencyCommission == 0 ? "selected" : "";
+									var isFixedCPMSelected = (int)Model.AgencyCommission == 1 ? "selected" : "";
+									var isNetCostMarginSelected = (int)Model.AgencyCommission == 2 ? "selected" : "";
+									var isBillableCostMarginSelected = (int)Model.AgencyCommission == 3 ? "selected" : "";
+									var isGrossCostMarginSelected = (int)Model.AgencyCommission == 4 ? "selected" : "";
+								}
+								<select id="selectAgencyCommission" name="AgencyCommission" onchange="OnChangeAgencyCommissionChanged()">
+									<option value="0" @isunCPMSelected>@Html.GetResource("Select", "Global")</option>
+									<option value="1" @isFixedCPMSelected>@Html.GetResource("FixedCPM", "Global")</option>
+									<option value="2" @isNetCostMarginSelected>@Html.GetResource("NetCostMargin", "Global")</option>
+									<option value="3" @isBillableCostMarginSelected>@Html.GetResource("BillableCostMargin", "Global")</option>
+									<option value="4" @isGrossCostMarginSelected>@Html.GetResource("GrossCostMargin", "Global")</option>
+								</select>
+
+							</div>
+						</div>
+
+
+
+						<div class="data-row data-container" id="AgencyCommissionValueSec" style="display:@((int)Model.AgencyCommission!=0 ? "block" : "none")">
+							<div class="label-container required-field">
+								<span class="field-title ">@Html.GetResource("AgencyCommissionValue", "Global")</span>
+							</div>
+							<div class="field-container">
+								<span class="small-big-field">
+									@Html.AdFalconTextBox("AgencyCommissionValue", Model.AgencyCommissionValue.ToString("F2"), new { maskType = "decimal", @onkeypress = "OnKeyPressCommissionValue(event,this)", @onchange = "OnChangeCommissionValue(this)" })
+								</span><span class="side-text" id="textForAgencyCommissionValue">@((int)Model.AgencyCommission == 1 ? '$' : '%')</span>
+								<span id="AgencyCommissionValueErorMassege" class="validation-arrow field-validation-error errorEnteredFees"
+									  style="display: none;margin-left:15px;"><span class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span></span>
+
+
+								</div>
+							</div>
+						}
+
+				</div>
+            </div>
+            <input id="ID" name="ID" value="@Model.ID" type="hidden" />
+            <input id="Name" name="Name" value="@Model.Name" type="hidden" />
+            @Html.Partial("Frequency Capping/FrequencyCappings", Model)
+            <div class="section-footer">
+            </div>
+        </div>
+
+
+
+        <div class="data-row button-container">
+            <input type="submit" name="Settings" value='@Html.GetResource("Save", "Commands")' class="primary-btn" />
+            <input type="button" value='@Html.GetResource("Close", "Commands")' class="btn" onclick="redirect('@(string.IsNullOrWhiteSpace(Request.QueryString["returnUrl"]) ? Url.Action("Index", "Campaign") : Request.QueryString["returnUrl"])    ')" />
+        </div>
+    </div>
+        <div id="deleteEvents" title="@Html.GetResource("Confirm")" style="display:none;">
+            <span id="deleteEventsDialogText">@Html.GetResource("ConfirmDeleteEvent", "CampaignServerSetting")</span>
+        </div>
+        <div id="confirmMessage" title="@Html.GetResource("Confirm")" style="display:none;">
+            <span></span>
+        </div>
+
+                }
+<div id="addFrequencyCapping" class="adfalcon-dialog" style="display: none">
+    <div id="trackingEventContainer" class="data-row data-container">
+        @Html.Action("FrequencyCapping")
+    </div>
+</div>

@@ -1,0 +1,88 @@
+﻿@using Noqoush.AdFalcon.Services.Interfaces.DTOs.Core
+@model Noqoush.AdFalcon.Administration.Web.Controllers.Model.Lookup.DeviceViewModel
+
+<script type="text/javascript">
+    function validateForm() {
+        return validatePlatform() & validateManfacturer();
+    }
+    function validatePlatform() {
+        var result = true;
+
+        var platformId = $("[name='LookupDto.Platform.ID']").val();
+
+        if (platformId == 0) {
+            result = false;
+            $("#displayRequiredMsg-platform").show();
+        } else {
+            $("#displayRequiredMsg-platform").hide();
+        }
+
+        return result;
+    }
+    function validateManfacturer() {
+        var result = true;
+
+        var manufacturerId = $("[name='LookupDto.Manufacturer.ID']").val();
+
+        if (manufacturerId == 0) {
+            result = false;
+            $("#displayRequiredMsg-manufacturer").show();
+        } else {
+            $("#displayRequiredMsg-manufacturer").hide();
+        }
+        return result;
+    }
+</script>
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("Code", "Lookup")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconTextBox("LookupDto.Code", (Model.LookupDto as DeviceDto).Code)
+        @Html.ValidationMessage("LookupDto.Code")
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("DeviceType", "Lookup")</span>
+    </div>
+    <div class="field-container">
+        @{
+            bool selected = Model == null || Model.LookupDto == null || (Model.LookupDto as DeviceDto).DeviceTypeId == 1;
+        }
+        @Html.GetRadioButton("LookupDto.DeviceTypeId", Html.GetResource("SmartPhone", "Campaign"), selected, value: "1")
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">&nbsp;</span>
+    </div>
+    <div class="field-container">
+        @{
+            selected = !selected;
+        }
+        @Html.GetRadioButton("LookupDto.DeviceTypeId", Html.GetResource("Tablet", "Campaign"), selected, value: "2")
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("Manufacturer", "Lookup")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconDropDownList("LookupDto.Manufacturer.ID", Model.Manufacturers, new { onchange="validateManfacturer()"})
+        @Html.ValidationMessageFor(p => (p.LookupDto as DeviceDto).Manufacturer.ID)
+         <span id="displayRequiredMsg-manufacturer" class="validation-arrow field-validation-error"
+                    style="display: none;"><span class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span> </span>
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("Platform", "Lookup")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconDropDownList("LookupDto.Platform.ID", Model.Platforms, new { onchange = "validatePlatform()"})
+        @Html.ValidationMessageFor(p => (p.LookupDto as DeviceDto).Platform.ID)
+        <span id="displayRequiredMsg-platform" class="validation-arrow field-validation-error"
+                    style="display: none;"><span class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span> </span>
+    </div>
+</div>

@@ -1,0 +1,49 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("DemandPartnerSupplyMenu", "Menu");
+    Layout = "~/Views/Partner/IndexMaster.cshtml";
+}
+@model ArabyAds.AdFalcon.Web.Controllers.Model.BusinessPartners.ListViewModel
+
+@section subheader
+   {
+}
+@section Grid1 {
+
+    @(Html.Kendo().Grid<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Account.SSP.PartnerDto>()
+                        .Name("GridPartner")
+                        .Columns(columns =>
+                        {
+                            columns.Template("<input type='checkbox' name='checkedRecords' value='#= ID #' />").Width(36).HtmlAttributes(new { style = "text-align:center" });
+
+                         columns.Bound(o => o.Name).Title(Html.GetResource("Name", "SSPPartners")).Width(300)
+                             .ClientTemplate("<div class='grid-title-container floating-left'><a href=\"" + Url.Action("Sites", "Partner") + "/#= ID#\">#= Name# </a></div><div class='grid-cogwheel-container floating-right go-right'> <div class='cogwheel' item_extra_info=\"#= Name#\" onclick='showGridToolTip(#= ID#,this)'><a href='javaScript:void(0);' >&nbsp</a></div></div>");
+                         columns.Bound(o => o.AccountName).Title(Html.GetResource("AccountName", "Global")).Width(50).HtmlAttributes(new { @class = "go-center" });
+
+                         columns.Bound(o => o.ContactPerson).Title(Html.GetResource("ContactPerson", "SSPPartners")).Width(50).HtmlAttributes(new { @class = "go-center" });
+                         columns.Bound(o => o.Email).Title(Html.GetResource("ContactEmail", "SSPPartners")).Width(50).HtmlAttributes(new { @class = "go-center" });
+
+
+                        }).EnableCustomBinding(true)
+                        .DataSource(dataBinding =>
+                        {
+                            //dataBinding.Server().Select("Impersonate", "AccountManagement", new { ajax = true });
+                            //dataBinding.Ajax().Select("_MyUsers", "User");
+                            dataBinding.Ajax().Read(read => read.Action("_Index", "Partner").Data("BusinessPartnersGridData")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+                        })
+                        .Events(clientEvents => clientEvents.DataBinding("BusinessPartnersGridDataBinding").DataBound("BusinessPartnersGridDataBound"))
+                        .Scrollable(scrolling => scrolling.Enabled(false))
+                        .Selectable().Pageable(paging => paging
+
+
+            .Input(false)
+            .Numeric(true)
+            .Info(true)
+            .PreviousNext(true)
+            .Refresh(true)
+
+            .Position(GridPagerPosition.Bottom)).Filterable(filtering => filtering.Enabled(false))
+            .Groupable(grouping => grouping.Enabled(false)))
+    
+}
+

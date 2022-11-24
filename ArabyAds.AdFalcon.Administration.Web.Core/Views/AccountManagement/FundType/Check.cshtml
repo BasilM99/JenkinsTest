@@ -1,0 +1,46 @@
+﻿@model ArabyAds.AdFalcon.Administration.Web.Controllers.Model.Account.AddFundViewModel
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("IssuerName", "AddFund")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconEditorFor(p => p.FundDto.IssuerName)
+        @Html.AdFalconValidationMessageFor(p => p.FundDto.IssuerName)
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("CheckNo", "AddFund")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconEditorFor(p => p.FundDto.CheckNo)
+        @Html.AdFalconValidationMessageFor(p => p.FundDto.CheckNo)
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("DueDate", "AddFund")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconTextBoxFor(p => p.FundDto.DueDate, new { @readonly = "readonly" }, Model != null && Model.FundDto != null && Model.FundDto.DueDate.HasValue ? Model.FundDto.DueDate.Value.ToString(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat) : "")
+    </div>
+    @Html.AdFalconValidationMessageFor(p => p.FundDto.DueDate)
+</div>
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("IssuerBankName", "AddFund")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconEditorFor(p => p.FundDto.IssuerBankName)
+        @Html.AdFalconValidationMessageFor(p => p.FundDto.IssuerBankName)
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("IssuerBankBranch", "AddFund")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconEditorFor(p => p.FundDto.IssuerBankBranch)
+        @Html.AdFalconValidationMessageFor(p => p.FundDto.IssuerBankBranch)
+    </div>
+</div>

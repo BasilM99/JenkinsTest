@@ -1,0 +1,11 @@
+﻿@{
+
+    ViewBag.Title = Html.GetResource("ItemNotFound", "Titles");
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+}
+<div class="section-form-inner-container last-container">
+    <h1 class="error-page">@Html.GetResource("ItemNotFound", "Titles")</h1>
+    <p class="error-page">
+        @Html.GetResource("ItemNotFound")
+    </p>
+</div>

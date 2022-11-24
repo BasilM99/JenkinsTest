@@ -1,0 +1,86 @@
+﻿@{
+	Layout = null;
+}
+
+@*<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>*@
+<style>
+	.select2-container--default .select2-results__group {
+		color: gray !important;
+	}
+</style>
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+        $('#PMPTargetingSaveDto_AdSizes').on("select2:select", function (e) {
+            if ($("#TreeP").height() > 64) {
+
+                $("#TreeDiv").find("span.select2-selection").attr("style", "width: 295px; height: 100%; max-height: 65px; overflow: auto;");
+            }
+        });
+
+
+    });
+
+    var AdSizeUrl = '@Url.Action("GetAdFormatsTree", "Deals")';
+
+    function fillTree(types) {
+        if ($("#ContentOfTabTargeting").length > 0)
+            Spinner = getSpinnerObj();
+        else
+            Spinner = getSpinnerType("targetingContainer");
+
+        Spinner.showSpinner();
+
+        if (types.length > 0) {
+            $.ajax({
+                type: 'POST',
+                url: AdSizeUrl + "?types=" + types,
+                success: function (data) {
+
+                    var group = "<optgroup label='{0}'>{1}</optgroup>";
+                    var option = "<option value='{0}'>{1}</option>";
+                    var html = '';
+                    var selectElemnt = $("#PMPTargetingSaveDto_AdSizes");
+                    for (var i = 0 ; i < data.tree.length; i++) {
+                        var Childrens = '';
+                        for (var v = 0; v < data.tree[i].Childs.length; v++) {
+                            Childrens += option.format(data.tree[i].Childs[v].Id, data.tree[i].Childs[v].Name.Value);
+
+                        }
+                        html += group.format(data.tree[i].Name.Value, Childrens);
+
+                    }
+                    selectElemnt.html(html);
+                    if (typeof (ListOfAdSizes) != "undefined")
+
+                        fillselect2multipe(ListOfAdSizes, "#PMPTargetingSaveDto_AdSizes");
+                    Spinner.hideSpinner();
+
+                },
+                error: function (data) {
+                    alert(data);
+                }
+            });
+        }
+        else {
+
+            $('#PMPTargetingSaveDto_AdSizes').html('').select2({ data: { id: null, text: null } });
+            if (typeof (Spinner) != "undefined")
+                Spinner.hideSpinner();
+
+        }
+    }
+
+
+</script>
+
+<div id="TreeDiv">
+	<div id="TreeP">
+		<select id="PMPTargetingSaveDto_AdSizes" name="PMPTargetingSaveDto.AdSizes" class="js-example-theme-multiple js-states form-control select2-hidden-accessible multiselect2jq" style="width: 295px; height: 100%; max-height: 65px; overflow: auto;" multiple="" tabindex="-1" aria-hidden="true"></select>
+	</div>
+</div>
+
+
+

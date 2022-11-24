@@ -1,0 +1,50 @@
+﻿@model ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeSummaryDto
+@{
+    
+    var creativeUnit = @Model.CreativeUnitsContent.Where(p => !string.IsNullOrEmpty(p.ImpressionTrackerRedirect)).SingleOrDefault();
+}
+
+
+<div class="data-row info-container last-container">
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("Icons", "NativeAd"):</span>
+        </div>
+    </div>
+</div>
+@foreach (var adCreativeUnitDto in Model.NativeAdIcons.OrderByDescending(p => p.CreativeUnit.Width * p.CreativeUnit.Height))
+{
+    @Html.Partial("Summary/CreativeUnit/Units/BannerUnit", adCreativeUnitDto)
+}
+
+<div class="data-row info-container last-container">
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("Creative", "Campaign"):</span>
+        </div>
+    </div>
+</div>
+
+@foreach (var adCreativeUnitDto in Model.NativeAdImages.OrderByDescending(p => p.CreativeUnit.Width * p.CreativeUnit.Height))
+{
+    @Html.Partial("Summary/CreativeUnit/Units/BannerUnit", adCreativeUnitDto)
+}
+
+@if (creativeUnit != null)
+{
+<div class="clear">&nbsp;</div>
+<div class="data-row info-container last-container">
+    <div class="data-row data-container">
+
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("ImpressionTrackerRedirect", "CreativesSettings"):</span>
+        </div>
+        <div class="field-container">
+            <span class="side-text margin-summary">
+                @(creativeUnit != null ? creativeUnit.ImpressionTrackerRedirect : string.Empty)
+            </span>
+        </div>
+    </div>
+</div>
+<div class="clear">&nbsp;</div>
+}

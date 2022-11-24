@@ -1,0 +1,61 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.AdFundDto
+@{
+    ViewBag.Title = Html.GetResource("AdFund", "Titles");
+}
+@using (Html.BeginForm())
+{
+    <h2>
+        @Html.GetResource("AdFund", "Titles")
+    </h2>
+ 
+    <div class="section-form-container">
+        <div class="ad-filter-text go-left floating-left" style="width: 200px; padding: 10px;">
+            <h3>@Html.GetResource("InformationMesssageHeader", "AdFund")</h3>
+            <p>@Html.GetResource("InformationMesssage", "AdFund")</p>
+        </div>
+        <div class="section-form-inner-container info-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("Name", "AdFund")</span>
+                </div>
+                <div class="field-container">
+                    @Html.AdFalconEditorFor(p => p.Name)
+                    @Html.AdFalconValidationMessageFor(p => p.Name)
+                </div>
+            </div>
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("Email", "AdFund")</span>
+                </div>
+                <div class="field-container">
+                    @Html.AdFalconEditorFor(p => p.Email)
+                    @Html.AdFalconValidationMessageFor(p => p.Email)
+                </div>
+            </div>
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("PhoneNumber", "AdFund")</span>
+                </div>
+                <div class="field-container">
+                    @Html.AdFalconEditorFor(p => p.PhoneNumber)
+                    @Html.AdFalconValidationMessageFor(p => p.PhoneNumber)
+                </div>
+            </div>
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("Comment", "AdFund")</span>
+                </div>
+                <div class="field-container">
+                    @Html.TextAreaFor(p => p.Comment, new { @class = "text-box", rows = 5, cols = 5 })
+                    @Html.AdFalconValidationMessageFor(p => p.Comment)
+                </div>
+            </div>
+            <div class="data-row button-container">
+                <input value="@Html.GetResource("Pay", "Commands")" type="submit" class="primary-btn" />
+            </div>
+        </div>
+    </div>
+    <div class="section-footer">
+    </div>
+    
+}

@@ -1,0 +1,166 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Core.Party.PartyViewModel
+@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core
+@{
+    ViewBag.Title = Html.GetResource("Employee", "Party");
+    int id = Model != null && Model.PartyDto != null ? (int)Model.PartyDto.ID : 0;
+}
+<script language="javascript" type="text/javascript">
+
+    var DemandTypeId = '';
+    var SupplyTypeId = '';
+
+    $(document).ready(function () {
+        SetSelectedTap("ListMenuAdmin");
+        $("#PartyDto_ID").val('@id');
+    });
+
+    function callSave() {
+
+        var setting = $.data($("#saveForm")[0], 'validator').settings;
+
+        setting.ignore = '.ValdationIgnored';
+
+        return $("#saveForm").validate().form();
+
+    }
+
+    function showAccountSearchDialog() {
+
+        localAccountSearchInitilize();
+        AccountDialogInitilize();
+        showDialog("account-search-dialog-form");
+
+    }
+
+    function AccountDialogInitilize() {
+        $("#account-search-dialog-form").dialog({
+            autoOpen: false,
+            //   height: 520,
+            width: 900,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            open: function () {
+
+
+
+            },
+            close: function () {
+
+                $("#account-search-dialog-form ,#Name ,#CompanyName,#Email").val('');
+                generateUsersGrid();
+
+            }
+        });
+    }
+
+
+    function ResetAccountData() {
+        jQuery('#accountName').text('');
+        jQuery('[name="PartyDto.AccountId"]').val('');
+        jQuery('[name="PartyDto.AccountName"]').val('');
+        jQuery('#deleteAccount').hide();
+
+        accountID = null;
+    }
+
+
+    function changeAccount(accountId, accountDesc) {
+
+        if ((typeof (accountId) != "undefined") && (typeof (accountDesc) != "undefined")) {
+            jQuery('#accountName').text(accountDesc);
+            jQuery('[name="PartyDto.AccountId"]').val(accountId);
+            jQuery('[name="PartyDto.AccountName"]').val(accountDesc);
+            jQuery('#deleteAccount').show();
+
+            if ($("#PartyDto_BusinessPartnerTypeId").val() == DemandTypeId || $("#PartyDto_BusinessPartnerTypeId").val() == SupplyTypeId) {
+                $(".commonSupply").show();
+
+            }
+        }
+        else {
+
+            $(".commonSupply").hide();
+        }
+        jQuery('#account-search-dialog-form').dialog('close');
+        $("#saveForm").validate().form();
+
+    }
+
+
+
+</script>
+
+
+@using (Html.BeginForm("Employee", "Party", FormMethod.Post, new { id = "saveForm" }))
+{
+    @Html.HiddenFor(m => m.PartyDto.ID)
+
+    <div id="entityDetails">
+        <div class="section-form-inner-container">
+
+            <div class="data-row data-container">
+                <div class="label-container2" style="width: 300px!important;">
+                    <span class="field-title required-field">@Html.GetResource("Name", "Party")</span>
+                </div>
+                <div class="adfalcon-dialog2  field-container">
+                    @Html.AdFalconTextBoxFor(p => p.PartyDto.Name, new { maskType = "String" })
+                    @Html.AdFalconValidationMessageFor(p => p.PartyDto.Name)
+                </div>
+
+            </div>
+
+            <div class="data-row data-container">
+                <div class="label-container2" style="width: 300px!important;" id="AccountContainer">
+                    <span class="field-title required-field">@Html.GetResource("Account", "AddFund")</span>
+                </div>
+                <div class="adfalcon-dialog2 field-container">
+                    <div style="line-height: 24px;width:316px;">
+                        @Html.HiddenFor(m => m.PartyDto.AccountId)
+                        @Html.HiddenFor(m => m.PartyDto.AccountName)
+                        <img class="find-icon" onclick="showAccountSearchDialog();" src='@Url.GetImagePath("find-icon.png")' />
+                        <span class="side-text" id="accountName" style="float: none;">@(Model != null && Model.PartyDto != null ? Model.PartyDto.AccountName : string.Empty)</span>
+
+                    </div>
+                    <div style="float:right">
+                        @Html.AdFalconValidationMessageFor(m => m.PartyDto.AccountName)
+
+                    </div>
+
+                </div>
+            </div>
+            @{
+                ViewData.TemplateInfo.HtmlFieldPrefix = "PartyDto";
+            }
+            <div class="data-row data-container">
+                <div class="label-container2" style="width: 300px!important;">
+                    <span class="field-title required-field">
+                        @Html.GetResource("JobPosition", "Party")
+                    </span>
+                </div>
+                <div class="adfalcon-dialog2  field-container">
+                    @Html.DropDownListFor(p => (p.PartyDto as EmployeeDto).JobPositionId, Model.JobPositions)
+                    @Html.ValidationMessageFor(p => (p.PartyDto as EmployeeDto).JobPositionId)
+                </div>
+            </div>
+            <div class="data-row button-container">
+                @Html.SubmitButton(@Html.GetResource("Save", "Commands"), "Create", new { @class = "primary-btn", onclick = " callSave()" })
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+                }
+<div id="account-search-dialog-form" style="display: none;" title="@Html.GetResource("AccountSearch", "Global" )">
+    @Html.Action("AccountSearch", "AccountManagement")
+</div>
+
+<div id="AppSite-search-dialog-form" style="display: none;" title="AppSiteSearch">
+
+    @Html.Action("AppSiteSearch", "AppSite")
+</div>
+

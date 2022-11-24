@@ -1,0 +1,121 @@
+﻿@{
+	ViewBag.Title = Html.GetResource("PMPDeals", "Titles");
+	Layout = "~/Views/Deals/IndexMaster.cshtml";
+}
+@model Noqoush.AdFalcon.Web.Controllers.Model.PMPDeal.PMPDealListViewModel
+@Html.Partial("GridToolTop", Model.ToolTips)
+
+@section subheader
+   {
+}
+
+@section Grid1 {
+	@(Html.Telerik().Grid(Model.Items)
+					   .Name("DealsGrid")
+					   .Columns(columns =>
+									{
+										columns.Template(
+											@<text>
+												@{
+																	if (Model.PreventEdit)
+																	{
+														<input name="checkedRecords" type="checkbox" value="@item.ID" disabled title="checkedRecords" />
+
+																	}
+																	else
+																	{
+														<input name="checkedRecords" type="checkbox" value="@item.ID" title="checkedRecords" />
+
+																	}
+
+												}
+											</text>)
+					 .Title("").Width(36).HtmlAttributes(new { style = "text-align:center" })
+					 .ClientTemplate("<input type='checkbox' name='checkedRecords' value='<#= ID #>' />");
+
+									columns.Bound(o => o.Name).Template(
+										@<text><div class="grid-title-container floating-left">
+												<span class="trimed-span" style="width:190px" id="PMPTitle">
+													@{
+																		if (item.allowEdit)
+																		{
+															<a href='@Url.Action("create", "deals")?id=@item.ID&AdvertiseraccId=@item.AdvertiserAccountId' title='@item.Name'>
+																@item.Name
+															</a>
+																		}
+																		else
+																		{
+															@item.Name
+
+																		}
+													}
+												</span>
+											</div>
+											@{
+																if (item.allowEdit)
+																{
+													<div class="grid-cogwheel-container floating-right go-right">
+														<div class='cogwheel' item_extra_info="@item.ID" onclick='showGridToolTip(@item.ID,this)'>
+															<a href='javaScript:void(0);'>&nbsp</a>
+														</div>
+													</div>
+																}
+
+											}
+										</text>
+													).Title(Html.GetResource("Name", "Global")).Width(190)
+													.ClientTemplate("<div class='grid-title-container floating-left'>" +
+													"<span class='trimed-span'  style='width:190px' id='PMPTitle'>" +
+													"<# if(allowEdit) { #>" +
+													"<a href=\"" + Url.Action("Create", "Deals") + "?id=<#= ID#>&AdvertiseraccId=<#= AdvertiserAccountId#>\" ><#= Name#> </a> " +
+													 "<# } else { #>" +
+													 "<#= Name #>" + "<# " + " } #>" +
+													"</span></div>" +
+													"<# if(allowEdit) { #>" +
+
+													"<div class='grid-cogwheel-container floating-right go-right'>" +
+													"<div class='cogwheel' item_extra_info='<#=ID#>' onclick='showGridToolTip(<#= ID#>,this)'>" +
+													"<a href='javaScript:void(0);' >&nbsp</a>&nbsp</a></div></div>" +
+													"<# } #>"
+													).Width(160);
+												columns.Bound(o => o.StartDateString).Title(Html.GetResource("StartDate", "Campaign")).Format("{0:" + Noqoush.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(80).HtmlAttributes(new { @class = "go-center" });
+												columns.Bound(o => o.EndDateString).Title(Html.GetResource("EndDate", "Campaign")).Format("{0:" + Noqoush.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(80).HtmlAttributes(new { @class = "go-center" });
+
+												columns.Bound(o => o.Price.Value).Template(
+										@<text>
+
+											<span style="width:30px">
+
+												@item.Price.Value.ToString("0.###")
+											</span>
+
+
+
+										</text>
+			).Title(Html.GetResource("Price", "SSPFloorPrices")).Width(30).HtmlAttributes(new { @class = "go-center" })
+			.ClientTemplate(" <span style=\"width: 30px\"><#= Price#></span>");
+									columns.Bound(o => o.ExchangeName).Title(Html.GetResource("ExchangeName", "PMPDeals")).Width(80).HtmlAttributes(new { @class = "go-center" });
+									columns.Bound(o => o.PublisherName).Title(Html.GetResource("PublisherName", "PMPDeals")).Width(80).HtmlAttributes(new { @class = "go-center" });
+									columns.Bound(o => o.DealTypeString).Title(Html.GetResource("Type")).Width(70).HtmlAttributes(new { @class = "go-center" });
+									columns.Bound(o => o.StatusDescription).Title(Html.GetResource("Status")).Width(70).HtmlAttributes(new { @class = "go-center" });
+					//columns.Bound(o => o.Scope).Title(Html.GetResource("Scope")).Width(40).HtmlAttributes(new { @class = "go-center" });
+
+
+
+				}).EnableCustomBinding(true)
+																							.DataBinding(dataBinding =>
+																							{
+																								dataBinding.Server().Select("IndexPMPDeals", "Deals", new { ajax = true });
+																								dataBinding.Ajax().Select("_IndexPMPDeals", "Deals");
+
+																							})
+																					.ClientEvents(clientEvents => clientEvents.OnDataBinding("PMPGridDataBinding").OnDataBound("PMPGridDataBound").OnRowDataBound("onRowDataBound"))
+																					.Scrollable(scrolling => scrolling.Enabled(false))
+																					.Selectable().Pageable(paging => paging.PageSize(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.PageSize)
+																											.Total(int.Parse(ViewData["total"].ToString()))
+																											.Style(GridPagerStyles.NextPreviousAndNumeric)
+																											.Position(GridPagerPosition.Bottom))
+																					.Filterable(filtering => filtering.Enabled(false))
+																					.Groupable(grouping => grouping.Enabled(true)).Footer(true))
+}
+

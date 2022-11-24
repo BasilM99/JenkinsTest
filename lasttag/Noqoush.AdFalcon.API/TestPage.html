@@ -1,0 +1,145 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript">
+
+        //$(document).ready(function () {
+        //    $.post("/v1.0/93e1818f0c624c1c8371921230a6cb18/7ed1147820ec00fb565df5a5f0a02891/report/stats", {
+        //        "criteria": {
+        //            "f": "json",
+        //            "fdate": "2013-01-01",
+        //            "tdate": "2013-01-02",
+
+        //            "aid": "",
+        //            "gb": "cc",
+        //            "l": ""
+        //        }
+        //    }, function myfunction() {
+
+        //    });
+
+        //});
+
+        function CallAjax() {
+
+            var url = "";
+            if ($("#publicKey").val() == "") {
+                alert("Public Key is Required");
+                return;
+            }
+            if ($("#hashing").val() == "") {
+                alert("Hash Key is Required");
+                return;
+            }
+
+            urlPath = ($('input[name="isTest"]:checked').length > 0 ? "/test" : "") + "/v1.0/" + $.trim($("#publicKey").val()) + "/" + $.trim($("#hashing").val()) + "/report/stats";
+
+            if ($('input[name="isIncludeEmpty"]:checked').length > 0) {
+                console.log(1);
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: urlPath, contentType: "application/json; charset=UTF-8", data: {
+                        "criteria": {
+                            "f": $.trim($("#f").val()),
+                            "fdate": $.trim($("#fdate").val()),
+                            "tdate": $.trim($("#tdate").val()),
+                            "aid": $.trim($("#aid").val()),
+                            "gb": $.trim($("#gb").val()),
+                            "l": $.trim($("#l").val()),
+                            "cc": $.trim($("#cc").val()),
+                            "os": $.trim($("#os").val())
+                        }
+                    }
+                });
+            } else {
+                var jsonObj = { criteria: {} };
+                $("input[data-json=true]").each(function () {
+                    if ($(this).val() != "") {
+                        var name = $(this).attr("id");
+                        jsonObj.criteria[name] = $.trim($(this).val());
+                    }
+
+                });
+
+                $.ajax({ dataType: "json", type: "POST", url: urlPath, data: jsonObj, contentType: "application/json; charset=UTF-8" });
+            }
+
+        }
+    </script>
+</head>
+<body>
+    <table cellpadding="0" cellspacing="0" width="100%" id="tableInputs">
+        <colgroup>
+            <col width="20%" />
+            <col width="80%" />
+        </colgroup>
+        <tr>
+            <td>Public Key</td>
+            <td>
+                <input type="text" name="publicKey" id="publicKey" value="" /></td>
+        </tr>
+        <tr>
+            <td>Hashing Key</td>
+            <td>
+                <input type="text" name="hashing" id="hashing" value="" /></td>
+        </tr>
+        <tr>
+            <td>Format</td>
+            <td>
+                <input type="text" name="format" id="f" value="json" data-json="true" /></td>
+        </tr>
+        <tr>
+            <td>From Date</td>
+            <td>
+                <input type="text" name="fdate" id="fdate" value="" data-json="true" /></td>
+        </tr>
+        <tr>
+            <td>To Date</td>
+            <td>
+                <input type="text" name="tdate" id="tdate" value="" data-json="true" /></td>
+        </tr>
+        <tr>
+            <td>Application Id</td>
+            <td>
+                <input type="text" name="aid" id="aid" value="" data-json="true" /></td>
+        </tr>
+        <tr>
+            <td>Groupb By</td>
+            <td>
+                <input type="text" name="gb" id="gb" value="" data-json="true" /></td>
+        </tr>
+        <tr>
+            <td>Length</td>
+            <td>
+                <input type="text" name="l" id="l" value="" data-json="true" /></td>
+        </tr>
+        <tr>
+            <td>Offset</td>
+            <td>
+                <input type="text" name="os" id="os" value="" data-json="true" /></td>
+        </tr>
+        <tr>
+            <td>Country Code</td>
+            <td>
+                <input type="text" name="cc" id="cc" value="" data-json="true" /></td>
+        </tr>
+        <tr>
+            <td>Is Test</td>
+            <td>
+                <input type="checkbox" name="isTest" id="isTest" value="test" /></td>
+        </tr>
+        <tr>
+            <td>Is Include Empty</td>
+            <td>
+                <input type="checkbox" name="isIncludeEmpty" id="isIncludeEmpty" value="" /></td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                <input type="button" name="submit" value="Submit" onclick="CallAjax()" />
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

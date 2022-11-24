@@ -1,0 +1,36 @@
+﻿@{
+
+    ViewBag.Title = Html.GetResource("ServerError", "Titles");
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+}
+
+
+<script language="javascript">
+
+
+
+    $(document).ready(function () {
+        $(".btn").click(function () {
+            window.location = "http://adfalcon.com/en/dashboard/index?charttype=ad";
+            return false;
+         });
+    });
+
+</script>
+
+
+<div class="section-form-inner-container last-container">
+    <h1 class="error-page">@Html.GetResource("ServerError", "Titles")</h1>
+    <p class="error-page">
+        @Html.GetResource("ServerErrorText")
+    </p>
+</div>
+
+<br />
+<div class="data-row button-container">
+    <input type="button" name="close" value="@Html.GetResource("Close", "Commands")" class="btn" >
+    <br />
+    <br />
+</div>
+
+

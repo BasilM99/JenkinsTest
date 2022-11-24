@@ -1,0 +1,28 @@
+﻿@{
+    if (ViewData["chartType"].ToString().ToLower() == "ad")
+    {
+        ViewBag.Title = Html.GetResource("AdvertiserDashboard", "Titles");
+    }
+    else if (ViewData["chartType"].ToString().ToLower() == "deal")
+    {
+        ViewBag.Title = Html.GetResource("DealMonitoringDashBoard", "PMPDeal");
+    }
+    else if (ViewData["chartType"].ToString().ToLower() == "lmpressionlog")
+    {
+        ViewBag.Title = Html.GetResource("audiencesMonitoring", "audiences");
+
+    }
+    else
+    {
+        ViewBag.Title = Html.GetResource("PublisherDashboard", "Titles");
+    }
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+
+    google.charts.load('current', { packages: ['corechart', 'line'] });
+
+
+</script>
+@Html.Partial("Chart")

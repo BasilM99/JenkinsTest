@@ -1,0 +1,393 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{94C236EB-6E22-4ED9-A5CA-68C1580FEC2E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Noqoush.AdFalcon.Web.Controllers</RootNamespace>
+    <AssemblyName>Noqoush.AdFalcon.Web.Controllers</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WebBuild|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\WebBuild\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\Noqoush.AdFalcon.Web.Controllers.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;D:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;D:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=3.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\lib\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\lib\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="Combres">
+      <HintPath>..\..\..\..\lib\Combres.dll</HintPath>
+    </Reference>
+    <Reference Include="Combres.Mvc">
+      <HintPath>..\..\..\..\lib\Combres.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\lib\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus">
+      <HintPath>..\..\..\..\lib\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="GSSAPI, Version=0.3.0.0, Culture=neutral, PublicKeyToken=40ee41df7c2309c7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\lib\GSSAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.4.6.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\lib\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.1.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp">
+      <HintPath>..\..\..\..\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="MaxMind.Db">
+      <HintPath>..\..\..\..\lib\MaxMind.Db.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack">
+      <HintPath>..\packages\Microsoft.WindowsAPICodePack.Core.1.1.0\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell">
+      <HintPath>..\packages\Microsoft.WindowsAPICodePack.Shell.1.1.0\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\..\lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NReco.VideoConverter">
+      <HintPath>..\packages\NReco.VideoConverter.1.0.8.0\lib\net20\NReco.VideoConverter.dll</HintPath>
+    </Reference>
+    <Reference Include="NReco.VideoInfo">
+      <HintPath>..\..\..\..\lib\NReco.VideoInfo.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp, Version=106.6.10.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.6.10\lib\net452\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="RouteDebug">
+      <HintPath>..\..\..\..\lib\RouteDebug.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.DataVisualization" />
+    <Reference Include="System.Web.DataVisualization.Design" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Stack 5\Packages\Microsoft.AspNet.Mvc.5.0.0\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Stack 5\Packages\Microsoft.AspNet.Razor.3.0.0\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Stack 5\Packages\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Stack 5\Packages\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Telerik.Web.Mvc">
+      <HintPath>..\..\..\..\lib\Telerik.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="WebHDFS, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebHDFS.Client.2.0.0\lib\net47\WebHDFS.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
+    <Compile Include="Controllers\AppSiteController.cs" />
+    <Compile Include="Controllers\AudienceSegmentController.cs" />
+    <Compile Include="Controllers\DataProviderController.cs" />
+    <Compile Include="Controllers\DealsController.cs" />
+    <Compile Include="Controllers\CampaignController.cs" />
+    <Compile Include="Controllers\AppSiteTypeController.cs" />
+    <Compile Include="Controllers\AdvertiserController.cs" />
+    <Compile Include="Controllers\FilterController.cs" />
+    <Compile Include="Controllers\HouseAdController.cs" />
+    <Compile Include="Controllers\Core\WarmUpController.cs" />
+    <Compile Include="Controllers\Core\ErrorController.cs" />
+    <Compile Include="Controllers\DeveloperController.cs" />
+    <Compile Include="Controllers\CommonController.cs" />
+    <Compile Include="Controllers\PartyController.cs" />
+    <Compile Include="Controllers\PublisherController.cs" />
+    <Compile Include="Controllers\Core\DocumentController.cs" />
+    <Compile Include="Controllers\Core\DocumentTypeController.cs" />
+    <Compile Include="Controllers\Creative\CreativeUnitController.cs" />
+    <Compile Include="Controllers\Creative\TileImageController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
+    <Compile Include="Controllers\DeviceController.cs" />
+    <Compile Include="Controllers\PlatformController.cs" />
+    <Compile Include="Controllers\ManufacturerController.cs" />
+    <Compile Include="Controllers\CountryController.cs" />
+    <Compile Include="Controllers\DefaultController.cs" />
+    <Compile Include="Controllers\KeywordController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Controllers\OperatorController.cs" />
+    <Compile Include="Controllers\ThemeController.cs" />
+    <Compile Include="Controllers\TreeController.cs" />
+    <Compile Include="Core\ExceptionHandler.cs" />
+    <Compile Include="Core\Security\AllowRoleAttribute.cs" />
+    <Compile Include="Core\Security\PermissionsAuthorize.cs" />
+    <Compile Include="Core\Security\AuthorizeRoleAttribute.cs" />
+    <Compile Include="Core\AuthorizedControllerBase.cs" />
+    <Compile Include="Core\CacheTempDataProvider.cs" />
+    <Compile Include="Core\Security\DenyNonPrimaryRoleAttribute.cs" />
+    <Compile Include="Core\Security\SecurityRoleAttribute.cs" />
+    <Compile Include="Core\Security\DenyRoleAttribute.cs" />
+    <Compile Include="Core\HttpParamActionAttribute.cs" />
+    <Compile Include="Controllers\MiscController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Core\ControllerBase.cs" />
+    <Compile Include="Core\MultiCultureAttribute.cs" />
+    <Compile Include="Core\NotCacheable.cs" />
+    <Compile Include="Core\SetCultureAttribute.cs" />
+    <Compile Include="Core\WebApplicationBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Handler\Downloader.cs" />
+    <Compile Include="Handler\Utility.cs" />
+    <Compile Include="Helper\HtmlHelperExtensions.cs" />
+    <Compile Include="Helper\UrlHelperExtensions.cs" />
+    <Compile Include="Model\AccountManagement\DSPAccountSettingsModel.cs" />
+    <Compile Include="Model\AccountManagement\Filter.cs" />
+    <Compile Include="Model\AccountManagement\ListViewModel.cs" />
+    <Compile Include="Model\Advertiser\AdvertiserAssignment.cs" />
+    <Compile Include="Model\AppSite\AppSiteSearchModel.cs" />
+    <Compile Include="Model\AppSite\Performance\AppOpsAccountPerformanceViewModel.cs" />
+    <Compile Include="Model\AppSite\Performance\AppOpsAppSitePerformanceViewModel.cs" />
+    <Compile Include="Model\AppSite\Performance\BaseAppSiteAccountPerformanceSearchInfo.cs" />
+    <Compile Include="Model\AppSite\Performance\BaseAppSitePerformanceSearchInfo.cs" />
+    <Compile Include="Model\AppSite\Performance\BaseChartDashboardView.cs" />
+    <Compile Include="Model\Audiance\DataProvider.cs" />
+    <Compile Include="Model\BaseSearchInfo.cs" />
+    <Compile Include="Model\BusinessPartners\Filter.cs" />
+    <Compile Include="Model\BusinessPartners\ListViewModel.cs" />
+    <Compile Include="Model\Campaign\AdCreativeFullSummaryViewModel.cs" />
+    <Compile Include="Model\AdFundDto.cs" />
+    <Compile Include="Model\AppSite\AppSietCriteria.cs" />
+    <Compile Include="Model\AppSite\AppSiteSettingUpdate.cs" />
+    <Compile Include="Model\AppSite\AppSiteUpdateBase.cs" />
+    <Compile Include="Model\AppSite\CreateViewModel.cs" />
+    <Compile Include="Model\AppSite\ListViewModel.cs" />
+    <Compile Include="Model\BreadCrumbModel.cs" />
+    <Compile Include="Model\Campaign\AdGroupDynamicBiddingListViewModel.cs" />
+    <Compile Include="Model\Campaign\AdGroupSettingsViewModel.cs" />
+    <Compile Include="Model\Campaign\AdGroupTrackingEventSaveModel.cs" />
+    <Compile Include="Model\Campaign\CampaignBidConfigModel.cs" />
+    <Compile Include="Model\Campaign\CampaignReportSchedulingSaveModel.cs" />
+    <Compile Include="Model\Campaign\CreativeViewModel.cs" />
+    <Compile Include="Model\Campaign\AudienceSegmentViewModel.cs" />
+    <Compile Include="Model\Campaign\Filter.cs" />
+    <Compile Include="Model\Advertiser\Advertiser.cs" />
+    <Compile Include="Model\Campaign\ListViewModel.cs" />
+    <Compile Include="Model\Campaign\ObjectiveViewModel.cs" />
+    <Compile Include="Model\Campaign\TrafficPlannerCriteria.cs" />
+    <Compile Include="Model\Campaign\TrafficPlannerViewModel.cs" />
+    <Compile Include="Model\Campaign\TargetingViewModel.cs" />
+    <Compile Include="Model\Campaign\TargetingSaveModel.cs" />
+    <Compile Include="Model\ChangePasswordInfo.cs" />
+    <Compile Include="Model\AgencyRequestDto.cs" />
+    <Compile Include="Model\Core\CampaignReportSchadulingViewModel.cs" />
+    <Compile Include="Model\Core\Party\Filter.cs" />
+    <Compile Include="Model\Core\Party\ListViewModel.cs" />
+    <Compile Include="Model\Core\Party\PartySaveModel.cs" />
+    <Compile Include="Model\Core\Party\PartyViewModel.cs" />
+    <Compile Include="Model\Core\TimeViewModel.cs" />
+    <Compile Include="Model\Core\UploadViewModel.cs" />
+    <Compile Include="Model\Core\VideoInformationModel.cs" />
+    <Compile Include="Model\CustomSelectListItem.cs" />
+    <Compile Include="Model\LocationInfo.cs" />
+    <Compile Include="Model\PMPDeal\Filter.cs" />
+    <Compile Include="Model\HouseAd\HouseAdSaveModel.cs" />
+    <Compile Include="Model\HouseAd\Filter.cs" />
+    <Compile Include="Model\HouseAd\HouseAdListViewModel.cs" />
+    <Compile Include="Model\HouseAd\HouseAdViewModel.cs" />
+    <Compile Include="Model\ListViewModelBase.cs" />
+    <Compile Include="Model\AutoComplete.cs" />
+    <Compile Include="Model\ForgetpasswordInfo.cs" />
+    <Compile Include="Model\Action.cs" />
+    <Compile Include="Model\LoginInfo.cs" />
+    <Compile Include="Core\NoqoushControllerFactory.cs" />
+    <Compile Include="Model\Pgw\ReceiptViewModel.cs" />
+    <Compile Include="Model\PMPDeal\InventorySource.cs" />
+    <Compile Include="Model\PMPDeal\ListView.cs" />
+    <Compile Include="Model\QueryBuilder\Data.cs" />
+    <Compile Include="Model\QueryBuilder\DataMode.cs" />
+    <Compile Include="Model\QueryBuilder\Filter.cs" />
+    <Compile Include="Model\QueryBuilder\FilterViewModel.cs" />
+    <Compile Include="Model\QueryBuilder\Select2.cs" />
+    <Compile Include="Model\QueryBuilder\Select2ViewModel.cs" />
+    <Compile Include="Model\QueryBuilder\Tree.cs" />
+    <Compile Include="Model\Report\Filter.cs" />
+    <Compile Include="Model\Report\GridReportModel.cs" />
+    <Compile Include="Model\Report\GroupColumnViewModel.cs" />
+    <Compile Include="Model\Report\ReportJobListViewModelBase.cs" />
+    <Compile Include="Model\Select2ViewModel.cs" />
+    <Compile Include="Model\Tab.cs" />
+    <Compile Include="Model\TagCloud.cs" />
+    <Compile Include="Model\Tree\TreeViewModel.cs" />
+    <Compile Include="Model\Tree\TreeAttribute.cs" />
+    <Compile Include="Model\Tree\TreeModel.cs" />
+    <Compile Include="Model\User\AccountSearchViewModel.cs" />
+    <Compile Include="Model\User\InvitationFilter.cs" />
+    <Compile Include="Model\User\Filter.cs" />
+    <Compile Include="Model\User\ResetPasswordInfo.cs" />
+    <Compile Include="Model\User\SwitchAccountModel.cs" />
+    <Compile Include="Model\User\Receipt.cs" />
+    <Compile Include="Model\User\InvitationViewModel.cs" />
+    <Compile Include="Model\User\TrialListViewModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\ChartResult.cs" />
+    <Compile Include="Utilities\Config.cs" />
+    <Compile Include="Utilities\GoogleChartResult.cs" />
+    <Compile Include="Utilities\GoogleControlsHelper.cs" />
+    <Compile Include="Utilities\IPDetectionHelper.cs" />
+    <Compile Include="Utilities\MediaInfo.cs" />
+    <Compile Include="Utilities\PaymentGateways\IPaymentGatewayHelper.cs" />
+    <Compile Include="Utilities\PaymentGateways\IPaymentGatewayHelperFactory.cs" />
+    <Compile Include="Utilities\PaymentGateways\MIGSHelper.cs" />
+    <Compile Include="Utilities\PaymentGateways\PaymentGatewayException.cs" />
+    <Compile Include="Utilities\PaymentGateways\PaymentGatewayFactory.cs" />
+    <Compile Include="Utilities\PaymentGateways\PaymentStatus.cs" />
+    <Compile Include="Utilities\PaymentGateways\PayPalHelper.cs" />
+    <Compile Include="Utilities\ResourcesUtilities.cs" />
+    <Compile Include="Utilities\StringUtilities.cs" />
+    <Compile Include="Utilities\DocumentUtility.cs" />
+    <Compile Include="Utilities\WriteDashboardDocumentsHelper.cs" />
+    <Compile Include="Utilities\WriteReportDocumentsHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Utilities\PGWConfig.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Noqoush.Framework\Noqoush.Framework.Web\Noqoush.Framework.Web.csproj">
+      <Project>{EEF2AB68-E116-4C81-8A10-7053C764EADD}</Project>
+      <Name>Noqoush.Framework.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Noqoush.Framework\Noqoush.Framework\Noqoush.Framework.csproj">
+      <Project>{64D00377-15EE-4C1F-932C-0325580E2003}</Project>
+      <Name>Noqoush.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Common.Web\Noqoush.AdFalcon.Common.Web.csproj">
+      <Project>{362C0976-69A9-4E53-98C2-3A4A8028FD3B}</Project>
+      <Name>Noqoush.AdFalcon.Common.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Common\Noqoush.AdFalcon.Common.csproj">
+      <Project>{dc961a65-f217-4c17-8dee-dec452ad6bf1}</Project>
+      <Name>Noqoush.AdFalcon.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Domain.Common\Noqoush.AdFalcon.Domain.Common.csproj">
+      <Project>{fe62b4e8-9278-4b6f-b0e9-67495d74cb22}</Project>
+      <Name>Noqoush.AdFalcon.Domain.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Domain.Exceptions\Noqoush.AdFalcon.Exceptions.csproj">
+      <Project>{50286B2D-5A0B-4F57-8CBB-7CC1C9A6C64F}</Project>
+      <Name>Noqoush.AdFalcon.Exceptions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Services.Interfaces\Noqoush.AdFalcon.Services.Interfaces.csproj">
+      <Project>{c26f3a2d-1eec-4567-9d1c-d8ae5834d83f}</Project>
+      <Name>Noqoush.AdFalcon.Services.Interfaces</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

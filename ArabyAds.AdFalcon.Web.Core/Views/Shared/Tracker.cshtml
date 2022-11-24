@@ -1,0 +1,153 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Core.CampaignReportSchedulingViewModel
+@{
+    Layout = null;
+}
+@using ArabyAds.AdFalcon.Web.Core.Helper;
+<script type="text/javascript">
+    var maxAllowedTrackersNumber = 9;
+    var ClickTrackerDuplicatedMsg = '@Html.GetResource("DuplicatedClickTrackerMsg")';
+    function onCopyTracker(originalItem, clonedItem) {
+
+        var textBox = clonedItem.find(":text");
+        var validationSpan = $(clonedItem.find("span[id$='-URLErrorMsg2']"));
+        validationSpan.attr("id", textBox.attr("id") + "-URLErrorMsg2");
+
+        var validationSpan2 = $(clonedItem.find("span[id$='-URLErrorMsg3']"));
+        validationSpan2.hide();
+        validationSpan2.attr("id", textBox.attr("id") + "-URLErrorMsg3");
+
+        textBox.change(validateClickTrackers);
+        textBox.keyup(function () { onUrlTextKeyUp("#" + clonedItem.attr("id"), false); });
+
+        var containerId = originalItem[0].id;
+
+        var plusicon = $(clonedItem.find(".plusicon"));
+        plusicon.attr("onclick", "");
+        plusicon.click(function () { cloneClickTracker("#" + containerId); });
+
+        clonedItem.find("span.field-title").html("&nbsp;");
+
+    }
+
+    function onUrlTextKeyUp(itemContainer, isShowPlus) {
+        managePlusIcon(itemContainer);
+    }
+
+    function managePlusIcon(itemContainer) {
+        var container = GetContainerUrl(itemContainer);
+        var containers = container.parent().find("[id^='trackerContainer']");
+        if (containers.length > 0 && containers.length < maxAllowedTrackersNumber) {
+            containers.find(".plusicon").hide();
+            if (validateAllClickTrackers(itemContainer)) {
+                lastUrl.find(".plusicon").show();
+            }
+            else {
+                lastUrl.find(".plusicon").hide();
+            }
+        }
+    }
+
+    function validateAllClickTrackers(itemContainer) {
+
+        var container = GetContainerUrl(itemContainer);
+        var containers = container.parent().find("[id^='trackerContainer']");
+        if (containers.length > 0) {
+            containers.find(".plusicon").hide();
+            lastUrl = containers.last();
+            lastUrlTextBox = GetContainerUrlTextbox(lastUrl);
+
+            var validateUrlValue = validateClickTrackers(lastUrlTextBox.attr('id'));
+            if (validateUrlValue && lastUrlTextBox.val() != '') {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+    function cloneClickTracker(_containerIdValue) {
+        var container = GetContainerUrl(_containerIdValue);
+        if (validateAllClickTrackers(_containerIdValue)) {
+            cloneElement(container, onCopyTracker, onRemovedClonedTracker, true, true);
+        }
+    }
+
+    function GetContainerUrlTextbox(container) {
+        var textBoxContent = container.find("input");
+        return textBoxContent;
+    }
+
+    function GetContainerUrl(containerID) {
+        var container = $(containerID);
+        if (container == null || container.length == 0) {
+            containerID = "#" + containerID;
+            container = $(containerID);
+        }
+        return container;
+    }
+
+    function onRemovedClonedTracker(itemContainer) {
+
+        managePlusIcon(itemContainer);
+    }
+
+</script>
+@if (Model.RecipientEmail != null && Model.RecipientEmail.Count == 0)
+{
+    <div class="data-row data-container" id="trackerContainer1">
+        <div class="label-container">
+            <span class="field-title ">@Html.GetResource("TrackerUrls")</span>
+        </div>
+        <div class="field-container">
+
+            <input class="text-box" id="clickTracker1" name="ClickTrackers" type="text" value="" onkeyup="managePlusIcon('trackerContainer1');">
+            <img name="iconImage" onclick="cloneClickTracker(trackerContainer1) ;" class="plusicon" style="display: none">
+        </div>
+        <span class="validation-arrow field-validation-error" id="clickTracker1-URLErrorMsg2"
+              style="display: none;"><span class="">@Html.GetResource("UrlMsg")</span></span>
+            <span class="validation-arrow field-validation-error" id="clickTracker1-URLErrorMsg3"
+                  style="display: none;"><span class="">@Html.GetResource("DuplicatedClickTrackerMsg")</span></span>
+            </div>
+        }
+        else
+        {
+            if (Model.RecipientEmail != null)
+            {
+                int i = 0;
+                int counter = Model.RecipientEmail.Count;
+                foreach (var item in Model.RecipientEmail)
+                {
+                    <div class="data-row data-container" id="trackerContainer@(i)">
+                        <div class="label-container">
+                            <span class="field-title">
+                                @if (i == 0)
+                                {
+                                    @Html.GetResource("TrackerUrls")
+                                }
+                                else
+                                {
+                                    <text>&nbsp;</text>
+                                }
+                            </span>
+                        </div>
+                        <div class="field-container">
+                            <input class="text-box" id="clickTracker@(i)" name="ClickTrackers" type="text" value="@item" onkeyup="managePlusIcon('trackerContainer@(i)');">
+                            @if (i != 0)
+                            {
+                                <img name="iconImage" onclick="removeClonedElement('trackerContainer@(i)');" class="minusicon" style="display: inline;">
+                            }
+                            <img name="iconImage" onclick="cloneClickTracker(trackerContainer@(i));" class="plusicon" style="display: @(i + 1 == counter ? "inline" : "none")">
+                        </div>
+                        <span class="validation-arrow field-validation-error" id="clickTracker@(i)-URLErrorMsg2"
+                              style="display: none;"><span class="">@Html.GetResource("UrlMsg")</span></span>
+
+                            <span class="validation-arrow field-validation-error" id="clickTracker@(i)-URLErrorMsg3"
+                                  style="display: none;"><span class="">@Html.GetResource("DuplicatedClickTrackerMsg")</span></span>
+                            </div>
+                            {
+                                i++;
+                            }
+                        }
+                    }
+                }

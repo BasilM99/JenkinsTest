@@ -1,0 +1,117 @@
+﻿<style type="text/css">
+    .dropdown.dropdown-lg .dropdown-menu {
+        margin-top: -1px;
+        padding: 6px 20px;
+    }
+
+    .input-group-btn .btn-group {
+        display: flex !important;
+    }
+
+    .btn-group .btn {
+        border-radius: 0;
+        margin-left: -1px;
+    }
+
+        .btn-group .btn:last-child {
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+
+    .btn-group .form-horizontal .btn[type="submit"] {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
+
+    .form-horizontal .form-group {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .form-group .form-control:last-child {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
+</style>
+<script>
+	function onkeypressName(event) {
+
+		var key = event.keyCode || event.charCode;
+		if (key == 13) {
+
+			event.preventDefault();
+			generateCampaignGrid();
+		}
+	}
+
+	function cancelfilter() {
+
+		$("#CancelFilterBtn").click();
+
+	}
+</script>
+
+<div class="container special-content" style="width:45%" id="targetingContainer">
+    <div class="input-group" id="adv-search">
+        <div class="dropdown dropdown-lg">
+            <div style="width: 400px;font-size:12px ;margin-top:2px;" class="dropdown-menu dropdown-menu-right" id="CampFilterCollapse" role="menu">
+				<div id="filterdiv" style="overflow:unset">
+
+
+					<div class="data-row CampRow">
+
+						<div class="field-container marignBotoomCus">
+							<span class="go-bold ">@Html.GetResource("Name", "Global")</span>
+
+						</div>
+						<div class="col-lg-offset-2">
+							<div class="field-container marignBotoomCus">
+								<input type="text" id="Name" name='Name'
+									   class="text-box" onchange="generateCampaignGrid()" onkeypress="onkeypressName(event)" />
+							</div>
+						</div>
+					</div>
+
+					<div class="data-row CampRow">
+
+						<div class="field-container marignBotoomCus">
+							<span class="go-bold ">@Html.GetResource("Type", "AppSite")</span>
+
+						</div>
+						<div class="col-lg-offset-2">
+							<div class="field-container marignBotoomCus">
+								@Html.GetRadioButton("TypeId", Html.GetResource("BlockList", "Global"), false, "floating-right iea-rbtn-width-b", value: "2")
+								@Html.GetRadioButton("TypeId", Html.GetResource("WhiteList", "Global"), false, "floating-right iea-rbtn-width-b", value: "1")
+								@Html.GetRadioButton("TypeId", Html.GetResource("All", "Global"), true, "floating-right iea-rbtn-width-b", value: "0")
+							</div>
+						</div>
+					</div>
+					<div class="data-row CampRow">
+
+						<div class="field-container marignBotoomCus">
+							<span class="go-bold ">@Html.GetResource("Status", "Global")</span>
+
+						</div>
+						<div class="col-lg-offset-2">
+							<div class="field-container marignBotoomCus">
+								@Html.GetRadioButton("StatusId", "InActive", false, "floating-right iea-rbtn-width-b", value: "2")
+								@Html.GetRadioButton("StatusId", "Active", false, "floating-right iea-rbtn-width-b", value: "1")
+								@Html.GetRadioButton("StatusId", Html.GetResource("All", "Global"), true, "floating-right iea-rbtn-width-b", value: "0")
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+                <div class="floating-right">
+                    <br>
+                    <input type="button" onclick="generateCampaignGrid();cancelfilter();" value='@Html.GetResource("Filter")' class="btn filter-button primary-btn" />
+                    <input type="button" onclick="return true;" id="CancelFilterBtn" data-toggle="collapse" data-target="#CampFilterCollapse" aria-expanded="false" value='@Html.GetResource("Cancel")' class="btn filter-button " />
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+

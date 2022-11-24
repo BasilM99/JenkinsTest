@@ -1,0 +1,485 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("Users", "Global");
+}
+@model Noqoush.AdFalcon.Web.Controllers.Model.User.AccountSearchViewModel
+@using (Html.BeginForm())
+{
+
+    <script language="javascript">
+        $(document).ready(function () {
+            UserDialogInitilize();
+
+        });
+
+        var message = '@Html.GetResource("savedSuccessfully", "Global")';
+        var Permission = '@Html.GetResource("permission", "Global")';
+        var GivePermissionUrl = '@Url.Action("GiveTakePermission", "User")';
+
+        function SavePerm() {
+            var values = "";
+
+            
+            if (Radio_IsChecked("#NativeAd"))
+                values += "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.NativeAd)" + ",";
+
+            if (Radio_IsChecked("#TrackingAd"))
+                values += "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.TrackingAd)" + ",";
+
+            if (Radio_IsChecked("#InstreamVideo"))
+                values += "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.InstreamVideo)" + ",";
+
+            if (Radio_IsChecked("#RichMedia"))
+                values += "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.RichMedia)" + ",";
+
+            if (Radio_IsChecked("#Interstitial"))
+                values += "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.Interstitial)" + ",";
+
+            if (Radio_IsChecked("#PlainHtml"))
+                values += "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.PlainHTML)" + ",";
+
+            if (Radio_IsChecked("#PMPDeal"))
+                values += "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.PMPDeal)" + ",";
+
+            if (Radio_IsChecked("#Audience"))
+                values += "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.Audience)" + ",";
+
+            if (Radio_IsChecked("#ReportSchedule"))
+                values += "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.ReportSchedule)" + ",";
+
+			    if (Radio_IsChecked("#QueryBuilder"))
+				values += "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.QueryBuilder)" + ",";
+
+
+            if (Radio_IsChecked("#InventorySource"))
+                values += "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.InventorySource)" + ",";
+
+            if (Radio_IsChecked("#AudianceSegmentUsagePermission"))
+                values += "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.AudianceSegmentUsagePermission)" + ",";
+			  if (Radio_IsChecked("#TrafficPlanner"))
+                values += "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.TrafficPlanner)" + ",";
+
+            var accoountId = $("#User-dialog-form").find("#accoountId").text();
+
+            $.ajax({
+                type: 'POST',
+                url: GivePermissionUrl + "?GivenPermissionAdCodes=" + values + "&accountId=" + accoountId,
+                success: function (data) {
+                    showSuccessfullyMessage(message.format(Permission));
+                    jQuery('#User-dialog-form').dialog('close');
+                },
+                error: function (data) {
+                    alert(data);
+                }
+            });
+
+
+        }
+
+        //function onRowSelect(e) {
+
+        //    DialogClear();
+        //    var Name = $(e.row.cells[0]).text();
+        //    var Id = $(e.row.cells[1]).text();
+        //    var PermissionCodes = $(e.row.cells[2]).text();
+
+        //    showDialog(Name, Id, PermissionCodes);
+        //}
+        function details(Name, Id, PermissionCodes) {
+            DialogClear();
+            showDialog(Name, Id, PermissionCodes);
+        }
+
+        function showDialog(Name, Id, PermissionCodes) {
+            
+            $("#User-dialog-form").find("#nameSpan").text(Name);
+            $("#User-dialog-form").find("#accoountId").text(Id);
+
+            var Permissions = PermissionCodes.split(",");
+            Permissions.pop();
+            for (var i = 0 ; i < Permissions.length; i++) {
+                switch (Permissions[i]) {
+                    case "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.PlainHTML)":
+                        check("PlainHtml");
+                        break;
+                    case "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.Interstitial)":
+                        check("Interstitial");
+
+                        break;
+                    case "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.RichMedia)":
+                        check("RichMedia");
+
+                        break;
+                    case "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.NativeAd)":
+                        check("NativeAd");
+
+                        break;
+                    case "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.InstreamVideo)":
+                        check("InstreamVideo");
+
+                        break;
+                    case "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.TrackingAd)":
+                        check("TrackingAd");
+
+                        break;
+                    case "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.PMPDeal)":
+                        check("PMPDeal");
+
+                        break;
+                    case "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.Audience)":
+                        check("Audience");
+
+                        break;
+                    case "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.ReportSchedule)":
+                        check("ReportSchedule");
+
+						break;
+
+					        case "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.QueryBuilder)":
+						check("QueryBuilder");
+
+                        break;
+                    case "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.InventorySource)":
+                        check("InventorySource");
+
+
+
+
+                        break;
+                    case "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.AudianceSegmentUsagePermission)":
+                        check("AudianceSegmentUsagePermission");
+
+
+
+
+                        break;
+
+					                    case "@Convert.ToInt32(Noqoush.AdFalcon.Domain.Common.Model.Core.PortalPermissionsCode.TrafficPlanner)":
+                        check("TrafficPlanner");
+
+
+
+
+                        break;
+                        
+
+                }
+            }
+
+
+            jQuery('#User-dialog-form').dialog('open');
+
+        }
+
+        function UserDialogInitilize() {
+            var Orgbuttons = $("#party-add-dialog-form").dialog("option", "buttons");
+
+            $("#User-dialog-form").dialog({
+                autoOpen: false,
+                //height: 700,
+               width: 400,
+                modal: true,
+                draggable: false,
+                resizable: false,
+                buttons: [
+               {
+                   text: '@Html.GetResource("Save", "Commands")',
+                   click: function () {
+                       SavePerm();
+                   },
+                   "class": 'primary-btn',
+
+               }],
+                open: function () {
+
+
+
+                },
+                close: function () {
+
+                    generateUsersGrid();
+
+                }
+            });
+        }
+
+        function DialogClear() {
+            uncheck("NativeAd");
+            uncheck("InstreamVideo");
+            uncheck("Interstitial");
+            uncheck("TrackingAd");
+            uncheck("PlainHtml");
+            uncheck("RichMedia");
+            uncheck("PMPDeal");
+            uncheck("Audience");
+			uncheck("ReportSchedule");
+			uncheck("QueryBuilder");
+			
+            uncheck("InventorySource");
+            uncheck("AudianceSegmentUsagePermission");
+			uncheck("TrafficPlanner");
+        }
+
+        function generateUsersGrid() {
+            var grid = $("#Grid").data("tGrid");
+            grid.rebind();
+        };
+        function usersGridDataBinding(args) {
+            args.data = $.extend(args.data,
+            {
+                Name: $('#Name').val(),
+                CompanyName: $('#CompanyName').val(),
+                Email: $('#Email').val(),
+                AccountId: $("#AccountIdValue").val()
+            });
+        };
+        function usersGridDataBound(e) {
+            var grid = $("#Grid").data("tGrid");
+            $("#Grid #PermissionButton").removeClass("t-last");
+
+            //if not first page and the no data then try load first page
+            if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+                e.preventDefault();
+                grid.pageTo(1);
+            }
+        };
+        function localInitilize() {
+            jQuery('input').keypress(function (e) {
+                return e.keyCode != 13;
+            });
+            jQuery("input").keyup(function (event) {
+                if (event.keyCode == 13) {
+                    generateUsersGrid();
+                }
+                return event.keyCode != 13;
+            });
+        }
+    </script>
+    <h2>
+        @Html.GetResource("Users", "Global")
+    </h2>
+
+    <div class="section-form-container">
+        <div class="section-form-inner-container info-container">
+            <div class="data-row go-center">
+                <div class="blue-filter-container">
+                    <table class="special-content">
+                        <tr>
+                            <td>
+                                <span class="go-bold">@Html.GetResource("AccountId", "Impersonate")</span>
+                            </td>
+                            <td>
+                                <span class="small-big-field">@Html.AdFalconTextBoxFor(p => p.AccountIdValue, new { maskType = "Int" })</span>
+                            </td>
+                            <td>
+                                <span class="go-bold">@Html.GetResource("Name", "Global")</span>
+                            </td>
+                            <td class="go-left" colspan="4">
+                                <span class="small-big-field">@Html.AdFalconEditorFor(p => p.Name)</span>
+                            </td>
+                            <td>
+                                <span class="go-bold">@Html.GetResource("Company", "Global")</span>
+                            </td>
+                            <td class="go-left" colspan="4">
+                                <span class="small-big-field">@Html.AdFalconEditorFor(p => p.CompanyName)</span>
+                            </td>
+                            <td>
+                                <span class="go-bold">@Html.GetResource("email", "Global")</span>
+                            </td>
+                            <td class="go-left" colspan="4">
+                                <span class="searchform-textfield">@Html.AdFalconEditorFor(p => p.Email)</span>
+                            </td>
+                            <td class="go-right" colspan="5">
+                                <input type="button" onclick="generateUsersGrid();" name="Filter" value='@Html.GetResource("Filter")' class="btn filter-button " />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="tail">
+                </div>
+            </div>
+            <div class="grid-container">
+
+                @(Html.Telerik().Grid(Model.Users)
+                    .Name("Grid")
+                    .Columns(columns =>
+                    {
+
+                    columns.Bound(o => o.Name).Title(Html.GetResource("Name", "Global")).HtmlAttributes(new { @class = "go-center" });
+                    columns.Bound(o => o.AccountId).Hidden();
+                    columns.Bound(o => o.PermissionCodes).Hidden();
+                    columns.Bound(o => o.CompanyName).Title(Html.GetResource("Company", "Global")).Format("{0:" + Noqoush.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").HtmlAttributes(new { @class = "go-center" });
+                    columns.Bound(o => o.Email).Title(Html.GetResource("email", "Global")).HtmlAttributes(new { @class = "go-center" });
+                    columns.Bound(o => o.Role).Title("Role").HtmlAttributes(new { @class = "go-center" });
+
+                    columns.Template(@<text>
+                    <a href="javascript:void(0)" onclick='details(@item.Name,@item.AccountId,@item.PermissionCodes); return false;' class='btncustom btncustom-default'>
+                        @Html.GetResource("permission", "Global")
+                    </a></text>)
+                                .ClientTemplate("<a href='javascript:void(0)' onclick='details(&quot;<#= Name #>&quot;,<#= AccountId #>,&quot;<#= PermissionCodes #>&quot;); return false;' class='btncustom btncustom-default'>" + @Html.GetResource("permission", "Global") + "</a>").Width(100).HtmlAttributes(new { @class = "go-center", @id = "PermissionButton" }).Title(Html.GetResource("Details", "AuditTrial"));
+
+
+
+
+                    })
+                    .DataBinding(dataBinding =>
+                    {
+                        //dataBinding.Server().Select("Impersonate", "AccountManagement", new { ajax = true });
+                        dataBinding.Ajax().Select("_accountSearch", "User", new { hideCurrentUser = true, hideNonPrimary = true });
+
+                    }).EnableCustomBinding(true)
+                                        .ClientEvents(clientEvents => clientEvents.OnDataBinding("usersGridDataBinding").OnDataBound("usersGridDataBound").OnRowDataBound("onRowDataBound"))
+                        .Scrollable(scrolling => scrolling.Enabled(false))
+                        .Selectable()
+                                .Pageable(paging => paging.PageSize(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total((int)Model.TotalCount).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+                        .Filterable(filtering => filtering.Enabled(false))
+                        .Groupable(grouping => grouping.Enabled(true)).Footer(true))
+            </div>
+        </div>
+
+    </div>
+
+    <div class="section-footer">
+    </div>
+
+    <div id="User-dialog-form" style="display: none;" title="@Html.GetResource("Permissions", "Global")">
+		<div class="section-form-inner-container info-container">
+			<div class="data-row data-container">
+
+				<div class="field-container">
+					<span class="field-title required-field">@Html.GetResource("Name", "Global") :</span>
+
+					<span id="nameSpan" class="go-center">
+
+					</span>
+					<span id="accoountId" style="display:none">
+
+					</span>
+
+				</div>
+			</div>
+			<div class="data-row data-container">
+
+				<div class="field-container">
+					<span class="field-title required-field">@Html.GetResource("Ads", "Titles") :</span>
+				</div>
+			</div>
+			<div class="data-row data-container">
+				<div class="field-container">
+					@Html.GetCheckBox("NativeAd", Html.GetResource("NativeAdName", "NativeAd"))
+				</div>
+			</div>
+			<div class="data-row data-container">
+
+				<div class="field-container">
+					@Html.GetCheckBox("PlainHtml", Html.GetResource("PlainHTML", "Campaign"))
+				</div>
+			</div>
+			<div class="data-row data-container">
+				<div class="field-container">
+					@Html.GetCheckBox("Interstitial", Html.GetResource("AdActionValue_13", "EventBroker_Emails"))
+				</div>
+			</div>
+			<div class="data-row data-container">
+
+				<div class="field-container">
+					@Html.GetCheckBox("TrackingAd", Html.GetResource("TrackingAdName", "TrackingAd"))
+				</div>
+			</div>
+			<div class="data-row data-container">
+
+				<div class="field-container">
+
+					@Html.GetCheckBox("InstreamVideo", Html.GetResource("InstreamVideoName", "InstreamVideo"))
+
+				</div>
+			</div>
+
+			<div class="data-row data-container">
+
+				<div class="field-container">
+
+					@Html.GetCheckBox("RichMedia", Html.GetResource("RichMediaName", "RichMedia"))
+
+
+				</div>
+			</div>
+			<div class="data-row data-container">
+
+				<div class="field-container">
+					<span class="field-title required-field">@Html.GetResource("Targeting", "Titles") :</span>
+				</div>
+			</div>
+			<div class="data-row data-container">
+
+				<div class="field-container">
+
+					@Html.GetCheckBox("PMPDeal", Html.GetResource("Deal", "PMPDeal"))
+
+
+				</div>
+			</div>
+			<div class="data-row data-container">
+
+				<div class="field-container">
+
+					@Html.GetCheckBox("Audience", Html.GetResource("Audiences", "Audience"))
+
+				</div>
+			</div>
+			<div class="data-row data-container">
+
+				<div class="field-container">
+
+					@Html.GetCheckBox("InventorySource", Html.GetResource("InventorySource", "SSPDealCampaign"))
+
+
+				</div>
+			</div>
+
+			<div class="data-row data-container">
+
+				<div class="field-container">
+
+					@Html.GetCheckBox("AudianceSegmentUsagePermission", Html.GetResource("AudienceSegmentPermissionUsage", "DataProviders"))
+
+
+				</div>
+			</div>
+			<div class="data-row data-container">
+
+				<div class="field-container">
+
+					@Html.GetCheckBox("TrafficPlanner", Html.GetResource("TrafficPlanner", "Global"))
+
+
+				</div>
+			</div>
+			<div class="data-row data-container">
+
+				<div class="field-container">
+					<span class="field-title required-field">@Html.GetResource("Reports", "Titles") :</span>
+				</div>
+			</div>
+			<div class="data-row data-container">
+
+				<div class="field-container">
+
+					@Html.GetCheckBox("ReportSchedule", Html.GetResource("Titles", "JobGrid"))
+
+				</div>
+			</div>
+
+			<div class="data-row data-container">
+
+				<div class="field-container">
+
+					@Html.GetCheckBox("QueryBuilder", Html.GetResource("QueryBuilderReport", "Report"))
+
+				</div>
+			</div>
+			@*<div class="data-row button-container">
+			<input value="@Html.GetResource("Save")" type="submit" class="primary-btn" onclick="SavePerm()" />
+		</div>*@
+		</div>
+    </div>
+}

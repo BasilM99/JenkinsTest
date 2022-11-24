@@ -1,0 +1,40 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site1.master.cs" Inherits="WURFLWeb.Site1" %>
+
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+   <link rel="stylesheet" href="styles.css"/>
+   <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+   <script src="script.js"></script>
+   <title>Main</title>
+</head>
+<body>
+
+     <form id="form1" runat="server">
+
+<div id='cssmenu'>
+<ul>
+   <li class='active'><a href='devices.aspx'>Brands & Devices</a></li>
+   <li><a href='Capability.aspx'>Capabilities by UserAgent</a></li>
+
+</ul>
+</div>
+    <div>
+        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+    
+      
+        </asp:ContentPlaceHolder>
+        <asp:ContentPlaceHolder ID="ContentPlaceHolder2" runat="server">
+        
+        </asp:ContentPlaceHolder>
+        <asp:ContentPlaceHolder ID="ContentPlaceHolder3" runat="server">
+        
+        </asp:ContentPlaceHolder>
+    </div>
+        
+    </form>
+</body>
+</html>

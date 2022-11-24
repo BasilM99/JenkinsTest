@@ -1,0 +1,71 @@
+﻿@model ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.CampaignsSummaryDtoBase
+<h2>@Html.GetResource("Campaigninfo", "Titles") @Html.ActionLink(Html.GetResource("Edit", "Commands"), "Create", "HouseAd", new {id = Model.ID, returnUrl = Context.Request.GetRawUrl() }, new { @class = "grid-tool-tip-edit floating-right edit-tool-margin-fix" })
+    @if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.IsAdministrationApp && Model.CampaignTypeEnum == (int)ArabyAds.AdFalcon.Domain.Common.Model.Campaign.CampaignType.Normal)
+    {
+        @Html.ActionLink(Html.GetResource("Settings", "Commands"), "Settings", "Campaign", new { id = Model.ID, returnUrl = Context.Request.GetRawUrl() }, new { @class = "grid-tool-tip-settings floating-right edit-tool-margin-fix" })}</h2>
+<div class="section-form-inner-container">
+    <div class="floating-left" style="width: 515px">
+        <div class="data-row info-container last-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("CampaignName", "Campaign")</span>
+                </div>
+                <div class="field-container">
+                    <span class="side-text margin-summary" @*style="width: 300px;"*@>@Model.Name</span>
+                </div>
+            </div>
+        </div>
+        <div class="data-row info-container last-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("Status")</span>
+                </div>
+                <div class="field-container">
+                    <span class="side-text margin-summary">@Model.Status</span>
+                </div>
+            </div>
+        </div>
+        <div class="data-row info-container last-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("StartDate", "Campaign")</span>
+                </div>
+                <div class="field-container">
+                    <span class="side-text margin-summary">@Model.StartDate.ToString(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat)</span>
+                </div>
+            </div>
+        </div>
+        <div class="data-row info-container last-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("EndDate", "Campaign")</span>
+                </div>
+                <div class="field-container">
+                    <span class="side-text margin-summary">@(Model.EndDate.HasValue ? Model.EndDate.Value.ToString(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat) : string.Empty)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="floating-left">
+        <div class="data-row info-container last-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("Spend", "Campaign")</span>
+                </div>
+                <div class="field-container">
+                    <span class="side-text margin-summary">@Html.DisplayFor(p => p.Spend)</span>
+                </div>
+            </div>
+        </div>
+         <div class="data-row info-container last-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("CampaignType", "Campaign")</span>
+                </div>
+                <div class="field-container">
+                    <span class="side-text margin-summary">@Html.DisplayFor(p => p.CampaignType)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

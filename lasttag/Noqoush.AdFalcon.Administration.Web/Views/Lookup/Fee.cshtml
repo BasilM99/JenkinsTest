@@ -1,0 +1,307 @@
+﻿@using Noqoush.AdFalcon.Domain.Common.Model.Core.CostElement
+@using Noqoush.Framework
+@using Noqoush.AdFalcon.Services.Interfaces.DTOs.Core
+@using Noqoush.AdFalcon.Services.Interfaces.Services
+@model Noqoush.AdFalcon.Administration.Web.Controllers.Model.Lookup.FeeViewModel
+@{
+	if (ViewContext.FormContext == null)
+	{
+		ViewContext.FormContext = new FormContext();
+	}
+	ViewData.TemplateInfo.HtmlFieldPrefix = "LookupDto";
+	var costElementModel = (Model.LookupDto as FeeDto);
+	bool isFixed = costElementModel.TypeId == (int)CalculationType.Fixed;
+
+
+	bool isANC = costElementModel.FeeCalculatedFrom == FeeCalculatedFrom.ANC;
+
+	bool isSystem = costElementModel.FeeCalculatedFrom == FeeCalculatedFrom.System;
+	bool isUndefiend = costElementModel.FeeCalculatedFrom == FeeCalculatedFrom.Undefined;
+
+	var costModels = (IoC.Instance.Resolve<ICostModelWrapperService>()).GetAll();
+	if (isSystem)
+	{ costElementModel.IsSystemCalcu = true; }
+
+	if(costElementModel.ID==0)
+	{ costElementModel.IsSystemCalcu = true; }
+
+
+}
+<script language="javascript" type="text/javascript">
+
+	function show_costElement_value_msg(flag, validationItem) {
+		if (flag) {
+			$('[name="' + validationItem + '"]').show();
+		} else {
+			$('[name="' + validationItem + '"]').hide();
+		}
+	}
+	function feeOnChange(elem, value) {
+	
+		if ($("input[name='LookupDto.FeeCalculatedFrom'][checked]").val() == "2") {
+
+			$(".valtoReset").val('');
+			$(".valtoReset").attr('readonly', 'readonly');
+		}
+		else {
+			$(".valtoReset").removeAttr('readonly');
+		}
+
+	}
+	function valueToBeIsSystemCalcu(elem, value) {
+		
+		if ($('#IsSystemCalcu').attr('checked') == 'checked') {
+
+			//radioBox($("#FeeCalculatedFromSystem").parent().parent());
+
+			Radio_check("FeeCalculatedFromSystem");
+			Radio_uncheck("FeeCalculatedFromUndef");
+			Radio_uncheck("FeeCalculatedFromANC");
+		}
+		else {
+			Radio_uncheck("FeeCalculatedFromSystem");
+
+			Radio_uncheck("FeeCalculatedFromSystem");
+			Radio_check("FeeCalculatedFromUndef");
+			Radio_uncheck("FeeCalculatedFromANC");
+		}
+		return;
+	}
+	
+
+	function OnKeyPressValueFee(e, textbox) {
+		
+			if ($("input[name='LookupDto.FeeCalculatedFrom'][checked]").val() == "2" ) {
+				e.preventDefault();
+			}
+		
+	}
+	function validate_costElement_value(itemName, onlyFormat) {
+		
+		var validateFormatResult = true;
+		var requiredValueResult = true;
+		var itemToValidate = null;
+		if (typeof (itemName) == "string") {
+			itemToValidate = $("input[name='" + itemName + "']");
+		} else {
+			itemToValidate = $(itemName);
+		}
+		if ($("input[name='LookupDto.FeeCalculatedFrom'][checked]").val() == "2") {
+			itemToValidate.val('');
+			show_costElement_value_msg(false, itemToValidate.attr("datavalidationitemId"));
+			show_costElement_value_msg(false, itemToValidate.attr("datarequireditemid"));
+			return true;
+		}
+		var value = parseFloat(itemToValidate.val());
+		var percentage_checked = $("[name='LookupDto.TypeId'][value='1']").is(':checked');
+		if ((!isNaN(value)) && percentage_checked && (value < 0.0001 || value > 100)) {
+			validateFormatResult = false;
+		} else {
+			if (isNaN(value) && !onlyFormat) {
+				requiredValueResult = false;
+			}
+		}
+
+
+		show_costElement_value_msg(!validateFormatResult, itemToValidate.attr("datavalidationitemId"));
+		show_costElement_value_msg(!requiredValueResult, itemToValidate.attr("datarequireditemid"));
+
+		return requiredValueResult && validateFormatResult;
+	}
+
+	function validate_costElement_values(onlyFormat) {
+
+		var result = true;
+		$("input[name^='LookupDto.CostModelValue']").each(function () {
+			var itemValidation = validate_costElement_value($(this).attr("name"), onlyFormat);
+
+			if (itemValidation == false) {
+				result = false;
+			}
+		});
+
+
+		return result;
+	}
+
+	function costTypeChanged(elem, value) {
+		var desc = '$';
+		var maskType = 'decimal';
+		var eleme = "IsSystemCalcu";
+		switch (parseInt(value)) {
+			case 1: //Percentage
+				desc = '%';
+				maskType = 'percentage';
+				uncheck(eleme);
+				$("#RadioAncSystm").show();
+				$("#CheckAncSystm").hide();
+
+				Radio_check("FeeCalculatedFromSystem");
+				Radio_uncheck("FeeCalculatedFromUndef");
+				Radio_uncheck("FeeCalculatedFromANC");
+
+				break;
+			case 2://Fixed
+				desc = '$';
+				maskType = 'decimal';
+				$("#RadioAncSystm").hide();
+				$("#CheckAncSystm").show();
+
+			
+				check(eleme);
+				//radioBox($("#FeeCalculatedFromSystem").parent().parent());
+				Radio_check("FeeCalculatedFromSystem");
+				Radio_uncheck("FeeCalculatedFromUndef");
+				Radio_uncheck("FeeCalculatedFromANC");
+				
+
+				break;
+
+			default:
+		}
+		$('[name=value_type_desc]').text(desc);
+		validate_costElement_values(true);
+	}
+
+	function validateForm() {
+		return validate_costElement_values(false);
+	}
+
+	
+</script>
+<div class="data-row data-container">
+	<div class="label-container">
+		<span class="field-title required-field">@Html.GetResource("Type", "Lookup")</span>
+	</div>
+	<div class="field-container">
+		@{
+			@Html.GetRadioButton("LookupDto.TypeId", Html.GetResource("FixedType", "Lookup"), isFixed, "floating-left", value: "2", onChange: "costTypeChanged")
+			@Html.GetRadioButton("LookupDto.TypeId", Html.GetResource("PercentageType", "Lookup"), !isFixed, "floating-left", value: "1", onChange: "costTypeChanged")
+		}
+		@Html.ValidationMessageFor(p => (p.LookupDto as FeeDto).TypeId)
+	</div>
+</div>
+<div class="data-row data-container">
+	<div class="label-container">
+		<span class="field-title required-field">Calculated From</span>
+	</div>
+	<div class="field-container" id="RadioAncSystm" style="@(isFixed? "display:none"   : "display:block")">
+
+
+		@Html.GetRadioButton("LookupDto.FeeCalculatedFrom", "ANC", isANC, "floating-left", onChange: "feeOnChange", value: "1", Id: "FeeCalculatedFromANC")
+
+		@Html.GetRadioButton("LookupDto.FeeCalculatedFrom", "System", isSystem, "floating-left", onChange: "feeOnChange", value: "2", Id: "FeeCalculatedFromSystem")
+		<div style="display:none">
+			@Html.GetRadioButton("LookupDto.FeeCalculatedFrom", "System", isUndefiend, "floating-left", onChange: "feeOnChange", value: "0", Id: "FeeCalculatedFromUndef")
+		</div>
+	</div>
+
+
+	<div class="field-container" id="CheckAncSystm" style="@(isFixed?"display:block":"display:none" )" >
+
+		@Html.GetCheckBox("IsSystemCalcu", "IsSystem", (Model.LookupDto as FeeDto).IsSystemCalcu,onChange: "valueToBeIsSystemCalcu")
+	</div>
+	</div>
+
+	<div class="data-row data-container">
+		<div class="label-container">
+			<span class="field-title required-field">&nbsp;</span>
+		</div>
+		<div class="field-container">
+			@Html.GetCheckBox("IsAutoAdded", "IsAutoAdded", (Model.LookupDto as FeeDto).IsAutoAdded)
+			@Html.ValidationMessageFor(p => (p.LookupDto as FeeDto).IsAutoAdded)
+		</div>
+	</div>
+	<div class="data-row data-container">
+		<div class="label-container">
+			<span class="field-title required-field">Category</span>
+		</div>
+		<div class="field-container">
+
+
+			@if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsDataFee)
+			{
+				@Html.GetCheckBox("IsData", "Data", (Model.LookupDto as FeeDto).IsData)
+
+
+			}
+			@if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsThirdPartyFee)
+			{
+				@Html.GetCheckBox("IsThirdParty", "Third Party", (Model.LookupDto as FeeDto).IsThirdParty)
+
+			}
+			@if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsPlatformFee)
+			{
+				@Html.GetCheckBox("IsPlatform", "Platform", (Model.LookupDto as FeeDto).IsPlatform)
+			}
+			@if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsAVRFee)
+			{
+				@Html.GetCheckBox("IsAVR", "AVR", (Model.LookupDto as FeeDto).IsAVR)
+			}
+			@if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsExchangeDiscrepancyFee)
+			{
+				@Html.GetCheckBox("IsExchangeDiscrepancy", "Exchange Discrepancy", (Model.LookupDto as FeeDto).IsExchangeDiscrepancy)
+			}
+
+
+		</div>
+
+	</div>
+
+	@foreach (var item in costModels)
+	{
+		string value = string.Empty;
+		if (!(costElementModel == null || costElementModel.Values == null || costElementModel.Values.Count() == 0))
+		{
+			var costModelWrapperValue = costElementModel.Values.Where(p => p.CostModelWrapper.ID == item.ID).SingleOrDefault();
+			if (costModelWrapperValue != null)
+			{
+				value = costElementModel.TypeId == 1 ? (costModelWrapperValue.Value * 100).ToString("F2") : costModelWrapperValue.Value.ToString("F2");
+			}
+		}
+
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title required-field">@item.Name</span>
+			</div>
+			<div class="field-container">
+				@{
+					object config = new { @class = "text-box valtoReset", @onkeypress = "OnKeyPressValueFee(event,this)", maskType = "decimal", onchange = "validate_costElement_value(this,false);", datarequireditemid = string.Format("displayRequiredMsg-{0}", item.ID), datavalidationitemId = string.Format("displayValueErrorMsg-{0}", item.ID) };
+
+
+
+
+					if (isSystem)
+					{
+
+
+						config = new { @class = "text-box valtoReset", @readonly = "readonly", @onkeypress = "OnKeyPressValueFee(event,this)", maskType = "decimal", onchange = "validate_costElement_value(this,false);", datarequireditemid = string.Format("displayRequiredMsg-{0}", item.ID), datavalidationitemId = string.Format("displayValueErrorMsg-{0}", item.ID) };
+
+
+
+
+					}
+
+
+				}
+				@Html.TextBox(string.Format("CostModelValue-{0}", item.ID), value, config)
+				<span name="value_type_desc" class="side-text">@(isFixed ? "$" : "%")</span>
+				<span name="displayValueErrorMsg-@item.ID" class="validation-arrow field-validation-error" style="display: none;">
+					<span class="">@(string.Format(Html.GetResource("RangeMessage", "ResourceSet"), 1, 100))</span>
+				</span>
+				<span name="displayRequiredMsg-@item.ID" class="validation-arrow field-validation-error"
+					  style="display: none;"><span class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span></span>
+				</div>
+			</div>
+		}
+
+
+	<div class="data-row data-container">
+		<div class="label-container">
+			<span class="field-title required-field">&nbsp;</span>
+		</div>
+		<div class="field-container">
+			@Html.GetCheckBox("IsBillable", "IsBillable", (Model.LookupDto as FeeDto).IsBillable)
+			@Html.ValidationMessageFor(p => (p.LookupDto as FeeDto).IsBillable)
+		</div>
+	</div>

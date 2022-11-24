@@ -1,0 +1,11 @@
+﻿@{
+    Noqoush.AdFalcon.Services.Interfaces.Services.ILanguageService languageService = Noqoush.Framework.IoC.Instance.Resolve<Noqoush.AdFalcon.Services.Interfaces.Services.ILanguageService>();
+    
+    List<Noqoush.AdFalcon.Services.Interfaces.DTOs.Core.LanguageDto> languagesDtos = languageService.GetAll().ToList();
+    SelectList items = new SelectList(languagesDtos, "Id", "Name");
+
+}
+
+@(Html.AdFalconDropDownList("",items)
+) 
+

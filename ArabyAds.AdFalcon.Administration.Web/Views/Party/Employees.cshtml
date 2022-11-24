@@ -1,0 +1,253 @@
+﻿@{
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+    ViewBag.Title = Html.GetResource("Employees", "Menu");
+
+}
+@model Noqoush.AdFalcon.Web.Controllers.Model.Core.Party.ListViewModel
+
+
+<script language="javascript">
+    $(document).ready(function () {
+        SetSelectedTap("ListMenuAdmin");
+
+    });
+
+    var result = false;
+    var SSPCheckedIDs = "";
+
+    var ischecked = false;
+    var yesbtn = "@Html.GetResource("Yes", "Global")";
+    var nobtn = "@Html.GetResource("No", "Global")";
+    var ConfriamtionBoxTitle = "@Html.GetResource("Confirm")";
+    var close = "@Html.GetResource("Close","Commands")";
+    var rename = "@Html.GetResource("Rename", "Commands")";
+    var EmployeeString = "@Html.GetResource("Employees", "Menu")";
+    var Confirmation = "@Html.GetResource("Delete", "Confirmation")";
+
+    var selectedName = "";
+    var selectednumber = 0;
+    var text;
+    var direction = "left";
+    var ok_text = '@Html.GetResource("Ok", "Commands")';
+
+
+
+
+    function checked() {
+        $('input').each(function () {
+            if ($(this).is(':checked')) {
+
+                var name = $(this).eq(0).parent().parent().find("#EmployeeName").text().trim();
+
+                if (name.length > 30)
+                    name = name.substring(0, 30) + "..";
+                ischecked = true;
+                @{
+                    if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage=="ar")
+                    {
+
+                        <text>
+
+                selectedName += "<span style='float:" + direction + ";'>" + name + "-</span><br>";
+
+                </text>
+
+                    }else
+                    {
+                        <text>
+                selectedName += "<span style='float:" + direction + ";'>" + "-" + name + "</span><br>";
+                </text>
+                    }
+
+                }
+            }
+        });
+        return ischecked;
+    }
+
+    function popup(sender, SelectConfirmation, Confirmation) {
+
+        selectedName = "";
+        selectednumber = 0;
+        if (checked()) {
+            if (!result) {
+
+                $('<div id ="ConfirmationDialog" title="' + ConfriamtionBoxTitle + '"></div>').dialog({
+
+                    open: function () {
+                        text = Confirmation.format(EmployeeString) + " <br><br> <div style='float: " + direction + ";'>" + selectedName + "</div>";
+                        $(this).html(text);
+
+                    },
+                    close: function () {
+                        $(this).remove();
+                    },
+                    resizable: false,
+                    draggable: false,
+                    modal: true,
+                    showCloseButton: false,
+
+                    buttons: [
+               {
+                   text: yesbtn,
+                   click: function () {
+                       $(this).dialog("close");
+                       result = true;
+
+                       $(sender).click();
+                   }
+               },
+               {
+                   text: nobtn,
+                   click: function () {
+                       $(this).dialog('close');
+                       result = false;
+                   }
+               }
+                    ]
+
+                });
+            }
+        } else {
+            $('<div id = "NoCampaignsareSelected"></div>').dialog({
+
+                open: function (event, ui) {
+                    $(this).html(SelectConfirmation);
+                },
+                close: function () {
+                    result = false;
+
+                    $(this).remove();
+                },
+                resizable: false,
+                draggable: false,
+                // height: 140,
+                modal: true,
+
+            });
+
+        }
+        ischecked = false;
+        return result;
+    }
+
+
+
+
+
+    function refreshEmployeeGrid() {
+        RefrashGrid('Grid');
+    }
+    function generateEmployeeGrid() {
+        var grid = $("#Grid").data("tGrid");
+        grid.rebind();
+    };
+    function EmployeeGridDataBinding(args) {
+        args.data = $.extend(args.data,
+         {
+             Prefix: $('#Name').val(),
+         });
+    };
+
+
+    function EmployeeGridDataBound(e) {
+        var grid = $("#Grid").data("tGrid");
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(1);
+        }
+
+    };
+
+
+    function showfilter() {
+        if ($("#advfilterEmployee").hasClass('maximize')) {
+            $("#advfilterEmployee").attr("class", "minimize AdvanceFilterIcon");
+
+        }
+        else {
+
+            $("#advfilterEmployee").attr("class", "maximize AdvanceFilterIcon");
+        }
+    }
+
+
+</script>
+@using (Html.BeginForm())
+{
+
+    <br />
+    <div class="data-row section-container">
+        <div class="data-row">
+            <div class="col-sm-7" style="padding: 0px;">
+                @if (Model.TopActions != null)
+                {
+                    Html.RenderPartial("PartialViews/Actions", Model.TopActions);
+                }
+            </div>
+
+            <div class="col-sm-1">
+            </div>
+
+            <div class="col-sm-4 col-sm-push-1">
+
+            </div>
+
+
+        </div>
+        <div class="data-row" style="overflow:visible">
+            <div class="col-sm-7 col-sm-push-3 customDealsFilterShiftRight floating-right" style="padding: 0px;">
+                @*@Html.Partial("EmployeeFilter", Model)*@
+            </div>
+        </div>
+        <div class="grid-container">
+            @(Html.Telerik().Grid(Model.Items)
+                              .Name("Grid")
+                              .Columns(columns =>
+                              {
+                              columns.Template(
+                                @<text>
+                                    <input name="checkedRecords" type="checkbox" value="@item.ID " title="checkedRecords" />
+                                </text>)
+                                    .Title("").Width(36).HtmlAttributes(new { style = "text-align:center" })
+                                    .ClientTemplate("<input type='checkbox' name='checkedRecords' value='<#= ID #>' />");
+
+                              columns.Bound(o => o.Name).Template(
+                                @<text><div class="grid-title-container floating-left">
+                                        <span class="trimed-span" id="EmployeeName">
+                                            <a href='@Url.Action("Employee", "Party", new { id = item.ID }, null)' title='@item.Name'>
+                                                @item.Name
+                                            </a>
+                                        </span>
+                                    </div>
+                                </text>
+                                    ).Title(Html.GetResource("Name"))
+                                    .ClientTemplate("<div class='grid-title-container floating-left'><a href=\"" + Url.Action("Employee", "Party") + "/<#= ID#>\"><#= Name#> </a></div>");
+                                  columns.Bound(o => o.AccountName).Title(Html.GetResource("AccountName")).HtmlAttributes(new { @id = "PartyEnityLabel" });
+                                  columns.Bound(o => o.ID).Title(Html.GetResource("ID", "Lookup")).Hidden(true).HtmlAttributes(new { @id = "IdPartyEnity" });
+
+                              })
+                              .DataBinding(dataBinding =>
+                              {
+                                  dataBinding.Server().Select("Employees", "Party", new { ajax = true });
+                                  dataBinding.Ajax().Select("_Employees", "Party");
+                              }).EnableCustomBinding(true)
+                              .ClientEvents(clientEvents => clientEvents.OnDataBinding("EmployeeGridDataBinding").OnDataBound("EmployeeGridDataBound"))
+                              .Scrollable(scrolling => scrolling.Enabled(false))
+                              .Pageable(paging => paging.PageSize(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total(int.Parse(ViewData["total"].ToString())).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+                              .Filterable(filtering => filtering.Enabled(false))
+                              .Groupable(grouping => grouping.Enabled(true)).Footer(true))
+
+        </div>
+        @if (Model.BelowAction != null)
+        {
+            Html.RenderPartial("PartialViews/Actions", Model.BelowAction);
+        }
+    </div>
+    if (Model.ToolTips != null)
+    {
+        @Html.Partial("GridToolTop", Model.ToolTips)
+    }
+}
+

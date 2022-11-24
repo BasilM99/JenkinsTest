@@ -1,0 +1,81 @@
+﻿@model IList<SelectListItem>
+<script type="text/javascript" language="javascript">
+    var appSite_index_url = '@Url.Action("IndexPartial","AppSite")';
+    var current_app_type = null;
+    var appId = null;
+    function refrash_sub_list() {
+        var selectedValue = $("[name='SelectedAppInfo']").val();
+        var appInfo = selectedValue.split('#');
+
+        appId = appInfo[0];
+        var appType = appInfo[1];
+
+        if (current_app_type != null && current_app_type != appType) {
+            clear_selected_apps();
+        }
+        current_app_type = appType;
+        RefrashGrid('Grid');
+        $("[name='ForAppSite']").val(appId);
+
+    }
+
+    function appSitePartialIndexGridDataBinding(args) {
+        //args.data = $.extend(args.data,
+        //    {
+        //        filterType: current_app_type,
+        //        appId: appId
+        //    });
+    };
+    function appSitePartialIndexGridDataBound(e) {
+        debugger;
+        var data = this._data;
+
+        for (var i = 0; i < data.length; i++) {
+            var dataItem = data[i];
+            var tr = $("#Grid").find("[data-uid='" + dataItem.uid + "']");
+            var row = tr;
+            if (row.find('td:eq(1)').children()[0].innerText.length > 40) {
+
+                row.find('td:eq(1)').children()[0].title = row.find('td:eq(1)').children()[0].innerText;
+
+                var name = row.find('td:eq(1)').children()[0].innerText.substring(0, 31) + "..";
+
+
+
+                row.find('td:eq(1)').children()[0].childNodes[0].innerText = name;
+            }
+            if (checked_items.indexOf(dataItem.Id.toString()) > -1) {
+                row.find("[name='selected_item_id']").attr('checked', "true");
+            }
+
+        }
+
+    }
+    function AppSitePartialData() {
+        var j = {
+                filterType: current_app_type,
+                appId: appId
+        }
+
+        return j;
+    }
+</script>
+
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("TargetAppSite", "CreateHouseAd")</span>
+    </div>
+    <div class="field-container ">
+        @Html.DropDownList("SelectedAppInfo", Model, new { onchange = "refrash_sub_list()" })
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("SiteApps", "CreateHouseAd")</span>
+    </div>
+    <div class="field-container ">
+        @*@Html.RenderAction("IndexPartial", "AppSite")*@
+        @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.AppSite.IndexPartial))
+    </div>
+</div>
+

@@ -1,0 +1,229 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.BusinessPartners.FloorPriceListViewModel
+@{
+    if (ViewContext.FormContext == null)
+    {
+        ViewContext.FormContext = new FormContext();
+    }
+    //ViewData.TemplateInfo.HtmlFieldPrefix = "SaveDto";
+}
+@Html.Hidden("SaveDto.ID", Model.SaveDto == null ? "" : "" + Model.SaveDto.ID)
+@Html.Hidden("SaveDto.SiteID", Model.SiteId)
+@Html.Hidden("SaveDto.ZoneID", Model.ZoneId)
+@Html.Hidden("SaveDto.TargetingName", Model.SaveDto == null ? "" : "" + Model.SaveDto.TargetingName)
+<script language="javascript">
+
+    $(document).ready(function(){
+
+        localInitilize_CostElements();
+        var TargetingName = $('#SaveDto_TargetingName').val();
+        //jQuery('[id="SaveDto_TargetingId"]').val("-1");
+        var selectedId = $('#SaveDto_ConfigTypeId').val();
+   
+        if(selectedId != 1)
+        {
+            $("#SearchParty").show();
+            jQuery('#TargetingIdString').text(TargetingName);
+        }else
+        {
+            $("#SearchParty").hide();
+            jQuery('#TargetingIdString').text(" test ");
+            jQuery('[id="SaveDto_TargetingId"]').val("-1");
+            jQuery('[id="SaveDto_TargetingIdString"]').val("  test ");
+
+        }
+        var setting = $.data($("#saveForm")[0], 'validator').settings;
+  
+        setting.ignore = '';
+    });
+
+    var url = '@Url.Action("LookupSelect","lookup")';
+
+    function localInitilize_CostElements() {
+        var target=$("#party-add-dialog-form");
+        jQuery("#party-search-dialog-form").dialog({
+            autoOpen: false,
+            //height: 450,
+            title:'@Html.GetResource("LookupSearch", "Global")',
+            width: 700,
+            position:   {  my: "top top", at: "top top" , of:target },
+            modal: true,
+            resizable: false,
+            draggable: false,
+            open:function()
+            {
+
+                $("#party-add-dialog-form").parent().hide();
+
+            },
+            close: function()
+            {
+
+                $("#party-add-dialog-form").parent().show();
+                GridReset();
+
+            }
+        });
+
+    }
+    function GridReset()
+    {
+
+        $('#party-search-dialog-form #Name').val('');
+
+
+        refreshPartyGrid($('#SaveDto_ConfigTypeId :selected').text());
+    }
+    function changeParty(partytId, partyDesc) {
+
+        if ((typeof (partytId) != "undefined") && (typeof (partyDesc) != "undefined")) {
+            jQuery('#TargetingIdString').text(partyDesc);
+            jQuery('[id="SaveDto_TargetingId"]').val(partytId);
+            jQuery('[id="SaveDto_TargetingIdString"]').val(partyDesc);
+        }
+        jQuery('#party-search-dialog-form').dialog('close');
+        $("#party-add-dialog-form").parent().show();
+        
+            $("#saveForm").validate().form();
+        
+    }
+    function showPartySearchDialog() {
+        showDialog('party-search-dialog-form');
+        $("#party-add-dialog-form").parent().hide();
+        ConfigTypesChanged(null);
+    }
+    function ConfigTypesChanged(elemnt)
+    {
+
+        var selectedValue = $('#SaveDto_ConfigTypeId :selected').text();
+        var selectedId = $('#SaveDto_ConfigTypeId').val();
+        if(selectedId != 1)
+        {
+            refreshPartyGrid(selectedValue);
+            jQuery('[id="SaveDto_TargetingId"]').val("");
+            jQuery('[id="SaveDto_TargetingIdString"]').val("");
+            jQuery('#TargetingIdString').text("");
+        }else
+        {
+            $("#SearchParty").hide();
+            jQuery('#TargetingIdString').text(" test ");
+            jQuery('[id="SaveDto_TargetingId"]').val("-1");
+            jQuery('[id="SaveDto_TargetingIdString"]').val("  test ");
+        }
+
+    }
+    function refreshPartyGrid(id)
+    {
+
+
+        $.ajax(
+           {
+               url: url+"/"+id,
+               cache: false,
+               success: function (html) {
+
+                   //
+                   html = html.toString();
+                   $("#party-search-dialog-form").html('');
+                   var newelem = jQuery(html);
+                   $("#party-search-dialog-form").append(newelem);
+                   parseScript(html);
+                   initilize();
+                   /*if (typeof (localInitilize) != "undefined") {
+                   localInitilize();
+                   }*/
+                   //fnValidateDynamicContent($("#entityDetails"));
+                   //$.validator.unobtrusive.parseDynamicContent("#party-search-dialog-form");
+                   //$.validator.unobtrusive.parse("#entityDetails");
+                   //attachValidation();
+
+                   //$.validator.setDefaults({
+                   //    ignore: '.ValdationIgnored'
+                   //});
+                   $("#SearchParty").show();
+                   // sp.hideSpinner();
+
+                   //$("#saveForm").validate().form();
+                   //$('#saveForm').serialize();
+               },
+               error: function (error) {
+                   //sp.hideSpinner();
+                   //
+                   //spinner.hideSpinner();
+               }
+           });
+    }
+
+    function onPriceChange(sender) {
+
+
+        var value = $(sender).val();
+        var REGULAR = new RegExp("^\\d{1,5}(\\.\\d{1,3})?$");
+
+        if (!REGULAR.test(value)) {
+            $(sender).val("");
+
+        }
+    }
+
+    var DialogTitle_Form = '@Model.DialogTitle';
+    var DialogWidth_Form = @Model.DialogWidth;
+    var DialogHeight_Form =  @Model.DialogHeight;
+</script>
+
+<div class="section-form-inner-container" id="firstdiv">
+    <div class="data-row data-container">
+        <div class="label-container3">
+            <span class="field-title required-field">@Html.GetResource("Price", "SSPFloorPrices")</span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+            @Html.AdFalconTextBoxFor(p => p.SaveDto.Price, new {@class="required", maskType = "decimal", onchange = "onPriceChange(this);", onkeypress = "onbidpress(event,this); " }, Model == null || Model.SaveDto == null ? string.Empty : Model.SaveDto.Price.ToString("F3"))
+            @Html.AdFalconValidationMessageFor(p => p.SaveDto.Price)
+        </div>
+    </div>
+
+
+
+    <div class="data-row data-container">
+        <div class="label-container3">
+            <span class="field-title required-field">
+                @Html.GetResource("Type", "SSPFloorPrices")
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container  required-field iea-text-calender-margin">
+            @Html.DropDownListFor(p => p.SaveDto.ConfigTypeId, Model.FloorPriceConfigTypes, new { onchange = "ConfigTypesChanged(this)" })
+        </div>
+        @Html.AdFalconValidationMessageFor(p => p.SaveDto.ConfigTypeId)
+    </div>
+    <div class="data-row data-container" style="display:none;" id="SearchParty">
+        <div class="label-container3">
+            <span class="field-title required-field">
+                @Html.GetResource("TargetingName", "SSPFloorPrices")
+            </span>
+        </div>
+        <div class="field-container">
+            <div onclick="showPartySearchDialog();" style="line-height: 24px;">
+                <img class="find-icon" src='@Url.GetImagePath("find-icon.png")' />
+                @Html.HiddenFor(p => p.SaveDto.TargetingId)
+                @Html.HiddenFor(p => p.SaveDto.TargetingIdString)
+                @Html.AdFalconValidationMessageFor(p => p.SaveDto.TargetingIdString)
+                <span class="side-text" id="TargetingIdString" style="float: none;">@(Model != null && Model.SaveDto != null ? Model.SaveDto.TargetingIdString : string.Empty)</span>
+
+                <div class="adfalcon-dialog2  field-container  required-field iea-text-calender-margin" style="display:none">
+                    @Html.AdFalconTextBoxFor(p => p.SaveDto.TargetingIdString)
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+</div>
+
+@*<div class="data-row button-container">
+    <input type="button" value="@Html.GetResource("Save", "Commands")" class="primary-btn" onclick="callSave();" />
+</div>*@
+<div id="party-search-dialog-form" title="@Html.GetResource("PartySearch", "Party")" style="display: none; ">
+
+</div>
+

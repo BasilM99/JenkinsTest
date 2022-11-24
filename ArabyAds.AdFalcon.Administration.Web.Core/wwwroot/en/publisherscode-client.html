@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Favicon
+    ======================================================================== -->
+<link rel="icon" href="images/adfalcon.ico">
+<!-- Meta
+    ======================================================================== -->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Title
+    ======================================================================== -->
+<title>AdFalcon - The first mobile advertising network in the middle east</title>
+<!-- CSS Styles
+    ======================================================================== -->
+<link rel="stylesheet" href="css/github.css" />
+<script src="js/highlight.pack.js"></script>
+<script src="https://code.jquery.com/jquery-1.8.2.min.js" type="text/javascript"></script>
+
+<!-- Google Analytics Code
+	======================================================================== -->
+<script>
+var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-25905897-1']);
+	_gaq.push(['_setDomainName', 'adfalcon.com']);
+	_gaq.push(['_trackPageLoadTime']);
+	_gaq.push(['_trackPageview']);
+
+	(function () {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+</script>
+
+<script>
+         hljs.tabReplace = '    ';
+         hljs.initHighlightingOnLoad();
+
+         var currentDIV = "divJS";
+  </script>
+	<script>
+	$(document).ready(function() {
+		var is_current = $('#advertise_btn').hasClass('current');
+
+		$('#menu_hook').mouseover(function() {
+			$('#flyout_menu1 ul').css('display', 'block');
+			$('#advertise_btn a').css('color', '#B11F57');
+			if (is_current === true) $('#advertise_btn a').css('color', '#fff');
+			$(this).css('cursor', 'pointer');
+		});
+		$('#menu_hook').click(function() {
+			var _href = $('#advertise_btn a').attr('href');
+			window.open(_href, '_self');
+		});
+		$('#flyout_menu1').mouseleave(function() {
+			$('#flyout_menu1 ul').css('display', 'none');
+			$('#advertise_btn a').css('color', '#333');
+			if (is_current === true) $('#advertise_btn a').css('color', '#fff');
+		});
+	});
+</script>
+</head>
+<body style="margin:0; padding:0;">
+
+<div id="divJS">
+	<pre><code>
+	&lt;header>
+	&lt;!-- this section declares the parameters for adFalcon JavaScript, you find these parameters
+	in <a href="#">AdFalcon Mobile Web API document</a> in Appendix A -->
+
+	&lt;script type="text/javascript">
+	var adFalconParameters = { R_SID: "Site ID", R_TM: true
+
+		//Extra optional parameters
+		//, R_AS:1 // If particular Ad size is requested; otherwise ignore it.
+		//, R_UUID:"UUID" // If you maintain a unique user id for each user, then provide it here.
+		//, U_LN: “ar”
+		//,U_AGE: 27
+		//,U_G: m
+		//,U_KW: “sport, music”
+		//,U_CC: “JO”
+		//,U_AC: “962”
+		//,U_PC: “11121”
+		//,D_LA: 35.654
+		//,D_LO: 34.054
+
+	}
+	&lt;/script>
+	&lt;!--this section loads JavaScript of AdFalcon -->
+
+	&lt;script type="text/javascript" src="http://www.adfalcon.com/static/js/adfalcon-web-all-1.0.0.js">
+	&lt;/script>
+
+	&lt;/header>
+	&lt;body>
+	&lt;!--Creating new instance of adFalcon function and load the ad-->
+
+	&lt;script type="text/javascript">
+		 var adFalconInstance1 = new adFalcon("unique key for this instance", adFalconParameters );
+		 adFalconInstance1.loadAd();
+	&lt;/script>
+	</code></pre>
+</div>
+
+</body>
+</html>

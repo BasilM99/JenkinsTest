@@ -1,0 +1,54 @@
+﻿@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeSummaryDto
+@{
+    //  string instreamVideoTracker = "Summary/AdAction/VideoStream";
+}
+
+@{
+    if (Model.CreativeUnitsContent != null && Model.CreativeUnitsContent.Count() > 0)
+    {
+        <h2>
+            @Html.GetResource("Creative", "Campaign")
+        </h2>
+        @*<div class="data-row data-container">
+
+            </div>*@
+
+        foreach (var adCreativeUnitDto in Model.CreativeUnitsContent)
+        {
+            @Html.Partial("Summary/CreativeUnit/Units/InstreamVideoUnit", adCreativeUnitDto)
+
+        }
+    }
+}
+@{
+    if (Model.IsVideo && Model.CardType != Noqoush.AdFalcon.Domain.Common.Model.Campaign.VideoEndCardType.Undefined)
+    {
+        <h2>
+            @Html.GetResource("VideoEndCard", "Campaign")
+        </h2>
+        @*<div class="data-row data-container">
+
+            </div>*@
+
+        @Html.Partial("Summary/CreativeUnit/Units/VideoCardDetails", Model)
+
+    }
+
+}
+
+@{
+    if (Model.ThirdPartyTrackers != null && Model.ThirdPartyTrackers.Count > 0)
+    {
+
+
+        <h2>
+            @Html.GetResource("ThirdPartyVerifications", "Global")
+        </h2>
+
+
+        @Html.Partial("PartialViews/ThirdPartyTrackerSummary", Model)
+
+    }
+
+}
+

@@ -1,0 +1,96 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("Menu", "SSPSiteZoneMappings");
+    Layout = "~/Views/Partner/IndexMaster.cshtml";
+}
+@model ArabyAds.AdFalcon.Web.Controllers.Model.BusinessPartners.SiteZoneMappingsListViewModel
+
+@section subheader
+   {
+
+    <div class="data-row sub-header">
+
+        <div class="sub-header-left">
+        </div>
+        <div class="sub-header-center iea-sub-header-width">
+            <div class="data-row">
+                <div class="floating-left iea-go-right sub-header-item-container objective-header">
+                    <div class="sub-header-title">
+                        @Html.GetResource("SSPPartners", "SiteMapLocalizations")
+                    </div>
+                    <div class="sub-header-text">
+                        @Model.BusinessName
+                    </div>
+                </div>
+                <div class="floating-left iea-go-right sub-header-item-container objective-header">
+                    <div class="sub-header-title">
+                        @Html.GetResource("SSPSites", "SiteMapLocalizations")
+                    </div>
+                    <div class="sub-header-text">
+                        @Model.SiteName : @Model.SiteIdStr
+
+                    </div>
+                </div>
+                <div class="floating-left iea-go-right sub-header-item-container objective-header">
+                    <div class="sub-header-title">
+                        @Html.GetResource("SSZone", "SiteMapLocalizations")
+                    </div>
+                    <div class="sub-header-text">
+                        @Model.ZoneName : @Model.ZoneIdStr
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="sub-header-right">
+        </div>
+    </div>
+}
+@section Grid1 {
+
+    @(Html.Kendo().Grid<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Account.SSP.SiteZoneMappingDto>()
+                        .Name("GridPartner")
+                        .Columns(columns =>
+                        {
+
+                            columns.Template("<input type='checkbox' name='checkedRecords' value='#= ID #' />").Width(36).HtmlAttributes(new { style = "text-align:center" });
+
+                            columns.Bound(o => o.AppSiteString).Title(Html.GetResource("AppSite", "SSPSiteZoneMappings")).Width(100)
+                                .ClientTemplate("<div class='grid-title-container floating-left'><span class='trimed-span'>#= AppSiteString#</span></div><div class='grid-cogwheel-container floating-right go-right'> <div class='cogwheel' item_extra_info=\"#= AppSiteString#\" onclick='showGridToolTip(#= ID#,this)'><a href='javaScript:void(0);' >&nbsp</a></div></div>");
+
+
+
+                            columns.Bound(o => o.AdFalconSubPublisherId).Title(Html.GetResource("SubPublisher", "SSPSiteZoneMappings")).Width(50).HtmlAttributes(new { @class = "go-center" });
+                            columns.Bound(o => o.AdTypeString).Title(Html.GetResource("AdType", "SSPSiteZoneMappings")).Width(50).HtmlAttributes(new { @class = "go-center" });
+
+                            columns.Bound(o => o.DeviceTypeString).Title(Html.GetResource("DeviceType", "SSPSiteZoneMappings")).Width(50).HtmlAttributes(new { @class = "go-center" });
+
+                        }).EnableCustomBinding(true)
+                        .DataSource(dataBinding =>
+                        {
+
+                            dataBinding.Ajax().Read(read => read.Action("_siteZoneMappings", "Partner",new { Id=ViewContext.RouteData.Values["Id"] , SiteId = ViewContext.RouteData.Values["SiteId"] , ZoneId = ViewContext.RouteData.Values["ZoneId"] }).Data("BusinessPartnersGridData")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+                        })
+                        .Events(clientEvents => clientEvents.DataBinding("BusinessPartnersGridDataBinding").DataBound("BusinessPartnersGridDataBound"))
+                        .Scrollable(scrolling => scrolling.Enabled(false))
+                        .Selectable().Pageable(paging => paging
+
+
+            .Input(false)
+            .Numeric(true)
+            .Info(true)
+            .PreviousNext(true)
+            .Refresh(true)
+
+            .Position(GridPagerPosition.Bottom)).Filterable(filtering => filtering.Enabled(false))
+            .Groupable(grouping => grouping.Enabled(false)))
+
+
+    <br />
+    <br />
+}
+
+
+
+
+

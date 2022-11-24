@@ -1,0 +1,83 @@
+﻿@using Noqoush.AdFalcon.Services.Interfaces.DTOs.Reports
+@model      List<CampaignCommonReportDto>
+@{
+    var columnsList = new List<GridColumnSettings>()
+{
+    new GridColumnSettings
+    {
+        Member = "DateRange",
+       Title = Html.GetResource("DateRange", "Report"),
+    },
+    new GridColumnSettings
+    {
+            Member = "Name",
+            Title = Html.GetResource("Name", "CampaignReport")
+    },
+    new GridColumnSettings
+          {
+              Title = Html.GetResource("CampaignName", "AdChart"),
+              Member  = "SubName"
+          },
+   new GridColumnSettings
+    {
+        Member = "Impress",
+        Title = Html.GetResource("Impress", "AdChart"),
+    },
+     new GridColumnSettings
+    {
+        Member = "Clicks",
+        Title = Html.GetResource("Clicks", "AdChart"),
+    },
+     new GridColumnSettings
+    {
+        Member = "CtrText",
+        Title = Html.GetResource("CTR", "AdChart"),
+    },
+       new GridColumnSettings
+    {
+        Member = "AvgCPCText",
+        Title = Html.GetResource("AvgCPC", "AdChart"),
+    },
+        new GridColumnSettings
+    {
+        Member = "SpendText",
+        Title = Html.GetResource("Spend", "AdChart"),
+    },
+        new GridColumnSettings
+    {
+        Member = "UniqClicks",
+        Title = "UniqClicks",
+    }
+        ,
+        new GridColumnSettings
+    {
+        Member = "UniqImpress",
+        Title = "UniqImpress",
+    }
+    };
+    
+  
+}
+@(Html.Telerik().Grid(Model)
+                        .Name("ReportGrid")
+                    .Columns(columns =>
+                                 {
+                                     columns.LoadSettings(columnsList);
+                                 })
+                    .DataBinding(dataBinding =>
+                    {
+                        dataBinding.Ajax().Select("CampaignReport", "ReportsTest");
+
+                    })
+                        .Scrollable(scrolling => scrolling.Enabled(false))
+                        .EnableCustomBinding(true)
+                              .Pageable(paging => paging.PageSize(10).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+                                              .Groupable(grouping => grouping.Enabled(false)).Footer(true).ClientEvents(p => p.OnDataBound("gridReportSuccess").OnDataBinding("reportDataBinding").OnError("gridReportError")))
+<br />
+<div class="data-row">
+    <a href="javascript:void(0)" onclick='reportExport("excel")' class="export-icon-excel floating-left">
+    </a><a href="javascript:void(0)" onclick='reportExport("csv")' class="export-icon-cvs floating-left">
+    </a><a href="javascript:void(0)" onclick='reportExport("pdf")' class="export-icon-pdf floating-left">
+    </a>
+</div>
+@Html.RegisterScriptBlock(string.Format("var reportExportUrl = '{0}'", Url.Action("CampaignReportExport", "ReportsTest")))

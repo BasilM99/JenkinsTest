@@ -1,0 +1,153 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Core.UploadViewModel
+<script type="text/javascript" language="javascript">
+    //var maxFileSize(Model.Name) = (Model.);
+    var @(Model.Name)Formats = new Array();
+    @{
+        if (Model.Formats != null)
+        {
+            foreach (var format in Model.Formats)
+            {
+                <text>
+    var format = new Object();
+    format.extension = "@(format.Format)";
+    format.maxSize = @(format.MaxSize);
+    @(Model.Name)Formats[@(Model.Name)Formats.length]=format;
+    </text>
+            }
+        }
+    } ;
+
+    @{
+          string formats = "";
+          foreach(var format in Model.Formats)
+          {
+              formats += format.Format + ",";
+          }
+
+
+      }
+    function onFileUpload_@(Model.Name)(e) {
+        var items = @(Model.Name)Formats;
+        jQuery(e.files).each(function() {
+            var isValid = checkFile(this, items);
+            if ((typeof(isValid) == "undefined") || !isValid) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                e.stopPropagation();
+                return false;
+            }
+        });
+    }
+</script>
+<div class="data-row data-container">
+    <div class="label-container data-row">
+        <span class="field-title required-field data-row">
+            @Model.DisplayText <span class="reverse-link">@(Model.Width)x@(Model.Height)</span>
+            @Html.GetResource("px")
+        </span>
+    </div>
+    <div class="data-row field-container  iea-uf-@(Model.Width)-@(Model.Height)" tileImage=true>
+        <div id="uploadBtn_@(Model.ParentId)" class="floating-right uplaod-ctnl-special">
+            @(Html.Kendo().Upload().Name(Model.Name + "_upload").Multiple(false).ShowFileList(false).Async(async => async.Save("SaveTile", "Document", new { parentId = Model.ParentId }).AutoUpload(true).Remove("Remove", "Document")).Events(events => events.Success("onFileUploadSuccessTitle").Upload("onFileUpload_" + Model.Name)).HtmlAttributes(new { accept = formats }))
+        </div>
+        <div class="floating-left">
+            <div class=" data-row" name="tileImage_@(Model.ParentId)" id="tileImage_@(Model.ParentId)">
+                @{
+                    if (Model.DocId.HasValue)
+                    {
+
+                        <div style="height: @(Model.Height)px;" id="actionImage" class="f-text go-left floating-left">
+                            <div style="width: @(Model.Width)px; height: @(Model.Height)px;" class="floating-left data-row">
+                                <img id="fileImage" class="floating-left" src='@(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + Model.DocId.ToString())' width="@(Model.Width)" height="@(Model.Height)" />
+                            </div>
+                            <span issampletext='true' style="height: @(Model.Height)px;width:250px;line-height:11px;" class="floating-left"></span>
+                            <div style="width: @(Model.Width)px; height: @(Model.Height)px;margin:0px;background:url(@(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + Model.TileActionDocID.ToString()))  no-repeat center center;" class="floating-left">
+                            </div>
+                        </div>
+                        <input Name="@Model.Name" id="docId" custom_name="content" value='@(Model.TypeId + "," + Model.ParentId + "," + Model.DocId.ToString())' parentId="@Model.ParentId" typeId="@Model.TypeId" type="hidden" />
+                    }
+                    else
+                    {
+                        <div style="height: @(Model.Height)px;" class="f-text go-left floating-left">
+                            <div style="width: @(Model.Width)px; height: @(Model.Height)px;" class="floating-left data-row">
+                                <img id="fileImage" src="@Url.GetImagePath("image-f.png")" class="floating-left" style="display:none;width: @(Model.Width)px; height: @(Model.Height)px;" />
+                            </div>
+                            <span issampletext='true' style="height: @(Model.Height)px;width:250px;line-height:11px;" class="floating-left"></span>
+                            <div style="width: @(Model.Width)px; height: @(Model.Height)px;margin:0px;background:url(@(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + Model.TileActionDocID.ToString()))  no-repeat center center;" class="floating-left">
+                            </div>
+                        </div>
+                        <input Name="@Model.Name" id="docId" custom_name="content" parentId="@Model.ParentId" typeId="@Model.TypeId" type="hidden" />
+                    }
+                }
+                <div class="data-row">
+                    @*<a href="javascript:void(0);" onclick='clearUploadFile(this);' class="clear-form floating-left">@Html.GetResource("Clear")</a>
+                        <a href="javascript:void(0);" onclick='previewUploadFile(this);' class="preview-form floating-left">@Html.GetResource("Preview")</a>*@
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (ViewData["ShowImpressionTracker"] != null && bool.Parse(ViewData["ShowImpressionTracker"].ToString()))
+    {
+        if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.IsAdministrationApp || (ArabyAds.Framework.OperationContext.Current.UserInfo
+         <ArabyAds.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+         ().AccountRole == (int)ArabyAds.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP))
+        {
+        <div class="data-row data-container" style="margin-top:20px;float: @ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentFloat">
+            <div class="label-container2">
+                <span class="field-title required-field">@Html.GetResource("ImpressionTrackerRedirect", "CreativesSettings"):</span>
+            </div>
+            <div class="field-container">
+
+                @{
+                   if (Model.IsAllowedToSaveImpressionTracker)
+                    { @Html.AdFalconTextBox(string.Format("{0}-ImpressionTrackerRedirect", Model.Name), Model.ImpressionTrackerRedirect);
+                    }
+                    else
+                    {   @Html.AdFalconTextBox(string.Format("{0}-ImpressionTrackerRedirect", Model.Name), Model.ImpressionTrackerRedirect, new
+                   {
+                       @readonly = "readonly"
+                       ,@Impdisabled = "Impdisabled"
+
+                   });
+                        }
+                }
+                <span id="@string.Format("{0}-ImpressionTrackerRedirect-URLErrorMsg2", Model.Name)" class="validation-arrow field-validation-error"
+                      style="display: none;"><span class="">@Html.GetResource("UrlMsg")</span></span>
+                </div>
+            </div>
+            <div class="clear">
+                &nbsp;
+            </div>
+        }
+        else
+        {
+                <div class="data-row data-container" style="display:none;margin-top:20px;float: @ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentFloat">
+                    <div class="label-container2">
+                        <span class="field-title required-field">@Html.GetResource("ImpressionTrackerRedirect", "CreativesSettings"):</span>
+                    </div>
+                    <div class="field-container">
+                        @{
+                            if (Model.IsAllowedToSaveImpressionTracker)
+                             {@Html.AdFalconTextBox(string.Format("{0}-ImpressionTrackerRedirect", Model.Name), Model.ImpressionTrackerRedirect);
+
+                             }
+                             else
+                             {   @Html.AdFalconTextBox(string.Format("{0}-ImpressionTrackerRedirect", Model.Name), Model.ImpressionTrackerRedirect, new { @readonly = "readonly",@Impdisabled = "Impdisabled" });
+
+                                 }
+
+                        }
+
+                        <span id="@string.Format("{0}-ImpressionTrackerRedirect-URLErrorMsg2", Model.Name)" class="validation-arrow field-validation-error"
+                              style="display: none;"><span class="">@Html.GetResource("UrlMsg")</span></span>
+                        </div>
+                    </div>
+                    <div class="clear">
+                        &nbsp;
+                    </div>
+        }
+
+
+    }
+</div>

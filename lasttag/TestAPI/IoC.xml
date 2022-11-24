@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+
+  <facilities>
+    <facility id="wcf"
+							type="Castle.Facilities.WcfIntegration.WcfFacility,
+										Castle.Facilities.WcfIntegration" />
+    <facility id="RegistrationFacility"
+							type="Noqoush.Framework.WCF.IOC.RegistrationFacility,
+										Noqoush.Framework.WCF">
+      <assemblies>
+        <assembly id="ServiceInterfaces" value="Noqoush.AdFalcon.AdServer.Integration"/>
+      </assemblies>
+      <Mapping>
+        <Map id="Services" Suffix="Service" LifeStyle="Singleton">
+          <interceptors >
+            <interceptor id="BehaviorInvoker" value="Noqoush.Framework.Behaviors.BehaviorInvoker,Noqoush.Framework"/>
+            <interceptor id="Interceptor" value="Noqoush.Framework.WCF.ClientAdapter, Noqoush.Framework.WCF"/>
+          </interceptors>
+        </Map>
+      </Mapping>
+    </facility>
+  </facilities>
+  <components>
+    <component id="ClientOperationContextPolicy" service="Noqoush.Framework.WCF.ClientOperationContextPolicy, Noqoush.Framework.WCF"
+			type="Noqoush.Framework.WCF.ClientOperationContextPolicy, Noqoush.Framework.WCF"
+			lifestyle="transient" />
+    <component id="ClientInterceptor" service="Noqoush.Framework.WCF.ClientAdapter, Noqoush.Framework.WCF"
+         type="Noqoush.Framework.WCF.ClientAdapter, Noqoush.Framework.WCF"
+         lifestyle="transient" />
+    <!--Begin Framework Components-->
+    <component id="FrameworkBehaviorInvoker"
+       service="Noqoush.Framework.Behaviors.BehaviorInvoker, Noqoush.Framework"
+     type="Noqoush.Framework.Behaviors.BehaviorInvoker, Noqoush.Framework" lifestyle="singleton" />
+
+    <component id="ConfigurationManager"
+       service="Noqoush.Framework.ConfigurationSetting.IConfigurationManager, Noqoush.Framework"
+     type="Noqoush.Framework.ConfigurationSetting.ConfigurationManager, Noqoush.Framework"  lifestyle="singleton">
+    </component>
+
+    <component id="ConfigurationService"
+     service="Noqoush.Framework.ConfigurationSetting.IConfigurationSettingService,Noqoush.Framework"
+    type="Noqoush.Framework.Infrastructure.Services.Configuration.ConfigurationSettingService, Noqoush.Framework.Infrastructure.Services"  lifestyle="singleton">
+    </component>
+
+    <component id="ResourceManager"
+      service="Noqoush.Framework.Resources.IResourceManager, Noqoush.Framework"
+    type="Noqoush.Framework.Resources.ResourceManager, Noqoush.Framework"  lifestyle="singleton">
+    </component>
+
+    <component id="ResourceService"
+     service="Noqoush.Framework.Resources.IResourceService, Noqoush.Framework"
+    type="Noqoush.Framework.Infrastructure.Services.Resources.ResourceService, Noqoush.Framework.Infrastructure.Services"  lifestyle="singleton">
+    </component>
+
+    <component id="ResourceProviderFactory"
+     service="Noqoush.Framework.Resources.ResourceProvider.IResourceProviderFactory, Noqoush.Framework"
+    type="Noqoush.Framework.Resources.ResourceProvider.DBResourceProviderFactory, Noqoush.Framework"  lifestyle="singleton">
+    </component>
+
+    <component id="ResourceProvider"
+     service="Noqoush.Framework.Resources.ResourceProvider.IResourceProvider, Noqoush.Framework"
+    type="Noqoush.Framework.Resources.ResourceProvider.DBResourceProvider, Noqoush.Framework"  lifestyle="singleton">
+    </component>
+
+    <!--<component id="DatabaseHelper"
+    service="Noqoush.AdFalcon.Server.Infrastructure.IDatabaseHelper,Noqoush.AdFalcon.Server.Infrastructure"
+    type="Noqoush.AdFalcon.Server.Infrastructure.DatabaseHelper,Noqoush.AdFalcon.Server.Infrastructure"  lifestyle="singleton">
+    </component>-->
+
+    <component id="CallContext"
+    service="Noqoush.Framework.ICallContext,Noqoush.Framework"
+    type="Noqoush.Framework.ThreadCallContext,Noqoush.Framework" lifestyle="singleton">
+    </component>
+
+    <component id="EventBroker"
+            service="Noqoush.Framework.EventBroker.IEventBroker,Noqoush.Framework"
+            type="Noqoush.Framework.EventBroker.EventBroker,Noqoush.Framework" lifestyle="Singleton">
+    </component>
+
+    <component id="EventBrokerProvider"
+               service="Noqoush.Framework.EventBroker.Provider.IEventBrokerProvider,Noqoush.Framework"
+               type="Noqoush.Framework.EventBroker.Provider.DBEventBrokerProvider,Noqoush.Framework" lifestyle="Singleton">
+    </component>
+
+
+    <!--End Framework Components-->
+
+
+  </components>
+
+</configuration>

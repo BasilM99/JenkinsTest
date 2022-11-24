@@ -1,0 +1,140 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.CampaignBidConfigModel
+@using ArabyAds.AdFalcon.Web.Core.Helper;
+
+
+
+@Html.Hidden("CampaignId", Model.CampaignId)
+@Html.Hidden("UpdatedCampaignBidConfiges-Dialog", "")
+
+@Html.Hidden("DeletedCampaignBidConfigs-Dialog", "")
+@Html.Hidden("InserteCampaignBidConfigs-Dialog", "")
+
+
+<div id="gridDivBidConfig" class="floating-left grid-containe">
+    <div class="data-row" style="padding: 15px;">
+        <div class="go-left data-row">
+            @Html.GetResource("BidConfigsDescription", "Campaign")
+        </div>
+    </div>
+
+    <div class="data-row red-box" style="display:none; " id="divErrorMessagesForBidConfigsDialog">
+        <div class="data-row"><span class="msg-img"></span><span style="width:450px!important">@Html.GetResource("MinBidErrMsg", "Global")</span></div>
+    </div>
+    <div class="data-row " style="padding: 15px;">
+        @(Html.Kendo().Grid<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.CampaignBidConfigDto>(Model.CampaignBidConfigList).Name("CampaignBidConfigs").NoRecords(p=>p.Template("&nbsp;")).HtmlAttributes(new { width = "800px" })
+
+        .EnableCustomBinding(true)
+        //.Editable(ed => ed.Mode(GridEditMode.InCell).DisplayDeleteConfirmation(false))
+
+
+        .Columns(columns =>
+        {
+
+            columns.Bound(o => o.ID).Hidden();
+            columns.Bound(o => o.AdGroupId).Hidden();
+            columns.Bound(o => o.Appsite.ID).Hidden();
+            columns.Bound(o => o.AccountId).Hidden();
+            columns.Bound(o => o.AccountName).Width("150px").Visible(true).Title(Html.GetResource("AccountName", "CampaignBidConfig"));
+            columns.Bound(o => o.Appsite.Name).HtmlAttributes(new { @class = "trimed-info2", id = "AppsiteName" }).Width("150px").Visible(true).Title(Html.GetResource("Name", "AppSite")).HtmlAttributes(new { style = " max-width: 200px ; overflow : hidden; text-overflow: ellipsis; white-space: nowrap;" });
+
+            columns.Bound(o => o.SubPublisherId);
+            columns.Bound(o => o.AppsitePricingModelString).Width("200px");
+
+            columns.Bound(o => o.MinBid).Title(Html.GetResource("MaxBidConfig", "BidConfig")).Width("70px").HtmlAttributes(new { id = "MinBid" });
+            columns.Bound(o => o.Bid).Title(Html.GetResource("Bid", "Campaign")).ClientTemplate(
+            "<input  maskType='decimal' onchange='CampaignBidConfigs_BidValue_Changed(this);'   Id='Bid'     onfocus='onBid_select(this);'     onkeypress = 'onbidpress(event,this)'     type ='text' value='#=kendo.toString(Bid,'F3')#' name='Bid' />" + "<span  class='field-validation-error' style='display: none;'><span>" + Html.GetResource("CurrencyMsg", "ResourceSet") + "</span></span>"
+            )
+            .HtmlAttributes(new { style = "width:50px!important;" });
+
+            columns.Template("<div id='DeleteButton' style='display:none' ><a  class='t-button t-button-icon t-button-bare' type='button' onclick='ShowConfirmationDialogForDialog(this);'><span class='t-icon t-delete'></span></button></div>").Width("5px");
+        })
+
+
+
+            .DataSource(dataBinding =>
+            {
+                //dataBinding.Server().Select("GetCampaignBidConfigs", "Campaign", new { ajax = true });
+                dataBinding.Ajax().Read("GetCampaignBidConfigs", "Campaign",new {id=Model.CampaignId }).Model(model =>
+                {
+                    model.Id(product => product.ID); // Specify the property which is the unique identifier of the model.
+                //  model.Field(product => product.CampaingName).Editable(false);
+                //  model.Field(product => product.AdGrouptName).Editable(false);
+                // model.Field(product => product.Bid).Editable(false);
+                    //model.Field(product => product.MinBid).Editable(false);
+                    // Make the ProductID property not editable.
+                }).AutoSync(false);
+
+            })
+            .Scrollable(scrolling => scrolling.Enabled(false)).EnableCustomBinding(true))
+        
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    var BidMustBeMoreThanMinBid = '@Html.GetResource("MinBidErrMsg")';
+    var ConfriamtionBoxTitle = "@Html.GetResource("Confirm")";
+    var Confirmation = "@Html.GetResource("Delete", "Confirmation")";
+    var yesbtn = "@Html.GetResource("Yes", "Global")";
+    var nobtn = "@Html.GetResource("No", "Global")";
+    var close = "@Html.GetResource("Close","Commands")";
+
+    $(document).ready(function () {
+        $("#CampaignBidConfigDialog").dialog({
+
+            resizable: false,
+            draggable: false,
+            maxHeight: 700,
+            minHeight: 0,
+            width: 900,
+            modal: true,
+            autoOpen: false,
+            title: '@Html.GetResource("CampaignBidConfig", "Titles")',
+
+        });
+        $("#CampaignBidConfigs .t-status .t-icon.t-refresh").attr("style", "display:none");
+
+
+    });
+    function ShowConfirmationDialogForDialog(elem) {
+
+        var name = $(elem).parents('tr').find("#AppsiteName").text();
+
+        if (name.length > 30)
+            name = name.substring(0, 30) + "..";
+
+        $("#ConfirmationDialog").dialog({
+
+            open: function () {
+                $(this).html(Confirmation.format(name));
+
+            },
+            showCloseButton: false,
+
+            buttons: [
+            {
+                text: yesbtn,
+                click: function () {
+
+                    deleteAssignedAppsitesBidConfigDialog(elem);
+                    $(this).dialog("close");
+
+                }
+            },
+            {
+                text: nobtn,
+                click: function () {
+                    $(this).dialog('close');
+
+                }
+            }
+
+            ]
+        });
+
+        $("#ConfirmationDialog").dialog("open");
+
+    }
+
+
+</script>

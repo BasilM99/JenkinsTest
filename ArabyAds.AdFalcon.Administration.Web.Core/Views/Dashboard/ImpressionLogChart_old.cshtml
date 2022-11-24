@@ -1,0 +1,910 @@
+﻿@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.AppSite
+@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign
+@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core
+@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Reports
+@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Account.PMP;
+@{
+
+	string aa = ViewData["totalSpend"] != null ? ViewData["totalSpend"].ToString() : "";
+
+	List<SelectListItem> periodListItem = new List<SelectListItem>()
+{
+//new SelectListItem()
+//{
+//  Value = "0",
+//  Text = Html.GetResource("Today","Chart"),
+//  Selected = true
+//} ,
+//new SelectListItem()
+//{
+//  Value = "1",
+//  Text = Html.GetResource("Yesterday","Chart"),
+//},
+//new SelectListItem()
+//{
+//  Value = "2",
+//  Text = Html.GetResource("OneWeek","Chart"),
+//},
+
+new SelectListItem()
+{
+Value = "3",
+Text = Html.GetResource("OneMonth","Chart"),
+Selected=true,
+},
+new SelectListItem()
+{
+Value = "4",
+Text = Html.GetResource("LastMonth","Chart"),
+},
+new SelectListItem()
+{
+Value = "5",
+Text = Html.GetResource("LastThreeMonth","Global"),
+},
+new SelectListItem()
+{
+Value = "6",
+Text = Html.GetResource("LastSixMonth","Global"),
+}
+};
+
+
+}
+<script type="text/javascript">
+    CurrentMonthRevenue = '@Html.GetResource("CurrentMonthRevenue")';
+	LastMonthRevenue = '@Html.GetResource("LastMonthRevenue")';
+	Last3MonthRevenue = '@Html.GetResource("LastThreeMonthRev")';
+	 Last6MonthRevenue = '@Html.GetResource("LastSixMonthRev")';
+</script>
+<div class="data-row sub-header">
+	<div class="sub-header-left">
+	</div>
+	<div class="sub-header-center">
+		<div class="data-row">
+			<div class="floating-left iea-go-left sub-header-item-container objective-header">
+				<div class="sub-header-title" Id="MonthRevenue">
+					@Html.GetResource("CurrentMonthRevenue")
+				</div>
+				<div class="sub-header-text impressionLogRevnue" id="TodaySpend">
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<div class="sub-header-right">
+	</div>
+</div>
+
+<div class="data-row section-container">
+	<br />
+	<div class="dashboard-left-side"  style="width:1100px">
+		<div class="data-row data-container" id="periodDiv">
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("Period", "Chart")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconDropDownList("period", periodListItem, new { onchange = "setDate();getGoogleChartImage();fillGridImpressionLog();",style= "margin-right:unset;" })
+			</div>
+
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("Advertiser", "Menu")</span>
+			</div>
+			<div class="field-container">
+
+
+
+
+				<select id="AdvListDllDP" name="AdvListDllDP" class="js-example-theme-multiple js-states form-control select2-hidden-accessible multiselect2jq" style="width: 295px;" multiple="" tabindex="-1" aria-hidden="true"></select>
+
+				<script>
+
+
+    var ElemnetID2 = "";
+
+    var AdvListUrl = '@Url.Action("GetAdvListForDP", "Dashboard")';
+    var selectElemnt2;
+    $(document).ready(function () {
+        //$('#tokenize').tokenize();
+
+		ElemnetID2 = "#" + "AdvListDllDP";
+
+						selectElemnt2 = $(ElemnetID2);
+
+       // fillCountries();
+
+		$("#AdvListDllDP").select2({
+
+							placeholder: "@Html.GetResource("SelectAdvertiserRequired", "Advertiser")",
+							tags: false,
+
+            multiple: false,
+						tokenSeparators: [',', ' '],
+					allowClear: true,
+						closeOnSelect:true,
+						ajax: {
+				delay:250,
+						url: AdvListUrl,
+                dataType: "json",
+						type: "GET",
+
+                data: function (params) {
+
+                    var queryParameters = {
+						q: params.term,
+						period: $("#period").val()
+                    }
+                    return queryParameters;
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+								text: item.Name,
+								id: item.Id
+                            }
+                        })
+                    };
+                }
+
+
+
+            }
+
+						});
+
+
+
+
+
+
+		$('#AdvListDllDP').on("change", function (e) {
+
+
+
+							
+			ResetReportAdvChanged();
+							
+						});
+		
+
+
+
+
+
+				
+						$('#AdvListDll').select2('open');
+						$('#AdvListDll').select2('close');
+
+
+    });
+
+
+
+					function ResetReportAdvChanged() {
+
+						//$('[Id="CampList_Name"]').val('');
+						//$('[name="list"]').val('');
+						//$("#CampListDll").val('').change();
+				
+						getGoogleChartImage(); fillGridImpressionLog();
+
+					}
+				</script>
+
+			</div>
+		</div>
+		<div class="data-row data-container" id="periodDiv">
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("Agency", "Global")</span>
+			</div>
+		
+
+
+				<div class="field-container">
+
+
+
+
+					<select id="agenListDll" name="agenListDll" class="js-example-theme-multiple js-states form-control select2-hidden-accessible multiselect2jq" style="width: 295px;" multiple="" tabindex="-1" aria-hidden="true"></select>
+
+					<script>
+
+
+    var ElemnetID2 = "";
+
+    var agListUrl = '@Url.Action("GetAgencyListForDP", "Dashboard")';
+   // var selectElemnt2;
+    $(document).ready(function () {
+        //$('#tokenize').tokenize();
+
+		//ElemnetID2 = "#" + "agenListDll";
+
+						//selectElemnt2 = $(ElemnetID2);
+
+       // fillCountries();
+
+		$("#agenListDll").select2({
+
+							placeholder: "@Html.GetResource("SelectAgency", "Global")",
+							tags: false,
+
+            multiple: false,
+						tokenSeparators: [',', ' '],
+					allowClear: true,
+						closeOnSelect:true,
+						ajax: {
+				delay:250,
+							url: agListUrl,
+                dataType: "json",
+						type: "GET",
+
+                data: function (params) {
+
+                    var queryParameters = {
+						q: params.term,
+						period: $("#period").val()
+                    }
+                    return queryParameters;
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+								text: item.Name,
+								id: item.Id
+                            }
+                        })
+                    };
+                }
+
+
+
+            }
+
+						});
+
+
+
+
+
+
+		$('#agenListDll').on("change", function (e) {
+
+
+
+
+			ResetReportAgChanged();
+
+						});
+		
+
+
+
+
+
+
+						$('#agenListDll').select2('open');
+		$('#agenListDll').select2('close');
+
+
+    });
+
+
+
+					function ResetReportAgChanged() {
+
+						//$('[Id="CampList_Name"]').val('');
+						//$('[name="list"]').val('');
+						//$("#CampListDll").val('').change();
+
+						getGoogleChartImage(); fillGridImpressionLog();
+
+					}
+					</script>
+
+				</div>
+
+		
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("Campaign", "Global")</span>
+			</div>
+			<div class="field-container">
+
+				<select id="CampaignListDllDP" name="CampaignListDllDP" class="js-example-theme-multiple js-states form-control select2-hidden-accessible multiselect2jq" style="width: 295px;" multiple="" tabindex="-1" aria-hidden="true"></select>
+
+				<script>
+
+
+   
+
+					var CampaignListUrl = '@Url.Action("GetCampaignListForDP", "Dashboard")';
+  
+    $(document).ready(function () {
+        //$('#tokenize').tokenize();
+
+		
+
+						
+
+       // fillCountries();
+
+		$("#CampaignListDllDP").select2({
+
+							placeholder: "@Html.GetResource("SelectCampRequired", "Campaign")",
+							tags: false,
+
+            multiple: false,
+						tokenSeparators: [',', ' '],
+					allowClear: true,
+						closeOnSelect:true,
+						ajax: {
+				delay:250,
+							url: CampaignListUrl,
+                dataType: "json",
+						type: "GET",
+
+                data: function (params) {
+
+                    var queryParameters = {
+						q: params.term,
+						period: $("#period").val()
+                    }
+                    return queryParameters;
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+								text: item.Name,
+								id: item.Id
+                            }
+                        })
+                    };
+                }
+
+
+
+            }
+
+						});
+
+
+
+
+
+
+		$('#CampaignListDllDP').on("change", function (e) {
+
+
+
+
+			ResetReportAdvChanged();
+
+						});
+		
+
+
+
+
+
+		$('#CampaignListDllDP').select2('open');
+		$('#CampaignListDllDP').select2('close');
+
+
+    });
+
+
+
+				
+				</script>
+
+			</div>
+
+			@*<div class="label-container">
+			<span class="field-title required-field">@Html.GetResource("Period", "Chart")</span>
+		</div>*@
+
+			@*<div class="label-container">
+				<span class="field-title required-field"></span>
+			</div>
+			<div class="field-container">
+				<input type="button" class="btn " style="background-color:	#32CD32" value='@Html.GetResource("Filter", "Global")' onclick="setDate(); getGoogleChartImage(); fillGridImpressionLog(); return false;" />
+
+			</div>*@
+
+		</div>
+
+
+	
+
+	</div>
+
+
+
+
+
+
+		
+
+
+
+		<div class="dashboard-left-side floating-left">
+			<div class="data-row" id="gchartContainer" style="width:100%;height:350px">
+			</div>
+		</div>
+		<div class="dashboard-right-side floating-right">
+            <div class="grid-container data-row">
+                @(Html.Kendo().Grid((ViewData["Metrics"] as List<MetricDto>))
+			.Name("Metrics").Columns(columns =>
+					{
+						columns.Bound(p => p.Name).ClientTemplate( Html.GetRadioButton("metric", "&nbsp; " +"#=Name.Value#"+ "" + "&nbsp;", false, "", "getGoogleChartImage", "#=Code#").ToHtmlString()).Title(Html.GetResource("Name", "Global"));
+						columns.Template("<div class='colored-box' style='background-color:#=Color#'></div>").Width(20);
+					})
+					)
+               
+            </div>
+		</div>
+		@Html.RegisterScriptBlock(string.Format("var chartControlImageSrc='{0}'", Url.Action("GChartControl", "dashboard", new { type = "lmpressionlog" })))
+
+		<div class="data-row section-container">
+			<div class="data-row">
+
+			</div>
+		</div>
+		<div class="data-row section-container">
+			<div class="data-row">
+				<div class="col-sm-9" style="padding: 0px;">
+					@*<table>
+						<tr>
+							<td >
+								@Html.GetCheckBox("CampaignCol", Html.GetResource("Campaign"), true, "FilterCol")
+							</td>
+							<td >
+								@Html.GetCheckBox("AdvertiserCol", Html.GetResource("Advertiser"), true, "FilterCol")
+							</td>
+						</tr>
+					</table>*@
+
+				</div>
+				<div class="col-sm-2">
+				</div>
+				<div class="col-sm-3 col-sm-push-10" id="CV">
+
+					<table class="special-content">
+						<tr>
+							<td>
+								<span class="go-bold">@Html.GetResource("From", "Global")</span>
+							</td>
+							<td style="width: 110px;">
+								<input type="text" readonly="readonly" id="FromDate" name='FromDate'
+									   data-date="true" class="text-box range-date-cntl left-range-cntrl rangeDateFromC" />
+							</td>
+							<td>
+								<span class="go-bold">@Html.GetResource("To", "Global")</span>
+							</td>
+							<td style="width: 110px;">
+								<input type="text" readonly="readonly" id="ToDate" name='ToDate'
+									   data-date="true" class="text-box range-date-cntl left-range-cntrl rangeDateFromC" onchange="fillGridImpressionLog()" />
+							</td>
+						</tr>
+					</table>
+
+
+				</div>
+
+			</div>
+			<div class="data-row" style="overflow:visible">
+				<div class="col-sm-7 col-sm-push-3 customDealsFilterShiftRight floating-right" style="padding: 0px;">
+
+				</div>
+			</div>
+            <div class="grid-container" id="ResultDivg">
+
+                @(Html.Kendo().Grid((ViewData["ImpressionLogPerformance"] as List<ImpressionLogPerformanceDto>))
+                .Name("ImpressionLogPerformanceGrid")
+				.Columns(columns =>
+				{
+					columns.Bound(o => o.DateObj).Title(Html.GetResource("Date", "AccountHistory")).Format("{0:" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(100).HtmlAttributes(new { @class = "go-center" });
+					columns.Bound(o => o.BilledSegment).Title(Html.GetResource("BilledSegment", "Audience"));
+
+					columns.Bound(o => o.UsedSegments).Title(Html.GetResource("UsedSegment", "Audience"));
+
+
+
+
+					columns.Bound(o => o.AdvertiserName).Width(120).Title(Html.GetResource("Advertiser"));
+					columns.Bound(o => o.CampaignName).Width(160).Title(Html.GetResource("Campaign"));
+					columns.Bound(o => o.Impressions).Format("{0:n0}").Title(Html.GetResource("Impress", "AdChart")).HtmlAttributes(new { @class = "go-center" });
+					columns.Bound(o => o.grossrevenueText).Width(100).Title(Html.GetResource("grossrevenue", "Global")).HtmlAttributes(new { @class = "go-center" });
+
+					columns.Bound(o => o.RevenueText).Width(70).Title(Html.GetResource("Revenue", "AppChart")).HtmlAttributes(new { @class = "go-center" });
+					columns.Bound(o => o.avrcostText).Title(Html.GetResource("AVR", "Global")).HtmlAttributes(new { @class = "go-center" });
+					columns.Bound(o => o.DiscountText).Title(Html.GetResource("Discount", "CampaignSettings")).HtmlAttributes(new { @class = "go-center" });
+				})
+				.DataSource(dataBinding =>
+				{
+
+					// dataBinding.Ajax().Read("AdGeoLocation", "dashboard").da;
+					dataBinding.Ajax().Read(read => read.Action("ImpressionLogPerformance", "dashboard").Data("ImpressionLogPerformanceData")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+				})
+					.Scrollable(scrolling => scrolling.Enabled(false))
+					.EnableCustomBinding(true).Pageable(paging => paging
+
+
+					.Input(false)
+					.Numeric(true)
+					.Info(true)
+					.PreviousNext(true)
+					.Refresh(true)
+
+					.Position(GridPagerPosition.Bottom))
+
+					.Groupable(grouping => grouping.Enabled(false)))
+
+            
+
+                @Html.RegisterScriptBlock(string.Format("var exportUrl='{0}'", Url.Action("ImpressionLogPerformanceExport", "dashboard")))
+                @Html.RegisterScriptBlock(string.Format("var exportsegmentUrl='{0}'", Url.Action("AudienceSegmentsExport", "dashboard")))
+                <br />
+                <div class="data-row">
+                    <a href="javascript:void(0)" onclick='ImpressionLogPerformanceExport("excel")' class="export-icon-excel floating-left" title="Download as Excel">
+                    </a><a href="javascript:void(0)" onclick='ImpressionLogPerformanceExport("csv")' class="export-icon-cvs floating-left" title="Download as CSV">
+                    </a><a href="javascript:void(0)" onclick='ImpressionLogPerformanceExport("pdf")' class="export-icon-pdf floating-left" title="Download as PDF">
+                    </a>
+                </div>
+                <br />
+            </div>
+
+
+
+		</div>
+		<h2>
+			<div class='grid-title-container floating-left'><span class='trimed-span'>@Html.GetResource("Audiences", "Audience")</span></div><div class='grid-cogwheel-container floating-right go-right'><a name='iconImage' onclick='ShowTreeDiv()' id='adv' class='maximize' style='display: inline;margin-right: 5px;margin-top: 6px;'></a></div>
+
+
+		</h2>
+		@{
+			if (ViewData["Audiences"] != null && ViewBag.AudienceAllowed)
+			{
+				<div class="data-row" id="treeDiv">
+
+					<div id="Tree-dialog-form" class="floating-left" style="width:410px;margin-left: 365px;" title="@Html.GetResource("Audiences", "Audience")">
+						<div class="data-row">
+							<div id="AudiencesContainer" style="display:block!important;">
+								@await Html.PartialAsync("~/Views/Shared/Tree.cshtml", ViewData["Audiences"])
+							</div>
+						</div>
+
+					</div>
+					<br />
+
+					<div class="data-row" style="margin-left: 365px;margin-top:290px;">
+						<a href="javascript:void(0)" onclick='SegmentsLogPerformanceExport("excel")' class="export-icon-excel floating-left" title="Download as Excel">
+						</a><a href="javascript:void(0)" onclick='SegmentsLogPerformanceExport("csv")' class="export-icon-cvs floating-left" title="Download as CSV">
+						</a>
+					</div>
+					<br />
+				</div>
+
+			}
+		}
+
+	</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        radioBox($("[name=metriccontainer]")[0]);
+        google.charts.setOnLoadCallback(getGoogleChartImage);
+        ShowTreeDiv();
+
+        jQuery('input[data-date="true"]')
+         .daterangepicker({
+             dateFormat: '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat',
+             minDate: new Date($.now()),
+             maxDate: new Date($.now())
+         });
+        setDate();
+    });
+
+
+    function fillGridImpressionLog() {
+
+        var grid = $("#ImpressionLogPerformanceGrid").data("tGrid");
+
+        grid.rebind();
+
+    }
+
+    function setDate() {
+        if ($("#period").val() == "3") {
+            var today = new Date();
+            var dd = "01"
+            var mm = today.getMonth() + 1; //January is 0!
+            var yyyy = today.getFullYear();
+            var Tdd = today.getDate();
+
+
+            if (mm < 10) {
+                mm = '0' + mm
+            }
+
+            today = dd + '-' + mm + '-' + yyyy;
+            $('#FromDate').val(today);
+
+            if (Tdd < 10) {
+                Tdd = '0' + Tdd
+            }
+            today = Tdd + '-' + mm + '-' + yyyy;
+
+            $('#ToDate').val(today);
+        } else if ($("#period").val() == "4") {
+			var today = getDateMonthsBefore(new Date(),1);
+            var dd = "01"
+            var mm = today.getMonth() //January is 0!
+            var yyyy = today.getFullYear();
+
+
+            /*if (mm == 0) {
+                mm = 12;
+			}*/
+			mm = mm + 1;
+            var Tdd = getDaysInMonth(mm, yyyy);
+			
+            if (mm < 10) {
+                mm = '0' + mm
+            }
+
+            today = dd + '-' + mm + '-' + yyyy;
+            $('#FromDate').val(today);
+
+            if (Tdd < 10) {
+                Tdd = '0' + Tdd
+            }
+            today = Tdd + '-' + mm + '-' + yyyy;
+            $('#ToDate').val(today);
+
+        }
+		else if ($("#period").val() == "5") {
+			var today = getDateMonthsBefore(new Date(), 2);
+			var dd = "01"
+			var mm = today.getMonth(); //January is 0!
+			var yyyy = today.getFullYear();
+
+
+			/*if (mm == 0) {
+				mm = 12;
+			}*/
+
+			mm = mm + 1;
+
+			var prevtoday = getDateMonthsBefore(new Date(), 0);
+			var prevdd = "01"
+			var prevmm = prevtoday.getMonth(); //January is 0!
+			var prevyyyy = prevtoday.getFullYear();
+			prevmm = prevmm + 1;
+			//var Tdd = getDaysInMonth(prevmm, prevyyyy);
+               var Tdd = today.getDate();
+
+			if (mm < 10) {
+				mm = '0' + mm
+			}
+
+			today = dd + '-' + mm + '-' + yyyy;
+			$('#FromDate').val(today);
+
+			if (Tdd < 10) {
+				Tdd = '0' + Tdd
+			}
+
+			if (prevmm < 10) {
+				prevmm = '0' + prevmm
+			}
+
+			today = Tdd + '-' + prevmm + '-' + prevyyyy;
+			$('#ToDate').val(today);
+
+		}
+		else if ($("#period").val() == "6") {
+			var today = getDateMonthsBefore(new Date(), 5);
+			var dd = "01"
+			var mm = today.getMonth(); //January is 0!
+			var yyyy = today.getFullYear();
+
+
+			/*if (mm == 0) {
+				mm = 12;
+			}*/
+			mm = mm + 1;
+			var prevtoday = getDateMonthsBefore(new Date(), 0);
+			var prevdd = "01"
+			var prevmm = prevtoday.getMonth(); //January is 0!
+			var prevyyyy = prevtoday.getFullYear();
+			prevmm = prevmm + 1;
+
+			//var Tdd = getDaysInMonth(prevmm, prevyyyy);
+               var Tdd = today.getDate();
+			if (mm < 10) {
+				mm = '0' + mm
+			}
+
+			today = dd + '-' + mm + '-' + yyyy;
+			$('#FromDate').val(today);
+
+			if (Tdd < 10) {
+				Tdd = '0' + Tdd
+			}
+
+			if (prevmm < 10) {
+				prevmm = '0' + prevmm
+			}
+
+			today = Tdd + '-' + prevmm + '-' + prevyyyy;
+			$('#ToDate').val(today);
+
+		}
+
+    }
+
+	function createDate(days, months, years) {
+		var date = new Date();
+		date.setDate(date.getDate() + days);
+		date.setMonth(date.getMonth() + months);
+		date.setFullYear(date.getFullYear() + years);
+		return date;
+	}
+
+	function getDateMonthsBefore(date,nofMonths) {
+    var thisMonth = date.getMonth();
+    // set the month index of the date by subtracting nofMonths from the current month index
+    date.setMonth(thisMonth - nofMonths);
+    // When trying to add or subtract months from a Javascript Date() Object which is any end date of a month,  
+    // JS automatically advances your Date object to next month's first date if the resulting date does not exist in its month. 
+    // For example when you add 1 month to October 31, 2008 , it gives Dec 1, 2008 since November 31, 2008 does not exist.
+    // if the result of subtraction is negative and add 6 to the index and check if JS has auto advanced the date, 
+    // then set the date again to last day of previous month
+    // Else check if the result of subtraction is non negative, subtract nofMonths to the index and check the same.
+    //if ((thisMonth - nofMonths < 0) && (date.getMonth() != (thisMonth + nofMonths))) {
+    //    date.setDate(0);
+		//} else 
+		if ((thisMonth - nofMonths >= 0) && (date.getMonth() != thisMonth - nofMonths)) {
+        date.setDate(0);
+    }
+    return date;
+}
+
+function getDateMonthsAfter(date,nofMonths) {
+    var thisMonth = date.getMonth();
+    // set the month index of the date by adding nofMonths to the current month index
+    date.setMonth(thisMonth + nofMonths);
+    // if the result of addition is greater than 11 and subtract nofMonths from the index and check if JS has auto advanced the date, 
+    // then set the date again to last day of previous month
+    // Else check if the result of addition is not greater than 11, add nofMonths to the index and check the same.
+    if ((thisMonth + nofMonths > 11) && (date.getMonth() != (thisMonth - nofMonths))) {
+        date.setDate(0);
+    } else if ((thisMonth + nofMonths <= 11) && (date.getMonth() != (thisMonth + nofMonths))) {
+        date.setDate(0);
+    }
+    return date;
+}
+
+    function getDaysInMonth(m, y) {
+        return m === 2 ? y & 3 || !(y % 25) && y & 15 ? 28 : 29 : 30 + (m + (m >> 3) & 1);
+    }
+    function ImpressionLogPerformanceDataBinding(args) {
+
+        //args.data = $.extend(args.data,
+        //                          {
+        //                              subId: $('#campaigns').val(),
+        //                              id: $('#list').val(),
+								//	  period: $('#period').val(),
+								//	  CompanyName: $('#agenListDll').val(),
+								//	  CampName: $('#CampaignListDllDP').val(),
+								//	  AdvertiserId: $("#AdvListDllDP").val(),
+        //                              FromDate: $('#FromDate').val(),
+        //                              ToDate: $('#ToDate').val(),
+        //                          });
+	}
+
+    function ImpressionLogPerformanceData() {
+
+        var a =
+        {
+            subId: $('#campaigns').val(),
+            id: $('#list').val(),
+            period: $('#period').val(),
+            CompanyName: $('#agenListDll').val(),
+            CampName: $('#CampaignListDllDP').val(),
+            AdvertiserId: $("#AdvListDllDP").val(),
+            FromDate: $('#FromDate').val(),
+            ToDate: $('#ToDate').val(),
+        };
+        return a;
+    }
+
+
+    function FilterCol() {
+        if (!Radio_IsChecked("#CampaignCol")) {
+            $("#ImpressionLogPerformanceGrid").data("tGrid").hideColumn(4);
+
+        } else {
+            $("#ImpressionLogPerformanceGrid").data("tGrid").showColumn(4);
+
+        }
+        if (!Radio_IsChecked("#AdvertiserCol")) {
+            $("#ImpressionLogPerformanceGrid").data("tGrid").hideColumn(3);
+        } else {
+            $("#ImpressionLogPerformanceGrid").data("tGrid").showColumn(3);
+
+        }
+    }
+
+
+    function ImpressionLogPerformanceExport(type) {
+        var grid = $("#ImpressionLogPerformanceGrid").data("kendoGrid");
+
+        var geoLocationParams = {
+            subId: $('#campaigns').val(),
+            id: $('#list').val(),
+            period: $('#period').val(),
+            orderby: '',
+            type: type,
+            showCampaign: true,
+			showAdvertiser: true,
+
+			NameTitle: $("#ImpressionLogPerformanceGrid thead [class='t-header'] .t-link").eq(0).html(),
+			CompanyName: $('#agenListDll').val(),
+			CampName: $('#CampaignListDllDP').val(),
+			AdvertiserId: $("#AdvListDllDP").val(),
+            FromDate: $('#FromDate').val(),
+            ToDate: $('#ToDate').val()
+
+        };
+
+        downlaodByPostAction(exportUrl, geoLocationParams);
+    }
+	function SegmentsLogPerformanceExport(type) {
+		var grid = $("#ImpressionLogPerformanceGrid").data("kendoGrid");
+
+		var geoLocationParams = {
+			subId: $('#campaigns').val(),
+			id: $('#list').val(),
+			period: $('#period').val(),
+			orderby: '',
+			type: type,
+			showCampaign: true,
+			showAdvertiser: true,
+
+			NameTitle: $("#ImpressionLogPerformanceGrid thead [class='t-header'] .t-link").eq(0).html(),
+			CompanyName: $('#agenListDll').val(),
+			CampName: $('#CampaignListDllDP').val(),
+			AdvertiserId: $("#AdvListDllDP").val(),
+			FromDate: $('#FromDate').val(),
+			ToDate: $('#ToDate').val()
+
+		};
+
+		downlaodByPostAction(exportsegmentUrl, geoLocationParams);
+	}
+
+
+
+    function ShowTreeDiv() {
+
+        if (!$("#treeDiv").is(":visible")) {
+            $("#adv").attr("class", "minimize");
+
+
+            $("#treeDiv").show();
+        } else {
+            $("#adv").attr("class", "maximize");
+
+            $("#treeDiv").hide();
+        }
+
+    }
+
+</script>

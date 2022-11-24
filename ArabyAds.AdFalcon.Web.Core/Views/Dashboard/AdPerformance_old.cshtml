@@ -1,0 +1,46 @@
+﻿@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Reports
+@model List<AdPerformanceDto>
+@{
+
+}
+<div class="grid-container data-row">
+
+    @(Html.Kendo().Grid((ViewData["AdPerformance"] as List<AdPerformanceDto>))
+                .Name("Grid")
+        .Columns(columns =>
+        {
+            columns.Bound(o => o.CampaignName).Title(Html.GetResource("CampaignName", "AdChart"));
+            columns.Bound(o => o.Impress).Format("{0:n0}").Title(Html.GetResource("Impress", "AdChart"));
+            columns.Bound(o => o.Clicks).Format("{0:n0}").Title(Html.GetResource("Clicks", "AdChart"));
+            columns.Bound(o => o.CtrText).Title(Html.GetResource("CTR", "AdChart"));
+            columns.Bound(o => o.AvgCPCText).Title(Html.GetResource("AvgCPC", "AdChart"));
+            columns.Bound(o => o.BillableCostText).Title(Html.GetResource("BillableCost"));
+        })
+        .DataSource(dataBinding =>
+        {
+
+            // dataBinding.Ajax().Read("AdGeoLocation", "dashboard").da;
+            dataBinding.Ajax().Read(read => read.Action("adPerformance", "dashboard")).Total((int)ViewData["total"]).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+        })
+            .Scrollable(scrolling => scrolling.Enabled(false))
+            .EnableCustomBinding(true).Pageable(paging => paging
+
+
+            .Input(false)
+            .Numeric(true)
+            .Info(true)
+            .PreviousNext(true)
+            .Refresh(true)
+
+            .Position(GridPagerPosition.Bottom)).Groupable(grouping => grouping.Enabled(false)))
+
+</div>
+<div class="data-row">
+    <a href="javascript:void(0)" onclick='performanceExport("excel")' class="export-icon-excel floating-left" title="Download as Excel">
+    </a><a href="javascript:void(0)" onclick='performanceExport("csv")' class="export-icon-cvs floating-left" title="Download as CSV">
+    </a><a href="javascript:void(0)" onclick='performanceExport("pdf")' class="export-icon-pdf floating-left" title="Download as PDF">
+    </a>
+</div>
+@Html.RegisterScriptBlock(string.Format("var performanceExportUrl='{0}'", Url.Action("adPerformanceExport", "dashboard")))
+<br>

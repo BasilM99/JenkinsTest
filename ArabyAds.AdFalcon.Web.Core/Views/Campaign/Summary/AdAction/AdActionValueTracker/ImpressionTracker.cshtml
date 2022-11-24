@@ -1,0 +1,33 @@
+﻿@model  ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeSummaryDto
+@{
+    Layout = null;
+}
+
+@{
+    int i = 0;
+    var list = Model.ImpressionTrackingURL;
+    foreach (string item in list)
+    {
+        <div class="data-row info-container last-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">
+                    @if (i == 0)
+                    {
+                            @Html.GetResource("ImpressionTrackerRedirect", "CreativesSettings") }
+                    else
+                    {
+                        <text>&nbsp;</text>
+                    }
+                    </span>
+                </div>
+                <div class="field-container">
+                    <a class="side-text" href="@item" target="_tab">@item</a>
+                </div>
+            </div>
+        </div>
+        {
+            i++;
+        }
+    }
+}

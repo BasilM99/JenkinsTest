@@ -1,0 +1,68 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("Reports", "Titles");
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+}
+
+@{
+
+}
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    var SelectableColumns = 3;
+    var HiddenSelectableColumns = 0;
+    google.charts.load('current', { packages: ['corechart', 'line'] });
+
+    function ShowSchdulingSearch() {
+
+        if (!$("#Schedulingdiv").is(":visible")) {
+            $("#adv").attr("class", "minimize");
+
+
+            $("#Schedulingdiv").show();
+            //$("#Schedulingbutton").show();
+        } else {
+            $("#adv").attr("class", "maximize");
+
+            $("#Schedulingdiv").hide();
+            //$("#Schedulingbutton").hide();
+        }
+
+    }
+    function ShowMetricDivSearch() {
+
+        if (!$("#MetricDivS").is(":visible")) {
+            $("#advMetric").attr("class", "minimize");
+
+
+            $("#MetricDivS").show();
+            //$("#Schedulingbutton").show();
+        } else {
+            $("#advMetric").attr("class", "maximize");
+
+            $("#MetricDivS").hide();
+            //$("#Schedulingbutton").hide();
+        }
+
+    }
+</script>
+@if (string.IsNullOrEmpty(Context.Request.Query["reportType"]) || Context.Request.Query["reportType"].ToString().ToLower() == "app" || Context.Request.Query["reportType"].ToString().ToLower() == "gapp")
+{
+
+    @*@Html.RenderAction("AppReport", new { appSiteId = ViewBag.ID });*@
+    if (string.IsNullOrEmpty(Context.Request.Query["id"]))
+        @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.Reports.AppReport), new { appSiteId = ViewBag.ID })
+        else
+            @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.Reports.AppReport), new { id = Convert.ToInt32(Context.Request.Query["id"]), appSiteId = ViewBag.ID })
+        }
+        else if (string.IsNullOrEmpty(Context.Request.Query["reportType"]) || Context.Request.Query["reportType"].ToString().ToLower() == "ad" || Context.Request.Query["reportType"].ToString().ToLower() == "gad")
+        {
+
+            @*@Html.RenderAction("CampaignReport", new { CampaignId = ViewBag.ID });*@
+            if (string.IsNullOrEmpty(Context.Request.Query["id"]))
+                @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.Reports.CampaignReport), new { CampaignId = ViewBag.ID })
+                else
+                    @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.Reports.CampaignReport), new { id = Convert.ToInt32(Context.Request.Query["id"]), CampaignId = ViewBag.ID })
+
+
+                }

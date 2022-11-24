@@ -1,0 +1,26 @@
+﻿    <div id="bidDialog-form" title="@Html.GetResource("Bid", "Campaign")" style="display: none; ">
+        <div class="go-left data-row">
+            <div id="minBidDescAdg1">
+                @Html.GetResource("minBidDesc1", "Campaign")
+            </div>
+            <p>
+            </p>
+            <div class="data-row data-container">
+                <div class="floating-left">
+                    <div class="floating-left">
+                        <span class="field-title required-field">@Html.GetResource("NewBid", "Campaign")</span>
+                    </div>
+                    <div class="field-container">
+                        <span class="small-big-field">
+                            <input id="adsBid" type="text" class="required text-box single-line" masktype="decimal"
+                                   onchange="checkAdBidVlaue();" />
+                        </span><span id="adBidErrorMsg" style="display: none;"
+                                     class="validation-arrow field-validation-error"><span>@Html.GetResource("NewBidError", "Campaign")</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="moreThanBidList" class="data-row items-table-styles">
+                        </div>
+                        @Html.GetResource("minBidDesc2", "Campaign")
+                    </div>
+    </div>

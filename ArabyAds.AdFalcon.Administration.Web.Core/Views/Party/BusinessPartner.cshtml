@@ -1,0 +1,1188 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Core.Party.PartyViewModel
+@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core
+@{
+
+    ViewBag.Title = Html.GetResource("BusinessPartner", "Party");
+}
+@{
+
+    var viewDataDic = new ViewDataDictionary(ViewData);
+
+
+    viewDataDic.Add("UploadAction", "SaveHttps");
+    viewDataDic.Add("RemoveAction", "RemoveHttps");
+    viewDataDic.Add("onchnage", "imageChanged");
+    viewDataDic.Add("onClear", "imageChanged");
+    viewDataDic.Add("ErrorMessagesId", "party-divErrorMessages");
+
+    int id = Model != null && Model.PartyDto != null ? (int)Model.PartyDto.ID : 0;
+
+
+
+    var uploadInfo = ArabyAds.AdFalcon.Web.Controllers.Model.Core.UploadViewModel.ParseImage(Model.creativeUnit);
+
+    var OpenRTB2 = new SelectListItem { Value = "2.0", Text = "2.0" };
+    var OpenRTB21 = new SelectListItem { Value = "2.1", Text = "2.1" };
+    var OpenRTB22 = new SelectListItem { Value = "2.2", Text = "2.2" };
+    var OpenRTB23 = new SelectListItem { Value = "2.3", Text = "2.3" };
+    var OpenRTB24 = new SelectListItem { Value = "2.4", Text = "2.4" };
+    var OpenRTB241 = new SelectListItem { Value = "2.4.1", Text = "2.4.1" };
+
+    var OpenRTB25 = new SelectListItem { Value = "2.5", Text = "2.5" };
+    var itemsOpenRTB = new List<SelectListItem> { OpenRTB2, OpenRTB21, OpenRTB22, OpenRTB23, OpenRTB24, OpenRTB241, OpenRTB25 };
+
+}
+
+<style>
+    #breadcrumb a.btn#BreadCrum1 {
+        padding-left: 30px !important;
+    }
+    .uploadAdmin {
+        height:unset;
+    }
+</style>
+<script language="javascript" type="text/javascript">
+
+
+	var ListOfAdvertisers = '@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AdvertiserList != null && (Model.PartyDto as BusinessPartnerDto).AdvertiserList.Count > 0 ? string.Join(",", (int[])(Model.PartyDto as BusinessPartnerDto).AdvertiserList.ToArray()) :string.Empty)';
+	var ListOfAccounts = '@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AccountList != null && (Model.PartyDto as BusinessPartnerDto).AccountList.Count > 0 ? string.Join(",", (int[])(Model.PartyDto as BusinessPartnerDto).AccountList.ToArray()) :string.Empty)';
+    var ListOfWebCreativeFormats = '@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).WebCreativeFormatsList != null && (Model.PartyDto as BusinessPartnerDto).WebCreativeFormatsList.Count > 0 ? string.Join(",", (int[])(Model.PartyDto as BusinessPartnerDto).WebCreativeFormatsList.ToArray()) :string.Empty)';
+    var ListOfMobileCreativeFormats = '@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).MobileCreativeFormatsList != null && (Model.PartyDto as BusinessPartnerDto).MobileCreativeFormatsList.Count > 0 ? string.Join(",", (int[])(Model.PartyDto as BusinessPartnerDto).MobileCreativeFormatsList.ToArray()) :string.Empty)';
+    var AppSiteSearchUrl = '@Url.Action("AppSiteSearch", "AppSite")';
+    DemandTypeId = '@Model.DemandType';
+	SupplyTypeId = '@Model.SupplyType';
+	DataProviderTypeId = '@Model.DataProviderType';
+
+    var firstLoad = true;
+    var openRTBString = '@(Model.PartyDto != null? (Model.PartyDto as BusinessPartnerDto).OpenRtbVersion :string.Empty)';
+
+    $(document).ready(function () {
+        IsVisibleChanged();
+        $("#IPRangesGrid .t-status .t-icon.t-refresh").attr("style", "display:none");
+        onIPRangeRowDataBound();
+        GeofenceChanged();
+        accountID = $("#PartyDto_AccountId").val();
+
+        if ($("#PartyDto_BusinessPartnerTypeId").val() == SupplyTypeId) {
+
+            $('#PartyDto_ClicksTrackers').removeClass('ValdationIgnored');
+            $('#PartyDto_ImpressionTrackers').removeClass('ValdationIgnored');
+
+            $("#PartyDto_OpenRtbVersion").val(openRTBString);
+        }
+        else {
+
+            $('#PartyDto_ImpressionTrackers').addClass('ValdationIgnored');
+            $('#PartyDto_ClicksTrackers').addClass('ValdationIgnored');
+        }
+
+        $("#PartyDto_ID").val('@id');
+
+        SetSelectedTap("ListMenuAdmin");
+
+        $("#publisherUsers").val("True");
+        generateUsersGrid();
+
+        jQuery("select[isdisable=isdisable]").on("focus mousedown mouseup click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        changeBusinessPartnerType();
+
+        $('#PartyDto_BusinessPartnerTypeId').on('change', function () {
+            if ($('#PartyDto_BusinessPartnerTypeId').val() == 6) {
+
+                makeSiteProviderURLReqired();
+                makeFTPURLReqired()
+            }
+            else {
+                $('#PartyDto_SiteProviderURL').removeClass("required");
+                $('#PartyDto_FTPURL').removeClass("required");
+            }
+        });
+
+    });
+    function makeSiteProviderURLReqired() {
+       // if ($('#PartyDto_BusinessPartnerTypeId').val() == 6) {
+            if ($('#IsExternalProvider').attr('checked') == 'checked') {
+                $('#PartyDto_SiteProviderURL').addClass("required");
+            }
+            else {
+                $('#PartyDto_SiteProviderURL').removeClass("required");
+
+            }
+       // }
+    }
+    function makeFTPURLReqired() {
+        //if ($('#PartyDto_BusinessPartnerTypeId').val() == 6) {
+            if ($('#IsFTPEnabled').attr('checked') == 'checked') {
+                $('#PartyDto_FTPURL').addClass("required ");
+            }
+            else {
+                $('#PartyDto_FTPURL').removeClass("required");
+            }
+        //}
+    }
+    function GeofenceChanged() {
+        if (Radio_IsChecked("#DisallowGeofenceLessThanRadius")) {
+            $("#GeofenceRadiusDiv").attr("style", "display: block;");
+        } else {
+            $("#GeofenceRadiusDiv").attr("style", "display: none;");
+            $("#PartyDto_GeofenceRadius").val('1');
+
+        }
+
+    }
+    function IsVisibleChanged() {
+        if (Radio_IsChecked("#IsVisible")) {
+            $("input[name='PartyDto.Visible']").val(true);
+        } else {
+            $("input[name='PartyDto.Visible']").val(false);
+
+        }
+
+    }
+
+    function onIPRangeRowDataBound(e) {
+        $('#IPRangesGrid').find("td:not(.t-last)").click(function (e) {
+            e.stopPropagation();
+            return true;
+        });
+    }
+    function deleteIP(elem) {
+        var grid = $("#IPRangesGrid").data("kendoGrid");
+        var tr = $(elem).parents('tr');
+        // delete the row
+        grid.removeRow(tr);
+    }
+    function imageChanged() {
+
+        $("#PartyDto_documentId").val($("#docId").val());
+        //alert($("#documentId").val());
+
+    }
+  
+    function CollectIps() {
+
+        var grid = $('#IPRangesGrid').data("kendoGrid");
+        var IpList = [];
+        if (grid == null)
+            return null;
+
+        /*for (var i = 0; i < grid.changeLog.inserted.length; i++)
+            if (typeof (grid.changeLog.inserted[i]) != "undefined")
+                IpList.push(grid.changeLog.inserted[i].IPString);
+
+        jQuery('[id="PartyDto_insertedIps"]').val(IpList);
+
+        IpList = [];
+
+        for (var i = 0; i < grid.changeLog.deleted.length; i++)
+            if (typeof (grid.changeLog.deleted[i]) != "undefined")
+                IpList.push(grid.changeLog.deleted[i].IPString);
+
+        jQuery('[id="PartyDto_deletedIps"]').val(IpList);
+        */
+
+
+        var inserted = new Array();
+        var deletedIPRangeIds = '';
+
+        var data = grid.dataSource.data();
+        var datads = grid.dataSource._destroyed;
+        var InsertedIds = '';
+        var inserted = [];
+        for (var idx = 0; idx < data.length; idx++) {
+            if (data[idx].isNew() || data[idx].dirty) {
+
+                inserted[inserted.length] = data[idx].IPString;
+               // InsertedIds += ',' + data[idx].ID;
+
+            }
+        }
+        var insertedD = [];
+        for (var idx = 0; idx < datads.length; idx++) {
+            insertedD[insertedD.length] = datads[idx].IPString;
+          //  deletedIPRangeIds += '&' + datads[idx].ID;
+
+        }
+
+
+
+            $('[id="PartyDto_insertedIps"]').val(inserted);
+        
+        $('[id="PartyDto_deletedIps"]').val(insertedD);
+
+    }
+
+    function save_handler(e) {
+
+
+        $(e.form).find("input").val(e.values.PartyDto.IPString);
+        e.dataItem.IPString = e.values.PartyDto.IPString;
+    }
+
+    function changeBusinessPartnerType() {
+        if ($("#PartyDto_BusinessPartnerTypeId").val() == SupplyTypeId) {
+            $('.SSPDemand').show();
+
+            if ($('#PartyDto_ClicksTrackers').val() == '') {
+
+                $('#PartyDto_ClicksTrackers').val(100);
+            }
+
+            if ($('#PartyDto_ImpressionTrackers').val() == '') {
+
+                $('#PartyDto_ImpressionTrackers').val(100);
+            }
+
+            $('#PartyDto_ClicksTrackers').removeClass('ValdationIgnored');
+            $('#PartyDto_ImpressionTrackers').removeClass('ValdationIgnored');
+            $('#PartyDto_GeofenceRadius').removeClass('ValdationIgnored');
+            $('#PartyDto_AuctionPricePricingUnitId').removeClass('ValdationIgnored');
+            $('#PartyDto_OpenRtbVersion').removeClass('ValdationIgnored');
+
+            $('#PartyDto_NumberOfSupportedVastWrapperLevels').removeClass('ValdationIgnored');
+            $('#PartyDto_NumberOfSupportedImpressionTrackersInPartnerMechanism').removeClass('ValdationIgnored');
+        }
+        else {
+
+
+            $('.SSPDemand').hide();
+
+            $('#PartyDto_ImpressionTrackers').addClass('ValdationIgnored');
+            $('#PartyDto_ClicksTrackers').addClass('ValdationIgnored');
+
+            $('#PartyDto_GeofenceRadius').addClass('ValdationIgnored');
+            $('#PartyDto_AuctionPricePricingUnitId').addClass('ValdationIgnored');
+            $('#PartyDto_OpenRtbVersion').addClass('ValdationIgnored');
+
+            $('#PartyDto_NumberOfSupportedVastWrapperLevels').addClass('ValdationIgnored');
+            $('#PartyDto_NumberOfSupportedImpressionTrackersInPartnerMechanism').addClass('ValdationIgnored');
+
+			if ($("#PartyDto_BusinessPartnerTypeId").val() == DataProviderTypeId) {
+
+				$('.DPDemand').show();
+			}
+			else {
+				$('.DPDemand').hide();
+			}
+
+        }
+
+        if ($("#PartyDto_BusinessPartnerTypeId").val() == DemandTypeId || $("#PartyDto_BusinessPartnerTypeId").val() == SupplyTypeId) {
+            $("#publisherUsers").val("True");
+
+            if ((typeof (accountID) != "undefined")) {
+                $(".commonSupply").show();
+                $("#AppSiteDet").find('[name="PartyDto.AppSiteId"]').removeClass('ValdationIgnored');
+                GeofenceChanged();
+                $("#AccountContainerDiv").show();
+                ResetAccountData();
+                return;
+            }
+            else {
+
+                $(".commonSupply").hide();
+                //return;
+            }
+        } else {
+            $("#publisherUsers").val("False");
+
+        }
+
+        if ($("#PartyDto_BusinessPartnerTypeId").val() == "") {
+            $("#AccountContainerDiv").hide();
+
+        } else {
+            $("#AccountContainerDiv").show();
+
+        }
+
+
+        ResetAccountData();
+
+        $(".commonSupply").hide();
+        $("#AppSiteDet").find('[name="PartyDto.AppSiteId"]').addClass('ValdationIgnored');
+        ResetAppSiteData();
+        GeofenceChanged();
+        firstLoad = false;
+    }
+
+
+
+    function callSave() {
+
+        var countcallAdv = 0;
+            if (checkEachItems($('#PartyDto_BlockedDomains').val().trim())) {
+                var Type;
+                countcallAdv++;
+                $('#InvalidList').hide();
+                if (numberOfContentListItems($('#PartyDto_BlockedDomains').val().trim()) <= 1000) {
+                    $('#outOfRange').hide();
+                    countcallAdv++;
+                }
+                else {
+                    //alert("sadasds")
+                    $('#InvalidList').hide();
+                    $('#outOfRange').show();
+                    countcallAdv = 0;
+                }
+            }
+            else {
+                //alert("sadasds")
+                 $('#InvalidList').show();
+                countcallAdv = 0;
+            }
+
+        if (countcallAdv > 0) {
+            var setting = $.data($("#saveForm")[0], 'validator').settings;
+
+            setting.ignore = '.ValdationIgnored';
+            CollectIps();
+            return $("#saveForm").validate().form();
+        }
+        else {
+            return false;
+        }
+
+    }
+
+    function showAccountSearchDialog() {
+
+        localAccountSearchInitilize();
+        AccountDialogInitilize();
+        showDialog("account-search-dialog-form");
+
+    }
+    function showAppSiteSearchDialog() {
+
+        if ($("#PartyDto_AccountName").val() != "" && $("#PartyDto_AccountId").val() != "")
+            AppSiteSearch(accountID);
+        else return false;
+    }
+    function AccountDialogInitilize() {
+        $("#account-search-dialog-form").dialog({
+            autoOpen: false,
+            //   height: 520,
+            width: 900,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            open: function () {
+
+
+
+            },
+            close: function () {
+
+                $("#account-search-dialog-form ,#Name ,#CompanyName,#Email").val('');
+                generateUsersGrid();
+
+            }
+        });
+    }
+
+    function AppSiteDialogInitilize() {
+        $("#AppSite-search-dialog-form").dialog({
+            autoOpen: false,
+            // height: 520,
+            width: 850,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            open: function () {
+
+
+
+            },
+            close: function () {
+
+                $("#AppSite-search-dialog-form ,#NameAppSite").val('');
+                //generateUsersGrid();
+
+            }
+        });
+    }
+
+    function ResetAccountData() {
+        if (!firstLoad) {
+            jQuery('[name="PartyDto.AccountId"]').val('');
+            jQuery('[name="PartyDto.AccountName"]').val('');
+            jQuery('#deleteAccount').hide();
+
+            accountID = null;
+        }
+    }
+
+    function ResetAppSiteData() {
+        $("#AppSiteDet").find('#AppSiteName').text('');
+        $("#AppSiteDet").find('[name="PartyDto.AppSiteId"]').val('');
+
+
+
+        //jQuery('[name="PartyDto.AccountName"]').val('');
+        jQuery('#deleteAppSite').hide();
+
+        AppSiteId = null;
+    }
+    function changeAccount(accountId, accountDesc) {
+
+        if ((typeof (accountId) != "undefined") && (typeof (accountDesc) != "undefined")) {
+            jQuery('[name="PartyDto.AccountId"]').val(accountId);
+            jQuery('[name="PartyDto.AccountName"]').val(accountDesc);
+            jQuery('#deleteAccount').show();
+
+
+            $("#AppSiteDet").find('#AppSiteName').text('');
+            $("#AppSiteDet").find('[name="PartyDto.AppSiteId"]').val('');
+
+
+
+            if ($("#PartyDto_BusinessPartnerTypeId").val() == DemandTypeId || $("#PartyDto_BusinessPartnerTypeId").val() == SupplyTypeId) {
+                $(".commonSupply").show();
+
+                if ($("#PartyDto_BusinessPartnerTypeId").val() == SupplyTypeId)
+                    $("#AppSiteDet").find('[name="PartyDto.AppSiteId"]').removeClass('ValdationIgnored');
+            }
+            else {
+
+                $("#AppSiteDet").find('[name="PartyDto.AppSiteId"]').addClass('ValdationIgnored');
+            }
+            ResetAppSiteData();
+        }
+        else {
+            $("#AppSiteDet").find('#AppSiteName').text('');
+            $("#AppSiteDet").find('[name="PartyDto.AppSiteId"]').val('');
+            $(".commonSupply").hide();
+
+            if ($("#PartyDto_BusinessPartnerTypeId").val() == DemandTypeId || $("#PartyDto_BusinessPartnerTypeId").val() == SupplyTypeId) {
+                if ($("#PartyDto_BusinessPartnerTypeId").val() == SupplyTypeId)
+                    $("#AppSiteDet").find('[name="PartyDto.AppSiteId"]').removeClass('ValdationIgnored');
+            }
+            else {
+                $("#AppSiteDet").find('[name="PartyDto.AppSiteId"]').addClass('ValdationIgnored');
+
+            }
+            ResetAppSiteData();
+        }
+        jQuery('#account-search-dialog-form').dialog('close');
+        $("#saveForm").validate().form();
+
+    }
+    function changeAppSite(AppSiteId, AppSiteDesc) {
+
+        if ((typeof (AppSiteId) != "undefined") && (typeof (AppSiteDesc) != "undefined")) {
+            $("#AppSiteDet").find('#AppSiteName').text(AppSiteDesc);
+            $("#AppSiteDet").find('[name="PartyDto.AppSiteId"]').val(AppSiteId);
+            // $("#AppSiteDet").find('#deleteAppSite').show();
+        }
+        jQuery('#AppSite-search-dialog-form').dialog('close');
+
+        $("#saveForm").validate().form();
+    }
+
+    function AppSiteSearch(accountId) {
+
+        if ($("#PartyDto_BusinessPartnerTypeId")[0].selectedIndex > 0) {
+            AppSiteDialogInitilize();
+            jQuery('#AppSite-search-dialog-form').dialog('open');
+            localAppSiteSearchInitilize();
+            generateAppSiteGrid();
+        }
+    }
+
+
+
+
+</script>
+
+@using (Html.BeginForm("BusinessPartner", "Party", FormMethod.Post, new { id = "saveForm" }))
+{
+    @Html.HiddenFor(m => m.PartyDto.ID)
+
+    @Html.Hidden("PartyDto.insertedIps", Model.PartyDto != null ? (Model.PartyDto as BusinessPartnerDto).insertedIps : "")
+    @Html.Hidden("PartyDto.deletedIps", Model.PartyDto != null ? (Model.PartyDto as BusinessPartnerDto).deletedIps : "")
+    @*@Html.Hidden(,p => (p.PartyDto as BusinessPartnerDto).ID)*@
+    @Html.Hidden("PartyDto.documentId", Model.PartyDto != null ? (Model.PartyDto as BusinessPartnerDto).documentId : null)
+    <div class="data-row data-container">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title required-field">@Html.GetResource("Name", "Party")</span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+            @Html.AdFalconTextBoxFor(p => p.PartyDto.Name, new { maskType = "String" })
+            @Html.AdFalconValidationMessageFor(p => p.PartyDto.Name)
+        </div>
+
+    </div>
+
+
+    {
+        ViewData.TemplateInfo.HtmlFieldPrefix = "PartyDto";
+    }
+    <div class="data-row data-container">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title required-field">
+                @Html.GetResource("Type", "Global")
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+            @Html.DropDownListFor(p => (p.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId, Model.BusinessPartnerTypes, new { @onchange = "changeBusinessPartnerType();", @isdisable = Model.PartyDto != null && Model.PartyDto.ID > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId > 0 ? "isdisable" : "notisdible" })
+
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId)
+        </div>
+
+    </div>
+    {
+        ViewData.TemplateInfo.HtmlFieldPrefix = "";
+    }
+    <div class="data-row data-container" id="AccountContainerDiv">
+        <div class="label-container2" style="width: 350px!important" id="AccountContainer">
+            <span class="field-title required-field">@Html.GetResource("Account", "AddFund")</span>
+        </div>
+        <div class="adfalcon-dialog2 field-container">
+            <div style="line-height: 24px;width:316px;">
+                @Html.HiddenFor(m => m.PartyDto.AccountId)
+                @Html.AdFalconTextBoxFor(m => m.PartyDto.AccountName, new { @readonly = "readonly" })
+                <img class="find-icon" onclick="showAccountSearchDialog();" src='@Url.GetImagePath("find-icon.png")' />
+
+            </div>
+            <div style="float:right">
+                @Html.AdFalconValidationMessageFor(m => m.PartyDto.AccountName)
+
+            </div>
+
+        </div>
+    </div>
+    {
+        ViewData.TemplateInfo.HtmlFieldPrefix = "PartyDto";
+    }
+    <div class="data-row data-container">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                @Html.GetResource("ContactPerson", "Party")
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+            @Html.AdFalconTextBoxFor(p => (p.PartyDto as BusinessPartnerDto).ContactPerson, new { maskType = "String" })
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).ContactPerson)
+
+
+        </div>
+    </div>
+
+    <div class="data-row data-container">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                @Html.GetResource("ContactEmail", "SSPPartners")
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+            @Html.AdFalconTextBoxFor(p => (p.PartyDto as BusinessPartnerDto).Email, new { maskType = "String" })
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).Email)
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                @Html.GetResource("Phone", "Party")
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+
+            @Html.AdFalconTextBoxFor(p => (p.PartyDto as BusinessPartnerDto).Phone, new { maskType = "Intger" })
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).Phone)
+        </div>
+
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                @Html.GetResource("Address", "Party")
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+            @Html.AdFalconTextBoxFor(p => (p.PartyDto as BusinessPartnerDto).Address, new { maskType = "String" })
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).Address)
+        </div>
+    </div>
+
+    <div class="data-row data-container">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title required-field">
+                @Html.GetResource("Code", "Global")
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+            @Html.AdFalconTextBoxFor(p => (p.PartyDto as BusinessPartnerDto).Code, new { maxlength = 14 })
+
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).Code)
+        </div>
+    </div>
+    {
+        ViewData.TemplateInfo.HtmlFieldPrefix = "";
+    }
+    <div class="data-row data-container">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                &nbsp;
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+            @Html.HiddenFor(m => m.PartyDto.Visible)
+
+            @Html.GetCheckBox("IsVisible", Html.GetResource("IsVisible", "Lookup"), (Model != null && Model.PartyDto != null) ? Model.PartyDto.Visible : true, onChange: "IsVisibleChanged")
+
+        </div>
+    </div>
+    {
+        ViewData.TemplateInfo.HtmlFieldPrefix = "PartyDto";
+    }
+
+
+    <div class="data-row data-container SSPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">Mobile Creative Formats</span>
+        </div>
+        <div class="adfalcon-dialog2 field-container">
+            @await Html.PartialAsync("MultiSelect", new ArabyAds.AdFalcon.Web.Controllers.Model.Action { Code = "MobileCreativeFormats", ActionName = "GetCreativeFormatsSecure", ControllerName = "Lookup" })
+
+
+        </div>
+    </div>
+
+    <div class="data-row data-container SSPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">Web Creative Formats</span>
+        </div>
+        <div class="adfalcon-dialog2 field-container">
+            @await Html.PartialAsync("MultiSelect", new ArabyAds.AdFalcon.Web.Controllers.Model.Action { Code = "WebCreativeFormats", ActionName = "GetCreativeFormatsSecure", ControllerName = "Lookup" })
+        </div>
+    </div>
+
+
+
+
+    <div class="data-row data-container">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                @Html.GetResource("Icon", "Global")
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+            @await Html.PartialAsync("Upload", uploadInfo, viewDataDic)
+
+
+        </div>
+
+    </div>
+
+    <div class="data-row data-container commonSupply" id="AppSiteDet" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title required-field">@Html.GetResource("VirtualAppSite", "Global")</span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+
+            <div onclick="showAppSiteSearchDialog();" style="line-height: 24px;width:330px;">
+                <img class="find-icon" src='@Url.GetImagePath("find-icon.png")' />
+                @Html.HiddenFor(p => (p.PartyDto as BusinessPartnerDto).AppSiteId)
+
+
+                <span class="side-text" id="AppSiteName" style="float: none;">@(Model != null && Model.PartyDto != null ? (Model.PartyDto as BusinessPartnerDto).AppSiteName : string.Empty)</span>
+
+            </div>
+            <div style="float:right;">
+                @Html.AdFalconValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).AppSiteId)
+            </div>
+        </div>
+    </div>
+
+    <div class="data-row data-container DPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.DataProviderType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                &nbsp;
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+
+            @Html.GetCheckBox("IsExternalProvider", "Is External Provider", (Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto) != null) ? (Model.PartyDto as BusinessPartnerDto).IsExternalProvider : false, onChange: "makeSiteProviderURLReqired")
+        </div>
+
+    </div>
+    <div class="data-row data-container DPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.DataProviderType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                &nbsp;
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+
+            @Html.GetCheckBox("AdMarkupLogRequired", "Ad Markup Log Required", (Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto) != null) ? (Model.PartyDto as BusinessPartnerDto).AdMarkupLogRequired : false)
+        </div>
+
+    </div>
+    <div class="data-row data-container DPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.DataProviderType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                &nbsp;
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+
+            @Html.GetCheckBox("AllowImpressionTrackers", "Allow Impression Trackers", (Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto) != null) ? (Model.PartyDto as BusinessPartnerDto).AllowImpressionTrackers : true)
+        </div>
+
+    </div>
+
+
+    
+
+    <div class="data-row data-container DPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.DataProviderType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title  required-field">
+                Site Provider URL
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+
+            @Html.AdFalconTextBoxFor(p => (p.PartyDto as BusinessPartnerDto).SiteProviderURL)
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).SiteProviderURL)
+        </div>
+    </div>
+    <div class="data-row data-container DPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.DataProviderType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title  required-field">
+                &nbsp;
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+            @Html.GetCheckBox("IsFTPEnabled", "Is FTP", (Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto) != null) ? (Model.PartyDto as BusinessPartnerDto).IsFTPEnabled : false, onChange: "makeFTPURLReqired")
+        </div>
+    </div>
+    <div class="data-row data-container DPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.DataProviderType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title  required-field">
+                FTP URL
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+
+            @Html.AdFalconTextBoxFor(p => (p.PartyDto as BusinessPartnerDto).FTPURL)
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).FTPURL)
+        </div>
+    </div>
+    <div class="data-row data-container SSPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                @Html.GetResource("OpenRtbVersion", "SSPPartners")
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+
+            @Html.DropDownListFor(p => (p.PartyDto as BusinessPartnerDto).OpenRtbVersion, itemsOpenRTB)
+
+
+
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).OpenRtbVersion)
+        </div>
+    </div>
+
+    <div class="data-row data-container SSPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title  required-field">
+                Number Of Supported Click Trackers In Native
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+
+            @Html.AdFalconTextBoxFor(p => (p.PartyDto as BusinessPartnerDto).ClicksTrackers)
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).ClicksTrackers)
+        </div>
+    </div>
+    <div class="data-row data-container SSPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title required-field">
+                Number Of Supported Impression Trackers In Native
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+            @Html.AdFalconTextBoxFor(p => (p.PartyDto as BusinessPartnerDto).ImpressionTrackers)
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).ImpressionTrackers)
+        </div>
+    </div>
+
+    <div class="data-row data-container SSPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                Click Tracker Macro Name
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+
+            @Html.AdFalconTextBoxFor(p => (p.PartyDto as BusinessPartnerDto).ClickTrackerMacroName)
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).ClickTrackerMacroName)
+        </div>
+
+    </div>
+    <div class="data-row data-container SSPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                Double Encoded Click Tracker Macro Name
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+            @Html.AdFalconTextBoxFor(p => (p.PartyDto as BusinessPartnerDto).DoubleEncodedClickTrackerMacroName)
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).DoubleEncodedClickTrackerMacroName)
+
+        </div>
+
+    </div>
+
+
+    <div class="data-row data-container SSPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                Auction Price Macro Name
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+            @Html.AdFalconTextBoxFor(p => (p.PartyDto as BusinessPartnerDto).AuctionPriceMacroName)
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).AuctionPriceMacroName)
+        </div>
+
+
+    </div>
+    <div class="data-row data-container SSPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                Auction Price Test Value
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+
+            @Html.AdFalconTextBoxFor(p => (p.PartyDto as BusinessPartnerDto).AuctionPriceTestValue, new { @type = "number" })
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).AuctionPriceTestValue)
+        </div>
+    </div>
+    <div class="data-row data-container SSPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title" style="width:160px">
+                Auction Price Encryption Key
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+            @Html.AdFalconTextBoxFor(p => (p.PartyDto as BusinessPartnerDto).AuctionPriceEncryptionKey)
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).AuctionPriceEncryptionKey)
+        </div>
+
+
+    </div>
+    <div class="data-row data-container SSPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                Auction Price Integrity Key
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+            @Html.AdFalconTextBoxFor(p => (p.PartyDto as BusinessPartnerDto).AuctionPriceIntegrityKey)
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).AuctionPriceIntegrityKey)
+        </div>
+    </div>
+
+    <div class="data-row data-container SSPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                &nbsp;
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+
+            @Html.GetCheckBox("DisallowGeofenceLessThanRadius", "Disallow Geofence Less Than Radius", (Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto) != null) ? (Model.PartyDto as BusinessPartnerDto).DisallowGeofenceLessThanRadius : false, onChange: "GeofenceChanged")
+        </div>
+
+    </div>
+    <div class="data-row data-container SSPDemand" id="GeofenceRadiusDiv">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                Geofence Radius
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+
+            @Html.AdFalconTextBox("GeofenceRadius", Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).GeofenceRadius > 0 ? (Model.PartyDto as BusinessPartnerDto).GeofenceRadius : 1,
+
+
+
+
+                new { @type = "number", maskType = "Int", min = "1", max = "247483647" }
+           )km
+        </div>
+    </div>
+    <div class="data-row data-container SSPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                &nbsp;
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+
+            @Html.GetCheckBox("SupportWinNotice", "Support Win Notice", (Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto) != null) ? (Model.PartyDto as BusinessPartnerDto).SupportWinNotice : true)
+        </div>
+
+    </div>
+    <div class="data-row data-container SSPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                &nbsp;
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+
+            @Html.GetCheckBox("TaggingAllowed", "Allow Creating Audience Lists for Remarketing (Tagging)", (Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto) != null) ? (Model.PartyDto as BusinessPartnerDto).TaggingAllowed : true)
+        </div>
+
+    </div>
+
+
+    <div class="data-row data-container SSPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                &nbsp;
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+
+            @Html.GetCheckBox("FingerPrintAllowed", "Using Fingerprint", (Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto) != null) ? (Model.PartyDto as BusinessPartnerDto).FingerPrintAllowed : true)
+        </div>
+
+    </div>
+
+
+    <div class="data-row data-container SSPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                Auction Price Unit
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+
+            @Html.DropDownListFor(p => (p.PartyDto as BusinessPartnerDto).AuctionPricePricingUnitId, Model.PriceModels)
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).AuctionPricePricingUnitId)
+        </div>
+    </div>
+    <div class="data-row data-container SSPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                Auction Price Encryption Algorithm
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+
+            @Html.DropDownListFor(p => (p.PartyDto as BusinessPartnerDto).AuctionPriceEncryptionAlgorithmId, Model.PriceEncryptionAlgorithm)
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).AuctionPriceEncryptionAlgorithmId)
+        </div>
+    </div>
+    <div class="data-row data-container SSPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title required-field">
+                Number Of Supported VAST Wrapper Levels
+            </span>
+
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+            @Html.AdFalconTextBoxFor(p => (p.PartyDto as BusinessPartnerDto).NumberOfSupportedVastWrapperLevels)
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).NumberOfSupportedVastWrapperLevels)
+        </div>
+    </div>
+    <div class="data-row data-container SSPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title required-field" title="Number Of Supported Impression Trackers In Partner Mechanism">
+                Number Of Supported Impression Trackers In Partner Mechanism
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+            @Html.AdFalconTextBoxFor(p => (p.PartyDto as BusinessPartnerDto).NumberOfSupportedImpressionTrackersInPartnerMechanism)
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).NumberOfSupportedImpressionTrackersInPartnerMechanism)
+        </div>
+    </div>
+    <div class="data-row data-container SSPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                Platforms that include valid User IDs
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+            @Html.AdFalconTextBoxFor(p => (p.PartyDto as BusinessPartnerDto).DeviceOSIdsIncludeValidUserId)
+            @Html.ValidationMessageFor(p => (p.PartyDto as BusinessPartnerDto).DeviceOSIdsIncludeValidUserId)
+        </div>
+    </div>
+    <div class="data-row data-container SSPDemand" style="display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">
+                &nbsp;
+            </span>
+        </div>
+        <div class="adfalcon-dialog2  field-container">
+            @Html.GetCheckBox("ReportUnfilledRequests", "Report Unfilled Requests", (Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto) != null) ? (Model.PartyDto as BusinessPartnerDto).ReportUnfilledRequests : true)
+
+
+        </div>
+    </div>
+
+
+    <div class="data-row data-container">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">Enter Domain List to Block on separate lines</span>
+        </div>
+        <div class="adfalcon-dialog2 field-container">
+            @Html.TextArea("BlockedDomains", (Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto) != null) ? (Model.PartyDto as BusinessPartnerDto).BlockedDomains : string.Empty, new { @class = "text-box", @style = "width:430px;height:180px;" })
+        </div>
+        <div class="field-validation-error" id="InvalidList" style="display:none">
+            <span class="field-title">
+                Invalid Domains
+            </span>
+        </div>
+        <div class="field-validation-error" id="outOfRange" style="display:none">
+            <span class="field-title">
+                Please enter less than 1000 Lines
+            </span>
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">@Html.GetResource("AdvertisersBlock", "Global")</span>
+        </div>
+        <div class="adfalcon-dialog2 field-container">
+            @await Html.PartialAsync("AdvertiserMultiSelect")
+        </div>
+    </div>
+
+    <div class="data-row data-container">
+        <div class="label-container2" style="width: 350px!important">
+            <span class="field-title">@Html.GetResource("AccountWhite", "Global")</span>
+        </div>
+        <div class="adfalcon-dialog2 field-container">
+            @await Html.PartialAsync("AccountMultiSelect")
+        </div>
+    </div>
+
+    <br />
+    <div class="SSPDemand" style="margin-left:270px;  display:@(Model != null && Model.PartyDto != null && (Model.PartyDto as BusinessPartnerDto).AppSiteId > 0 && (Model.PartyDto as BusinessPartnerDto).BusinessPartnerTypeId == Model.SupplyType ? "block" : "none");">
+
+        <div class="data-row" style="margin-top:10px">
+            <div class="go-left floating-left" style="background-color:none !important">
+                @*<h3>@Html.GetResource("CostElements", "Titles")</h3>*@
+
+                <a class="primary-btn" href="javascript:void(0)" onclick="addToMVCGrid('PartyDto_IPRangesGrid')">@Html.GetResource("Add", "Keywords")</a>
+            </div>
+            <div class="clear" style="height:40px;">&nbsp;</div>
+
+            <div class="small-grid ip-Range-Section" style="width: 481px;">
+                @(Html.Kendo().Grid((Model != null && Model.PartyDto != null) ? (Model.PartyDto as BusinessPartnerDto).WhileIPs : new List<WhitleListIPDto>()).Name("IPRangesGrid")
+                //.NoRecordsTemplate("&nbsp;").TableHtmlAttributes(new { width = "400px;", height = "0px;" })
+                //.DataKeys(keys => keys.Add(p => p.ID))
+                .DataSource(dataBinding =>
+                {
+                    //dataBinding.Ajax().Read("DummySelect", "Party").Update("Dummy", "Party").Events(events => events.Error("Grid_onError"));
+                })
+                .EnableCustomBinding(true)
+                .Editable(ed => ed.Mode(GridEditMode.InCell).DisplayDeleteConfirmation(false)
+                //.DefaultDataItem(new ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core.WhitleListIPDto()))
+                //.ToolBar(commands => commands.Insert().ButtonType(GridButtonType.BareImage)
+                )
+                .Columns(columns =>
+                {
+                    columns.Bound(o => o.ID).HtmlAttributes(new { id = "ID" }).Hidden();
+                    columns.Bound(o => o.SSPPartnerId).HtmlAttributes(new { id = "SSPPartnerId" }).Hidden();
+
+
+                    columns.Bound(o => o.IPString).EditorTemplateName("IP").Title(Html.GetResource("WhitelistIPs", "SSPPartners")).Width(50).HtmlAttributes(new { @Id = "StartIPRange", @class = "go-center ip-targeting-width" });
+
+
+                    columns.Template("<div><a class='t-button t-button-icon t-button-bare t-grid-delete t-ip-Range-Section-delete-button' type='button' onclick='deleteIP(this);'><span class='t-icon t-delete t-ip-Range-Section-delete-button'></span></button></div>").Width(10).HtmlAttributes(new { @class = "ip-targeting-width-small" });
+                    //columns.Command(o => o.Delete().ButtonType(GridButtonType.BareImage));.Width(25);
+                    })
+                    .Scrollable(scrolling => scrolling.Enabled(true))
+                    .Events(events => {  events.Save("save_handler"); })
+                )
+
+                @*@(Html.Telerik().Grid((Model != null && Model.PartyDto != null) ? (Model.PartyDto as BusinessPartnerDto).WhileIPs : new List<WhitleListIPDto>()).Name("IPRangesGrid").NoRecordsTemplate("&nbsp;").TableHtmlAttributes(new { width = "400px;", height = "0px;" })
+                .DataKeys(keys => keys.Add(p => p.ID))
+                .DataBinding(dataBinding =>
+                {
+                    dataBinding.Ajax().Select("DummySelect", "Party").Update("Dummy", "Party");
+                })
+                .EnableCustomBinding(true)
+                .Editable(ed => ed.Mode(GridEditMode.InCell).DisplayDeleteConfirmation(false)
+                                  .DefaultDataItem(new ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core.WhitleListIPDto()))
+                //.ToolBar(commands => commands.Insert().ButtonType(GridButtonType.BareImage))
+                .Columns(columns =>
+                {
+                    columns.Bound(o => o.ID).HtmlAttributes(new { id = "ID" }).Hidden();
+                    columns.Bound(o => o.SSPPartnerId).HtmlAttributes(new { id = "SSPPartnerId" }).Hidden();
+
+
+                    columns.Bound(o => o.IPString).EditorTemplateName("IP").Title(Html.GetResource("WhitelistIPs", "SSPPartners")).Width(50).HtmlAttributes(new { @Id = "StartIPRange", @class = "go-center ip-targeting-width" });
+
+
+                    columns.Template(@<text>
+                              <div><a class='t-button t-button-icon t-button-bare t-grid-delete t-ip-Range-Section-delete-button' onclick='deleteIP(this);'><span class='t-icon t-delete t-ip-Range-Section-delete-button'></span></a></div></text>)
+.ClientTemplate("<div><a class='t-button t-button-icon t-button-bare t-grid-delete t-ip-Range-Section-delete-button' type='button' onclick='deleteIP(this);'><span class='t-icon t-delete t-ip-Range-Section-delete-button'></span></button></div>").Width(10).HtmlAttributes(new { @class = "ip-targeting-width-small" });
+//columns.Command(o => o.Delete().ButtonType(GridButtonType.BareImage));.Width(25);
+})
+.Scrollable(scrolling => scrolling.Enabled(true)).Footer(true)
+.ClientEvents(events => { events.OnError("Grid_onError"); events.OnSave("save_handler"); })
+                )*@
+            </div>
+
+
+
+        </div>
+    </div>
+    <br />
+
+    <div class="data-row button-container">
+        @Html.SubmitButton(@Html.GetResource("Save", "Commands"), "Create", new { @class = "primary-btn", onclick = " callSave()" })
+
+
+    </div>
+}
+<div id="account-search-dialog-form" style="display: none;" title="@Html.GetResource("AccountSearch", "Global" )">
+    @*@Html.RenderAction("AccountSearch", "AccountManagement", new { hideAdmin = true })*@
+    @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Administration.Web.Controllers.Core.ViewComponents.AccountManagement.AccountSearch), new { hideAdmin = true })
+
+</div>
+
+<div id="AppSite-search-dialog-form" style="display: none;" title="AppSiteSearch">
+
+    @*@Html.RenderAction("AppSiteSearch", "AppSite")*@
+    @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.AppSite.AppSiteSearch))
+</div>
+
+
+<script>
+    function numberOfContentListItems(arrayOfLines) {
+        var Lines = arrayOfLines.split('\n');
+        var count = Lines.length;
+        return count;
+
+    }
+    function checkEachItems(arrayOfLines) {
+
+
+        var lines = arrayOfLines.split('\n');
+        for (var i = 0; i < lines.length; i++) {
+            if (!(isDomainURL(lines[i].trim()) || lines[i].trim() == ""))
+                return false;
+
+        }
+        return true;
+    }
+    function isDomainURL(str) {
+
+        var pattern = new RegExp(/^(?!:\/\/)([a-zA-Z0-9]+\.)?[a-zA-Z0-9][a-zA-Z0-9-]+\.[a-zA-Z]{2,6}?$/i);
+
+        return pattern.test(str);
+    }
+</script>

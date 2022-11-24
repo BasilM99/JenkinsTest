@@ -1,0 +1,20 @@
+﻿@{
+}
+
+@if (string.IsNullOrEmpty(Request.QueryString["chartType"]) || Request.QueryString["chartType"].ToLower() == "app")
+{
+    Html.RenderAction("AppChart");
+}
+else
+{
+    Html.RenderAction("AdChart");
+}
+
+@if (Request.QueryString["chartType"].ToLower() == "gapp")
+{
+    Html.RenderAction("GAppChart");
+}
+else if (Request.QueryString["chartType"].ToLower() == "gad")
+{
+    Html.RenderAction("GAdChart");
+}

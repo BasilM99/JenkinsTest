@@ -1,0 +1,175 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("Campaign", "Titles");
+
+}
+
+
+@helper AdGroupSummaryDetailViewTemplate(WebViewPage page, ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.AdGroupSummaryDto o)
+{
+    @(Html.Telerik().Grid(o.AdsSummary).Name("AdSummary_" + o.ID + "_")
+                                       .Columns(columns =>
+                                       {
+                                           columns.Bound(x => x.Name).HtmlAttributes(new { @class = "trimed-info2" }).Template(r => Html.ActionLink(r.Name, "AdDetails", "Campaign", new { id = r.Campaign.ID, adGroupId = r.Group.ID, adId = r.ID }, new { title = r.Name })).Title(Html.GetResource("Name", "Ad")).Width(200);
+                                           columns.Bound(x => x.AdText).Title(Html.GetResource("AdText", "Campaign")).Width(200).Template(@<text>
+                                            <span title="@item.AdText" class="trimed-span">
+                                                @item.AdText
+                                            </span>
+
+                                        </text>);
+                                           columns.Bound(x => x.Status).Title(Html.GetResource("Status"));
+                                           columns.Bound(x => x.Bid).Format("{0:n0}").Title(Html.GetResource("Bid", "Campaign"));
+                                       })
+
+
+
+                                                                                                        .Footer(false))
+}
+
+@using ArabyAds.AdFalcon.Domain.Common.Model.Campaign
+@model ArabyAds.AdFalcon.Administration.Web.Controllers.Model.AdOpsIndexViewModel
+@using (Html.BeginForm())
+{
+    <script language="javascript">
+        function localInitilize() {
+            jQuery('input[data-date="true"]')
+                .daterangepicker({ dateFormat: '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat' });
+        };
+        $(document).ready(function () {
+            SetSelectedTap("ListMenuAdmin");
+        });
+
+    </script>
+
+    <br />
+    <div class="data-row go-center">
+        <div class="blue-filter-container" style="height: 180px;">
+            <table class="special-content">
+                <tr>
+                    <td>
+                        <span class="go-bold">@Html.GetResource("From", "Global")</span>
+                    </td>
+                    <td style="width: 110px;">
+                        <input type="text" readonly="readonly" value="@(Model.DateFrom.HasValue ? Model.DateFrom.Value.ToString(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat) : string.Empty)" data-date="true" name="DateFrom"
+                               class="text-box range-date-cntl" />
+                    </td>
+                    <td>
+                        <span class="go-bold">@Html.GetResource("To", "Global")</span>
+                    </td>
+                    <td style="width: 110px;">
+                        <input type="text" readonly="readonly" value="@(Model.DateTo.HasValue ? Model.DateTo.Value.ToString(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat) : string.Empty)" data-date="true" name="DateTo"
+                               class="text-box range-date-cntl left-range-cntrl" />
+                    </td>
+                    <td class="ddl-td">
+                        <div style="width: 270px; overflow: hidden;">
+                            @Html.DropDownList("StatusId", Model.Statuses)
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="go-bold">@Html.GetResource("CampaignName", "Campaign")</span>
+                    </td>
+                    <td class="go-left" colspan="4">
+                        @Html.AdFalconEditorFor(p => p.CampaignName)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="go-bold">@Html.GetResource("Company", "Global")</span>
+                    </td>
+                    <td class="go-left" colspan="4">
+                        @Html.AdFalconEditorFor(p => p.CompanyName)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="go-bold">@Html.GetResource("AccountName", "Global")</span>
+                    </td>
+                    <td class="go-left" colspan="4">
+                        @Html.AdFalconEditorFor(p => p.AccountName)
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="go-right" colspan="5">
+                        <input type="submit" value='@Html.GetResource("Filter")' class="btn filter-button " />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="tail">
+        </div>
+    </div>
+    <br />
+
+    Html.Telerik().Grid(Model.Campaigns)
+        .Name("Campaigns")
+        .Columns(columns =>
+        {
+            columns.Bound(o => o.AccountName).Title(Html.GetResource("Account", "AddPayment"));
+            columns.Bound(o => o.Name).Template(
+                @<text><div>
+                        <img src="@(Url.GetImagePath(item.CampaignTypeEnum+"CampaignType.png"))" /><span title="@item.Name" class="trimed-span">
+                            @item.Name
+                        </span>
+
+                    </div></text>
+                                   ).Title(Html.GetResource("Name", "Campaign")).Width(50)
+                                   .ClientTemplate("<div><img src='" + Url.GetImagePath("") + "<#= CampaignTypeEnum#>CampaignType.png' style='padding: 5px' /><span><#= Name#></span></div>").Title(Html.GetResource("Name", "Campaign")).Width(50);
+            columns.Bound(o => o.StartDate).Title(Html.GetResource("StartDate", "Campaign")).Format("{0:" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(75);
+            columns.Bound(o => o.EndDate).Title(Html.GetResource("EndDate", "Campaign")).Format("{0:" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(75);
+            columns.Bound(o => o.Budget).Title(Html.GetResource("Budget", "Campaign")).Width(75);
+            columns.Bound(o => o.DailyBudget).Title(Html.GetResource("DailyBudget", "Campaign")).Width(75);
+            columns.Bound(o => o.Spend).Title(Html.GetResource("Spend", "Campaign")).Width(150);
+            columns.Bound(o => o.Status).Title(Html.GetResource("Status")).Width(150);
+        })
+        .DetailView(detailView => detailView.Template(
+            @<text>
+                @(Html.Telerik().Grid(item.AdGroupsSummary).Name("AdGroup_" + item.ID)
+                .Columns(columns =>
+                {
+                    columns.Bound(o => o.Name).Template(r=> "<span title='"+r.Name+"' class='trimed-span'>"+ r.Name+"</span>").Title(Html.GetResource("GroupName", "AdGroup"));
+                
+                    columns.Bound(o => o.ActionType).Title(Html.GetResource("ActionType", "Campaign")).Width(150);
+                    columns.Bound(o => o.Objective).Title(Html.GetResource("Objective", "AdGroup")).Width(50);
+                    columns.Bound(o => o.Bid).Title(Html.GetResource("Bid", "Campaign")).Width(50);
+                    columns.Bound(o => o.Status).Title(Html.GetResource("Status"));
+                }
+                                    ).DetailView(ordersDetailView => ordersDetailView.Template(o => AdGroupSummaryDetailViewTemplate(this, o)))
+                                    .RowAction(row =>
+                                    {
+
+
+                                        if (row.Index == 0)
+                                        {
+                                            row.DetailRow.Expanded = true;
+                                        }
+                                        else
+                                        {
+                                            var requestKeys = Request.QueryString.Keys.Cast<string>();
+                                            var expanded = requestKeys.Any(key => key.StartsWith("AdGroup_" + row.DataItem.ActionType + "_" + row.DataItem.AdsSummary));
+                                            row.DetailRow.Expanded = expanded;
+                                        }
+                                    })
+
+                                                                                                                                                                                                                                                                  .Footer(false)
+                )
+            </text>
+)).RowAction(row =>
+                                      {
+                                          if (row.Index == 0)
+                                          {
+                                              row.DetailRow.Expanded = true;
+                                          }
+                                          else
+                                          {
+                                              var requestKeys = Request.QueryString.Keys.Cast<string>();
+                                              var expanded =
+                                                  requestKeys.Any(key => key.StartsWith("AdGroup_" + row.DataItem.ID) || key.StartsWith("AdSummary_"
+                                                                                                                                        + row.DataItem.ID));
+                                              row.DetailRow.Expanded = expanded;
+                                          }
+                                      }).Pageable(paging =>
+                                                                   paging.Enabled(false)).Sortable(s => s.Enabled(false)).Render();
+
+}

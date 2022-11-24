@@ -1,0 +1,25 @@
+.sdk-icon {
+	float: right;
+	height: 75px;
+	width: 75px;
+	margin-top: 10px;
+	display:block;
+	line-height:75px;
+	margin-right: 16px;
+	text-align: center;
+	font-size: 1px;;
+	text-indent: 0px;
+}
+.sdk-icon a {
+	display:block;
+	color:#333;
+}
+.sdk-icon:hover {
+	cursor: pointer;
+	background-position:bottom;
+}
+.theme-default .nivo-controlNav a {
+	text-indent: 0px;
+	font-size: 1px;
+	color: #22357A;
+}

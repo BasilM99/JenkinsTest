@@ -1,0 +1,164 @@
+﻿@model Noqoush.AdFalcon.Administration.Web.Controllers.Model.Campaign.AdRequestDialogViewModel
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+    var url = '@Url.Action("getAdrequestViewModelDropDown", "Campaign")'
+    var AdUrl = '@Url.Action("SaveAdRequest", "Campaign")'
+
+    function callServicetoFillDropDownAdRequestsTypes() {
+        var typeId = $("#AdRequestTypes").val();
+        var PlatformId = 0;
+        if (typeId == "-1") {
+            return;
+        }
+        jQuery.ajax(
+            {
+                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                type: "GET",
+                url: url + "?typeId=" + typeId + "&PlatformId=" + PlatformId,
+                success: function (result) {
+                    FillLists(result);
+                    var PlatformIdDe = $("#AdRequestPlatforms").val();
+                    if (PlatformIdDe == "-1") {
+                        $("#AdRequestPlatforms").val('1');
+                    }
+
+                },
+                error: function (error) {
+
+                    alert("Somthing Went Worng Please contact the admin");
+                }
+            });
+    }
+    function FillLists(result) {
+
+        var option = "<option value='";
+        var SelectedOption = "<option selected='selected' value='";
+        var Platforms = "", Versions = "";
+        for (var i = 0 ; i < result.Platforms.length ; i++) {
+            if (result.Platforms[i].Selected)
+                Platforms += SelectedOption + result.Platforms[i].Value + "'>" + result.Platforms[i].Text + "</option>";
+            else
+                Platforms += option + result.Platforms[i].Value + "'>" + result.Platforms[i].Text + "</option>";
+
+        }
+
+        if (result.Platforms.length > 0) $("#AdRequestPlatforms").html(Platforms);
+
+        for (var i = 0 ; i < result.Versions.length ; i++) {
+            if (result.Versions[i].Selected)
+                Versions += SelectedOption + result.Versions[i].Value + "'>" + result.Versions[i].Text + "</option>";
+            else
+                Versions += option + result.Versions[i].Value + "'>" + result.Versions[i].Text + "</option>";
+
+        }
+
+        if (result.Versions.length > 0) $("#AdRequestVersions").html(Versions);
+
+    }
+    function IsNotDuplicated() {
+        var grid = $('#AdRequestGrid').data("tGrid");
+        array = $("#AdRequestGrid tbody tr");
+        var dataItem;
+        if (typeof (grid) != "undefined")
+        {
+            for (var i = 0; i < array.length; i++) {
+                dataItem = grid.dataItem(array[i]);
+
+                if (typeof (dataItem) != "undefined")
+                    if (dataItem.AdRequestTypeId == parseFloat($("#AdRequestTypes").val()) && dataItem.AdRequestPlatformId == parseFloat($("#AdRequestPlatforms").val())) {
+                        return true;
+                    }
+            }
+        }
+        
+        return false;
+    }
+    function AddAdRequest() {
+        var typeId = $("#AdRequestTypes").val();
+        var PlatformId = $("#AdRequestPlatforms").val();
+        var Version = $("#AdRequestVersions").val();
+        jQuery.ajax(
+           {
+               dataType: "json",
+               contentType: 'application/json; charset=utf-8',
+               type: "GET",
+               url: AdUrl + "?typeId=" + typeId + "&PlatformId=" + PlatformId + "&Version=" + Version + "&campaignId=" + campaign_id + "&AdGroupId=" + ad_group_id,
+               success: function (result) {
+
+                   if (result.Success) {
+                       generateAdRequestGrid();
+                       showSuccessfullyMessage(result.Message, false);
+                   }
+                   else {
+                       showErrorMessage(result.ErrorMessage, false);
+                   }
+               },
+               error: function (error) {
+
+                   alert("Somthing Went Worng Please contact the admin");
+               }
+           });
+
+    }
+    function callServicetoFillDropDownAdRequestsPlatforms() {
+        var typeId = $("#AdRequestTypes").val();
+        var PlatformId = $("#AdRequestPlatforms").val();
+
+        if (!(typeof (PlatformId) != "undefined" && PlatformId != null)) {
+            PlatformId = 0;
+        }
+        if (PlatformId == "-1") {
+            return;
+        }
+        jQuery.ajax(
+            {
+                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                type: "GET",
+                url: url + "?typeId=" + typeId + "&PlatformId=" + PlatformId,
+                success: function (result) {
+                    FillLists(result);
+
+                    //var versionsDe = $("#AdRequestVersions").val();
+                    //if (versionsDe == "-1") {
+                    //    $("#AdRequestVersions").val('1');
+                    //}
+                },
+                error: function (error) {
+                    alert("Somthing Went Worng Please contact the admin");
+                }
+            });
+    }
+
+
+</script>
+<div class="section-form-inner-container" style="overflow:visible">
+    <div class="data-row data-container" id="Types">
+        <div class="label-container" style="width:120px">
+            <span class="field-title required-field">@Html.GetResource("Type", "AppSite")</span>
+        </div>
+        <div class="field-container">
+            @Html.DropDownList("AdRequestTypes", Model.Types, new { onchange = "callServicetoFillDropDownAdRequestsTypes()" })
+        </div>
+    </div>
+    <div class="data-row data-container" id="PlatFroms">
+        <div class="label-container" style="width:120px">
+            <span class="field-title required-field">@Html.GetResource("Platform", "Targeting")</span>
+        </div>
+        <div class="field-container">
+            @Html.DropDownList("AdRequestPlatforms", Model.Platforms, new { onchange = "callServicetoFillDropDownAdRequestsPlatforms()" })
+        </div>
+    </div>
+    <div class="data-row data-container" id="Version">
+        <div class="label-container" style="width:120px">
+            <span class="field-title required-field">@Html.GetResource("MinimumVersion", "Targeting")</span>
+        </div>
+        <div class="field-container">
+            @Html.DropDownList("AdRequestVersions", Model.Versions)
+        </div>
+    </div>
+</div>

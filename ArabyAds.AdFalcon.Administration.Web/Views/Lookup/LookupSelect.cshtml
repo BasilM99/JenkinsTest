@@ -1,0 +1,66 @@
+﻿<script language="javascript" type="text/javascript">
+
+    function generateLookupGrid()
+    {
+        var grid = $("#LookUpGrid").data("tGrid");
+        grid.rebind();
+    }
+    function generatePartyGrid() {
+        var grid = $("#LookUpGrid").data("tGrid");
+        grid.rebind();
+    };
+    function PartyGridDataBinding(args) {
+        args.data = $.extend(args.data,
+          {
+              Name: $('#party-search-dialog-form #Name').val(),
+              LookupId: '@Html.ViewContext.RouteData.Values["LookupId"]'
+          });
+        if (typeof (getCustomFilter) != "undefined") {
+            args.data = $.extend(args.data, getCustomFilter());
+        }
+    };
+    function PartyGridDataBound(e) {
+        var grid = $("#LookUpGrid").data("tGrid");
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(1);
+        }
+    };
+    var partyID, partyName;
+    function onRowSelected(e) {
+
+        partyID = jQuery(e.row.cells[0]).text();
+        partyName = jQuery(e.row.cells[1]).text();
+        selectParty();
+    }
+    function selectParty() {
+        changeParty(partyID, partyName);
+    }
+
+
+</script>
+@model ArabyAds.AdFalcon.Administration.Web.Controllers.Model.Lookup.ListViewModel
+<div>
+
+
+    @Html.Partial(Model.FilterView)
+
+    <div class="grid-container">
+        @(Html.Telerik().Grid(Model.Items)
+                            .Name("LookUpGrid")
+                    .Columns(columns =>
+                                 {
+                                     columns.Bound(o => o.ID);
+                                     columns.Bound(o => o.Name.Value).ClientTemplate("<div class='grid-title-container floating-left'><span><#= Name.Value#></span> </div>").Title(Html.GetResource("Name"));
+                                 })
+                                                    .DataBinding(dataBinding => dataBinding.Ajax().Select("_Index", "LookUp", new { id = Model.EntityType.ToLower() })).EnableCustomBinding(true)
+                        .ClientEvents(clientEvents => clientEvents.OnRowDataBound("onRowDataBound").OnDataBinding("PartyGridDataBinding").OnDataBound("PartyGridDataBound").OnRowDataBound("onRowDataBound").OnRowSelect("onRowSelected"))
+                        .Scrollable(scrolling => scrolling.Enabled(false))
+                        .Selectable()
+                                .Pageable(paging => paging.PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize).Total(int.Parse(ViewData["total"].ToString())).Style(GridPagerStyles.NextPreviousAndNumeric).Position(GridPagerPosition.Bottom))
+                        .Filterable(filtering => filtering.Enabled(false))
+                        .Groupable(grouping => grouping.Enabled(true)).Footer(true))
+    </div>
+
+</div>

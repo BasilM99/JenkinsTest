@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2460C4A5-2706-4972-8BB6-ACD4B4502380}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Noqoush.AdFalcon.Administration.Web.Controllers</RootNamespace>
+    <AssemblyName>Noqoush.AdFalcon.Administration.Web.Controllers</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Facilities.WcfIntegration">
+      <HintPath>..\..\..\..\lib\Castle.Facilities.WcfIntegration.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor">
+      <HintPath>..\..\..\..\lib\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Data, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Users\Administrator\Desktop\Microsoft.Practices.EnterpriseLibrary.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Noqoush.AdFalcon.Common, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\lib\ForPortal\Noqoush.AdFalcon.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Noqoush.AdFalcon.Common.Web">
+      <HintPath>..\..\..\..\lib\ForPortal\Noqoush.AdFalcon.Common.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="Noqoush.AdFalcon.Domain, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\lib\ForPortal\Noqoush.AdFalcon.Domain.dll</HintPath>
+    </Reference>
+    <Reference Include="Noqoush.AdFalcon.Exceptions, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\lib\ForPortal\Noqoush.AdFalcon.Exceptions.dll</HintPath>
+    </Reference>
+    <Reference Include="Noqoush.AdFalcon.Services.Interfaces, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\lib\ForPortal\Noqoush.AdFalcon.Services.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Noqoush.Framework, Version=1.2.0.0, Culture=neutral, PublicKeyToken=fd06d3d80e185332, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\lib\ForPortal\Noqoush.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Noqoush.Framework.DomainServices, Version=1.2.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\lib\ForPortal\Noqoush.Framework.DomainServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Noqoush.Framework.Web, Version=1.2.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\lib\ForPortal\Noqoush.Framework.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="NReco.VideoConverter">
+      <HintPath>..\packages\NReco.VideoConverter.1.0.8.0\lib\net20\NReco.VideoConverter.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Stack 5\Packages\Microsoft.AspNet.Mvc.5.0.0\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Telerik.Web.Mvc, Version=2011.2.712.340, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\lib\Telerik.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
+    <Compile Include="Controllers\AdOpsController.cs" />
+    <Compile Include="Controllers\AccountManagementController.cs" />
+    <Compile Include="Controllers\AppOpsTestController.cs" />
+    <Compile Include="Controllers\AppSiteController.cs" />
+    <Compile Include="Controllers\PartnerController.cs" />
+    <Compile Include="Controllers\ReportsTestController.cs" />
+    <Compile Include="Model\AdOpsIndexViewModel.cs" />
+    <Compile Include="Controllers\CampaignController.cs" />
+    <Compile Include="Controllers\AppOpsController.cs" />
+    <Compile Include="Controllers\PartyController.cs" />
+    <Compile Include="Controllers\SystemAccountController.cs" />
+    <Compile Include="Model\Account\AddPaymentViewModel.cs" />
+    <Compile Include="Model\Account\AddFundViewModel.cs" />
+    <Compile Include="Model\AppSite\AppOpsManagementViewModel.cs" />
+    <Compile Include="Model\AppSite\AppSiteApprovalSaveModel.cs" />
+    <Compile Include="Model\AppSite\AppSiteApprovalViewModel.cs" />
+    <Compile Include="Model\AppSite\AppSiteServerSettingViewModel.cs" />
+    <Compile Include="Model\Campaign\AdRequestViewModel.cs" />
+    <Compile Include="Model\Campaign\CampaignAssignAppsitesModel.cs" />
+    <Compile Include="Model\CostElemnts\CostElementsListViewModel.cs" />
+    <Compile Include="Model\CostElemnts\CostElementsValueAndType.cs" />
+    <Compile Include="Model\DashboardViewModel.cs" />
+    <Compile Include="Model\Core\DiscountViewModel.cs" />
+    <Compile Include="Controllers\Core\LookupController.cs" />
+    <Compile Include="Model\Lookup\AdCreativeAttributeViewModel.cs" />
+    <Compile Include="Model\Lookup\AdvertiserViewModel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\Lookup\AgeGroupViewModel.cs" />
+    <Compile Include="Model\Lookup\AudienceSegmentViewModel.cs" />
+    <Compile Include="Model\Lookup\CreativeVendorViewModel.cs" />
+    <Compile Include="Model\Lookup\LanguageViewModel.cs" />
+    <Compile Include="Model\Lookup\LocationViewModel.cs" />
+    <Compile Include="Model\Lookup\DeviceCapabilityViewModel.cs" />
+    <Compile Include="Model\Lookup\KeywordViewModel.cs" />
+    <Compile Include="Model\Lookup\PlatformViewModel.cs" />
+    <Compile Include="Model\Lookup\ManufacturerViewModel.cs" />
+    <Compile Include="Model\Lookup\CostElementViewModel.cs" />
+    <Compile Include="Model\Lookup\DeviceViewModel.cs" />
+    <Compile Include="Model\Lookup\ListViewModel.cs" />
+    <Compile Include="Model\Lookup\Lookups.cs" />
+    <Compile Include="Model\Lookup\LookupViewModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Noqoush.AdFalcon.Web.Controllers\Noqoush.AdFalcon.Web.Controllers.limited.csproj">
+      <Project>{bff18d5c-1f8a-4e7a-80c7-a2202df1541d}</Project>
+      <Name>Noqoush.AdFalcon.Web.Controllers.limited</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

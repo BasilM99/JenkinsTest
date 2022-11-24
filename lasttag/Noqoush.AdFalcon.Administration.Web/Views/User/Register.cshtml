@@ -1,0 +1,81 @@
+﻿@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Account.UserDto
+@{
+    ViewBag.Title = ViewData["Title"] != null ? ViewData["Title"].ToString() : string.Empty;
+    ViewData.Add("status", "add");
+    string email = ViewData["email"] != null ? ViewData["email"].ToString() : string.Empty;
+       string CompanyName = ViewData["CompanyName"] != null ? ViewData["CompanyName"].ToString() : string.Empty;
+}
+<script language="javascript">
+    $(document).ready(function () {
+
+        if ('@email' != "") {
+            $("#EmailAddress").val('@email');
+            $('#EmailAddress').attr('readonly', true);
+            //check("acceptTerms");
+			activateButton();
+        }
+
+         if ('@CompanyName' != "") {
+            $("#Company").val('@CompanyName');
+            $('#Company').attr('readonly', true);
+            //check("acceptTerms");
+			//activateButton();
+        }
+
+        var counrtyIdValue = '@(Model!=null?Model.Country:0)';
+
+
+        if (counrtyIdValue < 1) {
+            GetIpAddresAndCounrty();
+		}
+
+	
+
+    });
+
+    function GetIpAddresAndCounrty() {
+        $.ajax({
+            type: 'GET',
+            url: "https://icanhazip.com/",
+            success: function (data) {
+
+                GetCountryByIpAddres(data);
+            },
+            error: function (data) {
+            }
+
+        });
+
+    }
+    var CountryByIpAddresUrl = '@Url.Action("GetCountryByIpAddres", "User")';
+
+    function GetCountryByIpAddres(Ip) {
+        $.ajax({
+            type: 'GET',
+            url: CountryByIpAddresUrl + "?Ip=" + Ip,
+            success: function (data) {
+                if (data.Success)
+                    $("#Country").val(data.Message);
+            },
+            error: function (data) {
+            }
+
+        });
+
+    }
+</script>
+
+@using (Html.BeginForm("register", "user", FormMethod.Post, new { id = "registerForm", name = "registerForm" }))
+{
+
+    @Html.Partial("userinfo", ViewData.Model, ViewData)
+    @Html.Hidden("Invitationcode", ViewData["Invitationcode"])
+    @Html.Hidden("requestCode", ViewData["requestCode"])
+
+
+
+
+    <div class="data-row button-container btn-register-margin-container">
+        <input value="@Html.GetResource("Registeration", "Register")" id="saveBtn"  type="submit" class="primary-btn disabled iea-register-save" />
+    </div>
+}

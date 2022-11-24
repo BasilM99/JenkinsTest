@@ -1,0 +1,11 @@
+﻿@{
+    bool AllowGlobalization = ViewData["AllowGlobalization"] != null ? Convert.ToBoolean(ViewData["AllowGlobalization"]) : false;
+
+    ViewBag.Title = ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.IsAdmin && AllowGlobalization ? Html.GetResource("GlobalDeals", "Deal") : Html.GetResource("PMPDeals", "Titles");
+    Layout = "~/Views/Deals/IndexMaster.cshtml";
+    //string ExtraPrams = string.Format("\"{0}\"", "?AllowGlobalization=" + AllowGlobalization);
+
+}
+<div id="APP-Root">
+</div>
+<script src="~/ClientReactJs/Dashboard.js.gz" asp-append-version="true"></script>

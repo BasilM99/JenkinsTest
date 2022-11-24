@@ -1,0 +1,623 @@
+﻿@model Noqoush.AdFalcon.Administration.Web.Controllers.Model.Account.AddFundViewModel
+@{
+    ViewBag.Title = Html.GetResource("AddFund", "Titles");
+    string VatAmountPercentage = Noqoush.Framework.Utilities.FormatHelper.FormatPercentage( Noqoush.Framework.OperationContext.Current.UserInfo<Noqoush.AdFalcon.Common.UserInfo.AdFalconUserInfo>().VATValue);
+
+}
+<script language="javascript" type="text/javascript">
+    var systemUrl = '@(Url.Action("GetByType", "SystemAccount"))';
+    var accountUrl = '@Url.Action("GetPaymentAccountDetails", "AccountManagement")';
+    var optionalItem = '@(Html.GetResource("Select", "Global"))';
+    var newItem = '@(Html.GetResource("New", "Global"))';
+    var receiptNo = '@Html.GetResource("ReceiptNo", "AddFund")';
+    var transactionID = '@Html.GetResource("TransactionID", "AccountHistory")';
+    var isLoad = @(Model.FundDto == null ? "true" : "false");
+    var initFun = true;
+    var accountPaymentDetailId = @(Model.FundDto != null && Model.FundDto.AccountPaymentDetailId.HasValue ? Model.FundDto.AccountPaymentDetailId.Value : 0);
+    var systemPaymentDetailId  = @(Model.FundDto != null && Model.FundDto.SystemPaymentDetailId.HasValue ? Model.FundDto.SystemPaymentDetailId.Value : 0);
+
+    var paymentAccounts = null;
+    var bankName = null;
+    var bankAddress = null;
+    var beneficiaryName = null;
+    var recipientAccountNumber = null;
+    var swift = null;
+    var userName = null;
+    var elementsLoaded = false;
+    var docId = '@(Model.FundDto == null ? string.Empty : Model.FundDto.AttachmentId)';
+    var docName = '@(Model.FundDto == null ? string.Empty : Model.FundDto.AttachmentName)';
+    jQuery(document).ready(function () {
+
+        $("#subDetails input").addClass( "ValdationIgnored" );
+        $("#subDetails select").addClass( "ValdationIgnored" );
+        jQuery.validator.setDefaults({
+            ignore: '.ValdationIgnored'
+
+        });
+
+        var setting = $.data($("#AddFundForm")[0], 'validator').settings;
+
+        setting.ignore = '';
+
+        SetSelectedTap("ListMenuAdmin");
+
+
+    });
+
+
+    function amountCalculator(element,force) {
+        if(VatAmountPercentage > 0)
+        {
+            var accountIdVar = $('[name="FundDto.AccountId"]').val();
+            if ((typeof(accountIdVar) == "undefined") || (!accountIdVar)) {
+                accountIdVar = -1;
+            } else {
+                accountIdVar = parseInt(accountIdVar);
+            }
+
+            if(!(accountIdVar>0))
+            {
+            
+                return ;
+            }
+            if(!force)
+            {
+                var amount = $(element).val();
+                if (VatAmountPercentage > 0 && parseInt(amount) > 0) {
+                    getAmountVAT(amount, "FundDto_NetAmount","FundDto_VatAmount",force);
+                    $("#NetAmountDiv").show();
+                    $("#VATAmountDiv").show();
+                    $("#VatAmountSpan").text("( "+percentageCalculator(amount, $("#FundDto_VatAmount").val())+"% )");
+
+                } else {
+                    $("#NetAmountDiv").hide();
+                    $("#VATAmountDiv").hide();
+                }
+            }else
+            {
+                element = $("#FundDto_Amount");
+                var amount = $(element).val();
+                if (parseInt(amount) > 0) {
+                    getAmountVAT(amount, "FundDto_NetAmount","FundDto_VatAmount",force);
+                    $("#NetAmountDiv").show();
+                    $("#VATAmountDiv").show();
+                    $("#VatAmountSpan").text("( "+percentageCalculator(amount, $("#FundDto_VatAmount").val())+"% )");
+
+                } else {
+                    $("#NetAmountDiv").hide();
+                    $("#VATAmountDiv").hide();
+                }
+
+            }
+        }
+
+    }
+
+    function save()
+    {
+        $("#subDetails input:visible").removeClass( "ValdationIgnored" );
+        $("#subDetails select:visible").removeClass( "ValdationIgnored" );
+    }
+
+    function getPaymentAccountType(value) {
+        if (typeof (value) == "undefined") {
+            value = $("[name='FundDto.FundType']").val();
+        }
+        switch (parseInt(value)) {
+            case 2:
+                {
+                    return 1;
+                    break;
+                }
+            case 7:
+                {
+                    return 2;
+                    break;
+                }
+            default:
+                {
+                    return 1;
+                }
+        }
+
+    }
+    function Amountonkeypress(e,textbox)
+    {
+        if($(textbox).val().length >= 8)
+        {
+            e.preventDefault();
+        }
+
+    }
+
+    function AmountonChange(textbox)
+    {
+        
+        if($(textbox).val().length > 8)
+        {
+            $(textbox).val('');
+        }
+        amountCalculator(textbox);
+
+    }
+
+    function accountPaymentChanged() {
+        if (paymentAccounts != null) {
+            var obj = $('[name="FundDto.AccountPaymentDetailId"]');
+            var value = parseInt(obj.val());
+            for (var i = 0; i < paymentAccounts.length; i++) {
+                if (paymentAccounts[i].ID == value) {
+                    fillPaymentInfo(paymentAccounts[i]);
+                    return;
+                }
+            }
+        }
+        if(!initFun) {
+            clearPaymentInfo();
+        } else {
+            initFun = false;
+        }
+    }
+
+
+    function getPaymentInfoElements() {
+        if (elementsLoaded == false) {
+            bankName = $('[name="FundDto.PaymentDetail.BankName"]');
+            bankAddress = $('[name="FundDto.PaymentDetail.BankAddress"]');
+            beneficiaryName = $('[name="FundDto.PaymentDetail.BeneficiaryName"]');
+            recipientAccountNumber = $('[name="FundDto.PaymentDetail.RecipientAccountNumber"]');
+            swift = $('[name="FundDto.PaymentDetail.SWIFT"]');
+            userName = $('[name="FundDto.PaymentDetail.UserName"]');
+        }
+
+    }
+    function setPaymentInfoStatus(status) {
+        getPaymentInfoElements();
+        bankName.attr('readonly', status);
+        bankAddress.attr('readonly', status);
+        beneficiaryName.attr('readonly', status);
+        recipientAccountNumber.attr('readonly', status);
+        swift.attr('readonly', status);
+        userName.attr('readonly', status);
+    }
+    function clearPaymentInfo() {
+        getPaymentInfoElements();
+        bankName.val('');
+        bankAddress.val('');
+        beneficiaryName.val('');
+        recipientAccountNumber.val('');
+        swift.val('');
+        userName.val('');
+        setPaymentInfoStatus(false);
+    }
+
+    function fillPaymentInfo(item) {
+        getPaymentInfoElements();
+        bankName.val(item.BankName);
+        bankAddress.val(item.BankAddress);
+        beneficiaryName.val(item.BeneficiaryName);
+        recipientAccountNumber.val(item.RecipientAccountNumber);
+        swift.val(item.SWIFT);
+        userName.val(item.UserName);
+        setPaymentInfoStatus(true);
+    }
+
+    function type_change(elem)
+    {
+        var value =parseInt($("[name='FundDto.TypeId']").val());
+        if (value == 3)//service charge
+        {
+            $("[name='FundDto.FundType']").val(3);
+            $('#fundTypeDiv').hide();
+        } else {
+            $("[name='FundDto.FundType']").removeAttr('readonly');
+            $('#fundTypeDiv').show();
+        }
+        fundTypeChanged();
+    }
+    function fundTypeChanged(e) {
+        var value = $("[name='FundDto.FundType']").val();
+
+        if (value == 5) {
+            $("#checkArea").slideDown();
+            $("#toAccountArea").slideUp();
+            $('#transactionIdDiv').slideUp();
+        } else {
+            $("#checkArea").slideUp();
+            $('#transactionIdDiv').slideDown();
+        }
+
+        if ((value == '') || (value == 3) || (value == 6)) {
+            $('#receiptNoSpan').text(receiptNo);
+            $("#toAccountArea").slideUp();
+            $("#systemAccountArea").slideUp();
+
+        } else {
+            $('#receiptNoSpan').text(transactionID);
+            if ((value != 3) && (value != 6) && (value != 5)) {
+                $("#toAccountArea").slideDown();
+            }
+            $("#systemAccountArea").slideDown();
+
+        }
+
+        switch (parseInt(value)) {
+            case 2:
+                {
+                    //SHOW BANCK INFO
+                    $('#bankInfo').show();
+                    $('#paypalInfo').hide();
+                    $('#paymentDetailInfo').show();
+                    break;
+                }
+            case 7:
+                {
+                    //SHOW paypal INFO
+                    $('#bankInfo').hide();
+                    $('#paypalInfo').show();
+                    $('#paymentDetailInfo').show();
+                    break;
+                }
+            default:
+                {
+                    //hide  info
+                    $('#bankInfo').hide();
+                    $('#paypalInfo').hide();
+                    $('#paymentDetailInfo').hide();
+                }
+        }
+        setPaymentInfoStatus(false);
+        updateSystemAccounts(getPaymentAccountType(value));
+        updatePaymentAccounts();
+
+        $("#subDetails input").addClass( "ValdationIgnored" );
+        $("#subDetails select").addClass( "ValdationIgnored" );
+    }
+
+    function updateAccounts(url, sendData, element,selectedValue) {
+        if(typeof(selectedValue)=="undefined") {
+            selectedValue = 0;
+        }
+        paymentAccounts = null;
+        $.ajax({
+            url: url,
+            dataType: "json",
+            contentType: 'application/json; charset=utf-8',
+            type: "GET",
+            data: sendData,
+            success: function (data) {
+                var html = '';
+                if (element.attr('name') == 'FundDto.AccountPaymentDetailId') {
+                    paymentAccounts = data;
+                    html = "<option value=''>" + newItem + "</option>";
+                } else {
+                    html = "<option value=''>" + optionalItem + "</option>";
+                }
+                for (var i = 0; i < data.length; i++) {
+                    var item = data[i];
+                    var selected = '';
+                    if(isLoad && (selectedValue==0)) {
+                        if (item.IsDefault) {
+                            selected = 'selected="selected"';
+                        }
+                    } else
+                    {
+                        if (item.ID==selectedValue) {
+                            selected = 'selected="selected"';
+                        }
+                    }
+                    html += "<option value='" + item.ID + "' " + selected + ">" + item.Name + "</option>";
+                }
+                element.html(html);
+                if(element.attr('name')=='FundDto.AccountPaymentDetailId') {
+                    accountPaymentChanged();
+                }
+            },
+            error: function (error) {
+                alert(error.responseText);
+            }
+        });
+    }
+
+    function updateSystemAccounts(accountType) {
+        var sendData = new Object();
+        sendData.accountType = accountType;
+        updateAccounts(systemUrl, sendData, $('[name="FundDto.SystemPaymentDetailId"]'),systemPaymentDetailId);
+    }
+
+    function updatePaymentAccounts() {
+        var accountId = $('[name="FundDto.AccountId"]').val();
+        if ((typeof(accountId) == "undefined") || (!accountId)) {
+            accountId = -1;
+        } else {
+            accountId = parseInt(accountId);
+        }
+        var accountType = getPaymentAccountType();
+        var sendData = new Object();
+        sendData.accountId = accountId;
+        sendData.accountType = accountType;
+        updateAccounts(accountUrl, sendData, $('[name="FundDto.AccountPaymentDetailId"]'), accountPaymentDetailId);
+    }
+
+    function localInitilize() {
+        showAttachment();
+        $('[name="FundDto.FundType"]').change(fundTypeChanged);
+        $('[name="FundDto.AccountPaymentDetailId"]').change(accountPaymentChanged);
+        localAccountSearchInitilize();
+        var dates = $("[id='FundDto_TransactionDate'],[name='FundDto.DueDate']").datepicker({
+            changeMonth: true,
+            showOn: 'both',
+            buttonImageOnly: true,
+            dateFormat: "dd-mm-yy",
+            isRTL: false,
+            buttonImage: '@(Url.GetImagePath("Calendar-icon.png"))',
+            onSelect: function (selectedDate) {
+
+
+                $(this).valid();
+
+            }
+        });
+        $("#account-search-dialog-form").dialog({
+            autoOpen: false,
+            // height: 520,
+            width: 900,
+            draggable:false,
+            modal: true,
+            resizable: false
+        });
+        fundTypeChanged();
+        type_change();
+    };
+    function clearAttachment() {
+        jQuery("[name='FundDto.AttachmentId']").val('');
+        $("[name='FundDto.AttachmentName']").val('');
+        $("#clearlnk").hide();
+        $("#attachmentlnk").hide().text('').attr('href', '');
+    }
+    function onAttachmentUploadSuccess(e) {
+        if (e.response.status == "OK") {
+            docId = e.response.DocumentId;
+            docName = e.response.DocumentName;
+            showAttachment();
+        } else {
+            showErrorMessage(e.response.status);
+        }
+    }
+    function showAttachment() {
+        if ((parseInt(docId) != NaN && (docName) && (docName != ''))) {
+            var href = baseUrl + 'Downloader.ashx?docId=' + docId;
+            $("[name='FundDto.AttachmentId']").val(docId);
+            $("[name='FundDto.AttachmentName']").val(docName);
+            $("#clearlnk").show();
+            $("#attachmentlnk").show().text(docName).attr('href', href);
+        }
+    }
+
+    function showAccountSearchDialog() {
+        $('#account-search-dialog-form').dialog('open');
+    }
+    function changeAccount(accountId, accountDesc) {
+
+        if ((typeof (accountId) != "undefined") && (typeof (accountDesc) != "undefined")) {
+            $('#accountName').text(accountDesc);
+            $('[name="FundDto.AccountId"]').val(accountId);
+            $('[name="FundDto.AccountName"]').val(accountDesc);
+            updatePaymentAccounts();
+            amountCalculator($("#FundDto_Amount"));
+
+        }
+        $('#account-search-dialog-form').dialog('close');
+        AccountIdChanged();
+    }
+    function AccountIdChanged()
+    {
+        $("[htmlfor='FundDto_AccountId']").parent().html('')
+    }
+</script>
+@{
+    var optionalItem = new SelectListItem { Value = "", Text = Html.GetResource("Select", "Global") };
+    var items = new List<SelectListItem> { optionalItem };
+}
+<div id="account-search-dialog-form" style="display: none;" title="@Html.GetResource("AccountSearch", "Global")">
+    @Html.Action("AccountSearch", "AccountManagement")
+</div>
+@using (Html.BeginForm("AddFund", "AccountManagement", FormMethod.Post, new { id = "AddFundForm", name = "AddFundForm" }))
+{
+    <h2>
+        @Html.GetResource("AddFund", "Titles")
+    </h2>
+    <div class="section-form-container">
+        @*<div class="ad-filter-text go-left floating-left" style="width: 200px; padding: 10px;">
+                <h3>@Html.GetResource("InformationMesssageHeader", "AddFund")</h3>
+                <p>@Html.GetResource("InformationMesssage", "AddFund")</p>
+            </div>*@
+        <div class="section-form-inner-container info-container" style="padding-left: 250px;padding-right: 80px">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("Account", "AddFund")</span>
+                </div>
+                <div class="field-container">
+                    <div onclick="showAccountSearchDialog();" style="line-height: 24px;">
+                        <img class="find-icon" src='@Url.GetImagePath("find-icon.png")' />
+                        @Html.HiddenFor(p => p.FundDto.AccountId)
+                        @Html.HiddenFor(p => p.FundDto.AccountName)
+                        <span class="side-text" id="accountName" style="float: none;">@(Model != null && Model.FundDto != null ? Model.FundDto.AccountName : string.Empty)</span>
+                        @Html.AdFalconValidationMessageFor(p => p.FundDto.AccountId)
+                    </div>
+                </div>
+            </div>
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title ">@Html.GetResource("FundType", "AddFund")</span>
+                </div>
+                <div class="field-container">
+                    @Html.AdFalconDropDownList("FundDto.TypeId", Model.Types, new { onchange = "type_change(this);" })
+                    @Html.AdFalconValidationMessageFor(p => p.FundDto.TypeId)
+                </div>
+            </div>
+            <div class="data-row data-container testIgnore">
+                <div class="label-container">
+                    <span class="field-title required-field">
+                        @Html.GetResource("PaymentDate", "AddFund")
+                    </span>
+                </div>
+
+                <div class="field-container  required-field iea-text-calender-margin">
+                    @Html.AdFalconTextBoxFor(p => p.FundDto.TransactionDate, new { @readonly = "readonly" }, Model != null && Model.FundDto != null && Model.FundDto.TransactionDate.HasValue ? Model.FundDto.TransactionDate.Value.ToString(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat) : "")
+                </div>
+                @Html.AdFalconValidationMessageFor(p => p.FundDto.TransactionDate)
+            </div>
+            <div id="fundTypeDiv" class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("PaymentType", "AddFund")</span>
+                </div>
+                <div class="field-container">
+                    @Html.DropDownListFor(p => p.FundDto.FundType, Model.FundTypes)
+                    @Html.AdFalconValidationMessageFor(p => p.FundDto.FundType)
+                </div>
+            </div>
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("FundAmount")</span>
+                </div>
+                <div class="field-container">
+                    @Html.AdFalconTextBoxFor(p => p.FundDto.Amount, new { maskType = "decimal", onkeypress = "Amountonkeypress(event,this)", onchange = "AmountonChange(this);" }, Model.FundDto == null || !Model.FundDto.Amount.HasValue ? string.Empty : Model.FundDto.Amount.Value.ToString("F2"))
+                    @Html.AdFalconValidationMessageFor(p => p.FundDto.Amount)
+                </div>
+            </div>
+            @{
+                if (Noqoush.Framework.OperationContext.Current.UserInfo<Noqoush.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+                    ().VATValue > 0)
+                {
+                    <div class="data-row data-container" style="display:none" id="VATAmountDiv">
+                        <div class="label-container">
+                            <span class="field-title required-field">VAT Amount</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.AdFalconTextBoxFor(p => p.FundDto.VatAmount, new { onchange = "amountCalculator(this,true);" })
+                            <span id="VatAmountSpan" class="guid-text go-right field-title floating-left iea-label-container-padding-right" style="line-height: 32px;">(@VatAmountPercentage)</span>
+
+                            @Html.AdFalconValidationMessageFor(p => p.FundDto.VatAmount)
+                        </div>
+                    </div>
+                    <div class="data-row data-container" style="display:none;" id="NetAmountDiv">
+                        <div class="label-container">
+                            <span class="field-title required-field">Total Amount</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.AdFalconTextBoxFor(p => p.FundDto.NetAmount)
+                            @Html.AdFalconValidationMessageFor(p => p.FundDto.NetAmount)
+                        </div>
+                    </div>
+                }
+            }
+            <div id="orginalAmount" style="-moz-border-radius: 10px; border-radius: 10px; padding-top: 10px; padding-bottom: 10px; margin-top: 10px; margin-bottom: 10px; width: 550px;">
+                <div class="data-row data-container">
+                    <span class="field-title required-field" style="font-weight: normal; font-style: italic;">@Html.GetResource("OriginalAmountDesc", "AddFund")</span>
+                </div>
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title">@Html.GetResource("OriginalAmount", "AddFund")</span>
+                    </div>
+                    <div class="field-container">
+                        @Html.AdFalconTextBox("FundDto.OriginalAmount", Model.FundDto == null || !Model.FundDto.OriginalAmount.HasValue ? string.Empty : Model.FundDto.OriginalAmount.Value.ToString("F2"), new { maskType = "decimal", onkeypress = "Amountonkeypress(event,this)", onchange = "AmountonChange(this)" })
+                        @Html.AdFalconValidationMessageFor(p => p.FundDto.OriginalAmount)
+                    </div>
+                </div>
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title">@Html.GetResource("Currency", "AddFund")</span>
+                    </div>
+                    <div class="field-container">
+                        @Html.AdFalconDropDownList("FundDto.CurrencyId", Model.Currencies)
+                        @Html.AdFalconValidationMessageFor(p => p.FundDto.CurrencyId)
+                    </div>
+                </div>
+            </div>
+            <div id="subDetails" style="-moz-border-radius: 10px; border-radius: 10px; padding-top: 10px; padding-bottom: 10px; margin-top: 10px; margin-bottom: 10px;">
+                <div style="display: none;" id="toAccountArea">
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title">@Html.GetResource("ToAccount", "AddFund")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.AdFalconDropDownList("FundDto.AccountPaymentDetailId", items)
+                            @Html.AdFalconValidationMessageFor(p => p.FundDto.AccountPaymentDetailId)
+                        </div>
+                    </div>
+                    @Html.Partial("FundType/BankInfo")
+                </div>
+                <div style="display: none;" id="checkArea">
+                    @Html.Partial("FundType/Check", Model)
+                </div>
+                <div id="transactionIdDiv" class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title" id="receiptNoSpan">@Html.GetResource("ReceiptNo", "AddFund")</span>
+                    </div>
+                    <div class="field-container">
+                        @Html.AdFalconEditorFor(p => p.FundDto.TransactionId)
+                        @Html.AdFalconValidationMessageFor(p => p.FundDto.TransactionId)
+                    </div>
+                </div>
+            </div>
+            <div style="display: none;" id="systemAccountArea">
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title">@Html.GetResource("SystemAccount", "AddFund")</span>
+                    </div>
+                    <div class="field-container">
+                        @Html.AdFalconDropDownList("FundDto.SystemPaymentDetailId", items)
+                        @Html.AdFalconValidationMessageFor(p => p.FundDto.SystemPaymentDetailId)
+                    </div>
+                </div>
+            </div>
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title">@Html.GetResource("Attachment", "AddFund")</span>
+                </div>
+                <div class="field-container uplaod-ctnl-special" style="width:150px;">
+                    @(Html.Telerik().Upload().Name("attachment").Multiple(false).ShowFileList(false)
+               .Async(async => async.Save("SaveAttachment", "Document", new { typeId = Model.DocumentTypeId }).AutoUpload(true).Remove("RemoveHttps", "Document"))
+.ClientEvents(events => events.OnSuccess("onAttachmentUploadSuccess")).HtmlAttributes(new { accept = "application/pdf, application/msword" }))
+                    @Html.HiddenFor(p => p.FundDto.AttachmentId)
+                    @Html.HiddenFor(p => p.FundDto.AttachmentName)
+                </div>
+                <div class="label-container">
+                    <a id="attachmentlnk" style="display: none;" class="preview-form floating-left"></a>
+
+                </div>
+                <div class="label-container">
+                    <a id="clearlnk" style="display: none;" href="javascript:void(0);" onclick='clearAttachment(this);'
+                       class="clear-form floating-left">@Html.GetResource("Clear")</a>
+                </div>
+
+            </div>
+
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title">@Html.GetResource("Comment", "AddFund")</span>
+                </div>
+                <div class="field-container">
+                    @Html.TextAreaFor(p => p.FundDto.Comment, new { @class = "text-box", rows = 5, cols = 5 })
+                    @Html.AdFalconValidationMessageFor(p => p.FundDto.Comment)
+                </div>
+            </div>
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title">&nbsp;</span>
+                </div>
+                <div class="field-container">
+                    @Html.GetCheckBox("FundDto.NotifyUser", Html.GetResource("NotifyUser", "AddFund"), isChecked: true)
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="section-footer">
+    </div>
+    <div class="data-row button-container">
+        <input value="@Html.GetResource("Save", "Commands")" type="submit" class="primary-btn" onclick="save()" />
+    </div>
+                }

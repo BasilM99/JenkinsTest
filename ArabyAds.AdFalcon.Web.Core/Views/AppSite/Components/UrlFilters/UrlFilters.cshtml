@@ -1,0 +1,236 @@
+﻿@using ArabyAds.AdFalcon.Web.Controllers.Core.ViewComponents.AppSite
+@model IEnumerable<ArabyAds.AdFalcon.Services.Interfaces.DTOs.AppSite.UrlFilterDto>
+<script language="javascript" type="text/javascript">
+
+    var UrlVal;
+    var UrlIdVal;
+    var ActionNameVal;
+    var yesbtn = "@Html.GetResource("Yes", "Global")";
+    var nobtn = "@Html.GetResource("No", "Global")";
+    var Confirmation = "@Html.GetResource("ProceedMsg", "Global")";
+    var ConfriamtionBoxTitle = "@Html.GetResource("Confirm")";
+    var FiltersActionurl = "@Url.Action("Filters", "AppSite")";
+    var UrlFiltersActionsUrl = "@Url.Action("UrlFiltersActions", "AppSite")";
+    $(document).ready(function () {
+        var Message = "@(ViewBag.Message)";
+        var Type = "@(ViewBag.kind)";
+
+        if (Message != "") {
+
+            if (Type == "Successful")
+                showSuccessfullyMessage(Message, false);
+            else
+                showErrorMessage(Message, false);
+        }
+        $("#displayURLRequiredMsg").hide();
+        $("#displayURLErrorMsg").hide();
+    });
+
+    function checkurl() {
+        $("#displayURLRequiredMsg").hide();
+        $("#displayURLErrorMsg").hide();
+        var e = $("#Text");
+        var url = $(e).val();
+        if (url == "") {
+            $("#displayURLRequiredMsg").show();
+            return false;
+        } else {
+            $("#displayURLRequiredMsg").hide();
+
+        }
+
+        if (!isURL(url, e)) {
+            $("#displayURLErrorMsg").show();
+            return false;
+        } else {
+            $("#displayURLErrorMsg").hide();
+            return true;
+        }
+    }
+
+    function TextFiltersDialog(Url, UrlId, ActionName) {
+
+        var sendData = new Object();
+        sendData.AppSiteId = $("#AppSiteId").val();
+        sendData.actionName = ActionName;
+        sendData.urlFilterDto = new Object();
+        sendData.urlFilterDto.Url = Url;
+        sendData.urlFilterDto.UrlFilterId = UrlId;
+
+        if (ActionName == "delete") {
+
+            $('<div id ="ConfirmationDialog" title="' + ConfriamtionBoxTitle + '"></div>').dialog({
+
+                open: function (event, ui) {
+                    $(this).html(Confirmation);
+                },
+                close: function () {
+
+                    $(this).remove();
+                },
+                resizable: false,
+                draggable: false,
+                showCloseButton : false,
+               // height: 140,
+                modal: true,
+                buttons: [
+              {
+                  text: yesbtn,
+                  click: function () { $(this).dialog("close"); CallTextFiltersActions(sendData); }
+              },
+              {
+                  text: nobtn,
+                  click: function () { $(this).dialog('close'); }
+              }
+                ]
+            });
+
+
+        } else {
+            CallTextFiltersActions(sendData);
+        }
+    }
+
+
+    function CallTextFiltersActions(sendData) {
+
+        prams = $.toJSON(sendData);
+        $.ajax({
+
+            url: UrlFiltersActionsUrl,
+            //dataType: "text json",
+            contentType: 'application/json; charset=utf-8',
+            type: "POST",
+            data: prams,
+
+            success: function (data) {
+                window.location = FiltersActionurl + "?Type=2" + "&Message=" + data.Message + "&Kind=" + data.Kind;
+            },
+
+            error: function (error) { }
+
+        });
+    }
+
+
+
+    function EditAddFilter(Url, UrlId, ActionName) {
+        $("#displayURLRequiredMsg").hide();
+        $("#displayURLErrorMsg").hide();
+        CommoDialogInitilize();
+        InitilizeSaveButton();
+        UrlIdVal = UrlId;
+        ActionNameVal = ActionName;
+        showDialog('party-add-dialog-form');
+        $("#party-add-dialog-form").find('form').bind('keypress', function (e) {
+            if (e.keyCode == 13) {
+                $("#SaveButton").click();
+                return false;
+            }
+        });
+        $("#party-add-dialog-form").find("#Text").val(Url);
+
+    }
+
+
+    function collect() {
+
+        UrlVal = $("#party-add-dialog-form").find("#Text").val();
+
+        if (checkurl())
+        TextFiltersDialog(UrlVal, UrlIdVal, ActionNameVal);
+    }
+
+
+</script>
+
+<div class="ad-filter-text go-left floating-left">
+    <h3>
+        @Html.GetResource("Header", "UrlFilters")
+    </h3>
+    @Html.Raw(Html.GetResource("Content", "UrlFilters"))
+</div>
+
+<div class="go-left " style="width:40%">
+    @*<h3>@Html.GetResource("CostElements", "Titles")</h3>*@
+
+    <a class="primary-btn" href="javascript:void(0)" onclick="EditAddFilter('', '', 'insert')">@Html.GetResource("Add", "Keywords")</a>
+    <br />
+    <br />
+</div>
+<div class="ad-filter-data go-left floating-left">
+    @(Html.Kendo().Grid(Model)
+                        .Name("Grid")
+                        //.DataKeys(p => p.Add(o => o.UrlFilterId))
+                         .DataSource(dataBinding =>
+{
+    dataBinding.Ajax().Create("urlfiltersactions", "appsite", new { actionName = "insert" });
+
+})
+
+
+                          .DataSource(dataBinding =>
+                             {
+
+                                 dataBinding.Ajax().Events(x => x.Error("textFilterOperationError")).Create("urlfiltersactions", "appsite", new { actionName = "insert" }).Model(model =>
+                                 {
+                                     model.Id(m => m.UrlFilterId); // Specify the property which is the unique identifier of the model.
+                                     model.Field(m => m.Url).Editable(false);
+                                     // model.Field(m => m.SSPId).Editable(false);
+                                     //model.Field(m => m.ExchangeName).Editable(false);
+                                     // model.Field(m => m.SubPublisher).Editable(false);
+                                     //model.Field(m => m.subPublisherId).Editable(false);
+                                     // model.Field(m => m.SubAppSiteId).Editable(false);
+                                     //model.Field(m => m.Include).Editable(false);
+                                     //model.Field(m => m.SubPublisherMarketId).Editable(false);
+
+                                     // Make the ProductID property not editable.
+                                 });
+                             })
+                    .Columns(columns =>
+                    {
+                        columns.Bound(o => o.Url).Title(Html.GetResource("Url", "UrlFilters")).HtmlAttributes(new { @style = "max-width: 200px;" })
+                        .ClientTemplate("<div class='grid-title-container floating-left'><span class='trimed-span' title='#=Url#'>#=Url#</span></div>"
+                            );
+                        columns.Template(" <div style='width:60px;  margin-right:10px; float:left;'> <div><a class='t-button t-button-icon t-button-bare' style='float: left; margin-right: 5px' onclick=TextFiltersDialog('#=Url#" + "" + "','#=UrlFilterId#" +""+ "','" + "delete" + "')><span class='t-icon t-delete'></span></a></div> <div><a class='t-button t-button-icon t-button-icon t-button-bare' style='float: left; margin-right: 5px' onclick=EditAddFilter('#=Url#" + "" + "','#=UrlFilterId#" + "" + "','" + "update" + "')><span class='t-icon t-edit'></span></a></div> </div>");
+
+                    })
+                                                                                                                                                                                                                                                                                                                                                                                                                        //.ToolBar(commands => commands.Position(GridToolBarPosition.Top).Template("<a class='t-button t-button-icon t-button-bare t-grid-add' onclick=EditAddFilter('','','insert')><span class='t-icon t-add'></span></a> "))
+                                )
+
+
+</div>
+<div id="party-add-dialog-form" class="adfalcon-dialog" title="@Html.GetResource("FromHeader", "TextFilters")" style="display: none; ">
+    @using (Html.BeginForm())
+    {
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("Url", "UrlFilters")</span>
+            </div>
+            <div class="field-container">
+                <div class="field-container">
+                    <input class="required text-box valid" id="Text" name="Text" type="text" onchange="checkurl()">
+                </div>
+            </div>
+            <span id="displayURLRequiredMsg" class="validation-arrow field-validation-error"><span class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span></span>
+            <span id="displayURLErrorMsg" style="display:none" class="validation-arrow field-validation-error"><span class="">@Html.GetResource("UrlMsg", "ResourceSet")</span></span>
+        </div>
+
+        @*<div class="data-row button-container">
+                <input type="button" value='@Html.GetResource("Save", "Commands")' style="float: right;" class="primary-btn" onclick="collect()" id="SaveButton">
+            </div>*@
+
+    }
+</div>
+<script type="text/javascript">
+    function textFilterOperationError(e) {
+        if (e.xhr.status == "0") {
+            clearErrorMessage();
+            showErrorMessage(e.xhr.responseText);
+            e.preventDefault();
+        }
+        if (e.xhr.status == "500") {
+            e.preventDefault();
+        }
+    }
+</script>

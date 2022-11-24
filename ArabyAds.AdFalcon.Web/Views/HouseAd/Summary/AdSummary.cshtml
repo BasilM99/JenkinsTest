@@ -1,0 +1,194 @@
+﻿@using Noqoush.AdFalcon.Domain.Common.Model.Campaign
+@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeSummaryDto
+<h2>@Html.GetResource("AdCreation", "Titles") @Html.ActionLink(Html.GetResource("Edit", "Commands"), "Creative", "HouseAd", new { id = Model.Campaign.ID, adGroupId = Model.Group.ID, adId = Model.ID, returnUrl = Request.RawUrl }, new { @class = "grid-tool-tip-edit floating-right ie-edit-ads" })</h2>
+<div class="section-form-inner-container">
+    <div class="floating-left" style="width: 515px">
+        <div class="data-row info-container last-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("AdName", "Campaign")</span>
+                </div>
+                <div class="field-container">
+                    <span class="side-text margin-summary" @*style="width:300px;"*@>@Model.Name</span>
+                </div>
+            </div>
+        </div>
+        <div class="data-row info-container last-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("AdText", "Campaign")</span>
+                </div>
+                <div class="field-container">
+                    <span class="side-text margin-summary" @*style="width:300px;"*@>@Model.AdText</span>
+                </div>
+            </div>
+        </div>
+        @{
+            //Add extra details
+            switch (Model.TypeId)
+            {
+                case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.Text:
+                    {
+                        break;
+                    }
+                case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.Banner:
+                case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.PlainHTML:
+                case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.RichMedia:
+                    {
+        <div class="data-row info-container last-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("EnvironmentType", "Campaign")</span>
+                </div>
+                <div class="field-container">
+                    <span class="side-text margin-summary">@Html.GetEnvironmentTypeString(Model.EnvironmentType)</span>
+                </div>
+            </div>
+        </div>
+                        break;
+                    }
+            }
+        }
+    </div>
+    <div class="floating-left" style="width: 365px">
+            <div class="data-row info-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("Status")</span>
+                </div>
+                <div class="field-container">
+                    <span class="side-text margin-summary" >@Model.Status</span>
+                </div>
+            </div>
+        </div>
+            <div class="data-row info-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("Bid", "Campaign")</span>
+                </div>
+                <div class="field-container">
+                    <span class="side-text margin-summary">@Html.DisplayFor(p => p.Bid)</span>
+                     @if (Model.DiscountedBid != Model.Bid)
+                    { 
+                        <span id="bidDiscounted" style="color:#E40685; " class="data-row guid-text go-left iea-go-right">@("(" + string.Format(Html.GetResource("DiscountedBidDesc", "Campaign"), Model.DiscountedBid.ToString("F2")) + ")")</span>
+                    }
+                </div>
+            </div>
+        </div>
+        @{
+            //Add extra details
+            switch (Model.TypeId)
+            {
+                case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.Text:
+                case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.Banner:
+                case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.PlainHTML:
+                    {
+                        break;
+                    }
+                case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.RichMedia:
+                    {
+                <div class="data-row info-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("OrientationType", "Campaign")</span>
+                </div>
+                <div class="field-container">
+                    <span class="side-text margin-summary">@Html.GetOrientationTypeString(Model.OrientationType)</span>
+                </div>
+            </div>
+        </div>
+                        break;
+                    }
+            }
+        }
+        @{
+            //Add extra details
+            switch (Model.TypeId)
+            {
+                case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.Text:
+                case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.Banner:
+                case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.PlainHTML:
+                    {
+                        break;
+                    }
+                case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.RichMedia:
+                    {
+                        switch (Model.AdSubType)
+                        {
+                            case AdSubTypes.ExpandableRichMedia:
+                            case AdSubTypes.ExternalUrlInterstitial:
+                            case AdSubTypes.JavaScriptInterstitial:
+                            case AdSubTypes.JavaScriptRichMedia:
+                                {
+                <div class="data-row info-container">
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("RichMediaRequiredProtocol", "Campaign")</span>
+                    </div>
+                    <div class="field-container">
+                        <span class="side-text margin-summary">@Html.GetRichMediaProtocolString(Model.RichMediaRequiredProtocol)</span>
+                    </div>
+                </div>
+            </div>
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+            }
+        }
+    </div>
+    @if (!string.IsNullOrWhiteSpace(Model.ViewName))
+    {
+        @Html.Partial("Summary/AdAction/" + Model.ViewName)
+    }
+</div>
+<div class="section-form-inner-container">
+@{
+    switch (Model.TypeId)
+{
+        case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.Text:
+            {
+                @Html.Partial("Summary/CreativeUnit/Text",Model.CreativeUnitsContent)
+                break;
+            }
+        case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.Banner:
+            {
+                @Html.Partial("Summary/CreativeUnit/Banner",Model.CreativeUnitsContent)
+                break;
+            }
+        case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.PlainHTML:
+            {
+                @Html.Partial("Summary/CreativeUnit/PlainHtml",Model.CreativeUnitsContent)
+                break;
+            }
+        case Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.RichMedia:
+            {
+                switch (Model.AdSubType)
+                {
+                        case AdSubTypes.ExpandableRichMedia:
+                            {
+                                 @Html.Partial("Summary/CreativeUnit/RichMedia/ExpandableRichMedia",Model.CreativeUnitsContent)
+                                break;
+                            }
+                             case AdSubTypes.ExternalUrlInterstitial:
+                            {
+                                 @Html.Partial("Summary/CreativeUnit/RichMedia/ExternalUrlInterstitial",Model.CreativeUnitsContent)
+                                break;
+                            }
+                              case AdSubTypes.JavaScriptInterstitial:
+                            {
+                                 @Html.Partial("Summary/CreativeUnit/RichMedia/JavaScriptInterstitial",Model.CreativeUnitsContent)
+                                break;
+                            }
+                              case AdSubTypes.JavaScriptRichMedia:
+                            {
+                                 @Html.Partial("Summary/CreativeUnit/RichMedia/JavaScriptRichMedia",Model.CreativeUnitsContent)
+                                break;
+                            }
+                }
+                break;
+            }
+    }
+}
+</div>

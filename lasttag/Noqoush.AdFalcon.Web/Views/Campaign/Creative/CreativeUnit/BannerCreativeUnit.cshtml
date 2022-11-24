@@ -1,0 +1,13 @@
+﻿@using Noqoush.AdFalcon.Web.Controllers.Model.Core
+@model Noqoush.AdFalcon.Web.Controllers.Model.Campaign.CreativeUnitViewModel
+
+@{
+    var uploadInfo = UploadViewModel.ParseCreativeUnit(Model);
+    var viewDataDic = new ViewDataDictionary();
+    
+    if(ViewData["ShowImpressionTracker"] != null)
+    {
+        viewDataDic.Add("ShowImpressionTracker", ViewData["ShowImpressionTracker"]);
+    }
+}
+@Html.Partial("Upload", uploadInfo,viewDataDic)

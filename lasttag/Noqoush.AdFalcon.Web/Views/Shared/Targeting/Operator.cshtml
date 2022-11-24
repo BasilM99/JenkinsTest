@@ -1,0 +1,117 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.Campaign.OperaterViewModel
+<script type="text/javascript">
+	$(document).ready(function () {
+		$(".t-grid-content").find("table tbody tr td").mouseover(function () {
+
+			$(this).attr('title', $(this).text());
+		});
+	});
+
+</script>
+@{
+
+
+	List<SelectListItem> TargetingConnectionType = new List<SelectListItem>()
+{
+new SelectListItem()
+{
+Value = "",
+Text = Html.GetResource("Select","Global"),
+Selected = true
+} ,
+new SelectListItem()
+{
+Value = "1",
+Text = Html.GetResource("Wifi","Campaign"),
+},
+new SelectListItem()
+{
+Value = "2",
+Text = Html.GetResource("Cellular","Campaign"),
+},
+
+};
+
+}
+<div class="ad-filter-text go-left floating-left">
+	@Html.Raw(Html.GetResource("OperatorDesc", "Campaign"))
+</div>
+<div class="ad-filter-data go-left floating-left campaign-right-container width-560" >
+	<div class="data-row data-container" readonlyToBe>
+		<div class="field-container floating-clear">
+			@Html.GetCheckBox("DisableProxyTraffic", Html.GetResource("DisableProxyTraffic", "Campaign"), Model.DisableProxyTraffic)
+		</div>
+	</div>
+	@*<br />*@
+	<div class="data-row data-container" id="connDiv" readonlyToBe>
+		<div>
+			<span class="field-title required-field">@Html.GetResource("ConnectionType", "Campaign")</span>
+		</div>
+		<div class="field-container">
+			@Html.AdFalconDropDownList("TargetingConnectionType", TargetingConnectionType)
+		</div>
+	</div>
+	<div class="data-row space-bottom-blue-filter">
+		<div class="blue-filter-container">
+			<a ref="javascript:void(0)" tabindexoperater="1" onclick="changeTab(this,'operater','OperatorTargetingIsAll','@Model.Operaters.Name',true);" class="selected">@Html.GetResource("All")</a>
+			@*<a ref="javascript:void(0)" tabindexoperater="3" onclick="changeTab(this,'operater','OperatorTargetingIsAll','@Model.Operaters.Name',false);">@Html.GetResource("WIFIOnly", "Campaign")</a>*@
+			<a ref="javascript:void(0)" tabindexoperater="2" onclick="changeTab(this,'operater','OperatorTargetingIsAll','@Model.Operaters.Name',false);">@Html.GetResource("SpecificOperators", "Campaign")</a>
+			@if ((Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsShowAdminSection) || (Model.IPRanges != null && Model.IPRanges.Count > 0))
+			{
+				<a ref="javascript:void(0)" tabindexoperater="4" onclick="changeTab(this,'operater','OperatorTargetingIsAll','@Model.Operaters.Name',false);">@Html.GetResource("IPRange", "Campaign")</a>
+			}
+		</div>
+		<div class="tail">
+		</div>
+	</div>
+	<div tabsectionoperater="1" id="allSection" readonlyToBe >
+	</div>
+	<div tabsectionoperater="3" id="wifiOnlySection" readonlyToBe >
+	</div>
+	<div tabsectionoperater="2" id="_OperatersSection"  readonlyToBe style="display: none;">
+		@Html.Partial("Tree", Model.Operaters)
+	</div>
+	@if ((Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsShowAdminSection) || (Model.IPRanges != null && Model.IPRanges.Count > 0))
+	{
+		var hide_id = !(Request.Browser.Type.ToUpper().Contains("IE") && Request.Browser.MajorVersion < 8);
+		<div tabsectionoperater="4" id="ipRangeSection" readonlyToBe>
+			@if ((Noqoush.AdFalcon.Web.Controllers.Utilities.Config.IsShowAdminSection))
+			{
+				<div style="width: 500px;overflow: hidden;">
+					<div style="width: 250px;float:left;">
+						@Html.TextBoxFor(m => m.IPFile, new { type = "file" })
+					</div>
+					<div style="overflow: hidden;">
+						@Html.ValidationMessageFor(m => m.IPFile)
+					</div>
+				</div>
+			}
+			<div class="small-grid ip-Range-Section" style="width: 540px;">
+				@(Html.Telerik().Grid(Model.IPRanges).Name("IPRangesGrid").NoRecordsTemplate("&nbsp;").TableHtmlAttributes(new { width = "500px;" })
+															  .DataKeys(keys => keys.Add(p => p.ID))
+															  .DataBinding(dataBinding =>
+																  {
+																	  dataBinding.Ajax().Select("DummySelect", "Campaign").Update("Dummy", "Campaign");
+																  })
+															  .EnableCustomBinding(true)
+															  .Editable(ed => ed.Mode(GridEditMode.InCell).DisplayDeleteConfirmation(false)
+																				.DefaultDataItem(new Noqoush.AdFalcon.Web.Controllers.Model.Campaign.IPTargetingView { Description = string.Empty }))
+															  .ToolBar(commands => commands.Insert().ButtonType(GridButtonType.BareImage))
+															  .Columns(columns =>
+																  {
+																	  columns.Bound(o => o.ID).Title(Html.GetResource("ID", "Lookup")).HtmlAttributes(new { @class = "go-center ip-targeting-hidden-field" }).Width(1).Hidden(hide_id);
+																	  columns.Bound(o => o.StartRange).EditorTemplateName("IPRange").Title(Html.GetResource("StartIPRange", "Campaign")).Width(160).HtmlAttributes(new { @Id = "StartIPRange", @class = "go-center ip-targeting-width" });
+																	  columns.Bound(o => o.EndRange).EditorTemplateName("IPEndRange").Title(Html.GetResource("EndIPRange", "Campaign")).Width(160).HtmlAttributes(new { @Id = "EndIPRange", @class = "go-center ip-targeting-width" });
+																	  columns.Bound(o => o.Description).EditorTemplateName("TextBox").Title(Html.GetResource("Description", "Campaign")).Width(160).HtmlAttributes(new { @class = "go-center ip-targeting-width" });
+																	  columns.Template(@<text>
+																		<div><a class='t-button t-button-icon t-button-bare t-grid-delete t-ip-Range-Section-delete-button' onclick='deleteIPTargeting(this);'><span class='t-icon t-delete t-ip-Range-Section-delete-button'></span></a></div></text>)
+																	 .ClientTemplate("<div><a class='t-button t-button-icon t-button-bare t-grid-delete t-ip-Range-Section-delete-button' type='button' onclick='deleteIPTargeting(this);'><span class='t-icon t-delete t-ip-Range-Section-delete-button'></span></button></div>").Width(50).HtmlAttributes(new { @class = "ip-targeting-width-small" });
+																//columns.Command(o => o.Delete().ButtonType(GridButtonType.BareImage));.Width(25);
+															})
+													  .Scrollable(scrolling => scrolling.Enabled(true).Height(200)).Footer(true)
+													  .ClientEvents(events => events.OnError("Grid_onError"))
+				)
+			</div>
+		</div>
+	}
+</div>

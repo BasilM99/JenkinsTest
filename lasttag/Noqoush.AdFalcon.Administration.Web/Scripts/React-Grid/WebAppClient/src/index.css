@@ -1,0 +1,15 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+.arrowClass {
+  color: #344e74;
+  cursor: unset;
+  font-size: 17px;
+}
+
+.arrowClass:hover {
+  color: #c60a76;
+  cursor: pointer;
+}

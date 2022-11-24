@@ -1,0 +1,71 @@
+﻿@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign
+@model ArabyAds.AdFalcon.Administration.Web.Controllers.Model.Lookup.AdvertiserViewModel
+@Html.HiddenFor(p => p.LookupDto.Name.ID)
+@Html.HiddenFor(p => p.LookupDto.Name.GroupKey)
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("Translations", "Lookup")</span>
+    </div>
+    <div class="field-container">
+        <table>
+            @for (int i = 0; i < Model.LookupDto.Name.Values.Count; i++)
+            {
+                @* @Html.HiddenFor(m => m.Values[i].ID)
+                    <span class="small-big-field">
+                        @Html.Label(Model.Values[i].Culture)
+                        @Html.HiddenFor(m => m.Values[i].Culture)
+                    </span>
+                    <span class="small-big-field">@Html.AdFalconTextBoxFor(m => m.Values[i].Value, new { maskType = "String" })</span>
+                    @Html.ValidationMessageFor(m => m.Values[i].Value)*@
+                <tr>
+                    <td>
+                        @Html.HiddenFor(m => m.LookupDto.Name.Values[i].ID)
+                        @Html.HiddenFor(m => m.LookupDto.Name.Values[i].Culture)
+                        @Html.Label(Model.LookupDto.Name.Values[i].Culture)
+                    </td>
+                    @* <td>
+                            @Html.GetResource("LanguageText", "Lookup")
+                        </td>*@
+                    <td>
+                        @Html.Partial("Autocomplete", new ArabyAds.AdFalcon.Web.Controllers.Model.AutoComplete()
+                        {
+                            Id = "LookupDto_Name_Values_" + i + "__Value",
+                            Name = "LookupDto.Name.Values[" + i + "].Value",
+                            ActionName = "GetAdvertisers",
+                            ControllerName = "Advertiser",
+                            LabelExpression = "item.Name",
+                            ValueExpression = "item.Name.Value",
+                            IsAjax = true,
+                            IsRequired = true,
+                            ChangeCallBack = "",
+                            Culture=Model.LookupDto.Name.Values[i].Culture,
+                            Style="width:200px",
+                            CurrentText=Model.LookupDto.Name.Values[i].Value,
+                            
+                        })
+                   
+                        @*@Html.AdFalconTextBoxFor(m => m.LookupDto.Name.Values[i].Value, new { style = "width:250px;" })*@
+                        @Html.ValidationMessageFor(m => m.LookupDto.Name.Values[i].Value)
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+<br />
+@{
+    if (ViewContext.FormContext == null)
+    {
+        ViewContext.FormContext = new FormContext();
+    }
+    ViewData.TemplateInfo.HtmlFieldPrefix = "LookupDto";
+}
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("URL")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconTextBoxFor(p => (p.LookupDto as AdvertiserDto).DomainURL)
+        @Html.ValidationMessageFor(p => (p.LookupDto as AdvertiserDto).DomainURL)
+    </div>
+</div>

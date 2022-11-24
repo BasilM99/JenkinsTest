@@ -1,0 +1,749 @@
+﻿@model ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.AdGroupTrackingEventResultDto
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    var isSuccessAddDialog = null;
+    var chooseCodeFlag = true;
+    var chooseNameFlag = true;
+    var TrackingEvent_ValidForSecondMin = parseInt('@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.TrackingEvent_ValidForSecondMin');
+    var TrackingEvent_ValidForSecondMax = parseInt('@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.TrackingEvent_ValidForSecondMax');
+    var errorReachLimitTrackingEvent = '@Html.GetResource("ReachTrackingEventsLimit")';
+
+    var updateFeesValues = '@Html.GetResource("UpdateFees")';
+	var CurrentRowId = '';
+	var EditMode = false;
+	var CurrentRowEdit;
+    var maxTrackingEventCounter = parseInt('@ViewData["MaxAdGroupTrackingEvents"]');
+    var checkDeleteTrackingEventUrl = '@Url.Action("CheckDeleteTrackingEvent", "Campaign", new { id = ViewData["CampaignId"], adgroupid = ViewData["AdGroupId"] })';
+    var deletePreRequisiteErrorMessage = '@Html.GetResource("DeletePrerequisite")';
+    var loadDefaults = '@ViewData["LoadDefaultTrackingEvents"]';
+	var checkUniqueCodeUrl = '@Url.Action("CheckUniqueEventCode","Campaign",new { id = ViewData["CampaignId"], adgroupid = ViewData["AdGroupId"] })';
+
+
+	var UpdateAdGroupEventURL = '@Url.Action("SaveAdGroupTrackingEvent", "Campaign")';
+	var LinkWithAudienceList = '@Html.GetResource("UpdateFees")';
+	var AddWithAudienceList = '@Html.GetResource("LinkWithAudienceList", "Global")';
+	var AddNewTrackingEvent = '@Html.GetResource("AddNewTrackingEvent", "Titles")';
+
+
+	function localInitilize_TrackingEvents() {
+
+        $("#resultGeneralDialog").dialog({
+				autoOpen: false,
+            // height: 150,
+            width: 400,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            showCloseButton: false,
+
+            buttons: [
+
+				{
+					text: '@Html.GetResource("Ok", "Commands")',
+                    click: function () {
+						jQuery(this).dialog("close");
+
+					},
+                    "class": 'delete-button'
+
+
+				}]
+        });
+
+
+
+        $("#confirmDeleteAllEvents").dialog({
+				autoOpen: false,
+            //height: 150,
+            width: 400,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            showCloseButton: false,
+
+            buttons:
+
+			[{
+					text: '@Html.GetResource("Yes")',
+                    click: function () {
+						jQuery(this).dialog("close");
+						loadTrackingEvents();
+					}
+				},
+                {
+					text: '@Html.GetResource("No")',
+                    click: function () {
+						jQuery(this).dialog("close");
+                        $("#CostModelWrapper").val(costModelWrapperBaseValue);
+						updateAudianceSeqmenttab();
+						updateConversiontab();	
+					}
+				}]
+        });
+
+        $("#resultAddDialog").dialog({
+				autoOpen: false,
+            //   height: 150,
+            width: 400,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            showCloseButton: false,
+
+            buttons:
+
+			[{
+					text: '@Html.GetResource("Ok", "Commands")',
+                click: function () {
+						jQuery(this).dialog("close");
+						if (!isSuccessAddDialog) {
+                        $("#addTrackingEventDialog").dialog("open");
+						}
+					}
+				}]
+        });
+
+        $("#addTrackingEventDialog").dialog({
+				autoOpen: false,
+            width: 610,
+            height: 650,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            buttons: [{
+
+					text: '@Html.GetResource("Save", "Commands")',
+                    "class": 'primary-btn',
+
+				click: function () {
+					debugger
+					if (EditMode) {
+						UpdateAdGroupTrackingEventElement();
+						return;
+					}
+
+					checkTrackingEventCount();
+					var validationResult=validator.form();
+						var validateTimePeriodResult = validateTimePeriod();
+					if (/*validationResult &&*/ validateTimePeriodResult) {
+
+							isSuccessAddDialog = true;
+							var data = $('#addTrackingEventForm').serializeArray();
+
+
+							var dataItem = convertKeyValueArrayToJson(data);
+							dataItem['AllowDuplicate'] = false;
+							dataItem['IsBillable'] = false;
+							dataItem['AllPreRequisitesRequired'] = false;
+							if (Radio_IsChecked("#AllowDuplicate"))
+								dataItem['AllowDuplicate'] = true;
+
+
+							if (Radio_IsChecked("#IsBillable"))
+								dataItem['IsBillable'] = true;
+							if (Radio_IsChecked("#AllPreRequisitesRequired"))
+								dataItem['AllPreRequisitesRequired'] = true;
+							//debugger;
+							dataItem['Description'] = $(".sss").val();
+							dataItem['Code'] = $(".sss2").val();
+							//var NamesCombobox = $("#NamesComboBox").data('tComboBox');
+							//var ColdesCombobox = $("#CodesComboBox").data('tComboBox');
+
+							//------validtion-------
+							//debugger;
+							if ($(".sss").val() == null || $(".sss2").val() == null /*|| chooseNameFlag || chooseCodeFlag*/)
+                            {
+
+								if ($(".sss").val() == null /*|| chooseNameFlag*/) $("#validation_Description").attr("style", "Display:block");
+								if ($(".sss2").val() == null /*|| chooseCodeFlag*/) $("#validation_Code").attr("style", "Display:block");
+								return false;
+							}
+                            else {
+
+                                $("#validation_Description").attr("style", "Display:none");
+                                $("#validation_Code").attr("style", "Display:none");
+							}
+						
+							if ($(".sss2").val().length > 6 || $(".sss").val().length > 25) {
+
+								if ($(".sss2").val().length > 6)
+                                {
+
+                                    $("#validation_Code").attr("style", "Display:none");
+                                    $("#validation_Code_Format").attr("style", "Display:none");
+                                    $("#validation_Code_length").attr("style", "Display:block");
+
+								}
+								if ($(".sss").val().length > 25)
+                                {
+                                    $("#validation_Description").attr("style", "Display:none");
+                                    $("#validation_Description_Format").attr("style", "Display:none");
+
+                                    $("#validation_Description_length").attr("style", "Display:block");
+
+								}
+								return false;
+							}
+
+							var letters = /^[0-9a-zA-Z]+$/;
+							//debugger;
+							if (!($(".sss").val().match(letters)) || !($(".sss2").val().match(letters)))
+                            {
+								if (!($(".sss").val().match(letters)))
+                                {
+
+                                    $("#validation_Description").attr("style", "Display:none");
+                                    $("#validation_Description_length").attr("style", "Display:none");
+                                    $("#validation_Description_Format").attr("style", "Display:block");
+
+								}
+
+
+								if (!($(".sss2").val().match(letters)))
+                                {
+
+                                    $("#validation_Code").attr("style", "Display:none");
+                                    $("#validation_Code_length").attr("style", "Display:none");
+                                    $("#validation_Code_Format").attr("style", "Display:block");
+								}
+								return false;
+							}
+                            else
+                            {
+                                $("#validation_Description_Format").attr("style", "Display:none");
+                                $("#validation_Code_Format").attr("style", "Display:none");
+
+
+							}
+
+                            $(".sss").val([]).trigger("change");
+                            $(".sss2").val([]).trigger("change");
+							//--------------------
+							dataItem['Id'] = 0;
+							//dataItem['ValidFor'] = GetTimePeriod();
+							dataItem['IsCustom'] = false;
+                            // Fix the issue for checked checkbox, because it will return 2 array elements with true and false values,
+                            // this issue is related to the MVC and how it handles the checkboxes
+                            $.each(dataItem, function (key, value) {
+
+								if (dataItem[key].constructor === Array && dataItem[key].length == 2 &&
+									dataItem[key].indexOf("true") != -1 && dataItem[key].indexOf("false") != -1) {
+									dataItem[key] = "true";
+								}
+							});
+
+							if (dataItem['PreRequisitesList'] != undefined) {
+								if (dataItem['PreRequisitesList'].constructor !== Array) {
+									dataItem['PreRequisitesList'] = new Array(dataItem['PreRequisitesList']);
+								}
+							}
+
+
+							var isCodeUnique = validateUniqueCode(dataItem) && validateUniqueCode_backEnd(dataItem['Code']);
+
+
+							if (!isCodeUnique) {
+								isSuccessAddDialog = false;
+                                $("#addDialogText").text('@Html.GetResource("DuplicateTrackingEventCode")');
+                                $("#resultAddDialog").dialog("open");
+                                $("#addTrackingEventDialog").dialog("close");
+								return;
+							}
+
+                            // Rmove no data row
+                            $("#TrackingEventsGrid tbody").find(".t-no-data").remove();
+
+
+							var tr = $("#TrackingEventsGrid tbody tr:visible").first();
+							var rowClassName = "";
+							if (!tr.hasClass("t-alt")) {
+								rowClassName = "t-alt";
+						}
+						if (dataItem.PreRequisitesList && dataItem.PreRequisitesList.length>0)
+                        dataItem.PreRequisitesListString = dataItem.PreRequisitesList.join();
+						dataItem.IsNonBlock = "none";
+                        dataItem.IsCustomBlock = "block";
+                       // IsCustomBlock 
+							var grid = $("#TrackingEventsGrid").data("kendoGrid");
+							grid.dataSource.insert(dataItem);
+
+							var currentRow = $("#TrackingEventsGrid tbody tr:visible").first();
+							//currentRow.addClass(rowClassName).find("td:eq(5)").addClass("t-last");
+							currentRow.find("td").addClass("go-center");
+
+
+							currentRow.find("td").eq(1).attr("id", "codeCell");
+							//debugger;
+							currentRow.find("td:eq(8)").find("#CustomTrackEventDel").show();
+							fillPreRequisitesList();
+                            $(this).dialog("close");
+							resetAddDialog();
+						}
+
+					}
+
+				}
+            ]
+        });
+
+			@if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.IsAdOpsAdmin)
+
+	   {
+
+		 <text>
+			 var trackingEventContainer = $("#trackingEventContainer");
+				trackingEventContainer.wrap("<form id='addTrackingEventForm'></form>");
+
+				jQuery.validator.unobtrusive.parseDynamicContent("#trackingEventContainer");
+				attachValidation();
+				validator = $("#addTrackingEventForm").validate();
+
+		 </text>
+
+	   }
+		}
+
+
+		function checkPrerequisiteDelete(code) {
+			var rows = $("#TrackingEventsGrid tbody tr:visible");
+			var isCodePrerequisite = false;
+
+        $.each(rows, function () {
+				var preRequisites = $(this).find("td:eq(2)").text();
+				var preRequisitesArray = preRequisites.split(",");
+
+				if (preRequisitesArray.indexOf(code) != -1) {
+					isCodePrerequisite = true;
+				}
+			});
+
+		return isCodePrerequisite;
+	}
+
+	function deleteTrackingEvent(element) {
+
+		var trackingEventsGrid = $("#TrackingEventsGrid").data("kendoGrid");
+		var tr = $(element).parents('tr');
+		var trackingEventCode = tr.find("td:eq(1)").text();
+		var isCodePrerequisite = checkPrerequisiteDelete(trackingEventCode);
+
+		if (isCodePrerequisite) {
+            $("#GeneralDialogText").text(deletePreRequisiteErrorMessage);
+            $("#resultGeneralDialog").dialog("open");
+		} else {
+            $.ajax({
+				type: 'POST',
+                url: checkDeleteTrackingEventUrl,
+                cache: false,
+                data: { adGroupTrackingEventCodes: trackingEventCode, checkStandards: true },
+                success: function (data) {
+					if (!(data && data.length > 1)) {
+						trackingEventsGrid.removeRow(tr);
+						fillPreRequisitesList();
+					}
+					else {
+
+                        $("#GeneralDialogText").text(data);
+                        $("#resultGeneralDialog").dialog("open");
+					}
+				},
+                error: function (data) {
+                    $("#GeneralDialogText").text(data.responseText);
+                    $("#resultGeneralDialog").dialog("open");
+				}
+			});
+		}
+
+	}
+
+	function checkTrackingEventCount() {
+		var rows = $("#TrackingEventsGrid tbody tr:visible");
+
+		if (rows.length == maxTrackingEventCounter) {
+			return false;
+		}
+
+		return true;
+	}
+
+	function validateUniqueCode(dataItem) {
+
+		var grid = $("#TrackingEventsGrid tbody tr:visible");
+		for (var i = 0 ; i < grid.length ; i++) {
+
+			var code = grid.eq(i).find("#codeCell");
+			if (typeof (code) != 'undefined')
+				if (dataItem['Code'] == code.text())
+					return false;
+
+		}
+
+		return true;
+	}
+
+	function validateUniqueCode_backEnd(code) {
+
+		var returnValue = false;
+
+        $.ajax({
+			type: 'POST',
+            url: checkUniqueCodeUrl,
+            cache: false,
+            async: false,
+            dataType: 'json',
+            data: { code: code },
+            success: function (data) {
+
+
+				returnValue = data;
+
+			}
+		});
+
+		return returnValue;
+	}
+
+
+	function resetAddDialog() {
+
+		if ($("#AllPreRequisitesRequired:checked").length > 0) {
+			checkBox($("#AllPreRequisitesRequired").closest("div")[0]);
+		}
+
+		$("#PreRequisitesList").val([]).trigger("change");
+        //$("#PreRequisitesList")[0].sumo.unSelectAll();
+        $("#PreRequisitesList").val([]).trigger("change");
+        $("#addTrackingEventForm")[0].reset();
+
+
+		$(".sss").val([]).trigger("change");
+		$(".sss2").val([]).trigger("change");
+		$("#AudienceListListDll").val([]).trigger("change");
+
+	}
+
+	//Fill PreRquisites Drop Down List
+	function fillPreRequisitesList() {
+
+		var isFirstTime = $("#PreRequisitesList")[0].sumo == undefined ? true : false;
+
+		if (isFirstTime) {
+			var rows = $("#TrackingEventsGrid tbody tr");
+		}
+		else {
+			var rows = $("#TrackingEventsGrid tbody tr:visible");
+		}
+
+        $('#PreRequisitesList').html("");
+        $.each(rows, function () {
+			var code = $(this).find("td:eq(1)").text();
+            $('#PreRequisitesList').append($('<option>', {
+				value: code,
+                text: code
+
+			}));
+		});
+
+        @*if (isFirstTime == true) {
+            $("#PreRequisitesList").SumoSelect({ placeholder: "@Html.GetResource("Select", "Global")" });
+        } else {
+            $("#PreRequisitesList")[0].sumo.reload();
+        }
+
+        $("#PreRequisitesList").SumoSelect({ style: "position:  absolute !important; z-index:  1003 !important;" });*@
+    }
+
+    function trackingEventsDataBound(e) {
+
+        fillPreRequisitesList();
+        var grid = $("#TrackingEventsGrid").data("kendoGrid");
+    }
+
+    function trackingEventsRowDataBound(e) {
+
+
+        /*if (e.dataItem.IsCustom == false) {
+            $(e.row.cells[5]).html("");
+        }*/
+
+
+
+    }
+
+    function trackingEventsGridDataBinding(args) {
+
+        $("#TrackingEventsGrid").data("kendoGrid").resize();
+        
+    }
+	function trackingEventsGridDataBindingData() {
+       var data = 
+            {
+                CostModelWrapperId: $("#CostModelWrapper").val(),
+                LoadDetaultTrackingEvents: loadDefaults
+
+		};
+
+		return data;
+
+	}
+    function refreshTrackingEventsGrid() {
+
+        if ($("#TrackingEventsGrid").length != 0) {
+            var grid = $("#TrackingEventsGrid").data("kendoGrid");
+            grid.dataSource.read();
+            grid.refresh();   
+		}
+        $("#TrackingEventsGrid").data("kendoGrid").resize();
+    }
+
+	function addNewAdGroupEvenTracking() {
+
+		$('[name="SegmentsId"]').val('');
+		$('[name="SegmentString"]').val('');
+		EditMode = false;
+		$("#TrackingEventTobeNotEdit").show();
+
+		$("#TrackingEventTobeEdit").hide();
+		$("#addTrackingEventDialog").dialog({ height: 650, title: AddNewTrackingEvent  });
+        $(".sss").val([]).trigger("change");
+		$(".sss2").val([]).trigger("change");
+		$('#AudienceListListDll').empty().trigger("change")
+
+		$("#AudienceListListDll").val([]).trigger("change");
+        //ComboBox_Names_onLoad();
+        //ComboBox_Codes_onLoad();
+		if (checkTrackingEventCount()) {
+
+            showDialog("addTrackingEventDialog");
+        }
+
+        else {
+
+            $("#GeneralDialogText").text(errorReachLimitTrackingEvent);
+            $("#resultGeneralDialog").dialog("open");
+        }
+
+        //$("#NamesComboBox-input").blur();
+        //$("#PreRequisitesList")[0].sumo.unSelectAll();
+        $("#PreRequisitesList").val([]).trigger("change");
+        clearDialog("addTrackingEventDialog");
+        clearValidations("addTrackingEventDialog");
+
+    }
+
+	function EditAdGroupTrackingEvent(elem) {
+	
+		$('[name="SegmentsId"]').val('');
+		$('[name="SegmentString"]').val('');
+		$('#AudienceListListDll').empty().trigger("change");
+
+		$("#AudienceListListDll").val([]).trigger("change");
+		EditMode = true;
+		CurrentRowEdit = $(elem).parents('tr');;
+
+		$("#TrackingEventTobeNotEdit").hide();
+		$("#TrackingEventTobeEdit").show();
+		showDialog("addTrackingEventDialog");
+		CurrentRowId = CurrentRowEdit.find("td:eq(9)").text();
+
+		ListOfSegments = CurrentRowEdit.find("td:eq(7)").text();
+		$("#TrackingEventName").val(CurrentRowEdit.find("td:eq(1)").text());
+		CustomTrackingEventInitSelect2();
+		$("#addTrackingEventDialog").dialog({ height: 150, title: AddWithAudienceList  });
+
+	}
+
+	function UpdateAdGroupTrackingEventElement() {
+
+		var Type;
+
+		Spinner = getSpinnerType("addTrackingEventDialog");
+		Spinner.showSpinner();
+
+		params = { ID: CurrentRowId, SegmentsId: $('[name="SegmentsId"]').val() };
+		params = JSON.stringify(params);
+
+		$.ajax({
+			type: 'POST',
+			url: UpdateAdGroupEventURL,
+
+
+			contentType: 'application/json; charset=utf-8',
+			dataType: 'json',
+			data: params,
+			cache: false,
+			success: function (data) {
+				Spinner.hideSpinner();
+				//debugger;
+				if (data.status == "success") {
+
+
+
+					$("#addTrackingEventDialog").dialog("close");
+					CurrentRowEdit.find("td:eq(7)").text($('[name="SegmentsId"]').val());
+					CurrentRowEdit.find("td:eq(6)").text($('[name="SegmentString"]').val());
+
+					$("#AudienceListListDll").val([]).trigger("change");
+					clearDialog("addTrackingEventDialog");
+					clearValidations("addTrackingEventDialog");
+
+				} else if (data.status == "businessException") {
+					showErrorMessage(data.Message, true, "partyEvent-divErrorMessages");
+
+				} else {
+					showErrorMessage(data.Message, true, "partyEvent-divErrorMessages");
+
+				}
+
+
+			},
+			error: function (data) {
+				//alert("Somthing went worng please contact the admin");
+				Spinner.hideSpinner();
+				showErrorMessage(data.Message, true, "partyEvent-divErrorMessages");
+				countcallAdv = 0;
+			}
+		});
+	}
+    function GetTimePeriod() {
+
+        var Days = isNaN(parseInt($("#TrackingEvent_days").val())) ? 0 : parseInt($("#TrackingEvent_days").val());
+        var Hours = isNaN(parseInt($("#TrackingEvent_hours").val())) ? 0 : parseInt($("#TrackingEvent_hours").val());
+        var Minutes = isNaN(parseInt($("#TrackingEvent_minutes").val())) ? 0 : parseInt($("#TrackingEvent_minutes").val());
+        var Seconds = isNaN(parseInt($("#TrackingEvent_seconds").val())) ? 0 : parseInt($("#TrackingEvent_seconds").val());
+        var Milliseconds = 0;
+
+        var timePeriod = new CustomTimePeriod(Days, Hours, Minutes, Seconds, Milliseconds);
+
+        var TotalSeconds = timePeriod.ToSeconds();
+        return TotalSeconds;
+    }
+
+    function validateTimePeriod() {
+      /*  var TimePeriodValue = parseInt(GetTimePeriod());
+        if (TimePeriodValue >= TrackingEvent_ValidForSecondMin && TimePeriodValue <= TrackingEvent_ValidForSecondMax) {
+            $("#MoreThanZeroSecondValidationDiv").hide();
+            return true;
+        } else {
+            $("#MoreThanZeroSecondValidationDiv").show();
+
+            return false;
+        }
+	*/
+	return true;
+    }
+
+
+</script>
+@if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.IsAdOpsAdmin)
+{
+    @*<div class="ad-filter-text go-left floating-left">
+            <h3>@Html.GetResource("Title", "AdGroupTrackingEvent")</h3>
+        </div>*@
+
+
+    <div style="clear: both"></div>
+    <div class="section-form-inner-container">
+        <div class="go-left floating-left">
+            <a class="primary-btn" href="javascript:void(0)" onclick="addNewAdGroupEvenTracking('')">@Html.GetResource("AddEvent", "Global")</a>
+        </div>
+     
+        <div class="data-row data-container">
+			<div class="grid-container">
+				&nbsp;
+				@*<div>
+			<div class="t-toolbar t-grid-toolbar t-grid-top">
+				<a class="t-button t-button-icon t-button-bare t-grid-add" href="javascript:void(0)"
+				   onclick="addNewAdGroupEvenTracking('')"><span class="t-icon t-add"></span></a>
+			</div>
+		</div>*@
+				@(Html.Kendo().Grid(Model.Items)
+                                                                                                                                                                                                                                 //.DataKeys(p => p.Add(o => o.Id))
+                                                                                                                                                                                                                                 //.Editable(ed => ed.Mode(GridEditMode.InCell).DisplayDeleteConfirmation(false)
+                                                                                                                                                                                                                                 //  .DefaultDataItem(new ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.AdGroupTrackingEventDto()))
+                                                                                                                                                                                                                                 //.ToolBar(commands => commands.Insert().ButtonType(GridButtonType.BareImage))
+                                                                                                                                                                                                                                 
+                                                                                                                                                                                                                                                   .Pageable(paging => paging
+
+
+.Input(false)
+.Numeric(true)
+.Info(true)
+.PreviousNext(true)
+.Refresh(true)
+
+.Position(GridPagerPosition.Bottom).Responsive(false))
+                .Name("TrackingEventsGrid").Columns(columns =>
+                {
+                    columns.Bound(o => o.Description).Title(Html.GetResource("Description", "AdGroupTrackingEvent")).Width("150px").HtmlAttributes(new { @class = "go-center" });
+                    columns.Bound(o => o.Code).Title(Html.GetResource("Code", "Global")).Width("50px").HtmlAttributes(new { @class = "go-center", @Id = "codeCell" });
+                    columns.Bound(o => o.PreRequisitesListString).Title(Html.GetResource("PreRequisites", "AdGroupTrackingEvent")).Width("70px").HtmlAttributes(new { @class = "go-center", @id = "PrerequisitesCell" });
+                    columns.Bound(o => o.AllPreRequisitesRequired).Title(Html.GetResource("WhenAllPreRequisitesRequired", "AdGroupTrackingEvent")).Format("{0:" + ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat + "}").Width(200).HtmlAttributes(new { @class = "go-center" });
+                    columns.Bound(o => o.AllowDuplicate).Title(Html.GetResource("AllowDuplicate", "Global")).Width("50px").HtmlAttributes(new { @class = "go-center" });
+                    columns.Bound(o => o.ValidFor).Hidden();
+                    columns.Bound(o => o.SegmentString).Title(Html.GetResource("AudienceList", "Global")).Width("150px").HtmlAttributes(new { @class = "go-center" });
+
+                    columns.Bound(o => o.SegmentsId).Hidden();
+
+
+
+
+                    columns.Template(
+
+
+                            "<div  title='link with Audience List' id='TrackEventEdiT' style='display:none' ><a class='t-button t-button-icon t-button-bare' type='button' onclick='EditAdGroupTrackingEvent(this)'><span class='t-icon t-add t-ip-Range-Section-edit-button'></span></button></div>" +
+                            "<div id='CustomTrackEventDel' style='display:#=IsCustomBlock#' ><a class='t-button t-button-icon t-button-bare' type='button' onclick='deleteTrackingEvent(this);'><span class='t-icon t-delete t-ip-Range-Section-delete-button'></span></button></div>"
+
+
+                             ).Width(40).HtmlAttributes(new { @class = "go-center" });
+
+                    columns.Bound(o => o.Id).Hidden();
+                })
+              .DataSource(dataBinding =>
+              {
+                  //dataBinding.Server().Select("_AdGroupTrackingEvents", "Campaign", new { ajax = true });
+                  dataBinding.Ajax().Read(read => read.Action("_AdGroupTrackingEvents", "Campaign", new { id = ViewContext.RouteData.Values["id"], adGroupId = ViewContext.RouteData.Values["adGroupId"] }).Data("trackingEventsGridDataBindingData")).Model(model =>
+                  {
+                      model.Id(d => d.Id);
+                  })
+
+
+                  ;
+
+
+
+              }).EnableCustomBinding(true)
+              .Events(clientEvents => clientEvents.DataBinding("trackingEventsGridDataBinding").DataBound("trackingEventsDataBound"))
+              .Scrollable(scrolling => scrolling.Enabled(false))
+			  )</div>
+
+
+			</div>
+    </div>
+    <div id="addTrackingEventDialog" class="adfalcon-dialog" title="@Html.GetResource("AddNewTrackingEvent", "Titles")" style="overflow:visible; display:none">
+        <div id="trackingEventContainer" class="data-row data-container">
+            @*@Html.RenderAction("TrackingEvent")*@
+          
+            @await Component.InvokeAsync(nameof(ArabyAds.AdFalcon.Administration.Web.Controllers.Core.ViewComponents.Campaign.TrackingEvent))
+
+        </div>
+    </div>
+
+
+    <div id="resultAddDialog" title="@Html.GetResource("AddNewTrackingEvent", "Titles")" style="display:none;">
+        <span id="addDialogText">Please Update Fees</span>
+    </div>
+}
+<div id="resultGeneralDialog" style="display:none;" title="@Html.GetResource("Information", "Global")">
+    <span id="GeneralDialogText"></span>
+</div>
+
+
+
+<div id="confirmDeleteAllEvents" title="@Html.GetResource("Confirm")" style="display:none;">
+    <span id="confirmDeleteAllEventsDialogText">@Html.GetResource("ConfirmDeleteAllEvents", "AdGroupTrackingEvent")</span>
+</div>

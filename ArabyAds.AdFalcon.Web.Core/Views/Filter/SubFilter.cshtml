@@ -1,0 +1,35 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.QueryBuilder.FilterViewModel
+@{
+    Layout = null;
+}
+@*<br id="br@(Model.Id)">*@
+<div class="container" id="container@(Model.Id)">
+    <div class="row Frow-element" id="Frow@(Model.Id)">
+
+        <div class="col-sm-4" id="DCol@(Model.Id)">
+            <div class="field-container">
+
+                <label style="padding-right:15px;padding-top:5px;width:100%;" id="label@(Model.Id)" class="ad-filter-text" for="Drop@(Model.Id)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+            </div>
+            @Html.DropDownList("Drop" + Model.Id.ToString(), Model.Dimensions, new { @onchange = "DropChanged('" + Model.Id + "')" })
+        </div>
+        <div class="col-sm-5" id="SCol@(Model.Id)" style="display:none;padding-left: 0px;margin-top:3px;margin-bottom:3px;">
+        </div>
+
+        <div class="col-sm-1" id="RCol@(Model.Id)" style="display:none;padding: 0px!important;
+    width: 100px!important;">
+            <img name='iconImage' onclick="remove(@Model.Id)" class='minusicon' id='cancel-CriteriaBtn' alt='Cancel Add Criteria ' title='Cancel Add Criteria'>
+
+            <img id="Plus@(Model.Id)" name="iconImage" onclick="Plus(@Model.Id)" class="plusicon" alt="Add Criteria" title="Add Criteria" style="display:none">
+
+            @*<button type="button" style="background-color: #000000;
+                border-color: #000000;" class="btn btn-danger" onclick="remove(@Model.Id)">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>*@
+            @*<button type="button" class="btn btn-primary" onclick="Plus(@Model.Id)" id="Plus@(Model.Id)" style="display:none">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </button>*@
+        </div>
+    </div>
+</div>
+<hr style="margin:0px!important;margin-top:3px !important; " id="hr@(Model.Id)">

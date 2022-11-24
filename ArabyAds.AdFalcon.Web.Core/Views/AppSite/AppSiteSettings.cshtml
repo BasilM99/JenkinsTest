@@ -1,0 +1,123 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("EditAppSite", "Titles");
+}
+
+<script type="text/javascript">
+
+    var SetToSeconds = "@(Model.RefreshInterval)";
+    function secondsVal() {
+       
+        if ($('input[name=RefreshModeId][checked]').val() == "3") {
+            document.getElementById("RefreshInterval").disabled = false;
+            $("#RefreshInterval").val(SetToSeconds);
+        }
+        else {
+            document.getElementById("RefreshInterval").disabled = true;
+            document.getElementById("RefreshInterval").value = "";
+        }
+
+    }
+
+    $(document).ready(function () {
+        secondsVal();
+        if (AccountRole == "DSP") {
+            SetSelectedTap("");
+        } else {
+            SetSelectedTap("ListMenuPublisher");
+
+        }
+    });
+
+</script>
+
+@model ArabyAds.AdFalcon.Services.Interfaces.DTOs.AppSite.SettingsDto
+@using (Html.BeginForm("Create"))
+{
+    <div class="data-row section-container">
+        <div class="data-row section-container">
+            @await Html.PartialAsync("Tabs", ViewData["Tabs"])
+            <input id="AppSiteId" name="AppSiteId" value="@Model.AppSiteId" type="hidden" />
+            <input id="ID" name="ID" value="@Model.ID" type="hidden" />
+            <div class="section-form-container">
+                <div class="data-row">
+                    <br />
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("Refresh", "AppSiteSettings")</span>
+                        </div>
+                        <div class="field-container">
+                            @{
+    bool selected;
+    selected = Model.RefreshModeId == 1;
+                            }
+                            @Html.GetRadioButton("RefreshModeId", Html.GetResource("Refreshclient", "AppSiteSettings"), selected, onChange: "secondsVal", value: "1")
+                        </div>
+                    </div>
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">&nbsp;</span>
+                        </div>
+                        <div class="field-container">
+                            @{
+    selected = Model.RefreshModeId == 2;
+                            }
+                            @Html.GetRadioButton("RefreshModeId", Html.GetResource("NoRefresh", "AppSiteSettings"), selected, onChange: "secondsVal", value: "2")
+                        </div>
+                    </div>
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">&nbsp;</span>
+                        </div>
+                        <div class="field-container">
+                            <div class="floating-left iea-rbtn-width-e">
+                                @{
+    selected = Model.RefreshModeId == 3;
+                                }
+                                @Html.GetRadioButton("RefreshModeId", "", selected, onChange: "secondsVal", value: "3")
+                            </div>
+                            <span class="check-box-text">
+                                @Html.GetResource("Setto", "AppSiteSettings")
+                                @Html.TextBoxFor(p => Model.RefreshInterval, new { @Class = "text-box iee-text-box", style = "width: 30px; float:left; margin:0 3px;", maskType = "Int" })
+
+
+                                @Html.GetResource("seconds", "AppSiteSettings")
+                            </span>
+                            @Html.AdFalconValidationMessageFor(p => Model.RefreshInterval)
+                        </div>
+                    </div>
+                </div>
+                <br />
+                @*       <div class="data-row"><br/>
+                                    <div class="data-row data-container">
+                                        <div class="label-container">
+                                            <span class="field-title required-field">@Html.GetResource("TestingMode", "AppSiteSettings")
+                                            </span>
+                                        </div>
+                                        @{
+                    selected = Model.SettingsDto.TestingModeId == 1;
+                                        }
+                                        <div class="field-container">
+                                            @Html.GetRadioButton("TestingModeId", Html.GetResource("clientTestingMode", "AppSiteSettings"), selected, value: "1")
+                                        </div>
+                                    </div>
+                                    <div class="data-row data-container">
+                                        <div class="label-container">
+                                            <span class="field-title required-field">&nbsp;</span>
+                                        </div>
+                                        <div class="field-container">
+                                            @{
+                    selected = Model.SettingsDto.TestingModeId == 2;
+                                            }
+                                            @Html.GetRadioButton("TestingModeId", Html.GetResource("DisableTestingMode", "AppSiteSettings"), selected, value: "2")
+                                        </div>
+                                    </div>
+                                </div>*@
+            </div>
+            <div class="section-footer">
+            </div>
+        </div>
+        <div class="data-row button-container">
+            <input type="submit" name="Settings" value='@Html.GetResource("Save", "Commands")' class="primary-btn" />
+        </div>
+    </div>
+}

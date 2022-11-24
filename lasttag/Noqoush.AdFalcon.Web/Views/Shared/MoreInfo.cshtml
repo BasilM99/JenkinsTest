@@ -1,0 +1,46 @@
+﻿@model string
+
+@{
+    string Class = "blue-info";
+    if (ViewData["Class"] != null && ViewData["Class"].ToString() != "")
+    {
+        Class = ViewData["Class"].ToString();
+    }
+    string style = "";
+    if (ViewData["Style"] != null && ViewData["Style"].ToString() != "")
+    {
+        style = ViewData["Style"].ToString();
+    }
+    string Value = Html.GetResource(Model);
+    if (Value != null)
+    {
+        Value = Value.Replace("{br}", "<br>");
+    }
+    else
+    {
+        Value = "";
+    }
+    string Class_Tail = "tail";
+    if (ViewData["Class_Tail"] != null && ViewData["Class_Tail"].ToString() != "")
+    {
+        Class_Tail = ViewData["Class_Tail"].ToString();
+    }
+    string Style2 = "";
+    if (ViewData["Style2"] != null && ViewData["Style2"].ToString() != "")
+    {
+        Style2 = ViewData["Style2"].ToString();
+    }
+
+}
+<span onclick="showMoreInfo(this)" class="@Class">
+    <div id="infoDialog" class="info-popup" style="display: none;">
+        <div class="container">
+            <div class="campain-radio-container" style="@Style2">
+                @Html.Raw(@Value)
+            </div>
+
+        </div>
+        <div class="@Class_Tail" style="@style">
+        </div>
+    </div>
+</span>

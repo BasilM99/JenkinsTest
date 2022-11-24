@@ -1,0 +1,314 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <facilities>
+    <facility id="wcf"
+							type="Castle.Facilities.WcfIntegration.WcfFacility,
+										Castle.Facilities.WcfIntegration" />
+
+    <facility id="RegistrationFacility"
+							type="ArabyAds.Framework.WCF.IOC.RegistrationFacility,
+										ArabyAds.Framework.WCF">
+      <assemblies>
+        <assembly id="ServiceInterfaces" value="ArabyAds.AdFalcon.Services.Interfaces"/>
+      </assemblies>
+      <Mapping>
+        <Map id="Services" Suffix="Service" LifeStyle="Singleton">
+          <interceptors >
+            <interceptor id="BehaviorInvoker" value="ArabyAds.Framework.Behaviors.BehaviorInvoker,ArabyAds.Framework"/>
+            <interceptor id="Interceptor" value="ArabyAds.Framework.WCF.ClientAdapter, ArabyAds.Framework.WCF"/>
+          </interceptors>
+        </Map>
+      </Mapping>
+    </facility>
+  </facilities>
+  <components>
+    <component id="FrameworkBehaviorInvoker" service="ArabyAds.Framework.Behaviors.BehaviorInvoker, ArabyAds.Framework"
+ type="ArabyAds.Framework.Behaviors.BehaviorInvoker, ArabyAds.Framework"
+ lifestyle="transient" />
+    <component id="ResourceManager"
+			 service="ArabyAds.Framework.Resources.IResourceManager,ArabyAds.Framework"
+		 type="ArabyAds.Framework.Resources.ResourceManager,ArabyAds.Framework"  lifestyle="transient">
+    </component>
+    <component id="UserInfoStorage"
+			service="ArabyAds.Framework.Storage.IStorage,ArabyAds.Framework"
+		type="ArabyAds.Framework.Web.Storage.WebStorage,ArabyAds.Framework.Web"  lifestyle="transient">
+    </component>
+    <component id="UserInfoProvider"
+     service="ArabyAds.Framework.UserInfo.IUserInfoProvider,ArabyAds.Framework"
+   type="ArabyAds.AdFalcon.Common.Web.UserInfo.AdFalconUserInfoProvider,ArabyAds.AdFalcon.Common.Web"  lifestyle="transient">
+    </component>
+    <component id="SecurityContent"
+			service="ArabyAds.Framework.Security.ISecurityContext,ArabyAds.Framework"
+		type="ArabyAds.Framework.Web.WebSecurityContext,ArabyAds.Framework.Web"  lifestyle="transient">
+    </component>
+    <component id="STSService"
+					type="ArabyAds.Framework.Security.ISecurityService,ArabyAds.Framework"
+					wcfEndpointConfiguration="STSClient">
+    </component>
+    <component id="ConfigurationSettings"
+      type="ArabyAds.Framework.ConfigurationSetting.IConfigurationSettingService,ArabyAds.Framework"
+      wcfEndpointConfiguration="ConfigurationSettingService">
+    </component>
+
+    <component id="ConfigurationManager"
+  service="ArabyAds.Framework.ConfigurationSetting.IConfigurationManager,ArabyAds.Framework"
+  type="ArabyAds.Framework.ConfigurationSetting.ConfigurationManager,ArabyAds.Framework"></component>
+
+    <component id="MailSender"
+            service="ArabyAds.Framework.Utilities.EmailsSender.IMailSender,ArabyAds.Framework"
+           		type="ArabyAds.Framework.Utilities.EmailsSender.MailSender,ArabyAds.Framework"  lifestyle="Singleton" >
+    </component>
+
+    <component id="ClientInterceptor" service="ArabyAds.Framework.WCF.ClientAdapter, ArabyAds.Framework.WCF"
+						 type="ArabyAds.Framework.WCF.ClientAdapter, ArabyAds.Framework.WCF"
+						 lifestyle="transient" />
+
+    <component id="ClientOperationContextPolicy" service="ArabyAds.Framework.WCF.ClientOperationContextPolicy, ArabyAds.Framework.WCF"
+			type="ArabyAds.Framework.WCF.ClientOperationContextPolicy, ArabyAds.Framework.WCF"
+			lifestyle="transient" />
+    <component id="ClientInterceptor" service="ArabyAds.Framework.WCF.ClientAdapter, ArabyAds.Framework.WCF"
+						 type="ArabyAds.Framework.WCF.ClientAdapter, ArabyAds.Framework.WCF"
+						 lifestyle="transient" />
+    <component id="ResourceService"
+									type="ArabyAds.Framework.Resources.IResourceService,ArabyAds.Framework"
+									wcfEndpointConfiguration="ResourceService">
+    </component>
+    <component id="CallContext"
+						 service="ArabyAds.Framework.ICallContext,ArabyAds.Framework"
+						 type="ArabyAds.Framework.Web.WebCallContext,ArabyAds.Framework.Web"
+						 lifestyle="transient">
+    </component>
+    <!--Begin Controllers-->
+
+    <component id="ReposrtsController"
+            service="ArabyAds.AdFalcon.Web.Controllers.Controllers.ReportsController,ArabyAds.AdFalcon.Web.Controllers"
+            type="ArabyAds.AdFalcon.Web.Controllers.Controllers.ReportsController,ArabyAds.AdFalcon.Web.Controllers"
+            lifestyle="transient"></component>
+  
+    <!--<component id="AppOpsTestController"
+      service="ArabyAds.AdFalcon.Administration.Web.Controllers.Controllers.AppOpsTestController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+      type="ArabyAds.AdFalcon.Administration.Web.Controllers.Controllers.AppOpsTestController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+      lifestyle="transient">
+    </component>-->
+    <component id="FilterController"
+            service="ArabyAds.AdFalcon.Web.Controllers.Controllers.FilterController,ArabyAds.AdFalcon.Web.Controllers"
+            type="ArabyAds.AdFalcon.Web.Controllers.Controllers.FilterController,ArabyAds.AdFalcon.Web.Controllers"
+            lifestyle="transient"></component>
+    <component id="TreeController"
+            service="ArabyAds.AdFalcon.Web.Controllers.Controllers.TreeController,ArabyAds.AdFalcon.Web.Controllers"
+            type="ArabyAds.AdFalcon.Web.Controllers.Controllers.TreeController,ArabyAds.AdFalcon.Web.Controllers"
+            lifestyle="transient"></component>
+
+    <component id="DashboardController"
+            service="ArabyAds.AdFalcon.Web.Controllers.Controllers.DashboardController,ArabyAds.AdFalcon.Web.Controllers"
+            type="ArabyAds.AdFalcon.Web.Controllers.Controllers.DashboardController,ArabyAds.AdFalcon.Web.Controllers"
+            lifestyle="transient"></component>
+    <!--<component id="AppSiteController"
+            service="ArabyAds.AdFalcon.Web.Controllers.Controllers.AppSiteController,ArabyAds.AdFalcon.Web.Controllers"
+            type="ArabyAds.AdFalcon.Web.Controllers.Controllers.AppSiteController,ArabyAds.AdFalcon.Web.Controllers"
+            lifestyle="transient">
+    </component>-->
+    <component id="AppSiteController"
+          service="ArabyAds.AdFalcon.Administration.Web.Controllers.Controllers.AppSiteController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+          type="ArabyAds.AdFalcon.Administration.Web.Controllers.Controllers.AppSiteController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+          lifestyle="transient">
+    </component>
+  
+
+    <component id="AppSiteTypeController"
+            service="ArabyAds.AdFalcon.Web.Controllers.Controllers.AppSiteTypeController,ArabyAds.AdFalcon.Web.Controllers"
+            type="ArabyAds.AdFalcon.Web.Controllers.Controllers.AppSiteTypeController,ArabyAds.AdFalcon.Web.Controllers"
+            lifestyle="transient">
+    </component>
+    <component id="KeywordController"
+            service="ArabyAds.AdFalcon.Web.Controllers.Controllers.KeywordController,ArabyAds.AdFalcon.Web.Controllers"
+            type="ArabyAds.AdFalcon.Web.Controllers.Controllers.KeywordController,ArabyAds.AdFalcon.Web.Controllers"
+            lifestyle="transient">
+    </component>
+    <component id="ThemeController"
+          service="ArabyAds.AdFalcon.Web.Controllers.Controllers.ThemeController,ArabyAds.AdFalcon.Web.Controllers"
+          type="ArabyAds.AdFalcon.Web.Controllers.Controllers.ThemeController,ArabyAds.AdFalcon.Web.Controllers"
+          lifestyle="transient">
+    </component>
+    <component id="MiscController"
+          service="ArabyAds.AdFalcon.Web.Controllers.Controllers.MiscController,ArabyAds.AdFalcon.Web.Controllers"
+          type="ArabyAds.AdFalcon.Web.Controllers.Controllers.MiscController,ArabyAds.AdFalcon.Web.Controllers"
+          lifestyle="transient">
+    </component>
+    <component id="DealsController"
+      service="ArabyAds.AdFalcon.Web.Controllers.Controllers.DealsController,ArabyAds.AdFalcon.Web.Controllers"
+      type="ArabyAds.AdFalcon.Web.Controllers.Controllers.DealsController,ArabyAds.AdFalcon.Web.Controllers"
+      lifestyle="transient">
+    </component>
+    <component id="UserController"
+          service="ArabyAds.AdFalcon.Web.Controllers.Controllers.UserController,ArabyAds.AdFalcon.Web.Controllers"
+          type="ArabyAds.AdFalcon.Web.Controllers.Controllers.UserController,ArabyAds.AdFalcon.Web.Controllers"
+          lifestyle="transient">
+    </component>
+    <component id="AccountManagementController"
+          service="ArabyAds.AdFalcon.Administration.Web.Controllers.Controllers.AccountManagementController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+          type="ArabyAds.AdFalcon.Administration.Web.Controllers.Controllers.AccountManagementController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+          lifestyle="transient">
+    </component>
+    <!--<component id="UserController_admin"
+              service="ArabyAds.AdFalcon.Administration.Web.Controllers.UserController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+              type="ArabyAds.AdFalcon.Administration.Web.Controllers.UserController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+              lifestyle="transient">
+    </component>-->
+
+    <component id="OperatorController"
+          service="ArabyAds.AdFalcon.Web.Controllers.Controllers.OperatorController,ArabyAds.AdFalcon.Web.Controllers"
+          type="ArabyAds.AdFalcon.Web.Controllers.Controllers.OperatorController,ArabyAds.AdFalcon.Web.Controllers"
+          lifestyle="transient">
+    </component>
+    <!--<component id="CampaignController"
+          service="ArabyAds.AdFalcon.Web.Controllers.Controllers.CampaignController,ArabyAds.AdFalcon.Web.Controllers"
+          type="ArabyAds.AdFalcon.Web.Controllers.Controllers.CampaignController,ArabyAds.AdFalcon.Web.Controllers"
+          lifestyle="transient">
+    </component>-->
+
+
+    <component id="DataProviderController"
+               service="ArabyAds.AdFalcon.Web.Controllers.Controllers.DataProviderController,ArabyAds.AdFalcon.Web.Controllers"
+          type="ArabyAds.AdFalcon.Web.Controllers.Controllers.DataProviderController,ArabyAds.AdFalcon.Web.Controllers"
+         lifestyle="transient">
+    </component>
+    
+    <component id="CampaignController"
+          service="ArabyAds.AdFalcon.Administration.Web.Controllers.Controllers.CampaignController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+          type="ArabyAds.AdFalcon.Administration.Web.Controllers.Controllers.CampaignController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+          lifestyle="transient">
+    </component>
+    <component id="CommonController"
+service="ArabyAds.AdFalcon.Web.Controllers.Controllers.CommonController,ArabyAds.AdFalcon.Web.Controllers"
+type="ArabyAds.AdFalcon.Web.Controllers.Controllers.CommonController,ArabyAds.AdFalcon.Web.Controllers"
+lifestyle="transient">
+    </component>
+    <component id="PartnerController"
+      service="ArabyAds.AdFalcon.Administration.Web.Controllers.Controllers.PartnerController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+      type="ArabyAds.AdFalcon.Administration.Web.Controllers.Controllers.PartnerController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+      lifestyle="transient">
+    </component>
+    <component id="CountryController"
+          service="ArabyAds.AdFalcon.Web.Controllers.Controllers.CountryController,ArabyAds.AdFalcon.Web.Controllers"
+          type="ArabyAds.AdFalcon.Web.Controllers.Controllers.CountryController,ArabyAds.AdFalcon.Web.Controllers"
+          lifestyle="transient">
+    </component>
+    <component id="AudienceSegmentController"
+      service="ArabyAds.AdFalcon.Web.Controllers.Controllers.AudienceSegmentController,ArabyAds.AdFalcon.Web.Controllers"
+      type="ArabyAds.AdFalcon.Web.Controllers.Controllers.AudienceSegmentController,ArabyAds.AdFalcon.Web.Controllers"
+      lifestyle="transient">
+    </component>
+    <component id="ManufacturerController"
+          service="ArabyAds.AdFalcon.Web.Controllers.Controllers.ManufacturerController,ArabyAds.AdFalcon.Web.Controllers"
+          type="ArabyAds.AdFalcon.Web.Controllers.Controllers.ManufacturerController,ArabyAds.AdFalcon.Web.Controllers"
+          lifestyle="transient">
+    </component>
+    <component id="CreativeUnitController"
+           service="ArabyAds.AdFalcon.Web.Controllers.Controllers.CreativeUnitController,ArabyAds.AdFalcon.Web.Controllers"
+           type="ArabyAds.AdFalcon.Web.Controllers.Controllers.CreativeUnitController,ArabyAds.AdFalcon.Web.Controllers"
+           lifestyle="transient">
+    </component>
+
+    <component id="PlatformController"
+          service="ArabyAds.AdFalcon.Web.Controllers.Controllers.PlatformController,ArabyAds.AdFalcon.Web.Controllers"
+          type="ArabyAds.AdFalcon.Web.Controllers.Controllers.PlatformController,ArabyAds.AdFalcon.Web.Controllers"
+          lifestyle="transient">
+    </component>
+    <component id="DeviceController"
+          service="ArabyAds.AdFalcon.Web.Controllers.Controllers.DeviceController,ArabyAds.AdFalcon.Web.Controllers"
+          type="ArabyAds.AdFalcon.Web.Controllers.Controllers.DeviceController,ArabyAds.AdFalcon.Web.Controllers"
+          lifestyle="transient">
+    </component>
+    <component id="DocumentController"
+          service="ArabyAds.AdFalcon.Web.Controllers.Controllers.Core.DocumentController,ArabyAds.AdFalcon.Web.Controllers"
+          type="ArabyAds.AdFalcon.Web.Controllers.Controllers.Core.DocumentController,ArabyAds.AdFalcon.Web.Controllers"
+          lifestyle="transient">
+    </component>
+    <component id="DefaultController"
+       service="ArabyAds.AdFalcon.Web.Controllers.Controllers.DefaultController,ArabyAds.AdFalcon.Web.Controllers"
+       type="ArabyAds.AdFalcon.Web.Controllers.Controllers.DefaultController,ArabyAds.AdFalcon.Web.Controllers"
+       lifestyle="transient">
+    </component>
+    <component id="DeveloperController"
+       service="ArabyAds.AdFalcon.Web.Controllers.Controllers.DeveloperController,ArabyAds.AdFalcon.Web.Controllers"
+       type="ArabyAds.AdFalcon.Web.Controllers.Controllers.DeveloperController,ArabyAds.AdFalcon.Web.Controllers"
+       lifestyle="transient">
+    </component>
+    <component id="PublisherController"
+      service="ArabyAds.AdFalcon.Web.Controllers.Controllers.PublisherController,ArabyAds.AdFalcon.Web.Controllers"
+      type="ArabyAds.AdFalcon.Web.Controllers.Controllers.PublisherController,ArabyAds.AdFalcon.Web.Controllers"
+      lifestyle="transient">
+    </component>
+    <component id="AdvertiserController"
+      service="ArabyAds.AdFalcon.Web.Controllers.Controllers.AdvertiserController,ArabyAds.AdFalcon.Web.Controllers"
+      type="ArabyAds.AdFalcon.Web.Controllers.Controllers.AdvertiserController,ArabyAds.AdFalcon.Web.Controllers"
+      lifestyle="transient">
+    </component>
+    <component id="ErrorController"
+      service="ArabyAds.AdFalcon.Web.Controllers.Controllers.Core.ErrorController,ArabyAds.AdFalcon.Web.Controllers"
+      type="ArabyAds.AdFalcon.Web.Controllers.Controllers.Core.ErrorController,ArabyAds.AdFalcon.Web.Controllers"
+      lifestyle="transient">
+    </component>
+    <component id="WarmUpController"
+     service="ArabyAds.AdFalcon.Web.Controllers.Controllers.Core.WarmUpController,ArabyAds.AdFalcon.Web.Controllers"
+     type="ArabyAds.AdFalcon.Web.Controllers.Controllers.Core.WarmUpController,ArabyAds.AdFalcon.Web.Controllers"
+     lifestyle="transient">
+    </component>
+    <component id="AdOpsController"
+      service="ArabyAds.AdFalcon.Administration.Web.Controllers.AdOpsController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+      type="ArabyAds.AdFalcon.Administration.Web.Controllers.AdOpsController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+      lifestyle="transient">
+    </component>
+
+    <component id="AppOpsController"
+      service="ArabyAds.AdFalcon.Administration.Web.Controllers.AppOpsController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+      type="ArabyAds.AdFalcon.Administration.Web.Controllers.AppOpsController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+      lifestyle="transient">
+    </component>
+    <component id="AppOpsTestController"
+         service="ArabyAds.AdFalcon.Administration.Web.Controllers.AppOpsTestController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+         type="ArabyAds.AdFalcon.Administration.Web.Controllers.AppOpsTestController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+         lifestyle="transient">
+    </component>
+    <component id="SystemAccountController"
+          service="ArabyAds.AdFalcon.Administration.Web.Controllers.Controllers.SystemAccountController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+          type="ArabyAds.AdFalcon.Administration.Web.Controllers.Controllers.SystemAccountController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+          lifestyle="transient">
+    </component>
+    <component id="LookupController"
+     service="ArabyAds.AdFalcon.Administration.Web.Controllers.Controllers.LookupController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+     type="ArabyAds.AdFalcon.Administration.Web.Controllers.Controllers.LookupController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+     lifestyle="transient">
+    </component>
+    <component id="PartyController"
+     service="ArabyAds.AdFalcon.Administration.Web.Controllers.Controllers.PartyController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+     type="ArabyAds.AdFalcon.Administration.Web.Controllers.Controllers.PartyController,ArabyAds.AdFalcon.Administration.Web.Controllers"
+     lifestyle="transient">
+    </component>
+
+    <component id="HouseAdController"
+     service="ArabyAds.AdFalcon.Web.Controllers.Controllers.HouseAdController,ArabyAds.AdFalcon.Web.Controllers"
+     type="ArabyAds.AdFalcon.Web.Controllers.Controllers.HouseAdController,ArabyAds.AdFalcon.Web.Controllers"
+     lifestyle="transient">
+    </component>
+    <component id="AppFabric"
+             service="ArabyAds.Framework.Caching.ICacheProviderFactory,ArabyAds.Framework"
+             type="ArabyAds.Framework.Caching.MemoryCaching.MemoryCacheProviderFactory,ArabyAds.Framework"
+             lifestyle="Singleton">
+    </component>
+    <component id="Redis"
+    service="ArabyAds.Framework.Caching.ICacheProviderFactory,ArabyAds.Framework"
+    type="ArabyAds.Framework.Caching.RedisCache.RedisCacheProviderFactory,ArabyAds.Framework"
+    lifestyle="Singleton">
+
+    </component>
+    <component id="MemoryCache"
+ service="ArabyAds.Framework.Caching.ICacheProviderFactory,ArabyAds.Framework"
+ type="ArabyAds.Framework.Caching.MemoryCaching.MemoryCacheProviderFactory,ArabyAds.Framework"
+ lifestyle="Singleton">
+
+    </component>
+    <!--End Controllers-->
+  </components>
+</configuration>

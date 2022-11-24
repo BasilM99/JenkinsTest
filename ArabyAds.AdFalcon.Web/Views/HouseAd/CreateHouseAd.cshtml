@@ -1,0 +1,86 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("AdGroupObjective", "Titles");
+}
+@using Noqoush.AdFalcon.Domain.Common.Model.Campaign
+@model  Noqoush.AdFalcon.Web.Controllers.Model.HouseAd.HouseAdSaveModel
+            
+<script>
+    var  destinationAppSites = '@Model.DestinationAppSites';
+    function localInitilize() {
+        var destinationAppSitesList = destinationAppSites.split(',');
+        checked_items = new Array();
+        for (var i=0;i<destinationAppSitesList.length;i++) {
+            var id = destinationAppSitesList[i];
+            if (id != null && id.trim() != '') {
+                checked_items.push(id);
+            }
+        }
+        refrash_sub_list();
+        $('[name="DestinationAppSites"]').val(checked_items.join(","));
+    }
+    $(document).ready(function () {
+
+        if (AccountRole == "DSP") {
+            SetSelectedTap("");
+        } else {
+            SetSelectedTap("ListMenuPublisher");
+
+        }
+
+    });
+</script>
+@using (Html.BeginForm())
+{
+    <div class="data-row section-container">
+        <br />
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("GroupName", "AdGroup")</span>
+            </div>
+            <div class="field-container">
+                @Html.AdFalconEditorFor(p => p.Name)
+                @Html.AdFalconValidationMessageFor(p => p.Name)
+            </div>
+        </div>
+        <div class="section-form-container">
+            <h2>@Html.GetResource("Apps", "CreateHouseAd")</h2>
+            @Html.HiddenFor(x=>x.ForAppSite)
+            @Html.Action("IndexDropDown", "AppSite",new{appID=Model.ForAppSite} )
+            @*@Html.AdFalconValidationMessageFor(p => p.ForAppSite)
+            @Html.AdFalconValidationMessageFor(p => p.DestinationAppSites)*@
+        </div>
+        
+        <div class="section-form-container">
+            <h2>@Html.GetResource("ImpressionGoal", "CreateHouseAd")</h2>
+            <br/>
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">&nbsp;</span>
+                </div>
+                <div class="field-container">
+                    @{
+                        bool selected;
+                        selected = Model.DeliveryMode == HouseAdDeliveryMode.WhenNoAds || (Model.DeliveryMode != HouseAdDeliveryMode.WhenNoAds && Model.DeliveryMode != HouseAdDeliveryMode.FullyAllocate);
+                    }
+                    @Html.GetRadioButton("DeliveryMode", Html.GetResource("WhenNoAds", "HouseAd"), selected, value: "1")
+                </div>
+            </div>
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">&nbsp;</span>
+                </div>
+                <div class="field-container">
+                    @{
+                        selected = Model.DeliveryMode == HouseAdDeliveryMode.FullyAllocate;
+                    }
+                    @Html.GetRadioButton("DeliveryMode", Html.GetResource("FullyAllocate", "HouseAd"), selected, value: "2")
+                </div>
+            </div>
+        </div>
+        <br />
+        <br />
+        <div class="data-row button-container">
+            <input type="submit" value="@Html.GetResource("Continue", "Commands")" name="Continue" class="continue-button" /><input type="submit" value="@Html.GetResource("Save", "Commands")" name="Save" class="primary-btn" /><input  type="button" value='@Html.GetResource("Close", "Commands")' class="btn" onclick="redirect('@Url.Action("Groups", "HouseAd", new { id = Model.CampaignId })')"/>
+        </div>
+    </div>
+}

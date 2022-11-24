@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("DemandPartnerSupplyMenu", "Menu");
+    Layout = "~/Views/Partner/IndexMaster.cshtml";
+}
+@model ArabyAds.AdFalcon.Web.Controllers.Model.BusinessPartners.ListViewModel
+
+@section subheader
+   {
+}
+@section Grid1 {
+    @(Html.Telerik().Grid(Model.Items)
+                       .Name("GridPartner")
+               .Columns(columns =>
+                            {
+                                columns.Template(
+                                    @<text>
+                                        <input name="checkedRecords" type="checkbox" value="@item.ID " title="checkedRecords" />
+                                    </text>)
+                                    .Title("").Width(36).HtmlAttributes(new { style = "text-align:center" })
+                                    .ClientTemplate("<input type='checkbox' name='checkedRecords' value='<#= ID #>' />");
+
+                                columns.Bound(o => o.Name).Template(
+                                    @<text><div class="grid-title-container floating-left">
+                                            <span class="trimed-span">
+
+                                                <a href='@Url.Action("Sites", "Partner", new { Id = @item.ID })' title='@item.Name'>
+
+                                                    @item.Name
+
+                                                </a>
+                                            </span>
+                                        </div><div class="grid-cogwheel-container floating-right go-right">
+                                            <div class='cogwheel' item_extra_info="@item.Name" onclick='showGridToolTip(@item.ID,this)'>
+                                                <a href='javaScript:void(0);'>&nbsp</a>
+                                            </div>
+                                        </div>
+
+                                    </text>
+                                    ).Title(Html.GetResource("Name", "SSPPartners")).Width(300)
+                                    .ClientTemplate("<div class='grid-title-container floating-left'><a href=\"" + Url.Action("Sites", "Partner") + "/<#= ID#>\"><#= Name#> </a></div><div class='grid-cogwheel-container floating-right go-right'> <div class='cogwheel' item_extra_info=\"<#= Name#>\" onclick='showGridToolTip(<#= ID#>,this)'><a href='javaScript:void(0);' >&nbsp</a></div></div>");
+                                columns.Bound(o => o.AccountName).Title(Html.GetResource("AccountName", "Global")).Width(50).HtmlAttributes(new { @class = "go-center" });
+
+                                columns.Bound(o => o.ContactPerson).Title(Html.GetResource("ContactPerson", "SSPPartners")).Width(50).HtmlAttributes(new { @class = "go-center" });
+                                columns.Bound(o => o.Email).Title(Html.GetResource("ContactEmail", "SSPPartners")).Width(50).HtmlAttributes(new { @class = "go-center" });
+
+                            }).EnableCustomBinding(true)
+                                                                                                                                                                                                                                                                                                                                                        .DataBinding(dataBinding =>
+                                                                                                                                                                                                                                                                                                                                                             {
+                                                                                                                                                                                                                                                                                                                                                                 dataBinding.Server().Select("Index", "Partner", new { ajax = true });
+                                                                                                                                                                                                                                                                                                                                                                 dataBinding.Ajax().Select("_Index", "Partner");
+
+                                                                                                                                                                                                                                                                                                                                                             })
+                                                                                                                                                                                                                                                                                                                                                .ClientEvents(clientEvents => clientEvents.OnDataBinding("BusinessPartnersGridDataBinding").OnDataBound("BusinessPartnersGridDataBound").OnRowDataBound("onRowDataBound"))
+                                                                                                                                                                                                                                                                                                                                                .Scrollable(scrolling => scrolling.Enabled(false))
+                                                                                                                                                                                                                                                                                                                                                .Selectable().Pageable(paging => paging.PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize)
+                                                                                                                                                                                                                                                                                                                                                                        .Total(int.Parse(ViewData["total"].ToString()))
+                                                                                                                                                                                                                                                                                                                                                                        .Style(GridPagerStyles.NextPreviousAndNumeric)
+                                                                                                                                                                                                                                                                                                                                                                        .Position(GridPagerPosition.Bottom))
+                                                                                                                                                                                                                                                                                                                                                .Filterable(filtering => filtering.Enabled(false))
+                                                                                                                                                                                                                                                                                                                                                .Groupable(grouping => grouping.Enabled(true)).Footer(true))
+}
+

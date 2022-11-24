@@ -1,0 +1,237 @@
+﻿@model ArabyAds.AdFalcon.Services.Interfaces.DTOs.AppSite.AppSiteListResultDtoBase
+<script language="javascript" type="text/javascript">
+
+    function AppSiteAdQueue(id, displayValue, accountId, accountName) {
+        this.Id = id;
+        this.Name = displayValue;
+        this.AccountId = accountId;
+        this.AccountName = accountName;
+    }
+    var appSites = new Array();
+
+    function addAppSiteId(id, displayValue, accountId, accountName, isOld) {
+
+        if (typeof (isOld) == "undefined") {
+            isOld = false;
+        }
+
+        if ((id == '0') || (!checkAppSite(id))) {
+            var container = jQuery("#appSiteInfo");
+            var html = "<a IsOld=" + isOld + " AppSiteId=" + id + "  href='javaScript:void(0);'>" + displayValue
+                + "<span  onclick='removeAppSite(" + id + ",true);'></span>"
+                + "<input name='appSiteId' value='" + id + "' type='hidden' /></a>";
+            container.append(html);
+
+            // Add to appsites array
+            var newAppsite = new AppSiteAdQueue(id, displayValue, accountId, accountName);
+            appSites.push(newAppsite);
+
+            if ($('#accountsList option[value=' + accountId + ']').length == 0) {
+
+                $("#accountsList").append(
+                    $('<option></option>').val(accountId).html(accountName)
+                );
+            }
+            hideError();
+            if ($('#accountsList option').length != 0) {
+                $("#deleteAppSiteContainer").show();
+            }
+        }
+    };
+    function removeAppSite(id, removeFromAccountList) {
+        var elem = $("#appSiteInfo").find("a[AppSiteId='" + id + "']");
+        var isOld = elem.attr("IsOld");
+
+        if (isOld == 'true') {
+            console.log(isOld);
+            jQuery("#deletedAppSites").append("<input id='deletedAppSiteId' name='deletedAppSiteId' value='" + id + "' type='hidden' />");
+        }
+
+        elem.remove();
+
+        //Remove from appsites array
+        var appSite = searchAppSitesArrayById(parseInt(id));
+        var accountId = appSite.AccountId;
+        var appSiteIndex = appSites.indexOf(appSite);
+        appSites.splice(appSiteIndex, 1);
+
+        if (removeFromAccountList != "undefined" && removeFromAccountList == true) {
+            var matchedAppsites = searchAppSitesArrayByAccountId(parseInt(accountId));
+            if (matchedAppsites.length == 0) {
+                removeItemFromAccountList(accountId);
+            }
+        }
+    }
+    function hideError() {
+
+        if ($("#divErrorMessages_partner").length > 0) {
+            DialogclearErrorMessage("divErrorMessages_partner");
+        }
+        return true;
+
+    }
+
+    function deleteAccountAppSites() {
+        var selectedAccountId = $("#accountsList").val();
+
+        var matchAppSites = searchAppSitesArrayByAccountId(selectedAccountId);
+
+        for (var i = 0; i < matchAppSites.length; i++) {
+            removeAppSite(matchAppSites[i].Id, false);
+            removeItemFromAccountList(selectedAccountId);
+        }
+    }
+
+    function checkAppSite(id) {
+        return appSites.some(function (el) { return el.Id == id; });
+    }
+
+    function removeItemFromAccountList(accountId) {
+        $('#accountsList option[value=' + accountId + ']').remove();
+
+        if ($("#accountsList option").length == 0) {
+            $("#deleteAppSiteContainer").hide();
+        }
+    }
+
+    function searchAppSitesArrayByAccountId(accountId) {
+        var matchedAppSites = new Array();
+        for (var i = 0; i < appSites.length; i++) {
+            if (appSites[i].AccountId == accountId) {
+                matchedAppSites.push(appSites[i]);
+            }
+        }
+
+        return matchedAppSites;
+    }
+
+    function searchAppSitesArrayById(id) {
+        for (var i = 0; i < appSites.length; i++) {
+            if (appSites[i].Id == id) {
+                return appSites[i];
+            }
+        }
+    }
+
+    function generateAppSiteGrid() {
+        var grid = $("#Grid").data("kendoGrid");
+        grid.dataSource.read();
+        grid.refresh();
+
+    };
+    function appSiteGridDataBinding(args) {
+       
+    };
+    function appSiteGridDataBindingData() {
+        var data = {
+            IgnoreIsPrimaryUser: true,
+            AppName: $('#AppName').val(),
+            AccountName: $('#AccountName').val(),
+            TypeId: $("#TypeId").val()
+        };
+        return data;
+    }
+   
+    function appSiteGridDataBound(e) {
+        var grid = e.sender.dataSource;
+        //if not first page and the no data then try load first page
+        if ((grid._data.length == 0) && (grid.page() > 1)) {
+            e.preventDefault();
+            if (grid.page() != 1) {
+                grid.page(1);
+            }
+
+        }
+    };
+</script>
+<br />
+<div class="data-row go-center">
+    <div class="blue-filter-container" style="height: 80px">
+        <table class="special-content">
+            <tr>
+                <td>
+                    <span class="go-bold">Account Name</span>
+                </td>
+                <td class="go-left">
+                    <input type="text" id="AccountName" name="AccountName" class="text-box" />
+                </td>
+                <td style="width: 20px;">
+                    &nbsp;
+                </td>
+                <td>
+                    <span class="go-bold">@Html.GetResource("From", "Global")</span>
+                </td>
+                <td class="ddl-td" colspan="4">
+                    <div style="width: 270px; overflow: hidden;">
+                        @Html.DropDownList("TypeId")
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="go-bold">@Html.GetResource("AppName", "AppChart")</span>
+                </td>
+                <td class="go-left">
+                    <input type="text" id="AppName" name="AppName" class="text-box" />
+                </td>
+                <td class="go-right" colspan="3">
+                    <input type="button" onclick="generateAppSiteGrid();" value='@Html.GetResource("Filter")' class="btn filter-button " />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="tail">
+    </div>
+</div>
+<br />
+<div class="floating-left" style="width: 59%; margin-top: 10px;">
+
+    @(Html.Kendo().Grid(Model.Items)
+            .Name("Grid")
+            .Columns(columns =>
+            {
+
+                columns.Template("<input id='btnAddAppSite' type='button'  value='" + Html.GetResource("Select", "AppSite") + "'  class='btn' onclick='addAppSiteId(#= Id #, \"#=Name#\",#= AccountId #,\"#=AccountName#\",\"false\")' />").Title("").Width(36).HtmlAttributes(new { style = "text-align:center" });
+
+                columns.Bound(o => o.Name).Title(Html.GetResource("Name", "AppSite"));
+                columns.Bound(o => o.Type).Title(Html.GetResource("Type", "AppSite")).Width("90px").HtmlAttributes(new { @class = "go-center" });
+            }).EnableCustomBinding(true)
+            .DataSource(dataBinding =>
+            {
+                //dataBinding.WebApi.Select("TrackingPixel", "Campaign", new { ajax = true });
+                dataBinding.Ajax().Read(read => read.Action("_AppSites", "AppSite").Data("appSiteGridDataBindingData")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+            })
+            .Events(clientEvents => clientEvents.DataBinding("appSiteGridDataBinding").DataBound("appSiteGridDataBound"))
+            .Scrollable(scrolling => scrolling.Enabled(false))
+            .Selectable().Pageable(paging => paging
+
+
+            .Input(false)
+            .Numeric(true)
+            .Info(true)
+            .PreviousNext(true)
+            .Refresh(true)
+
+            .Position(GridPagerPosition.Bottom))
+            .Filterable(filtering => filtering.Enabled(false))
+            .Groupable(grouping => grouping.Enabled(false)))
+
+</div>
+<div class="floating-left" style="width: 35%; padding: 0px 10px 0px  10px;">
+    <div id="deletedAppSites" style="display: none;">
+    </div>
+    <div id="appSiteInfo" class="cloud-area text-box-like-container" style="width: 350px;">
+    </div>
+    <div id="deleteAppSiteContainer" class="text-box-like-container2" style="width: 350px; display: none">
+        <div class="data-container" style="overflow:hidden">
+            <div class="floating-left">@Html.GetResource("RemoveAccountAppSites", "Ad") &nbsp;</div>
+            <div class="small-select">
+                <select id="accountsList"></select>
+            </div>
+        </div>
+        <div class="floating-right">
+            <input type="button" class="btn filter-button " value="Delete" onclick="deleteAccountAppSites()" />
+        </div>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.AppSite.KeywordViewModel
+
+<div class="ad-filter-text go-left floating-left">
+	@Html.Raw(Html.GetResource("KeyWordDesc", "Campaign"))
+</div>
+<div class="data-row section-container">
+	<br />
+</div>
+<div class="data-row data-container">
+	<div class="label-container">
+		<span class="field-title required-field">@Html.GetResource("Scope")</span>
+	</div>
+	<div class="field-container">
+		@{
+			var AlowIncludeR = true;
+			var isSlected = true;
+			if (
+				(Model != null)
+				)
+			{
+				AlowIncludeR = Model.AllowInclude;
+			}
+
+			isSlected = (AlowIncludeR == true);
+			<div class="floating-left iea-rbtn-width-a">@Html.GetRadioButton("AllowInclude", Html.GetResource("UnBlock", "User"), Checked: isSlected, value: "true")</div>
+			isSlected = (AlowIncludeR == false);
+			<div class="floating-left iea-rbtn-width-a">@Html.GetRadioButton("AllowInclude", Html.GetResource("block", "User"), Checked: isSlected, value: "false")</div>
+
+		}
+	</div>
+</div>
+
+<div class="data-row section-container">
+	@await Html.PartialAsync("PartialViews/KeyWord", Model)
+</div>
+
+<div class="data-row data-container">
+
+    <div class="label-container3">
+        <span class="field-title required-field">
+            &nbsp;
+        </span>
+    </div>
+    <div class="field-container">
+        @Html.GetCheckBox("ExcludeSensitiveCategories",@Html.GetResource("ExcludeSensitiveCategories", "Global") , Model.ExcludeSensitiveCategories, onChange: "")
+    </div>
+</div>

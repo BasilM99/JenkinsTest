@@ -1,0 +1,129 @@
+    html {
+        background: #f2f2f2;
+    }
+
+
+    .revslider .caption.big_black {
+        color: #fff !important;
+    }
+
+
+    .page-title {
+        color: #333;
+    }
+	
+	
+	
+	#logo span,
+    #footer .logo span,
+    a:hover, a > *:hover,
+	#navigation a:hover, #navigation .hover > a, #navigation .current > a,
+	#navigation > a:hover i:before, #navigation > .current i:before,
+	.link:hover,
+	.nav-toggle:hover,
+	.promo-block02:after,
+	.project-feed-filter li .active:before,
+	.filter li .active,
+	.filter li .active:before,
+	.project-item,
+    .member-social-links a:hover,
+     blockquote .person .accent,
+    .service-icon,
+	.iconbox.left:hover > span,
+	.iconbox.heading:hover > span,
+    .member-info h4,
+    .accordion-button.ui-state-active,
+	.recent-blog h5 a:hover,
+	.recent-blog p a:hover,
+	.entry-utility a:hover, .entry-utility i:hover,
+    .post-meta a:hover,
+    .comment .reply:hover,
+    .post-block .post-entry h2:hover,
+    .widget_categories li a:hover,
+    #footer .widget_categories li a:hover,
+    #footer .widget_recent_entries a:hover,
+    #sidebar .jta-tweet-timestamp-link:hover,
+    #footer .jta-tweet-timestamp-link:hover,
+    #sidebar .jta-tweet-text a:hover,
+    #footer a:hover,
+    .social-links li a:hover,
+    .content-social-links li a:hover,
+	.ui-tabs .ui-tabs-nav li a:hover,
+	.ui-tabs .ui-tabs-nav li.ui-tabs-selected a,
+	.block_tabs_type_3 .tabs li a.current,
+	.block_tabs_type_3 .tabs li a.current i,
+	.testimonials-author,
+	.ui-accordion .ui-accordion-header-active:hover, .ui-accordion .ui-accordion-header-active,
+	.project-item-shape .item-title:hover,
+	.dropcap,
+	.btnlink:hover,
+	.ei-title h2 span
+	 {
+        color: #14a0e6;
+    }
+
+
+     .page-title,
+    .skillbar .skill-progress,
+	.box-wrapper .box:hover,
+	.project-item:hover,
+	.pricing-table-simple .level-max div h2,
+    .pricing-table-extended .level-max .header,
+    .project-item .mask,
+	.bg_page_nav a.pager-link:hover,
+    #infscr-loading div,
+	.process.ok,
+	.iconbox.hexagon:hover > span,
+    .photo-stream a:hover,
+    .pagination a:hover,
+    .pagination .current,
+    .project-nav a:hover,
+    #back-to-top:hover,
+	.ui-accordion-icon-active,
+	.recent-blog .icon,
+	.items li a .overlay,
+	.service:hover .service-icon,
+	.service-feature3:hover,
+	.bar_graph li span,
+	.jcarousel-next:hover, .jcarousel-next:focus, .jcarousel-next:active, .jcarousel-prev:hover, .jcarousel-prev:focus, .jcarousel-prev:active,
+	.ei-slider-thumbs li.ei-slider-element
+	 {
+        background-color: #14a0e6;
+    }
+
+	#header,
+	#navigation a:hover, #navigation .hover > a, #navigation .current > a,
+	#navigation ul,
+	.team-member:hover,
+	.link:hover, 
+	.project-feed-filter li a:hover, 
+	.project-feed-filter li .active,
+	.filter li a:hover,
+	.filter li a:active,
+	.block_tabs_type_3 .tabs li a.current,
+	.btnlink:hover,
+	 blockquote
+	 {
+        border-color: #14a0e6;
+    }
+    .gray-green:hover,
+    .green-gray,
+    .green-darkgray,
+    .darkgray-green:hover {
+        background: #14a0e6;
+    }
+	
+	.pricing-table-extended .level-max h2 span:after
+	 {
+        border-top-color: #14a0e6;
+     }
+	.promo-block02
+	 {
+        border-top-color: #14a0e6;
+     }
+	.ui-tabs .ui-tabs-nav li a:hover,
+	.ui-tabs .ui-tabs-nav li.ui-tabs-selected a
+	 {
+        border-top-color: #14a0e6;
+     }
+	

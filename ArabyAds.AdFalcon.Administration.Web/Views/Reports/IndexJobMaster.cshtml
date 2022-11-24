@@ -1,0 +1,291 @@
+﻿@{
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+}
+
+<script language="javascript">
+
+
+    var result = false;
+    var ischecked = false;
+    var yesbtn = "@Html.GetResource("Yes", "Global")";
+    var nobtn = "@Html.GetResource("No", "Global")";
+    //var Confirmation = "@Html.GetResource("Send", "Confirmation")";
+    var ConfriamtionBoxTitle = "@Html.GetResource("Confirm")";
+    var close = "@Html.GetResource("Close","Commands")";
+    var rename = "@Html.GetResource("Rename", "Commands")";
+    var selectedName = "";
+    var selectednumber = 0;
+    var text;
+    var direction = "left";
+    $(document).ready(function () {
+            @{
+                if (string.IsNullOrEmpty(Request.QueryString["reportType"]) || Request.QueryString["reportType"].ToLower() == "app" || Request.QueryString["reportType"].ToLower() == "gapp")
+                {
+                    <text>
+            SetSelectedTap("ListMenuPublisher");
+                    </text>
+                }
+                else if(string.IsNullOrEmpty(Request.QueryString["reportType"]) || Request.QueryString["reportType"].ToLower() == "ad" || Request.QueryString["reportType"].ToLower() == "gad")
+                {
+
+                    <text>
+                           SetSelectedTap("ListMenuAdvertiser");
+                    </text>
+                }
+
+
+            }
+    });
+
+
+    function checked() {
+        $('input').each(function () {
+          
+            if ($(this).is(':checked')) {
+
+                var name = $(this).eq(0).parent().parent().find("#ReportTitle").text().trim();
+                
+                if (name.length > 30)
+                    name = name.substring(0, 30) + "..";
+                ischecked = true;
+                @{
+                    if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage=="ar")
+                    {
+
+                        <text>
+
+                selectedName += "<span style='float:" + direction + ";'>" + name + "-</span><br>";
+
+                </text>
+
+                    }else
+                    {
+                        <text>
+                selectedName += "<span style='float:" + direction + ";'>" + "-" + name + "</span><br>";
+                </text>
+                    }
+
+                }
+            }
+        });
+        return ischecked;
+    }
+
+    function popup(sender, SelectConfirmation, Confirmation) {
+
+        selectedName = "";
+        selectednumber = 0;
+        if (checked()) {
+            if (!result) {
+
+                $('<div id ="ConfirmationDialog" title="' + ConfriamtionBoxTitle + '"></div>').dialog({
+
+                    open: function () {
+                        text = Confirmation.format($("#MainHeader span").html().trim()) + " <br><br> <div style='float: " + direction + ";'>" + selectedName + "</div>";
+                        $(this).html(text);
+
+                    },
+                    close: function () {
+                        $(this).remove();
+                    },
+                    resizable: false,
+                    draggable: false,
+                    modal: true,
+                    showCloseButton: false,
+
+                    buttons: [
+                  {
+                      text: yesbtn,
+                      click: function () {
+                          $(this).dialog("close");
+                          result = true;
+
+                          $(sender).click();
+                      }
+                  },
+                  {
+                      text: nobtn,
+                      click: function () {
+                          $(this).dialog('close');
+                          result = false;
+                      }
+                  }
+                    ]
+
+                });
+
+            }
+        } else {
+            $('<div id = "NoCampaignsareSelected"></div>').dialog({
+
+                open: function (event, ui) {
+                    $(this).html(SelectConfirmation);
+                },
+                close: function () {
+                    result = false;
+
+                    $(this).remove();
+                },
+                resizable: false,
+                draggable: false,
+               // height: 140,
+                modal: true,
+            });
+       
+        }
+        ischecked = false;
+        return result;
+    }
+    var reportType = '@Html.ViewContext.RouteData.Values["reportType"]';
+
+    var gridItemId = 0;
+    var ok_text = '@Html.GetResource("Ok", "Commands")';
+    var service_url = null;
+    var service_callback = null;
+    function callServiceDownload(item, callback) {
+
+        //var src = baseUrl + 'Downloader.ashx?docId=' + jQuery(item).attr("item_extra_info");
+
+        //var link = document.createElement("a");
+        //jQuery(item).download = name;
+        //jQuery(item).href = src;
+        //jQuery(item).click();
+        return false;
+        //jQuery.ajax(
+        //                                      {
+        //                                          dataType: "json",
+        //                                          contentType: 'application/json; charset=utf-8',
+        //                                          type: "GET",
+        //                                          //data: prams,
+        //                                          url: src,
+        //                                          success: function (result) {
+        //                                              jQuery.globalEval(callback);
+
+        //                                          },
+        //                                          error: function (error) {
+        //                                              if (error.status == "200") {
+        //                                                  jQuery.globalEval(service_callback);
+        //                                              }
+
+        //                                          }
+        //                                      });
+    }
+
+
+    function callService(item, callback) { }
+
+
+    function old_callService(item, callback) {
+        gridToolTip.hide();
+        var url = jQuery(item).attr("href2");
+
+    }
+    function localInitilize() {
+        jQuery('input[data-date="true"]')
+            .daterangepicker({ dateFormat: '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat' });
+
+
+
+    };
+    function refreshReportGrid() {
+        RefrashGrid('Grid');
+    }
+    function generateReportGrid() {
+        var grid = $("#Grid").data("tGrid");
+        grid.rebind();
+    };
+    function reportGridDataBinding(args) {
+
+        args.data = $.extend(args.data,
+            {
+                FromDate: $('#FromDate').val(),
+                ToDate: $('#ToDate').val(),
+
+                reportType: '@Html.ViewContext.RouteData.Values["reportType"]'
+            });
+    };
+    function reportGridDataBound(e) {
+
+        var grid = $("#Grid").data("tGrid");
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(1);
+        }
+
+        var url = e.currentTarget.baseURI.toLowerCase()
+        var data = "";
+
+        if (url.indexOf('campaign') > 0)
+            data = $('#Grid table a[href*="Campaign"]');
+        else
+            data = $('#Grid table a[href*="HouseAd"]');
+
+
+        for (var i = 0 ; i < data.length; i++) {
+
+            data[i].outerHTML = "<span class='trimed-span'><a href='" + data[i] + "' title='" + data[i].innerText + "'>" + data[i].innerText + "</a></span>";
+        }
+
+    };
+
+
+</script>
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Report.ReportJobListViewModelBase
+@using (Html.BeginForm())
+{
+
+    @RenderSection("subheader")
+
+    <div class="data-row section-container">
+        <br />
+        <div class="data-row go-center">
+            <div class="blue-filter-container">
+                <table class="special-content">
+                    <tr>
+                        <td>
+                            <span class="go-bold">@Html.GetResource("From", "Global")</span>
+                        </td>
+                        <td style="width: 110px;">
+                            <input type="text" readonly="readonly" data-date="true" id="FromDate" name="FromDate"
+                                   class="text-box range-date-cntl" />
+                        </td>
+                        <td>
+                            <span class="go-bold">@Html.GetResource("To", "Global")</span>
+                        </td>
+                        <td style="width: 110px;">
+                            <input type="text" readonly="readonly" data-date="true" id="ToDate" name='ToDate'
+                                   class="text-box range-date-cntl left-range-cntrl" />
+                        </td>
+                        @*           <td class="ddl-td">
+                                <div style="width: 270px; overflow: hidden;">
+                                    @Html.DropDownList("StatusId", Model.Statuses)
+                                    </div>
+                            </td>*@
+                        <td>
+                            <input type="button" onclick="generateReportGrid()" value='@Html.GetResource("Filter")' class="btn filter-button " />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="tail">
+            </div>
+        </div>
+        <br />
+        @if (Model.TopActions != null)
+        {
+            Html.RenderPartial("PartialViews/Actions", Model.TopActions);
+        }
+        <div class="grid-container">
+            @RenderSection("Grid1")
+        </div>
+        @if (Model.BelowAction != null)
+        {
+            Html.RenderPartial("PartialViews/Actions", Model.BelowAction);
+        }
+    </div>
+    if (Model.ToolTips != null)
+    {
+        @Html.Partial("GridToolTop", Model.ToolTips)
+    }
+}

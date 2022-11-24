@@ -1,0 +1,11 @@
+﻿@model ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeUnitDto  
+<div class="data-row info-container last-container">
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field reverse-link">@(Model.Name)</span>
+            </div>
+            <div class="field-container">
+                <img   src='@(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + @Model.DocumentId.ToString())' />
+            </div>
+        </div>
+    </div>

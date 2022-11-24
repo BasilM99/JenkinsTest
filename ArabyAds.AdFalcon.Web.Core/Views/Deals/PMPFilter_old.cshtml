@@ -1,0 +1,282 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.PMPDeal.PMPDealListViewModel
+@*@using ArabyAds.Framework.DomainServices*@
+@using ArabyAds.AdFalcon.Web.Controllers.Model;
+
+@{
+    var ExchangeSelect2Dll = new Select2ViewModel
+    {
+        Id = "ExchangeListDll",
+        ActionName = "_IndexNoHttpsSelect2Object",
+        ControllerName = "Party",
+        ClintSideResourceFunction = "",
+        IsServerSide = true,
+        OptionalParameter = "",
+        IsTree = true,
+        Single = true,
+        PlaceHolder = Html.GetResource("SelectExchangeT", "PMPDeal"),
+        //OnSelectFunctions = "FixCountriesTree",
+        //OnReadyFunctions= "FixCountriesLimit"
+        ParameterObject = new { language = "en", SSpartyGrid_size = "10", Prefix = "", id = "ssppartner" },
+        AllowClear = true
+    };
+}
+<style type="text/css">
+    .dropdown.dropdown-lg .dropdown-menu {
+        margin-top: -1px;
+        padding: 6px 20px;
+    }
+
+    .input-group-btn .btn-group {
+        display: flex !important;
+    }
+
+    .btn-group .btn {
+        border-radius: 0;
+        margin-left: -1px;
+    }
+
+        .btn-group .btn:last-child {
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+
+    .btn-group .form-horizontal .btn[type="submit"] {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
+
+    .form-horizontal .form-group {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .form-group .form-control:last-child {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
+    #ExchangeListDllP > span > span.selection > span {
+        width: 294px;
+    }
+
+	#ExchangeListDllDiv {
+		margin-bottom: 5px;
+	}
+</style>
+<script>
+    function ResetPublisherNameData() {
+        $("#PublisherNameSpan").text('');
+        $("#PublisherNameSpan").val('');
+        $("#PublisherId").val('');
+        $("#PublisherName").val('');
+
+
+        $("#deletePublisherName").hide();
+
+    }
+
+    function ResetExchangeNameData() {
+        $("#ExchangeNameSpan").text('');
+
+        $("#ExchangeNameSpan").val('');
+        $("#ExchangeId").val('');
+        $("#ExchangeName").val('');
+        $("#deleteExchangeName").hide();
+
+	}
+
+
+	$(document).ready(function () {
+
+
+		$("#ExchangeListDllList").on('select2:select', function (e) {
+			let ddlElemnt = $("#ExchangeListDllList");
+			let ExchangeListDllList_Value = ddlElemnt.val();
+			let data = ddlElemnt.select2('data');
+
+			if ($("#ExchangeId").val() != ExchangeListDllList_Value) {
+
+				if (ExchangeListDllList_Value != null && (typeof (ExchangeListDllList_Value) != "undefined") && ExchangeListDllList_Value != "")
+					jQuery('[name="ExchangeId"]').val(ExchangeListDllList_Value);
+				if (data.length > 0)
+					jQuery('[name="ExchangeName"]').val(data[0].text);
+			}
+		});
+
+		$("#ExchangeListDllList").on('change', function (e) {
+			let ddlElemnt = $("#ExchangeListDllCreateDealList");
+			let ExchangeListDllCreateDealList_Value = ddlElemnt.val();
+
+
+
+
+
+			if (!(ExchangeListDllCreateDealList_Value != null && (typeof (ExchangeListDllCreateDealList_Value) != "undefined") && ExchangeListDllCreateDealList_Value != "")) {
+
+
+				jQuery("#ExchangeId").val(null);
+
+
+			}
+
+			return;
+
+		});
+	});
+</script>
+
+<div class="container special-content" style=" width:45%" id="targetingContainer">
+
+    <div class="input-group" id="adv-search">
+        <div class="dropdown dropdown-lg">
+            <div style="width: 450px;font-size:12px ;margin-top:2px;" class="dropdown-menu dropdown-menu-right" id="DealsFilterCollapse" role="menu">
+
+
+                <div class="data-row dealsRow">
+                    <div class="col-lg-offset-2">
+                        <div class="field-container marignBotoomCus">
+                            @Html.GetCheckBox("showArchived", Html.GetResource("ShowArchived"), false, onChange: "onAdFormatChange")
+                        </div>
+                    </div>
+                </div>
+                <div class="data-row dealsRow" id="GlobalFilterDealRow">
+
+                    <div class="col-lg-offset-2">
+                        <div class="field-container marignBotoomCus">
+
+                            @Html.GetCheckBox("IsGlobal", Html.GetResource("ShowGlobal", "Global"), false, onChange: "onAdFormatChange")
+
+                        </div>
+                    </div>
+                </div>
+                <div id="filterdiv" style="overflow:unset">
+                    <div class="data-row dealsRow">
+                        <div class="field-container marignBotoomCus">
+                            <span class="go-bold ">@Html.GetResource("Exchange", "PMPDeal")</span>
+                        </div>
+                        <div class="col-lg-offset-2">
+                            <span class="cost-model-container">
+                                @await Html.PartialAsync("Select2Dynamic", ExchangeSelect2Dll)
+
+                                @Html.HiddenFor(p => p.ExchangeId, new { id = "ExchangeId" })
+                                @Html.HiddenFor(p => p.ExchangeName)
+
+                            </span>
+                            @*<div class="field-container marignBotoomCus">
+            @Html.HiddenFor(p => p.ExchangeId, new { id = "ExchangeId" })
+            @Html.HiddenFor(p => p.ExchangeName)
+            <input type="text" readonly="readonly" id="ExchangeNameSpan" name='ExchangeNameSpan'
+                   value="@(Model != null ? Model.ExchangeName : string.Empty)" class="text-box range-date-cntl left-range-cntrl side-text" style="width:115px" />
+
+            <img class="floating-right" src='@Url.GetImagePath("find-icon.png")' onclick="showPartySearchDialogPMP();" />
+            <label id="deleteExchangeName" class="floating-right" style="display:none">
+                <a style="padding:8px !important;  margin-bottom:5px !important;border:none!important;" class="t-button t-button-icon t-button-bare t-grid-delete" type="button" onclick="ResetExchangeNameData()">
+                    <span class="t-icon t-delete"></span>
+                </a>
+
+            </label>
+            @Html.AdFalconValidationMessageFor(m => m.ExchangeId)
+        </div>*@
+                        </div>
+                    </div>
+
+
+                    <div class="data-row dealsRow">
+                        <div class="field-container marignBotoomCus">
+                            <span class="go-bold ">@Html.GetResource("Publisher", "Menu")</span>
+                        </div>
+                        <div class="col-lg-offset-2">
+                            <div class="field-container marignBotoomCus">
+                                @Html.AdFalconEditorFor(p => p.PublisherName)
+                                @*<input type="text" readonly="readonly" id="PublisherNameSpan" name='PublisherNameSpan'
+                                           value="@(Model != null ? Model.PublisherName : string.Empty)" class="text-box range-date-cntl left-range-cntrl side-text" style="width:115px" />
+                                    <img class="floating-right" src='@Url.GetImagePath("find-icon.png")' onclick="showAccountSearchDialogPMP();" />
+                                    <label id="deletePublisherName" class="floating-right" style="display:none">
+                                        <a style="padding:8px !important;  margin-bottom:5px !important;border:none!important;" class="t-button t-button-icon t-button-bare t-grid-delete" type="button" onclick="ResetPublisherNameData()">
+                                            <span class="t-icon t-delete"></span>
+                                        </a>
+                                    </label>
+                                    @Html.AdFalconValidationMessageFor(m => m.PublisherId)*@
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="data-row dealsRow">
+                        <div class="field-container marignBotoomCus">
+                            <span class="go-bold ">@Html.GetResource("AdFormat", "PMPDeal")</span>
+
+                        </div>
+
+                        <div class="col-lg-offset-2">
+                            <div class="field-container marignBotoomCus">
+                                @Html.GetCheckBox("AdFormatBanner", ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.Banner.ToText(), false, onChange: "onAdFormatChange", customValue: ((int)ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.Banner).ToString())
+                            </div>
+                            <div class="field-container marignBotoomCus">
+                                @Html.GetCheckBox("AdFormatInStream", ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.InStream.ToText(), false, onChange: "onAdFormatChange", customValue: ((int)ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.InStream).ToString())
+
+
+                            </div>
+                            <div class="field-container marignBotoomCus">
+                                @Html.GetCheckBox("AdFormatNative", ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.Native.ToText(), false, onChange: "onAdFormatChange", customValue: ((int)ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeGroup.Native).ToString())
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="data-row dealsRow">
+
+                        <div class="field-container marignBotoomCus">
+                            <span class="go-bold ">@Html.GetResource("Name", "Global")</span>
+
+                        </div>
+                        <div class="col-lg-offset-2">
+                            <div class="field-container marignBotoomCus">
+                                @Html.AdFalconEditorFor(p => p.DealName)
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="data-row dealsRow">
+
+                        <div class="field-container marignBotoomCus">
+                            <span class="go-bold ">@Html.GetResource("AdSize", "PMPDealTargetings")</span>
+
+                        </div>
+                        <div class="col-lg-offset-2">
+                            <div class="field-container marignBotoomCus">
+                                @await Html.PartialAsync("TreeDeals/Tree")
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="data-row dealsRow">
+
+                        <div class="field-container marignBotoomCus">
+                            <span class="go-bold ">@Html.GetResource("Country", "Global")</span>
+
+                        </div>
+                        <div class="col-lg-offset-2">
+                            <div class="field-container marignBotoomCus">
+                                @await Html.PartialAsync("TreeDeals/CountriesTree")
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="data-row dealsRow">
+                </div>
+                <div class="floating-right">
+
+                    <input type="button" onclick="generatePMPGrid(); ClickBtn('#FilterCloseBtn'); return true;" value='@Html.GetResource("Filter")' class="btn filter-button primary-btn" />
+                    <input type="button" id="FilterCloseBtn" onclick="return true;" data-toggle="collapse" data-target="#DealsFilterCollapse" aria-expanded="false" value='@Html.GetResource("Cancel")' class="btn filter-button " />
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+

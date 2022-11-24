@@ -1,0 +1,62 @@
+﻿@model Noqoush.AdFalcon.Administration.Web.Controllers.Model.Account.AddFundViewModel
+
+<div id="paymentDetailInfo">
+    <div id="bankInfo">
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("BankName", "BankAccount")</span>
+            </div>
+            <div class="field-container">
+                @Html.AdFalconEditorFor(p => p.FundDto.PaymentDetail.BankName)
+                @Html.AdFalconValidationMessageFor(p => p.FundDto.PaymentDetail.BankName)
+            </div>
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("BankAddress", "BankAccount")</span>
+            </div>
+            <div class="field-container">
+                @Html.AdFalconEditorFor(p => p.FundDto.PaymentDetail.BankAddress)
+                @Html.AdFalconValidationMessageFor(p => p.FundDto.PaymentDetail.BankAddress)
+            </div>
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("BeneficiaryName", "BankAccount")</span>
+            </div>
+            <div class="field-container">
+                @Html.AdFalconEditorFor(p => p.FundDto.PaymentDetail.BeneficiaryName)
+                @Html.AdFalconValidationMessageFor(p => p.FundDto.PaymentDetail.BeneficiaryName)
+            </div>
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("RecipientAccountNumber", "BankAccount")</span>
+            </div>
+            <div class="field-container">
+                @Html.AdFalconEditorFor(p => p.FundDto.PaymentDetail.RecipientAccountNumber)
+                @Html.AdFalconValidationMessageFor(p => p.FundDto.PaymentDetail.RecipientAccountNumber)
+            </div>
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("SWIFT", "BankAccount")</span>
+            </div>
+            <div class="field-container">
+                @Html.AdFalconEditorFor(p => p.FundDto.PaymentDetail.SWIFT)
+                @Html.AdFalconValidationMessageFor(p => p.FundDto.PaymentDetail.SWIFT)
+            </div>
+        </div>
+    </div>
+    <div id="paypalInfo">
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("UserName", "BankAccount")</span>
+            </div>
+            <div class="field-container">
+                @Html.AdFalconEditorFor(p => p.FundDto.PaymentDetail.UserName)
+                @Html.AdFalconValidationMessageFor(p => p.FundDto.PaymentDetail.UserName)
+            </div>
+        </div>
+    </div>
+</div>

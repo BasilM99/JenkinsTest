@@ -1,0 +1,7 @@
+﻿@using ArabyAds.AdFalcon.Web.Controllers.Model.Core
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.CreativeUnitViewModel
+
+@{
+    var uploadInfo = UploadViewModel.ParseCreativeUnit(Model);
+}
+@await Html.PartialAsync("UploadZIP", uploadInfo)

@@ -1,0 +1,451 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.Core.UploadViewModel
+<script type="text/javascript" language="javascript">
+    var @(Model.Name)Formats = new Array();
+    @{
+    if (Model.Formats != null)
+    {
+        foreach (var format in Model.Formats)
+        {
+            <text>
+    var format = new Object();
+    format.extension = "@(format.Format)";
+    format.maxSize = @(format.MaxSize);
+    @(Model.Name)Formats[@(Model.Name)Formats.length]=format;
+    </text>
+        }
+
+    }
+}
+</script>
+@Html.Hidden("InstramVideoCustomname", @Model.Name)
+<div orientationtype="@((int)Model.OrientationType)" environmenttype="@((int)Model.EnvironmentType)" orientationtypeid="0">
+    <div id="InstramVideo_@(Model.ParentId)" custom_name='@Model.Name' parent_id="@(Model.ParentId)" class="data-row data-container" requiredtype='@(Model.RequiredType)'>
+
+        <div class="help_note label-container">
+            - @Html.GetResource("VideoResolutions") @Html.GetResource("VideoResoluionSpec", "Global") @*@string.Join(", ", Model.DisplayText.Split(',').Select(x => x))*@
+          
+        </div>
+        <div class="floating-right label-container" style="margin-top:0px;width: 90px">
+            @Html.Partial("MoreInfoHtml", "MoreInfoVideoSize", new ViewDataDictionary { { "Style2", "width: 400px;float:none;" } })
+
+        </div>
+            <div class="label-container data-row">
+                <span class="field-title required-field data-row">
+                    @string.Format(@Html.GetResource("VideoDurationLimitaionMsgFormat"), Noqoush.AdFalcon.Web.Controllers.Utilities.Config.InstreamVideoDuraionLimit)
+                </span>
+            </div>
+        <div class="label-container data-row">
+
+            <div class="label-container data-row">
+            </div><div class="label-container data-row">
+                <span class="reverse-link go-normal">@Html.GetResource("Required")</span>
+            </div>
+        </div>
+        <div class="data-row field-container" style="max-height:864px!important;">
+
+
+            <div class="floating-left">
+                <label id="videoName" style="display: none;"> </label>
+                <div id="VideoContainer" style="width:250px; height:150px;" class="floating-left banner-sizeV">
+                    @{
+                        if (Model.ThubnailDocId.HasValue)
+                        {
+                            @*<img id="fileImage" src='@(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + Model.ThubnailDocId.ToString())' width="250" height="150" />*@
+                            <div class="field-container" style="width:250px; height:150px;  max-height:200px!important;"
+                                 @(true ? "onclick=enlargeImage('" + Noqoush.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + Model.ThubnailDocId.ToString() + "');" : "")>
+                                <img id="fileImage" width="250" height="150" src='@(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + @Model.ThubnailDocId.ToString())' />
+                            </div>
+                                    <input name="@Model.Name" id="docId" adtypeid="@Model.AdTypeId" custom_name="content" value='@Model.ThubnailDocId.ToString()' parentid="@Model.ParentId" typeid="@Model.TypeId" type="hidden" />
+                        }
+                        else
+                        {
+
+                            <div id="divImage">
+
+                            </div>
+                                    <input name="@Model.Name" id="docId" adtypeid="@Model.AdTypeId" custom_name="content" parentid="@Model.ParentId" typeid="@Model.TypeId" type="hidden" />
+                        }
+                    }
+                </div>
+
+                <input type="hidden" name="CreativeUnitId" id="CreativeUnitId" value="@Model.ParentId" />
+                <input type="hidden" name="CreativeUnit_ThumbnailDocId" id="CreativeUnit_ThumbnailDocId" value="@Model.ThubnailDocId" />
+                <input type="hidden" name="CreativeUnit_VidoeDocId" id="CreativeUnit_VidoeDocId" value="@Model.DocId" />
+                <input type="hidden" name="CreativeUnit_BitRate" id="CreativeUnit_BitRate" value="@Model.VideoInformation.BitRate" />
+                <input type="hidden" name="CreativeUnit_VideoWidth" id="CreativeUnit_VideoWidth" value="@Model.VideoInformation.Width" />
+                <input type="hidden" name="CreativeUnit_VideoHeight" id="CreativeUnit_VideoHeight" value="@Model.VideoInformation.Height" />
+                <input type="hidden" name="CreativeUnit_Duration" id="CreativeUnit_Duration" value="@Model.VideoInformation.Duration" />
+                <input type="hidden" name="CreativeUnit_VideoFormat" id="CreativeUnit_VideoFormat" value="@Model.VideoInformation.FormatName" />
+
+            </div>
+
+            <div id="ViewVideoInfo" class="section-form-inner-container floating-right">
+                <div class="data-row data-container">
+                    <div class="label-container" style="width:150px">
+                    </div>
+                    <div class="floating-left">
+                        <span class="reverse-link go-normal" style="font-size: 9px;">
+                            (@Html.GetResource("RecommendedVideoBitRate"))
+                        </span>
+                    </div>
+                </div>
+
+                <div class="data-row data-container">
+                    <div class="label-container" style="width:150px">
+                        <span class="field-title required-field">@Html.GetResource("InstreamVideoBitRate"):  </span>
+                    </div>
+
+                    <div class="field-container" id="lblVideoBitRate">
+                        @Html.TextBoxFor(p => p.VideoInformation.BitRate, new { @class = "required", disabled = "disabled" })
+                        @*@Html.TextBox("FramRate", @Model.VideoInformation.BitRate)*@
+
+                    </div>
+                </div>
+                <div class="data-row data-container">
+                    <div class="label-container" style="width:150px">
+                    </div>
+                    <div class="floating-left">
+                        <span class="reverse-link go-normal" style="font-size: 9px;">
+                            (@string.Format(@Html.GetResource("VideoDurationLimitaionMsgFormat"), Noqoush.AdFalcon.Web.Controllers.Utilities.Config.InstreamVideoDuraionLimit))
+
+                        </span>
+                    </div>
+                </div>
+                <div class="data-row data-container">
+                    <div class="label-container" style="width:150px">
+                        <span class="field-title required-field">@Html.GetResource("InstreamVideoDuration"): </span>
+                    </div>
+                    <div class="field-container" id="lblVideoDuration">
+                        @*@Model.VideoInformation.Duration*@
+                        @Html.TextBoxFor(p => p.VideoInformation.Duration, new { @class = "required", disabled = "disabled" })
+
+
+                    </div>
+                </div>
+                <div class="data-row data-container">
+                    <div class="label-container" style="width:150px">
+                        <span class="field-title required-field">@Html.GetResource("InstreamVideoWidth"):  </span>
+                    </div>
+                    <div class="field-container" id="lblVideoWidth">
+                        @*@Model.VideoInformation.Width*@
+                        @Html.TextBoxFor(p => p.VideoInformation.Width, new { @class = "required", disabled = "disabled" })
+
+
+                    </div>
+                </div>
+                <div class="data-row data-container">
+                    <div class="label-container" style="width:150px">
+                        <span class="field-title required-field">@Html.GetResource("InstreamVideoHeight"):</span>
+                    </div>
+                    <div class="field-container" id="lblVideoHeight">
+                        @*@Model.VideoInformation.Height*@
+                        @Html.TextBoxFor(p => p.VideoInformation.Height, new { @class = "required", disabled = "disabled" })
+
+
+                    </div>
+                </div>
+                <div class="data-row data-container">
+                    <div class="label-container" style="width:150px">
+                        <span class="field-title required-field">@Html.GetResource("InstreamVideoType"):</span>
+                    </div>
+                    <div class="field-container" id="lblVideoFormat">
+                        @*@Model.VideoInformation.FormatName*@
+                        @Html.TextBoxFor(p => p.VideoInformation.FormatName, new { @class = "required", disabled = "disabled" })
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="floating-initial uplaod-ctnl-special  floating-right">
+                @(Html.Telerik().Upload().Name(Model.Name + "_upload").Multiple(false).ShowFileList(false)
+                .Async(async => async.Save("SaveStreamVideo", "Document", new { parentId = Model.ParentId, typeId = Model.TypeId }).Remove("Remove", "Document")
+                .AutoUpload(true)).ClientEvents(events => events.OnSuccess("onVideoUploadSuccess").OnUpload("onVideoUpload_" + Model.Name))
+                                .HtmlAttributes(new { accept = "video/mp4" }))
+            </div>
+
+            <div class="data-row">
+                @{
+
+                    if (Model.DocId.HasValue)
+                    {
+                        <a id="clearlnk" href="javascript:void(0);" onclick='ClearAttachedVideo(this,@(Model.ParentId));' class="clear-form floating-left">@Html.GetResource("Clear")</a>
+                                <a id="previewlnk1" style="display: none;" href="javascript:void(0);" onclick='previewUploadFile(this);'
+                                   class="preview-form floating-left">@Html.GetResource("Preview")</a>
+                    }
+                    else
+                    {
+                        <a id="clearlnk" style="display: none;" href="javascript:void(0);" onclick='ClearAttachedVideo(this);'
+                           class="clear-form floating-left">@Html.GetResource("Clear")</a>
+                                <a id="previewlnk1" style="display: none;" href="javascript:void(0);" onclick='previewUploadFile(this);'
+                                   class="preview-form floating-left">@Html.GetResource("Preview")</a>
+                    }
+                }
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script type="text/javascript" language="javascript">
+    //var maxFileSize(Model.Name) = (Model.);
+    var RequiredInstreamVideorMsg = '@Html.GetResource("RequiredInstreamVideoMsg")' ;
+    var sizevaldation;
+
+    var @(Model.Name)Formats = new Array();
+    @{
+        if (Model.Formats != null)
+        {
+            foreach (var format in Model.Formats)
+            {
+                <text>
+    var format = new Object();
+    format.extension = "@(format.Format)";
+    format.maxSize = @(format.MaxSize);
+
+    format.errorMessege='@string.Format(@Html.GetResource("FileSize1","Upload"), format.MaxSize / 1024)';
+    @(Model.Name)Formats[@(Model.Name)Formats.length]=format;
+    </text>
+            }
+
+        }
+    } ;
+    var Spinner;
+
+    function onVideoUpload_@(Model.Name)(e) {
+
+        if(e.files[0].extension.toLowerCase() != ".mp4")
+        {
+            $("<div id ='ConfirmationDialog' title='"+"@Html.GetResource("Warning", "Global")"+"'></div>").dialog({
+                open: function () {
+                    $(this).html("@Html.GetResource("InvalidIPRangeUploadFileType", "ResourceSet")");
+                },
+                close: function () {
+                    $(this).remove();
+                },
+                resizable: false,
+                draggable: false,
+              //  height: 100 ,
+                modal: true,
+
+            });
+
+            return false;
+
+        }else
+            if(e.files[0].size > format.maxSize)
+            {
+                $("<div id ='ConfirmationDialog' title='"+"@Html.GetResource("Warning", "Global")"+"'></div>").dialog({
+                    open: function () {
+                        $(this).html(format.errorMessege);
+                    },
+                    close: function () {
+                        $(this).remove();
+                    },
+                    resizable: false,
+                    draggable: false,
+                  //  height: 100 ,
+                    modal: true,
+
+                });
+
+                return false;
+            }else{
+
+                Spinner= getSpinnerType("form");
+                Spinner.showSpinner();
+
+            }
+        var items = @(Model.Name)Formats ;
+
+    };
+
+    function onVideoUploadSuccess(e) {
+
+        if (e.operation == "remove")
+            return true;
+        if (e.response.status == "OK") {
+
+            var docId = e.response.DocumentId;
+            //TODO:Osaleh to search for better way
+            var parent = jQuery(e.target).parent().parent();
+            parent.find('#clearlnk').show();
+            sucessVideoUpload("VideoContainer",e);
+            // changeVideo(parent, docId,e.response.videoName,e.response.img);
+        }
+        else {
+            ClearAttachedVideo( $("#clearlnk"),e.response.CreativeUnitId);
+            clearErrorMessage();
+            showErrorMessage(e.response.status);
+        }
+        Spinner.hideSpinner();
+
+    }
+
+    function changeVideo(elem, docId,videoName , thubnailImg) {
+        //
+        elem.find('#divImage').html(thubnailImg);
+        sucessVideoUpload('VideoContainer',e)
+
+        var inputDoc = $("<input type='hidden' />");
+        inputDoc.attr("name", "CreativeUnit_" + containerId + "_" + creativeUnitId);
+        inputDoc.val(docId);
+
+        var docIdElm = elem.find('#docId');
+        docIdElm.val(docId);
+        elem = elem.parent().parent();
+        elem.find('#clearlnk').show();
+        elem.find('#copylnk').show();
+        elem.find('#previewlnk').show();
+        elem.find('#videoName').show();
+        elem.find('#videoName').text(videoName);
+        // For Impression tracker
+        //   elem.find('[id^=impressionTrackerRedirectContainer]').show();
+        //jQuery('#fileImage').attr('src', src + docId);
+    }
+
+
+    function successImageFileUpload(e){
+        sucessFileUpload("@ViewData["VideoContainer"]",e,errorDuplicateUploadedSizeImage);
+    }
+    function sucessVideoUpload(containerId,e){
+
+        if (e.operation == "remove")
+            return true;
+
+        if (e.response.status == "OK") {
+            var vidoeDocId = e.response.VideoDocumentId;
+            var thumbnailDocId = e.response.ThumbnailDocId;
+            var width =250; //e.response.Width;
+            var height =150;// e.response.Height;
+            var creativeUnitId = e.response.CreativeUnitId;
+
+            var src = baseUrl + 'Downloader.ashx?docId=';
+
+            var removeIcon = $("<a>&nbsp;</a>");
+            removeIcon.addClass("remove_icon");
+            removeIcon.hide();
+            removeIcon.attr("href","javascript:void(0);");
+            attachClickEvent(removeIcon);
+
+            $("#ViewVideoInfo_" +  creativeUnitId).show();
+
+            var creativeUnit= $("#CreativeUnitId");//+  creativeUnitId);
+            creativeUnit.val(creativeUnitId);
+
+            //var inputVidoeDocId = $("#CreativeUnit_VidoeDocId_" +  creativeUnitId);
+            var inputVidoeDocId = $("#CreativeUnit_VidoeDocId" );//+  creativeUnitId);
+            inputVidoeDocId.val(vidoeDocId);
+
+            var inputThumbnailDoc = $("#CreativeUnit_ThumbnailDocId");// +  creativeUnitId);
+            inputThumbnailDoc.val(thumbnailDocId);
+
+            var inputVideoWidth = $("#CreativeUnit_VideoWidth");// +  creativeUnitId);
+            inputVideoWidth.val(e.response.VideoInformation.Width);
+            $("#VideoInformation_Width").val(e.response.VideoInformation.Width);
+
+            var inputVideoHeight = $("#CreativeUnit_VideoHeight");// +  creativeUnitId);
+            inputVideoHeight.val( e.response.VideoInformation.Height);
+            $("#VideoInformation_Height").val(e.response.VideoInformation.Height);
+
+            var inputVideoBitRate = $("#CreativeUnit_BitRate");// +  creativeUnitId);
+            inputVideoBitRate.val(e.response.VideoInformation.BitRate);
+            $("#VideoInformation_BitRate").val(e.response.VideoInformation.BitRate);
+
+            var inputVideoDuration = $("#CreativeUnit_Duration");// +  creativeUnitId);
+            inputVideoDuration.val(e.response.VideoInformation.Duration);
+            $("#VideoInformation_Duration").val(e.response.VideoInformation.Duration);
+
+            var inputVideoForamt = $("#CreativeUnit_VideoFormat");// +  creativeUnitId);
+            inputVideoForamt.val(e.response.VideoInformation.FormatName);
+            $("#VideoInformation_FormatName").val(e.response.VideoInformation.FormatName);
+
+
+
+            var imgElement = $("<img />");
+            imgElement.attr("width",width).attr("height",height);
+            imgElement.attr("src",src + thumbnailDocId);
+            imgElement.attr("id","fileImage");
+            imgElement.hide();
+
+            //var sizeSpan = $("<span></span>");
+            //sizeSpan.text(width + "X" + height);
+
+            var divContainer = $("<div></div>");
+            attachEvenToContainer(divContainer);
+            // divContainer.addClass("images_container");
+            $("#" + containerId).html("");
+            divContainer.append(imgElement);
+            divContainer.append(removeIcon);
+            divContainer.append(inputVidoeDocId);
+            //divContainer.append(inputVideoWidthDoc);
+            //divContainer.append(inputVideoHeight);
+            divContainer.append(inputThumbnailDoc);
+            //   divContainer.append(sizeSpan);
+            $("#" + containerId).append(divContainer);
+            imgElement.fadeIn();
+
+        }
+        else {
+            clearErrorMessage();
+            showErrorMessage(e.response.status);
+        }
+    }
+
+    function clearVideo()
+    {
+
+    }
+    function attachClickEvent(removeIcon){
+        removeIcon.click(function(){
+            var containerDiv = $(this).parent();
+            var docIdInput = containerDiv.find("input");
+            var docIdInputName = docIdInput.attr("name");
+            var creativeunitId = parseInt(docIdInputName.split("_")[2]);
+
+            var removeIndex = creativesUnitsIds.indexOf(creativeunitId);
+            if(removeIndex != -1){
+                creativesUnitsIds.splice(removeIndex,1);
+            }
+            containerDiv.remove()
+        });
+    }
+
+    function attachEvenToContainer(container){
+
+        attachClickEvent(container.find("a"));
+        container.mouseenter(function(){
+            $(this).find("a").fadeIn();
+        });
+        container.mouseleave(function(){
+            $(this).find("a").fadeOut();
+        });
+    }
+
+    function ClearAttachedVideo(e,creativeUnitId)
+    {
+
+        $("#CreativeUnitId" ).val('');
+        var inputThumbnailDoc = $("#CreativeUnit_ThumbnailDocId");// +  creativeUnitId);
+        var inputVidoeDocId = $("#CreativeUnit_VidoeDocId");// +  creativeUnitId);
+        inputThumbnailDoc.val('');
+        inputVidoeDocId.val('');
+
+        var inputVideoWidth = $("#CreativeUnit_VideoWidth");// +  creativeUnitId);
+        $("#VideoInformation_Width").val('');
+
+        var inputVideoHeight = $("#CreativeUnit_VideoHeight");// +  creativeUnitId);
+        $("#VideoInformation_Height").val('');
+
+        var inputVideoBitRate = $("#CreativeUnit_BitRate");// +  creativeUnitId);
+        $("#VideoInformation_BitRate").val('');
+
+        var inputVideoDuration = $("#CreativeUnit_Duration");// +  creativeUnitId);
+        $("#VideoInformation_Duration").val('');
+
+        var inputVideoForamt = $("#CreativeUnit_VideoFormat");// +  creativeUnitId);
+        $("#VideoInformation_FormatName").val('');
+        clearUploadFile(e);
+    }
+</script>

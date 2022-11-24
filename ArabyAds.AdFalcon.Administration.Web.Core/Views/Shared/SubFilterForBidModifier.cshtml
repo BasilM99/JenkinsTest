@@ -1,0 +1,165 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.QueryBuilder.FilterViewModel
+@{
+    Layout = null;
+
+
+    var selectItems = Enum.GetValues(typeof(ArabyAds.AdFalcon.Domain.Common.Model.Campaign.DimentionType)).Cast<ArabyAds.AdFalcon.Domain.Common.Model.Campaign.DimentionType>().Select(p => new SelectListItem() { Text = p.ToText(), Value = ((int)p).ToString() }).Where(M => M.Value != "0").ToList();
+    Model.Dimensions = new List<SelectListItem>();
+    Model.Dimensions.Add(new SelectListItem { Value = "-1", Text = "Please Select", Selected = true });
+    Model.Dimensions.AddRange(selectItems);
+}
+@*<br id="br@(Model.Id)">*@
+
+<div class="container" id="container@(Model.Id)">
+    <div class="row Frow-element" id="Frow@(Model.Id)">
+
+        <div class="col-sm-4" id="DCol@(Model.Id)">
+            <div class="field-container">
+
+                <label style="padding-right:15px;padding-top:5px;width:100%;" id="label@(Model.Id)" class="ad-filter-text" for="Drop@(Model.Id)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+            </div>
+            @Html.DropDownList("Drop" + Model.Id.ToString(), Model.Dimensions, new { @onchange = "DropChanged('" + Model.Id + "')", @style = "width: 140px;" })
+        </div>
+        @{
+
+
+            if (Model.BidModId > 0)
+            {
+                <text>
+                    <div class="col-sm-5" id="SCol@(Model.Id)" style="padding-left: 0px;margin-top:0px;margin-bottom:3px;margin-right: 20px;">
+                </text>
+                ArabyAds.AdFalcon.Services.Interfaces.Services.Reports.IReportService _reportServiceBid = ArabyAds.Framework.IoC.Instance.Resolve<ArabyAds.AdFalcon.Services.Interfaces.Services.Reports.IReportService>
+                    ();
+                ArabyAds.AdFalcon.Services.Interfaces.Services.Core.ILookupService _LookupServiceBid = ArabyAds.Framework.IoC.Instance.Resolve<ArabyAds.AdFalcon.Services.Interfaces.Services.Core.ILookupService>
+                 ();
+
+                var dimdto = _reportServiceBid.GetDimensionIdByType(new ArabyAds.Framework.ValueMessageWrapper<int>
+                { Value = Model.DimensionType });
+
+
+
+                var id = Model.Id;
+
+                if (Model.DimensionType != (int)ArabyAds.AdFalcon.Domain.Common.Model.Campaign.DimentionType.Geofence && Model.DimensionType != (int)ArabyAds.AdFalcon.Domain.Common.Model.Campaign.DimentionType.Time)
+                {
+                    List<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Reports.QB.DataQBDto> Dataob = new List<ArabyAds.AdFalcon.Services.Interfaces.DTOs.Reports.QB.DataQBDto>();
+                    string Ids = Model.DimensionValue;
+                    if (dimdto.IsSql)
+                    {
+
+                        var idsSting = string.Format(dimdto.TableName + ".Id = ({0})", Ids);
+                        var script = string.Format(dimdto.Source, dimdto.Attributes, dimdto.IsEnum ? " dual " : dimdto.TableName, dimdto.FilterCol, "");
+
+                        if (!string.IsNullOrEmpty(Ids) && (dimdto.Id != 7 && dimdto.Id != 8 && dimdto.Id != 9))
+                        {
+
+                            script = script + " AND " + idsSting;
+                        }
+                        else if (!string.IsNullOrEmpty(Ids))
+                        {
+                            script = script.Replace("search", "search AND " + idsSting);
+
+                        }
+
+                        script = script.Replace("search", "  ");
+                        //this.ViewContext.
+                        Dataob = _reportServiceBid.GetResultofDataQBDto(new ArabyAds.AdFalcon.Services.Interfaces.Messages.GetResultofDataQBDtoRequest { Script = script, OptionalDrop = string.Empty, MethodName = dimdto.TableName, Page = 1, Ids = Ids });
+
+
+                    }
+                    else
+                    {
+                        List<string> sourceItmes = dimdto.Source.Split(',').ToList();
+                        if (sourceItmes.Count() > 0)
+                        {
+                            sourceItmes = sourceItmes.ToList();
+
+                        }
+
+                        for (int i = 0; i < sourceItmes.Count; i++)
+                        {
+                            if(Convert.ToInt32(dimdto.Attributes.Split(',').ToArray()[i]) == Convert.ToInt32(Ids))
+                                Dataob.Add(new ArabyAds.AdFalcon.Services.Interfaces.DTOs.Reports.QB.DataQBDto {  Name = sourceItmes[i],  Id = Convert.ToInt32(dimdto.Attributes.Split(',').ToArray()[i]), TotalCount = sourceItmes.Count() });
+
+                        }
+
+
+
+                    }
+
+
+
+
+                    ArabyAds.AdFalcon.Web.Controllers.Model.QueryBuilder.Select2ViewModel model = new ArabyAds.AdFalcon.Web.Controllers.Model.QueryBuilder.Select2ViewModel
+                    {
+                        Code = id.ToString(),
+                        ActionName = "GetSelect2ElementsForBid",
+                        ControllerName = "Filter",
+                        Id = dimdto.Id.ToString(),
+                        LookUpName= Dataob[0].Name,
+                        ListOfIds = Model.DimensionValue,
+                        callBackFunction = "callBackModifierDimVal"
+                    };
+                    @await Html.PartialAsync("MultiSelectBid", model);
+                }
+                else if (Model.DimensionType == (int)ArabyAds.AdFalcon.Domain.Common.Model.Campaign.DimentionType.Time)
+                {
+                    if (string.IsNullOrEmpty(Model.DimensionValue) || Model.DimensionValue == "undefined")
+                    {
+                        Model.DimensionValue = string.Empty;
+                        @await Html.PartialAsync("TimeControl", new ArabyAds.AdFalcon.Web.Controllers.Model.Core.TimeViewModel { Name = "BidModfierSelect_" + id.ToString(), Hour = null, Min = null, callBackFunction = "callBackModifierDimVal", Code = id.ToString() });
+                    }
+
+
+
+                    else
+                    {
+                        DateTime dateTime = DateTime.ParseExact(Model.DimensionValue, "HH:mm",
+                        System.Globalization.CultureInfo.InvariantCulture);
+
+                        @await Html.PartialAsync("TimeControl", new ArabyAds.AdFalcon.Web.Controllers.Model.Core.TimeViewModel { Name = "BidModfierSelect_" + id.ToString(), Hour = dateTime.Hour, Min = dateTime.Minute, callBackFunction = "callBackModifierDimVal", Code = id.ToString() });
+                    }
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(Model.DimensionValue) || Model.DimensionValue == "undefined")
+                        Model.DimensionValue = string.Empty;
+                    @await Html.PartialAsync("TextControl", new ArabyAds.AdFalcon.Web.Controllers.Model.Core.TextViewModel { Name = "BidModfierSelect_" + id.ToString(), Value = Model.DimensionValue, callBackFunction = "callBackModifierDimVal", Code = id.ToString() });
+
+
+                }
+            }
+            else
+            { <text>
+                    <div class="col-sm-5" id="SCol@(Model.Id)" style="display:none;padding-left: 0px;margin-top:0px;margin-bottom:3px;margin-right: 20px;">
+            </text> }
+        }
+    </div>
+    <div class="col-sm-1" id="LCol@(Model.Id)" style=" padding: 0px; ">
+        <input type="number" style="width: 80px; display: none;" id="multoper_@(Model.Id)number" min="@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.MinBidModifierValue" max="@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.MaxBidModifierValue" class="multoper-number" onchange="MultoperNumberChange(event,this,@Model.Id)">
+    </div>
+    <div class="col-sm-1" id="RCol@(Model.Id)" style="display:none;padding: 0px!important; margin-left: 20px;">
+        <img name='iconImage' onclick="ShowConfirmationDialogForDeleteBidModifier(@Model.Id); return false;" class='minusicon' id='cancel-CriteriaBtn' alt='Cancel Add Criteria ' title='Cancel Add Criteria'>
+
+        <img id="PlusBidMod@(Model.Id)" name="iconImage" onclick="PlusBidMod(@Model.Id, true)" class="plusicon" alt="Add Criteria" title="Add Criteria" style="display:none">
+
+        @*<button type="button" style="background-color: #000000;
+        border-color: #000000;" class="btn btn-danger" onclick="remove(@Model.Id)">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>*@
+        @*<button type="button" class="btn btn-primary" onclick="Plus(@Model.Id)" id="Plus@(Model.Id)" style="display:none">
+            <span class="glyphicon glyphicon-plus"></span>
+        </button>*@
+    </div>
+    </div>
+
+
+
+    <input data-val="true" id="AdGroupBidModifiersDto_@(Model.Id)__Multiplier" name="AdGroupBidModifiersDto[@(Model.Id)].Multiplier" type="hidden" value="@(Model.Multiplier)">
+    <input data-val="true" id="AdGroupBidModifiersDto_@(Model.Id)__DimensionValue" name="AdGroupBidModifiersDto[@(Model.Id)].DimensionValue" type="hidden" value="@(Model.DimensionValue)">
+    <input data-val="true" id="AdGroupBidModifiersDto_@(Model.Id)__DimensionType" name="AdGroupBidModifiersDto[@(Model.Id)].DimensionType" type="hidden" value="@(Model.DimensionType)">
+    <input data-val="true" id="AdGroupBidModifiersDto_@(Model.Id)__IsDeleted" name="AdGroupBidModifiersDto[@(Model.Id)].IsDeleted" type="hidden" value="False">
+    <input data-val="true" id="AdGroupBidModifiersDto_@(Model.Id)__IsNotChanged" name="AdGroupBidModifiersDto[@(Model.Id)].IsNotChanged" type="hidden" value="False">
+
+    <hr style="margin:0px!important;margin-top:3px !important; " CodeVal="@(Model.Id)" id="hrBidMod@(Model.Id)">
+    </div>

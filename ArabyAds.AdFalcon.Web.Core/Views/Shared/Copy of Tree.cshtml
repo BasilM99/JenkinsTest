@@ -1,0 +1,109 @@
+﻿<script type="text/javascript">
+    var falg = false;
+    var Items = null;
+    jQuery(document).ready(function () {
+        jQuery.ajax(
+            {
+                url: '@Url.Action("GetTreeData", "Operator")',
+                cache: false,
+                success: function (result) {
+
+                    Items = result;
+                    initTree();
+                    initAutoComplete();
+                },
+                error: function (error) {
+                    //alert(error.responseText);
+                }
+            });
+    });
+    function GetItemsTreeNodes() {
+        return Items;
+    };
+    function GetItemsAuto(items, nodes) {
+        if (typeof (nodes) == "undefined")
+            nodes = new Array();
+        if (typeof (items) == "undefined")
+            items = Items;
+
+        for (var i = 0; i < items.length; i++) {
+            if ((typeof (items[i].children) != "undefined") && (items[i].children)) {
+                GetItemsAuto(items[i].children, nodes);
+                var obj = new Object();
+                obj.label = items[i].data;
+                obj.value = items[i].attributes.id;
+                nodes[nodes.length] = obj;
+            }
+            else {
+                var obj = new Object();
+                obj.label = items[i].data;
+                obj.value = items[i].attributes.id;
+                nodes[nodes.length] = obj;
+            }
+        }
+        return nodes;
+    };
+    function initTree() {
+        jQuery("#").tree({
+            ui: {
+                theme_name: "checkbox"
+            },
+            data: {
+                type: "json",
+                opts: {
+                    static: GetItemsTreeNodes()
+                }
+            },
+            plugins: {
+                checkbox: {}
+            }
+        });
+    };
+    function autoChanged(event, item) {
+        var match = jQuery('li[id=' + item.value + ']');
+        match.each(function () {
+            jQuery.tree.plugins.checkbox.check(this);
+        });
+        return false;
+    }
+    function initAutoComplete() {
+        (function () {
+            var obj = jQuery("#treeSearch");
+            var auto = obj.autocomplete(
+                {
+                    minLength: 0,
+                    source: GetItemsAuto(),
+                    select: function (event, ui) {
+                        if (ui.item != null) {
+                            autoChanged(event, ui.item);
+                        }
+                    }
+                });
+            auto.data("autocomplete")._renderItem = function (ul, item) {
+                ul.width(150);
+                if (falg) {
+                    falg = false;
+                    var returnval = jQuery("<li></li>")
+                                                 .data("item.autocomplete", item)
+                                                 .append("<a>" + item.label + "</a>");
+
+                    return returnval.appendTo(ul);
+                }
+                else {
+                    falg = true;
+                    return jQuery("<li class='alter-item'></li>")
+                                                 .data("item.autocomplete", item)
+                                                 .append("<a>" + item.label + "</a>")
+                                                 .appendTo(ul);
+                }
+            };
+        } ());
+    };
+</script>
+@*<div class="search-container data-row">
+    <input id="treeSearch" type="text" class="text-box add-key-word-txtbox" />
+</div>*@
+@Html.RegisterInternalStyleSheetLink("checkBoxStyle.css")
+<input id="treeSearch" type="text" class="text-box add-key-word-txtbox" />
+<div id="" style="max-height: 300px;" class="text-box-like-container">
+</div>

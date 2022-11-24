@@ -1,0 +1,135 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Core.UploadViewModel
+@{
+	string UploadAction = "Save";
+	string RemoveAction = "Remove";
+	string onchnage = "";
+	string onClear = "";
+	if (ViewData["UploadAction"] != null)
+	{
+		UploadAction = ViewData["UploadAction"].ToString();
+
+	}
+	if (ViewData["RemoveAction"] != null)
+	{
+		RemoveAction = ViewData["RemoveAction"].ToString();
+
+	}
+	if (ViewData["onchnage"] != null)
+	{
+		onchnage = ViewData["onchnage"].ToString();
+
+	}
+	if (ViewData["onClear"] != null)
+	{
+		onClear = ViewData["onClear"].ToString();
+
+	}
+
+}
+<script type="text/javascript" language="javascript">
+    //var maxFileSize(Model.Name) = (Model.);
+    var onchangeImageFunc;
+    var onClearedfuncName='@onClear'
+
+
+    var onchangefuncName ='@onchnage';
+
+    function onFileUpload_@(Model.Name)(e) {
+
+
+        jQuery(e.files).each(function()
+        {
+
+        });
+    };
+    function onImageChanged() {
+
+        if (onchangefuncName != "")
+            executeFunctionByName(onchangefuncName,window,"");
+
+    };
+    function onFileCleared() {
+
+
+        if (onClearedfuncName != "")
+            executeFunctionByName(onClearedfuncName,window,"");
+
+    };
+</script>
+<div orientationType="@((int)Model.OrientationType)" environmentType="@((int)Model.EnvironmentType)">
+	<div id="zip_@(Model.TypeId)_@(Model.ParentId)" custom_name='@Model.Name' class="data-row data-container">
+
+		<div class="label-container data-row">
+			<span class="field-title required-field data-row">
+				<span class="reverse-link">please Upload a zip File</span>
+
+			</span>
+		</div>
+		<div class="data-row field-container">
+			<div class="floating-right uplaod-ctnl-special">
+				@(Html.Telerik().Upload().Name(Model.Name + "_upload").Multiple(false).ShowFileList(false)
+								 .Async(async => async.Save("SaveForZip", "Document", new { parentId = Model.ParentId, typeId = Model.TypeId }).Remove(RemoveAction, "Document")
+																		.AutoUpload(true)).ClientEvents(events => events.OnSuccess("onFileUploadZipSuccess").OnUpload("onFileUpload_" + Model.Name)).HtmlAttributes(new { accept = ".zip" }))
+			</div>
+			<div class="floating-left">
+				<div class="floating-left">
+					@{
+						if (Model.DocId.HasValue && Model.DocId > 0)
+						{
+
+							<a href="javascript:void(0)" id="fileZip" onclick="downlaodByPostAction('@(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + Model.DocId.ToString())')" class="export-icon-excel floating-left" title="Download as Zip File" />
+
+							<a href="javascript:void(0)" id="NofileZip" style="display:none" onclick='return false;' class="export-icon-excel floating-left" title="No File" />
+							<input Name="@Model.Name" id="docId" adtypeid="@Model.AdTypeId" custom_name="content" value='@Model.DocId.ToString()' parentId="@Model.ParentId" typeId="@Model.TypeId" type="hidden" />
+						}
+						else
+						{
+							<a href="javascript:void(0)" id="NofileZip" onclick='return false;' class="export-icon-excel floating-left" title="No File" />
+							<a href="javascript:void(0)" id="fileZip" style="display:none" onclick="downlaodByPostAction('@(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.RootUrl + "Downloader.ashx?docId=" + Model.DocId.ToString())')" class="export-icon-excel floating-left" title="Download as Zip File" />
+
+							<input Name="@Model.Name" id="docId" adtypeid="@Model.AdTypeId" custom_name="content" parentId="@Model.ParentId" typeId="@Model.TypeId" type="hidden" />
+						}
+					}
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<div class="data-row">
+		@{
+
+			if (Model.DocId.HasValue && Model.DocId > 0)
+			{
+
+				<a id="clearlnk" href="javascript:void(0);" onclick='clearZipUploadFile(this); onFileCleared();' class="clear-form floating-left">@Html.GetResource("Clear")</a>
+
+			}
+			else
+			{
+
+				<a id="clearlnk" style="display: none;" href="javascript:void(0);" onclick='clearZipUploadFile(this); onFileCleared();'
+				   class="clear-form floating-left">@Html.GetResource("Clear")</a>
+
+			}
+		}
+	</div>
+
+	@if (ViewData["ShowImpressionTracker"] != null && bool.Parse(ViewData["ShowImpressionTracker"].ToString()))
+	{
+		<div class="data-row data-container" id="impressionTrackerRedirectContainer-@Model.Name" style="@(!Model.DocId.HasValue?"display:none;":"")float: @ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentFloat">
+			<div class="label-container2">
+				<span class="field-title required-field">@Html.GetResource("ImpressionTrackerRedirect", "CreativesSettings"):</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconTextBox(string.Format("{0}-ImpressionTrackerRedirect", Model.Name), Model.ImpressionTrackerRedirect)
+				<span id="@string.Format("{0}-ImpressionTrackerRedirect-URLErrorMsg2", Model.Name)" class="validation-arrow field-validation-error"
+					  style="display: none;"><span class="">@Html.GetResource("UrlMsg")</span></span>
+
+				</div>
+
+				<div class="clear">
+					&nbsp;
+				</div>
+			</div>
+		}
+	</div>

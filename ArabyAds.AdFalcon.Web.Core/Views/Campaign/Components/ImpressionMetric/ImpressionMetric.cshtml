@@ -1,0 +1,157 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.ImpressionMetricViewDialogModel
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+    var SaveImpressionMetricURL = '@Url.Action("SaveImpressionMetric", "Campaign")'
+    function AddImpressionMetric(id) {
+
+        if (validate()) {
+            var typeId = $("#impression_metrics_types").val();
+            var vavId = $("#MetricVendors_types").val();
+            var value = $("#impression_metrics_value").val();
+            var Igonre = Boolean(Radio_IsChecked("#impression_metrics_ignore"));
+            value = value / 100;
+
+            jQuery.ajax(
+               {
+                   dataType: "json",
+                   contentType: 'application/json; charset=utf-8',
+                   type: "GET",
+                   url: SaveImpressionMetricURL + "?id=" + id + "&typeId=" + typeId + "&vavId=" + vavId + "&value=" + value + "&Igonre=" + Igonre + "&campaignId=" + campaign_id + "&AdGroupId=" + ad_group_id,
+                   success: function (result) {
+
+                       if (result.Success) {
+                           generateImpressionMetricGrid();
+                           showSuccessfullyMessage(result.Message, false);
+
+                       }
+                       else {
+                           showErrorMessage(result.ErrorMessage, false, "ImpressionMetric-divErrorMessages");
+                       }
+                       jQuery("#ImpressionMetric-add-dialog-form").dialog("close");
+
+                   },
+                   error: function (error) {
+
+                       alert("Somthing Went Worng Please contact the admin");
+                       jQuery("#ImpressionMetric-add-dialog-form").dialog("close");
+
+                   }
+               });
+        }
+
+    }
+
+    function validate() {
+
+
+
+
+        //if ($("#impression_metrics_value").val() == "") {
+        //    $("#ImpressionMetric-add-dialog-form #required_signValue").show();
+        //    $("#displayValueErrorMsgPercentage").hide();
+        //    return false;
+        //}
+        //else {
+        //    $("#ImpressionMetric-add-dialog-form #required_signValue").hide();
+
+        //}
+
+        if ($("#impression_metrics_value").val() != "") {
+            if (!PercentageRegexPressById("impression_metrics_value")) {
+                $("#displayValueErrorMsgPercentage").show();
+                return false;
+            }
+        }
+
+        $("#displayValueErrorMsgPercentage").hide();
+        return true;
+    }
+    function IsDuplicated_impression(id) {
+
+        var grid = $('#ImpressionMetricGrid').data("tGrid");
+        array = $("#ImpressionMetricGrid tbody tr");
+        var dataItem;
+
+        for (var i = 0; i < array.length; i++) {
+            dataItem = grid.dataItem(array[i]);
+
+            if (typeof (dataItem) != "undefined")
+                if (
+                    dataItem.ImpressionMetric.ID == parseInt($("#impression_metrics_types").val()) &&
+                     dataItem.MetricVendor.ID == parseInt($("#MetricVendors_types").val()) &&
+                     dataItem.ID != id
+                    ) {
+                    return true;
+                }
+        }
+        return false;
+    }
+
+    function clear_impression() {
+        clearDialog("ImpressionMetric-add-dialog-form");
+        $("#displayValueErrorMsgPercentage").hide();
+        $("#ImpressionMetric-add-dialog-form #required_signValue").hide();
+        $("#impression_metrics_types").val(1);
+        //.val(1);
+    }
+
+</script>
+<div class="section-form-inner-container" style="overflow:visible">
+    @Html.Hidden("impression_metrics_id")
+
+
+    <div class="data-row data-container" id="Types">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("Type", "AppSite")</span>
+        </div>
+        <div class="field-container">
+            @Html.DropDownList("impression_metrics_types", Model.ImpressionMetrics, new { @onchange = "impressionMetricsTypeChanged()" })
+            <span class="field-title required-field">>=</span>
+
+         </div>
+        <div class="field-container">
+                @Html.AdFalconTextBox("impression_metrics_value", string.Empty, new
+		   {
+			   MaskType = "decimal",
+
+			   max = "100",
+			   onkeyup = "onbidPrecentagepress(event,this);PercentageRegexPressById('impression_metrics_value');",
+			   onkeypress = "onbidPrecentagepress(event,this);PercentageRegexPressById('impression_metrics_value'); ",
+			   style = "width: 65px;position: relative;top: 3px;"
+		   })
+            <span name="cost_element_type_sign" class="side-text">%</span>
+        </div>
+        <div class="field-container" style="position: relative;top: 8px;left: -8px;">
+
+            <span id="displayValueErrorMsgPercentage" class="validation-arrow field-validation-error" style="display: none;">
+                <span class="">@(string.Format(Html.GetResource("RangeMessage", "ResourceSet"), 0, 100))</span>
+            </span>
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("Vendor", "Campaign")</span>
+        </div>
+        <div class="field-container">
+            @Html.DropDownList("MetricVendors_types", Model.MetricVendors)
+
+        </div>
+
+    </div>
+
+
+
+
+
+<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">&nbsp;</span>
+    </div>
+    <div class="field-container">
+        @Html.GetCheckBox("impression_metrics_ignore", Html.GetResource("IgnorePerformanceMetric", "Campaign"), @isChecked: false)
+    </div>
+</div>
+</div>

@@ -1,0 +1,109 @@
+﻿@{
+	ViewBag.Title = Html.GetResource("UpdateAppSite", "Titles");
+}
+@using Noqoush.AdFalcon.Domain.Common.Model.AppSite
+@model Noqoush.AdFalcon.Web.Controllers.Model.AppSite.CreateViewModel
+@using (Html.BeginForm("Create", "AppSite", FormMethod.Post, new { id = "UpdateAppSiteForm" }))
+{
+<script type="text/javascript">
+       var uRlRequiredMsg = '@Html.GetResource("UrlMsg")';
+        var appSiteViewUrl = '@Url.Action("AppSiteView")';
+
+        $(document).ready( function () {
+
+           // localInitilize();
+        @if ((Model.AppSiteDto != null) && (Model.AppSiteDto.IsPublished))
+        {
+            <text>
+            addUrlRule();
+         </text>
+        }
+			OnPlacementTypeChanged();
+		});
+
+		  function OnPlacementTypeChanged() {
+
+			var Value = getCheckRadioValue($("input[name='AppSiteDto.PlacementType']"));
+            if (Value == '@Convert.ToInt32(AppSitePlacementType.Rewarded)') {
+                $("#RewardedValueDiv").show();
+                $("#RewardedNameDiv").show();
+
+            } else {
+                $("#RewardedValueDiv").hide();
+                $("#RewardedNameDiv").hide();
+				$("#AppSiteDto_RewardedVideoItemValue").val('');
+				$("#AppSiteDto_RewardedVideoItemName").val('');
+
+            }
+        }
+</script>
+	<div class="data-row section-container">
+		<input id="AppSiteDto_ID" name="AppSiteDto.ID" value="@Model.AppSiteDto.ID" type="hidden" />
+		<div class="data-row section-container">
+			@Html.Partial("Tabs", Model.Tabs)
+			<div class="section-form-container data-row" id="AppDetails">
+				@Html.Partial(Model.AppSiteViewName)
+			</div>
+		</div>
+		<h2>@Html.GetResource("General", "Global")</h2>
+		<div class="data-row info-container">
+			<div class="label-container ">
+				<span class="field-title required-field">@Html.GetResource("ReplacementType", "AppSite")</span>
+			</div>
+			<div class="field-container">
+				<div class="radio-button-container floating-left iea-rbtn-width-a">
+					@{
+
+				var PlacementType = Model != null && Model.AppSiteDto != null ? Model.AppSiteDto.PlacementType : 0;
+				var selectT = false;
+
+				selectT = PlacementType == (int)AppSitePlacementType.Display;
+					}
+					@Html.GetRadioButton("AppSiteDto.PlacementType", AppSitePlacementType.Display.ToString(), selectT, value: ((int)AppSitePlacementType.Display).ToString(), Id: "Display", onChange: "OnPlacementTypeChanged")
+
+				</div>
+				<div class="radio-button-container floating-left">
+					@{
+				selectT = PlacementType == (int)AppSitePlacementType.Native;
+					}
+					@Html.GetRadioButton("AppSiteDto.PlacementType", AppSitePlacementType.Native.ToString(), selectT, value: ((int)AppSitePlacementType.Native).ToString(), Id: "Native", onChange: "OnPlacementTypeChanged")
+				</div>
+
+				<div class="radio-button-container floating-left">
+					@{
+				selectT = PlacementType == (int)AppSitePlacementType.Rewarded;
+					}
+					@Html.GetRadioButton("AppSiteDto.PlacementType", AppSitePlacementType.Rewarded.ToString(), selectT, value: ((int)AppSitePlacementType.Rewarded).ToString(), Id: "Rewarded", onChange: "OnPlacementTypeChanged")
+				</div>
+			</div>
+
+			<div class="data-row info-container" id="RewardedValueDiv" style="">
+
+			</div>
+			<div class="data-row info-container" id="RewardedNameDiv" style="">
+
+				<div class="label-container">
+					<span class="field-title">@Html.GetResource("RewardedName")</span>
+				</div>
+				<div class="field-container">
+					<span class="small-big-field">@Html.AdFalconTextBox("AppSiteDto.RewardedVideoItemName", Model != null && Model.AppSiteDto != null ? Model.AppSiteDto.RewardedVideoItemName : null, new { type = "text", maxlength = "255" })</span>
+
+				</div>
+				<div class="field-container">
+					<span class="field-title">@Html.GetResource("RewardedValue")</span>
+				</div>
+				<div class="field-container">
+					<span class="small-big-field">@Html.AdFalconTextBox("AppSiteDto.RewardedVideoItemValue", Model != null && Model.AppSiteDto != null ? Model.AppSiteDto.RewardedVideoItemValue : null, new { type = "number",maskType = "Int", max = "247483647" })</span>
+
+				</div>
+			</div>
+
+		</div>
+
+		<div class="section-footer">
+		</div>
+		<div class="data-row button-container">
+			<input type="submit" name="Create" value="@Html.GetResource("Save", "Commands")" class="save-button" /><input type="button" value='@Html.GetResource("Close", "Commands")' class="btn" onclick="redirect('@Url.Action("Index", "AppSite")')" />
+		</div>
+	</div>
+}

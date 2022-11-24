@@ -1,0 +1,416 @@
+﻿
+<script>
+
+
+	var toastroptionsWithNoTime = {
+		"containerId": "toast-container",
+		"closeButton": true,
+		"debug": false,
+		"newestOnTop": true,
+		"progressBar": true,
+		"positionClass": "toast-bottom-right",
+		"preventDuplicates": true,
+		"onclick": null,
+
+
+		"hideDuration": "1000",
+		"timeOut": "0",
+		"extendedTimeOut": "0",
+		"showEasing": "swing",
+		"hideEasing": "linear",
+		"showMethod": "slideDown",
+		"hideMethod": "slideUp",
+		
+	}
+	var toastroptionsWithTime = {
+		"containerId": "toast-container",
+		"closeButton": true,
+		"debug": false,
+		"newestOnTop": true,
+		"progressBar": true,
+		"positionClass": "toast-bottom-right",
+		"preventDuplicates": true,
+		"onclick": null,
+		"showDuration": "300",
+		"hideDuration": "1000",
+		"timeOut": "@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.MessagesDurationTime",
+
+		"showEasing": "swing",
+		"hideEasing": "linear",
+		"showMethod": "slideDown",
+		"hideMethod": "slideUp",
+	
+	}
+	@if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage== "ar")
+	{<text>
+		toastroptionsWithTime.rtl = true;
+	toastroptionsWithNoTime.rtl = true;
+	toastroptionsWithTime.positionClass = "toast-bottom-left";
+	toastroptionsWithNoTime.positionClass = "toast-bottom-left";
+
+	
+	</text>
+
+
+	}
+	var toastrErrors = [];
+	var toastrSuccesses = [];
+	var toastrWarnings = [];
+	var toastrInfos = [];
+
+	var toastrErrorts = [];
+	var toastrSuccessets = [];
+	var toastrWarningts = [];
+	var toastrInfots = [];
+
+	function clearAllErrorMsg() {
+		//loop array massage
+
+		
+		for (let i = 0; i < toastrErrors.length; i++) {
+			
+			toastr.clear(toastrErrors[i]);
+
+		
+
+		}
+
+		toastrErrors = [];
+		toastrErrorts = [];
+	}
+
+	function clearAllSuccessMsg() {
+		for (let i = 0; i < toastrSuccesses.length; i++) {
+
+			toastr.clear(toastrSuccesses[i])
+		}
+
+		toastrSuccesses = [];
+		toastrSuccessets = [];
+	}
+
+	function clearAllWarningMsg() {
+		for (let i = 0; i < toastrWarnings.length; i++) {
+			toastr.clear(toastrWarnings[i])
+
+		}
+		toastrWarnings = [];
+		toastrWarningts = [];
+	}
+
+	function clearAllInfoMsg() {
+		for (let i = 0; i < toastrInfos.length; i++) {
+
+			toastr.clear(toastrInfos[i])
+		}
+		toastrInfos = [];
+		toastrInfots = [];
+	}
+
+
+	function checkAllErrorMsg(msg) {
+
+		var msgs = $(".toast-error .toast-message")
+
+
+
+		for (let i = 0; i < msgs.length; i++) {
+
+			if (msgs[i].innerText == msg)
+				return true;
+		}
+
+		return false;
+
+	
+	}
+
+	function checkAllSuccessMsg(msg) {
+
+
+		var msgs = $(".toast-success .toast-message")
+
+
+
+		for (let i = 0; i < msgs.length; i++) {
+
+			if (msgs[i].innerText == msg)
+				return true;
+		}
+
+		return false;
+	}
+
+	function checkAllWarningMsg(msg) {
+		var msgs = $(".toast-warning .toast-message")
+
+
+
+		for (let i = 0; i < msgs.length; i++) {
+
+			if (msgs[i].innerText == msg)
+				return true;
+		}
+
+		return false;
+
+	}
+
+	function checkAllInfoMsg(msg) {
+		var msgs = $(".toast-success .toast-message")
+
+
+
+		for (let i = 0; i < msgs.length; i++) {
+
+			if (msgs[i].innerText == msg)
+				return true;
+		}
+
+		return false;
+
+	}
+
+
+
+	function showNotfy(msg, type, title, option) {
+
+	debugger
+		if (type == "success")
+		if (!checkAllSuccessMsg(msg)) 
+		{
+				toastrSuccesses.push(toastr["success"](msg, title, option));
+				toastrSuccessets.push(msg);
+			}
+		if (type == "warning")
+			if (!checkAllWarningMsg(msg)) 
+		{
+				toastrWarnings.push(toastr.warning(msg, title, option));
+				toastrWarningts.push(msg);
+			}
+		if (type == "error")
+		if (!checkAllErrorMsg(msg))
+		{
+				toastrErrors.push(toastr.error(msg, title, option));
+				toastrErrorts.push(msg);
+			}
+		if (type == "info")
+	if (!checkAllInfoMsg(msg))
+		{
+				toastrInfos.push(artoastr.info(msg, title, option));
+				toastrInfots.push(msg);
+			}
+
+
+
+
+	}
+
+
+</script>
+
+@if (ViewBag.SuccessMessages != null)
+{
+	foreach (var item in ViewBag.SuccessMessages)
+	{
+		<script>
+
+		$(document).ready(function () {
+			showNotfy("@JavaScriptEncoder.Default.Encode(Html.Raw((string)item).ToHtmlString())", "success", '', toastroptionsWithNoTime)
+
+		});
+		</script>
+	}
+}
+@if (TempData["TempSuccessMessages"] != null)
+{
+	var tempSuccessMessages = TempData["TempSuccessMessages"] as List<string>;
+	foreach (var item in tempSuccessMessages)
+	{
+		<script>
+
+		$(document).ready(function () {
+			showNotfy("@JavaScriptEncoder.Default.Encode(Html.Raw(item).ToHtmlString())", "success", '', toastroptionsWithNoTime)
+
+		});
+		</script>
+	}
+}
+
+
+@if (ViewBag.WarningMessages != null)
+{
+	foreach (object item in ViewBag.WarningMessages)
+	{
+		<script>
+
+		$(document).ready(function () {
+
+			showNotfy("@JavaScriptEncoder.Default.Encode(Html.Raw(item).ToHtmlString())", "warning"  ,'', toastroptionsWithNoTime)
+		});
+		</script>
+	}
+}
+@if (TempData["TempWarningMessages"] != null)
+{
+	var tempWarningMessages = TempData["TempWarningMessages"] as List<string>;
+	foreach (var item in tempWarningMessages)
+	{
+		<script>
+
+		$(document).ready(function () {
+			showNotfy("@JavaScriptEncoder.Default.Encode(Html.Raw(item).ToHtmlString())", "warning", '', toastroptionsWithNoTime)
+
+		});
+		</script>
+	}
+}
+
+
+@if (ViewBag.InformationMessages != null)
+{
+	foreach (object item in ViewBag.InformationMessages)
+	{
+		<script>
+
+		$(document).ready(function () {
+
+
+			showNotfy("@JavaScriptEncoder.Default.Encode(Html.Raw(item).ToHtmlString())", "info", '', toastroptionsWithNoTime)
+
+		});
+		</script>
+	}
+}
+@if (TempData["TempInformationMessages"] != null)
+{
+	var tempInformationMessages = TempData["TempInformationMessages"] as List<string>;
+	foreach (var item in tempInformationMessages)
+	{
+		<script>
+
+		$(document).ready(function () {
+			showNotfy("@JavaScriptEncoder.Default.Encode(Html.Raw(item).ToHtmlString())", "info", '', toastroptionsWithNoTime)
+
+		});
+		</script>
+	}
+}
+
+
+@{
+	var displayflag = false;
+	if (((ViewBag.ErrorMessages != null) && (ViewBag.ErrorMessages.Count > 0)) ||
+		((TempData["TempErrorMessages"] as List<string> != null) && ((TempData["TempErrorMessages"] as List<string>).Count > 0)))
+	{
+		displayflag = true;
+	}
+	else
+	{
+		displayflag = (ViewData.ModelState != null && ViewData.ModelState.Where(p => p.Value.Errors.Count != 0).Count() != 0);
+	}
+	if (!displayflag)
+	{
+		displayflag = TempData["TempInformationMessages"] != null;
+	}
+}
+
+@{
+
+	if (ViewBag.ErrorMessages != null)
+	{
+		foreach (object item in ViewBag.ErrorMessages)
+		{
+
+			<script>
+
+		$(document).ready(function () {
+
+
+			showNotfy("@JavaScriptEncoder.Default.Encode(Html.Raw(item).ToHtmlString())", "error", '', toastroptionsWithNoTime)
+
+		});
+			</script>
+		}
+	}
+	if (TempData["TempErrorMessages"] != null)
+	{
+		var tempErrorMessages = TempData["TempErrorMessages"] as List<string>;
+		foreach (var item in tempErrorMessages)
+		{
+
+			<script>
+
+		$(document).ready(function () {
+			showNotfy("@JavaScriptEncoder.Default.Encode(Html.Raw(item).ToHtmlString())", "error", '', toastroptionsWithNoTime)
+
+		});
+			</script>
+
+
+		}
+	}
+}
+@if (ViewData.ModelState != null && ViewData.ModelState.Where(p => p.Value.Errors.Count != 0).Count() != 0)
+{
+
+	foreach (var item in ViewData.ModelState.Where(p => p.Value.Errors.Count != 0))
+	{
+
+
+		<script>
+
+		$(document).ready(function () {
+
+			showNotfy("@JavaScriptEncoder.Default.Encode(Html.Raw(item.Value.Errors[0].ErrorMessage).ToHtmlString())", "error", '', toastroptionsWithNoTime)
+		});
+		</script>
+
+	}
+}
+
+
+@*<div id="toast-container"></div>
+
+	<div class="container">
+		<h1>Messages Notification Examples</h1>
+
+		<button id="info" class="btn btn-info">Info</button>
+		<button id="success" class="btn btn-success">Success</button>
+		<button id="warning" class="btn btn-warning">Warning</button>
+		<button id="danger" class="btn btn-danger">Danger</button>
+	</div>
+	<script>
+		$("#info").click(function () {
+			bootoast.toast({
+				message: "This is an info toast message",
+				type: "info",
+				position: 'top-center',
+				icon: "exclamation-sign" // Glyphicons name
+			});
+		});
+
+		$("#success").click(function () {
+			bootoast.toast({
+				message: "This is a success toast message",
+				type: "success",
+				position: 'top-center',
+				icon: "ok-sign"
+			});
+		});
+
+		$("#warning").click(function () {
+			bootoast.toast({
+				message: "This is a warning toast message",
+				position: 'top-center',
+				type: "warning"
+			});
+		});
+
+		$("#danger").click(function () {
+			bootoast.toast({
+				message: "This is a danger toast message",
+				type: "danger"
+			});
+		});
+	</script>*@

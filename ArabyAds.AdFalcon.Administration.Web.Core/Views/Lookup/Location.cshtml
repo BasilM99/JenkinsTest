@@ -1,0 +1,79 @@
+﻿@using ArabyAds.AdFalcon.Services.Interfaces.DTOs.Core
+
+@model ArabyAds.AdFalcon.Administration.Web.Controllers.Model.Lookup.LocationViewModel
+@{
+    if (ViewContext.FormContext == null)
+    {
+        ViewContext.FormContext = new FormContext();
+    }
+    ViewData.TemplateInfo.HtmlFieldPrefix = "LookupDto";
+
+
+    if(Model.LookupDto != null && Model.LookupDto.ID != 0)
+    {
+        var item = Model.Locations.Where(p => p.Value == Model.LookupDto.ID.ToString()).SingleOrDefault();
+        Model.Locations.Remove(item);
+        
+  
+    }
+
+    
+}
+
+<div class="data-row data-container">
+    <div class="label-container2">
+        <span class="field-title required-field">@Html.GetResource("TwoLetterCode","LocationAdmin")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconTextBoxFor(p => (p.LookupDto as LocationDto).TwoLettersCode)
+        @Html.ValidationMessageFor(p => (p.LookupDto as LocationDto).TwoLettersCode)
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container2">
+        <span class="field-title required-field">@Html.GetResource("ThreeLetterCode","LocationAdmin")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconTextBoxFor(p => (p.LookupDto as LocationDto).ThreeLettersCode)
+        @Html.ValidationMessageFor(p => (p.LookupDto as LocationDto).ThreeLettersCode)
+    </div>
+</div>
+<div class="data-row data-container">
+    <div class="label-container2">
+        <span class="field-title required-field">@Html.GetResource("MoblieCountryCode","LocationAdmin")</span>
+    </div>
+    <div class="field-container">
+        @Html.AdFalconTextBoxFor(p => (p.LookupDto as LocationDto).MobileCountryCode)
+        @Html.ValidationMessageFor(p => (p.LookupDto as LocationDto).MobileCountryCode)
+        <span class="data-row guid-text go-left">@Html.GetResource("MoblieCountryCodeHelp","LocationAdmin")</span>
+    </div>
+</div>
+
+@if (Model.LookupDto != null && Model.LookupDto.ID == 0)
+{
+    {
+        var selectItems = Enum.GetValues(typeof(LocationType)).Cast<LocationType>().Select(p => new SelectListItem() { Text = p.ToString(), Value = ((int)p).ToString() }).ToList();
+        selectItems.Insert(0,new SelectListItem(){ Text = Html.GetResource("Select"),Value=string.Empty});
+    
+<div class="data-row data-container">
+    <div class="label-container2">
+        <span class="field-title required-field">@Html.GetResource("Type")</span>
+    </div>
+    <div class="field-container">
+        @Html.DropDownListFor(p => (p.LookupDto as LocationDto).Type, selectItems, new { onchange = "GetListParent(this)" })
+        @Html.ValidationMessageFor(p => (p.LookupDto as LocationDto).Type)
+        
+    </div>
+</div>
+}
+}
+
+<div class="data-row data-container" style="display:none" id="ParentIdDiv">
+    <div class="label-container2">
+        <span class="field-title required-field">@Html.GetResource("Parent", "LocationAdmin")</span>
+    </div>
+    <div class="field-container">
+        @Html.DropDownList("ParentId", Model.Locations)
+
+    </div>
+</div>

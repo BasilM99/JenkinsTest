@@ -1,0 +1,296 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.QueryBuilder.TreeViewMode
+    <script>
+        $(document).ready(function () {
+            Get@(Model.Name)TreeData();
+            
+        });
+        //var @(Model.Name)DataJSON = null;// [{ "attributes": { "id": "26000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": true }, "children": [{ "attributes": { "id": "71", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Ad Type Group" }, { "attributes": { "id": "24", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": true }, "children": [], "data": "Date" }, { "attributes": { "id": "21000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": true }, "children": [{ "attributes": { "id": "25000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "70", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Ad Creative Unit" }, { "attributes": { "id": "6000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "8", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Ad" }, { "attributes": { "id": "2000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "4", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Ad Group" }, { "attributes": { "id": "1000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "3", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }, { "attributes": { "id": "29000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "5", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "2100060", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": true }, "children": [{ "attributes": { "id": "200500", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "744", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Ad Group" }, { "attributes": { "id": "10040", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "6733", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }, { "attributes": { "id": "8290080", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "5786", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Campa.ign Type" }], "data": "Campaign" }, { "attributes": { "id": "253", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "6770", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Account" }, { "attributes": { "id": "19", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }, { "attributes": { "id": "6745", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Domain Url" }], "data": "Advertiser" }], "data": "Name" }], "data": "Campaign Type" }], "data": "Campaign" }, { "attributes": { "id": "23", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "60", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Account" }, { "attributes": { "id": "1", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }, { "attributes": { "id": "67", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Domain Url" }], "data": "Advertiser" }, { "attributes": { "id": "23000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": true }, "children": [{ "attributes": { "id": "4000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "6", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Account" }, { "attributes": { "id": "5000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "7", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }, { "attributes": { "id": "25", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Url" }], "data": "App/Site" }, { "attributes": { "id": "20000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "22", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }, { "attributes": { "id": "26", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Url" }, { "attributes": { "id": "68", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Sub Publisher Id" }], "data": "Sub App/site" }], "data": "Publisher" }, { "attributes": { "id": "17000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": true }, "children": [{ "attributes": { "id": "19", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Buyer Deal" }, { "attributes": { "id": "14000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": true }, "children": [{ "attributes": { "id": "16", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "52", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Gender" }, { "attributes": { "id": "17", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "58", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Agegroup" }], "data": "Demographics" }, { "attributes": { "id": "12000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": true }, "children": [{ "attributes": { "id": "12", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "48", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Operator" }, { "attributes": { "id": "13", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "51", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Manufacturer" }, { "attributes": { "id": "15", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "46", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Platform" }, { "attributes": { "id": "73", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "74", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Model" }, { "attributes": { "id": "28000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "62", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Environment Type" }, { "attributes": { "id": "27000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "20", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Connection Type" }, { "attributes": { "id": "19000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "79", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Language" }], "data": "Device" }, { "attributes": { "id": "7000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": true }, "children": [{ "attributes": { "id": "11", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "42", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Region" }, { "attributes": { "id": "9", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "54", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Country" }, { "attributes": { "id": "10", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "56", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "City" }], "data": "Location" }, { "attributes": { "id": "22000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": true }, "children": [{ "attributes": { "id": "27", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Description" }], "data": "Creative Unit" }, { "attributes": { "id": "16000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": true }, "children": [{ "attributes": { "id": "18", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Keyword" }]
+                    //[{ "attributes": { "id": "26000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": true }, "children": [{ "attributes": { "id": "71", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Ad Type Group" }, { "attributes": { "id": "24", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": true }, "children": [], "data": "Date" }, { "attributes": { "id": "21000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": true }, "children": [{ "attributes": { "id": "25000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "70", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Ad Creative Unit" }, { "attributes": { "id": "6000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "8", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Ad" }, { "attributes": { "id": "2000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "4", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Ad Group" }, { "attributes": { "id": "1000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "3", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }, { "attributes": { "id": "29000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "5", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Campaign Type" }], "data": "Campaign" }, { "attributes": { "id": "23", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "60", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Account" }, { "attributes": { "id": "1", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }, { "attributes": { "id": "67", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Domain Url" }], "data": "Advertiser" }, { "attributes": { "id": "23000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": true }, "children": [{ "attributes": { "id": "4000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "6", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Account" }, { "attributes": { "id": "5000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "7", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }, { "attributes": { "id": "25", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Url" }], "data": "App/Site" }, { "attributes": { "id": "20000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "22", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }, { "attributes": { "id": "26", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Url" }, { "attributes": { "id": "68", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Sub Publisher Id" }], "data": "Sub App/site" }], "data": "Publisher" }, { "attributes": { "id": "17000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": true }, "children": [{ "attributes": { "id": "19", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Buyer Deal" }, { "attributes": { "id": "14000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": true }, "children": [{ "attributes": { "id": "16", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "52", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Gender" }, { "attributes": { "id": "17", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "58", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Agegroup" }], "data": "Demographics" }, { "attributes": { "id": "12000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": true }, "children": [{ "attributes": { "id": "12", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "48", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Operator" }, { "attributes": { "id": "13", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "51", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Manufacturer" }, { "attributes": { "id": "15", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "46", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Platform" }, { "attributes": { "id": "73", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "74", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Model" }, { "attributes": { "id": "28000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "62", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Environment Type" }, { "attributes": { "id": "27000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "20", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Connection Type" }, { "attributes": { "id": "19000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "79", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Language" }], "data": "Device" }, { "attributes": { "id": "7000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": true }, "children": [{ "attributes": { "id": "11", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "42", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Region" }, { "attributes": { "id": "9", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "54", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Country" }, { "attributes": { "id": "10", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [{ "attributes": { "id": "56", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "City" }], "data": "Location" }, { "attributes": { "id": "22000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": true }, "children": [{ "attributes": { "id": "27", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Description" }], "data": "Creative Unit" }, { "attributes": { "id": "16000", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": true }, "children": [{ "attributes": { "id": "18", "selected": false, "Key": "columns", "state": null, "style": null, "isRoot": false }, "children": [], "data": "Name" }], "data": "Keyword" }];
+        var @(Model.Name)HeadLeaf = "<a  id='@(Model.Name)-li-{{i.MenuID}}' class='{{leafType}}-text leaf root-{{i.MenuID}}' href='#' data-root=root-{{i.MenuID}}><ins>&nbsp;</ins>{{i.data}}</a><span class='{{collapsible}}'>&nbsp;</span>";
+                var @(Model.Name)NewLi = "<li><div class='bottom-border'>{{a}}</div>{{ul}}</li>"
+                //var newLiWhithUl = "<li><div class='bottom-border'>{{a}}</div><ul></ul></li>"
+                var newUl = "<ul>{{li}}</ul>"
+                var childLeaf = "<a id='@(Model.Name)-li-{{rootId}}' class='{{leafType}}-text leaf root-{{rootId}}' href='#' data-root='root-{{i.ParentMenuID}}'><ins data-root='root-{{i.ParentMenuID}}'>&nbsp;</ins>{{i.data}}</a><span class='{{collapsible}}' style= \"display:inline-block \">&nbsp;</span>";
+
+
+                function  populate@(Model.Name)Ul(DataJSON) {
+                  
+
+                    //debugger;
+                    let Ul = $('#@(Model.Name)Ul');
+                    for (var i = 0; i < DataJSON.length; i++) {
+                        let _headLeaf = @(Model.Name)HeadLeaf;
+                        //let _newLiWhithUl = newLiWhithUl;
+                        let _newLi = @(Model.Name)NewLi;
+                        let _childLeaf = childLeaf;
+
+                        if (DataJSON[i].attributes.isRoot) {
+                            _headLeaf = _headLeaf.replace(/{{i.MenuID}}/g, DataJSON[i].attributes.id);
+                            _headLeaf = _headLeaf.replace(/{{i.data}}/g, DataJSON[i].data);
+                            _headLeaf = _headLeaf.replace("{{leafType}}", "head");
+
+                            if (DataJSON[i].children.length > 0)
+                                _headLeaf = _headLeaf.replace("{{collapsible}}", "collapse collapsible");
+                            else
+                                _headLeaf = _headLeaf.replace("{{collapsible}}", "");
+                        }
+                        _newLi = _newLi.replace(/{{a}}/g, _headLeaf);
+                        
+
+                        if (DataJSON[i].children.length > 0) {
+                            _newLi = @(Model.Name)recTree(DataJSON[i].children, _newLi, DataJSON[i].attributes.id, 250);
+                            //_newLi = _newLi.replace("{{ul}}", tempUL);
+                            _newLi = _newLi.replace("{{ul}}", "")
+                        } else {
+                            _newLi = _newLi.replace("{{ul}}", "")
+                        }
+                        _newLi = _newLi.replace(/{{ul}}/g, "");
+
+                        _newLi = _newLi.replace(/{{li}}/g, "");
+
+                        Ul.append(_newLi)
+                    }
+                }
+
+                function @(Model.Name)recTree(obj, elementsString, ParentID) {
+                    let _headLeaf = @(Model.Name)HeadLeaf;
+                    
+                    //let _newLiWhithUl = newLiWhithUl;
+                    let _newLi = @(Model.Name)NewLi;
+                    let _childLeaf = childLeaf;
+                    let _newUl = newUl;
+
+                    if (obj.length > 0) { 
+                        for (var i = 0; i < obj.length; i++) {
+                            //obj[i].attributes.isVisted = false;
+                            let _newLi = @(Model.Name)NewLi;
+                            let _childLeaf = childLeaf;
+                            let _newUl = newUl;
+
+                            let _Leaf = "";
+                            if (obj[i].attributes.isRoot) {
+                                _Leaf = _headLeaf.replace("{{i.MenuID}}", obj[i].attributes.id);
+                                _Leaf = _Leaf.replace(/{{i.data}}/g, obj[i].data);
+                                _headLeaf = _headLeaf.replace("{{leafType}}", "head");
+                            } else {
+                                _Leaf = _childLeaf.replace(/{{i.ParentMenuID}}/g, ParentID);
+                                _Leaf = _Leaf.replace(/{{i.data}}/g, obj[i].data);
+                                _Leaf = _Leaf.replace(/{{rootId}}/g, obj[i].attributes.id);
+                                if (obj[i].children.length > 0) {
+                                    _Leaf = _Leaf.replace("{{collapsible}}", "collapse collapsible");
+                                    _Leaf = _Leaf.replace("{{leafType}}", "head");
+                                }
+                                else {
+                                    _Leaf = _Leaf.replace("{{leafType}}", "child");
+                                    Leaf = _Leaf.replace("{{collapsible}}", "");
+                                }
+                            }
+                            _newLi = _newLi.replace("{{a}}", _Leaf);
+                            //if (!(i + 1 > obj.length) && typeof (obj[i - 1]) != "undefined" && !obj[i - 1].attributes.isVisted) {
+                            //    _newLi += "{{li" + ParentID+"}}";
+                            //}
+                            if (!(i + 1 > obj.length -1 )) {
+                                _newLi += "{{li}}";
+                            }
+                            //&& typeof(obj[i-1]) != "undefined" && obj[i-1].attributes.isVisted
+                            if (elementsString.includes("{{li" + ParentID + "}}") ) {
+                                elementsString = elementsString.replace("{{li" + ParentID + "}}", _newLi);
+                            } else {
+                                _newUl = _newUl.replace("{{li}}", _newLi);
+                                elementsString = elementsString.replace("{{ul}}", _newUl);
+
+                            }
+
+                            if (obj[i].children.length > 0) {
+                                //obj[i].attributes.isVisted = true;
+                                elementsString = @(Model.Name)recTree(obj[i].children, elementsString, obj[i].attributes.id);
+                            } else {
+
+                                elementsString = elementsString.replace("{{ul}}", "");
+                                elementsString = elementsString.replace("{{li" + ParentID +"}}", "");
+                                console.log('End');
+                            }
+                            if (i + 1 == obj.length)
+                                return elementsString;
+                            elementsString = elementsString.replace("{{li}}","{{li" + ParentID + "}}");
+
+                        }
+                    }
+                    return elementsString;
+                   
+        }
+        function @(Model.Name)RecursionClick(elem, action, isDetermined) {
+            let rootString = "";
+            if (typeof (elem) != "undefined") {
+                if (typeof (elem) == "string") {
+                    {
+                        rootString = elem;
+                        elem = document.getElementsByClassName(elem)[0];
+                    }
+                }
+                elem = $(elem);
+
+                if (action) {
+                    if (isDetermined) {
+                        $(elem).addClass('clicked checked');
+                        $(elem).removeClass('undetermined');
+                    } else
+                        $(elem).addClass('undetermined');
+
+                } else {
+                    if (isDetermined || $(elem).closest('li').children('ul').length == 0 || $(elem).closest('li').children('ul').find('.clicked.checked').length == 0) {
+                        $(elem).removeClass('undetermined');
+                    }
+                    else
+                        $(elem).addClass('undetermined');
+                    $(elem).removeClass('clicked checked');
+
+
+                }
+
+                let _isDetermined = false;
+                if ($('[data-root="' + elem.data().root + '"]').not('ins,.' + elem.data().root).length
+                    == $('[data-root="' + elem.data().root + '"].clicked.checked').not('ins,.' + elem.data().root).length && (typeof (isDetermined) != "undefined" && isDetermined)) {
+                    _isDetermined = true;
+                    // $(elem).addClass('clicked checked');
+                }
+
+                if ($("." + elem.data().root).data() && typeof ($("." + elem.data().root).data().root) != "undefined") {
+
+                    if ($(elem).hasClass(elem.data().root))
+                        return
+                    //$("." + elem.data().root ).data().root
+                    @(Model.Name)RecursionClick(elem.data().root, action, _isDetermined)
+                }
+
+            }
+            return
+        }
+
+        function Get@(Model.Name)TreeData() {
+            var valuec = "false";
+
+            if (Radio_IsChecked("#IncludeId"))
+                valuec = "true";
+            
+            jQuery.ajax({
+                dataType: "text json",
+                contentType: 'application/json; charset=utf-8',
+                type: "GET",
+                url:'@Url.Action(Model.ActionName, Model.ControllerName)'+ '?type=' + @Model.Id + '&factId=' + $("#FactId").val() + '&IncludeId=' + valuec ,
+                cache: false,
+                success: function (result) {
+                    populate@(Model.Name)Ul(result);
+                    bind@(Model.Name)Events();
+                    //eval(treeName + "Items=result;")
+                    //initTree(treeName, result);
+                    NewInitAutoComplete("@(Model.Name)", result);
+                    //eval('setSelected' + treeName + "();");
+                    
+                    
+                    
+                }
+            });
+
+        }
+
+        function bind@(Model.Name)Events(){
+            $(".treeview li>ul").css('display', 'none'); // Hide all 2-level ul
+            $(".collapsible").click(function (e) {
+                e.preventDefault();
+                $(this).toggleClass("collapse expand");
+                $(this).closest('li').children('ul').slideToggle();
+            });
+
+            $('a.child-text,a.head-text').click(@(Model.Name)click);
+
+        }
+
+        function @(Model.Name)click(elem) {
+            console.log('a.child-text');
+            if (typeof (elem) != "undefined") {
+                if (typeof (elem) == "string") {
+                    {
+                        let values = elem.split("#");
+                        let id = values[0];
+                        elem = $('#@(Model.Name)-li-' + id);
+                    }
+                } else {
+                    elem = this
+                }
+
+
+                if ($(elem).hasClass('clicked') || $(elem).hasClass('checked')) {
+                    if ($(elem).hasClass('head-text')) {
+                        $(elem).closest('li').find('a').removeClass('clicked checked undetermined');
+                        $(elem).closest('li').find('ul').hide();
+                    }
+                    else
+                        $(elem).removeClass('clicked checked');
+                @(Model.Name)RecursionClick(elem, false, false);
+                }
+                else {
+                    if ($(elem).hasClass('head-text')) {
+                        $(elem).closest('li').find('a').addClass('clicked checked');
+                        $(elem).closest('li').find('ul').show();
+                    }
+                    else {
+                        $(elem).addClass('clicked checked');
+                        $(elem).removeClass('undetermined');
+                    }
+                @(Model.Name)RecursionClick(elem, true, true);
+                }
+            }
+        }
+        
+        function NewInitAutoComplete(treeName, items) {
+            var obj = jQuery("#" + treeName + "treeSearch");
+            var data_source = GetItemsAuto(items);
+            var auto = obj.autocomplete(
+                {
+                    //minLength: 0,
+                    delay: 0,
+                    source: data_source,
+                    open: function () {
+                        /* 
+                           jQuery(this).autocomplete("widget").css("width", 400).css("position", "absolute"); //.find('li').css("width", 400);*/
+                    },
+                    focus: function (event, ui) {
+                        $("#" + treeName + "treeSearch").val(ui.item.label);
+                        return false;
+                    },
+                    select: function (event, ui) {
+                        jQuery("#" + treeName + "treeSearch").val(ui.item.label);
+                        if (ui.item != null) {
+                            @(Model.Name)click(ui.item.value);
+                        }
+                        return false;
+                    }
+                }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                    if (falg) {
+                        falg = false;
+                        var returnval = jQuery("<li></li>")
+                            .data("item.autocomplete", item)
+                            .append("<a>" + item.label + "</a>");
+                        return returnval.appendTo(ul);
+                    }
+                    else {
+                        falg = true;
+                        return jQuery("<li class='alter-item'></li>")
+                            .data("item.autocomplete", item)
+                            .append("<a>" + item.label + "</a>")
+                            .appendTo(ul);
+                    }
+                };
+
+        };
+    </script>
+<div id="autoSuggestWrapper" class="search-container data-row large-auto-complete">
+	<input id="@(Model.Name)treeSearch" type="text" class="text-box" cancelEnter=true />
+	<a href="#" class="search-click"></a>
+</div>
+<div id="@(Model.Name)Div" class="treeview tree2  tree2-checkbox" style="overflow-y: scroll;max-height: 248px;margin-top:15px;">
+
+    <ul id="@(Model.Name)Ul"></ul>
+
+</div>

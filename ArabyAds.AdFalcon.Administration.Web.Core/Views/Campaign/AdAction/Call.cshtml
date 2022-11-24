@@ -1,0 +1,40 @@
+﻿@model  ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.CreativeViewModel
+<div id="urlDetailsContainer">
+    @if (Model.AdCreativeDto.ID == 0 || Model.AdCreativeDto.TypeId != ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.PlainHTML)
+    {
+        
+        <script type="text/javascript" language="javascript">
+            jQuery(document).ready(function () { jQuery('#AdCreativeDto_AdActionValue_Value').change(ValidateAdAction); });
+            function ValidateAdAction() {
+                var elem = jQuery('#AdCreativeDto_AdActionValue_Value');
+                var returnvalue = true;
+                //check if display url is empty
+                var val = elem.val();
+                if ((val != null) && $.trim(val) != '') {
+                    if (!isPhone(val)) {
+                        returnvalue = false;
+                        jQuery('#displayURLErrorMsg').show();
+                    }
+                    else {
+                        jQuery('#displayURLErrorMsg').hide();
+                    }
+                }
+                return returnvalue;
+            };
+            var validateRM_AdAction = ValidateAdAction;
+        </script>
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("PhoneNumber")</span>
+            </div>
+            <div class="field-container">
+                @Html.AdFalconTextBoxFor(p => p.AdCreativeDto.AdActionValue.Value, new { maskType = "phone" })
+                @Html.AdFalconValidationMessageFor(p => p.AdCreativeDto.AdActionValue.Value)
+                <span id="displayURLErrorMsg" class="validation-arrow field-validation-error" style="display: none;">
+                    <span class="">@Html.GetResource("InvalidPhone", "ResourceSet")</span> </span>
+            </div>
+        </div>
+          @await Html.PartialAsync("AdAction/AdActionValueTracker/Tracker", Model)
+    }
+</div>
+

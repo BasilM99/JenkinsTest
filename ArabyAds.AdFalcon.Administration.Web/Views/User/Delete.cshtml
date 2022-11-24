@@ -1,0 +1,11 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("DeleteAccount", "Titles");
+}
+@Html.GetResource("Message", "DeleteAccount")
+<form id="deleteForm" action="@Request.RawUrl" method=post>
+<div class="data-row button-container">
+    <input value="Delete" type="submit" class="save-button" />
+            <a href="@Url.Action("edit","User")" class="clear-form">@Html.GetResource("Cancel","Global")</a>
+</div>
+
+</form>

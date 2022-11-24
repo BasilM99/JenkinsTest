@@ -1,0 +1,101 @@
+﻿<script language="javascript" type="text/javascript">
+
+    function generateLookupGrid()
+    {
+        var grid = $("#LookUpGrid").data("tGrid");
+        if (typeof (grid) != "undefined") {
+            grid.dataSource.read();
+            grid.refresh();
+
+        }
+    }
+    function generatePartyGrid() {
+        var grid = $("#LookUpGrid").data("kendowGrid");
+        if (typeof (grid) != "undefined") {
+            grid.dataSource.read();
+            grid.refresh();
+
+        }
+    };
+    function PartyGridDataBinding(args) {
+        @*args.data = $.extend(args.data,
+          {
+              Name: $('#party-search-dialog-form #Name').val(),
+              LookupId: '@Html.ViewContext.RouteData.Values["LookupId"]'
+          });
+        if (typeof (getCustomFilter) != "undefined") {
+            args.data = $.extend(args.data, getCustomFilter());
+        }*@
+    };
+    function PartyGridData() {
+        var a = 
+          {
+              Name: $('#party-search-dialog-form #Name').val(),
+              LookupId: '@Html.ViewContext.RouteData.Values["LookupId"]'
+        };
+        return a;
+    };
+    function PartyGridDataBound(e) {
+        var grid = $("#LookUpGrid").data("kendoGrid");
+        //if not first page and the no data then try load first page
+        if ((grid._data.length == 0) && (grid.dataSource.page() > 1)) {
+            e.preventDefault();
+            if (grid.dataSource.page() != 1) {
+                grid.dataSource.page(1);
+            }
+        }
+    };
+    var partyID, partyName;
+    function onRowSelected(e) {
+        var rows = e.sender.select();
+        //  var dataItem = null;
+        //  var grid = $("#MasterListItemGrid").data("kendoGrid");
+        dataItem = e.sender.dataItem(rows);
+        partyID = dataItem.ID;
+        partyName = dataItem.Name.Value;
+        selectParty();
+    }
+    function selectParty() {
+        changeParty(partyID, partyName);
+    }
+
+
+</script>
+@model ArabyAds.AdFalcon.Administration.Web.Controllers.Model.Lookup.ListViewModel
+<div>
+
+
+    @await Html.PartialAsync(Model.FilterView)
+
+    <div class="grid-container">
+
+        @(Html.Kendo().Grid(Model.Items)
+            .Name("LookUpGrid")
+            .Columns(columns =>
+            {
+                columns.Bound(o => o.ID);
+                columns.Bound(o => o.Name.Value).ClientTemplate("<div class='grid-title-container floating-left'><span>#= Name.Value#</span> </div>").Title(Html.GetResource("Name"));
+            }).EnableCustomBinding(true)
+                .DataSource(dataBinding =>
+                {
+                    //dataBinding.WebApi.Select("Index", "AppSite", new { ajax = true });
+                    dataBinding.Ajax().Read(read => read.Action("_Index", "Lookup").Data("lookupGridData")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+                })
+        .Events(clientEvents => clientEvents.DataBinding("PartyGridDataBinding").DataBound("PartyGridDataBound").Change("onRowSelected"))
+        .Scrollable(scrolling => scrolling.Enabled(false))
+        .Selectable().Pageable(paging => paging
+
+            .Input(false)
+            .Numeric(true)
+            .Info(true)
+            .PreviousNext(true)
+            .Refresh(true)
+
+            .Position(GridPagerPosition.Bottom))
+            .Filterable(filtering => filtering.Enabled(false))
+            .Groupable(grouping => grouping.Enabled(false)))
+
+    </div>
+
+</div>

@@ -1,0 +1,22 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Select2ViewModel
+@{
+    Layout = null;
+}
+
+
+
+<script type="text/javascript">
+
+    var @(Model.Id)ListId = "#Select2_" + '@Model.Id' + "List";
+
+
+</script>
+
+
+<div id="@(Model.Id)Div">
+    <div id="@(Model.Id)P">
+        <select id="Select2_@(Model.Id)List" name="Select2.@(Model.Id)List" class="js-example-theme-multiple js-states form-control select2-hidden-accessible multiselect2jq" style="width: 460px;" multiple="" tabindex="-1" aria-hidden="true"></select>
+    </div>
+</div>
+
+

@@ -1,0 +1,51 @@
+﻿@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeSummaryDto
+<div id="AdImagesDynamicUrlsDiv">
+    @{
+
+        for (int z = 0; z < Model.ImageUrls.Count(); z++)
+        {
+
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Model.ImageUrls[z].Width X @Model.ImageUrls[z].Height</span>
+                </div>
+                <div class="field-container">
+                    <div class="field-container">
+                        <span class="side-text margin-summary"> @Model.ImageUrls[z].Url</span>
+                    </div>
+                </div>
+            </div>
+                <div class="uploadDecorate@(Model.ID.ToString())">
+                    @{
+                        if (!Model.isSummary)
+                        {
+                            var list = Model.VideoEndCards.Where(p => p.ImageUrls.Where(x => x.Width == Model.ImageUrls[z].Width && x.Height == Model.ImageUrls[z].Height).FirstOrDefault() != null).FirstOrDefault();
+                            var ImageUrl = list.ImageUrls.Where(x => x.Width == Model.ImageUrls[z].Width && x.Height == Model.ImageUrls[z].Height).FirstOrDefault();
+
+                            foreach (var item in list.CreativeUnitsContent)
+                            {
+                                item.CreativeUnit = ImageUrl;
+                                item.CreativeUnit.PreviewHeight = 100;
+                                item.CreativeUnit.PreviewWidth = 100;
+                                Noqoush.AdFalcon.Web.Controllers.Model.Campaign.CreativeUnitViewModel creativeUnitViewModel = new Noqoush.AdFalcon.Web.Controllers.Model.Campaign.CreativeUnitViewModel
+                                {
+
+                                    DocumentId = item == null ? (int?)null : item.SnapshotDocumentId,
+                                    Content = item != null ? item.Content : string.Empty,
+                                    DisplayText = "",
+                                    CreativeUnitDto = item.CreativeUnit,
+                                    DeviceType = Noqoush.AdFalcon.Domain.Model.Core.DeviceTypeEnum.Any,
+                                    AdTypeId = (int)Model.TypeId,
+                                    Name = string.Format("CreativeUnit_{0}_{1}_{2}_{3}", (int)Model.TypeId, "0", (int)Noqoush.AdFalcon.Domain.Model.Core.DeviceTypeEnum.Any, item.CreativeUnitId),
+                                };
+                                @Html.Partial("Creative/CreativeUnit/BannerCreativeUnit", creativeUnitViewModel)
+                            }
+
+                        }
+                    }
+                </div>
+
+
+                        }
+    }
+</div>

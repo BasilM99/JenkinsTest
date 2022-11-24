@@ -1,0 +1,183 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.User.Receipt
+@{
+    ViewBag.Title = @Html.GetResource("ReceiptHeader", "Receipt");
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+    ViewBag.ShowMenu = true;
+}
+}
+
+ <style>
+        #breadcrumb a.btn#BreadCrum1 {
+            padding-left: 15px !important;
+        }
+    </style>
+@using (Html.BeginForm("Receipt"))
+{
+    <script language="javascript" type="text/javascript">
+
+        $(document).ready(function () {
+            $("#menu-nav").attr("style", "visibility: visible;");
+        });
+
+        function printReceipt() {
+            var myWindow = window.open('', '', 'width=500,height=500');
+            $("#print #header").show();
+            $("#print #logo").show();
+            $("#headerTable").show();
+            var htmlcode = $("#print").html();
+            $("#print #header").hide();
+            $("#print #logo").hide();
+            $("#headerTable").hide();
+
+
+            @if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage == "en")
+        {
+            <text>
+            myWindow.document.write(
+               "<head><style> .Receipt-body {direction: ltr;background-color: white;} .GEN {margin: 0 auto;clear: left;height: auto;z-index: 0;text-align: center;position: relative;} .ReceiptTable {margin-right: 5%; margin-left: 5%;text-align: left !important; width: 90%;}.attr {font-size: small;width: 25%;}.attrH {font-size: medium;font-weight: bold;width: 50%;text-align: left;}.img-td { position: absolute;left: 80%; top: -2%; display:none;}.td-info {text-align: left; width: 25%; font-size: small;} </style></head><body class='Receipt-body'>" + htmlcode + "</body>"
+           );
+
+            </text>
+
+        }
+        else
+        {
+            <text>
+            myWindow.document.write(
+               "<head><style> .Receipt-body {direction: rtl;background-color: white;} .GEN {margin: 0 auto;clear: left;height: auto;z-index: 0;text-align: center;position: relative;} .ReceiptTable {margin-right: 5%; margin-left: 5%;text-align: right !important; width: 90%;}.attr {font-size: small;width: 25%;}.attrH {font-size: medium;font-weight: bold;width: 50%;text-align: right;}.img-td { position: absolute;left: 0%; top: -2%; display:none;}.td-info {text-align: right; width: 25%; font-size: small;}</style></head><body class='Receipt-body'>" + htmlcode + "</body>"
+           );
+            </text>
+        }
+
+
+            myWindow.document.close();
+            myWindow.focus();
+            myWindow.print();
+            myWindow.close();
+
+        }
+    </script>
+
+    <div id="print">
+        <div class="GEN" id="header" style="font-size:large; display:none;">
+            @Html.GetResource("ReceiptHeader", "Receipt")
+        </div>
+        <br>
+
+        <table id="headerTable" class="GEN ReceiptTable" style="display:none;">
+            <tr>
+                <td class="attrH">@Html.GetResource("CompanyName", "Receipt")</td>
+                <td class="img-td" id="logo" rowspan="3"><img src="~/Content/en/magenta/images/adfalcon-bg.png" alt="AdFalcon Icon"></td>
+
+            </tr>
+            <tr>
+                <td class="attrH">@Html.GetResource("CompanyAdressOne", "Receipt")</td>
+
+
+            </tr>
+            <tr>
+                <td class="attrH">@Html.GetResource("CompanyAdressTwo", "Receipt")</td>
+
+            </tr>
+
+        </table>
+
+        <table class="GEN ReceiptTable">
+            <tr> <td colspan="4"><img src="~/Content/en/magenta/Images/horizontal-line.png" style=" height 4px; width 100%;" /></td></tr>
+            <tr>
+                <td class="attr" style="font-weight:bold;">@Html.GetResource("ReceiptNo", "Receipt")</td>
+                <td class="td-info">@Html.DisplayFor(m => m.NoqoushReceiptNumber)</td>
+                <td class="attr"></td>
+                <td class="td-info"></td>
+
+            </tr>
+            <tr> <td colspan="4"><img src="~/Content/en/magenta/Images/horizontal-line.png" style=" height 4px; width 100%;" /></td></tr>
+        </table>
+
+        <br>
+        <br>
+
+
+        <table class="GEN ReceiptTable" style="width:45%!important;">
+
+            <tr>
+                <td class="attr">@Html.GetResource("ReceivedFrom", "Receipt")</td>
+                <td class="td-info">@Html.DisplayFor(m => m.Name)</td>
+
+            </tr>
+
+            <tr>
+                <td class="attr">@Html.GetResource("ReceiptAmount", "Receipt")</td>
+                <td class="td-info">@Html.DisplayFor(m => m.Amount)$</td>
+
+
+
+            </tr>
+            @if (Model.VATAmount > 0)
+            {
+
+                <tr>
+                    <td class="attr">@Html.GetResource("VATAmount", "Global"):</td>
+                    <td class="td-info">@Html.DisplayFor(m => m.VATAmount)$</td>
+
+
+
+                </tr>
+            }
+            <tr>
+                <td class="attr">@Html.GetResource("ReceiptMethod", "Receipt")</td>
+                <td class="td-info">@Html.DisplayFor(m => m.Method)</td>
+
+
+            </tr>
+
+
+            <tr>
+
+                <td class="attr">@Html.GetResource("ReceiptDate", "Receipt")</td>
+                <td class="td-info">@Html.DisplayFor(m => m.TransactionDate)</td>
+            </tr>
+
+        </table>
+        <br>
+        <br>
+
+        <table class="GEN ReceiptTable">
+            <tr> <td colspan="4"><img src="~/Content/en/magenta/Images/horizontal-line.png" style=" height 4px; width 100%;" /></td></tr>
+
+            @if (Model.VATAmount > 0)
+            {
+                <tr>
+                    <td class="attr" style="font-weight:bold;">@Html.GetResource("TotalAmount", "Receipt")</td>
+                    <td class="td-info"></td>
+                    <td class="td-info"></td>
+                    <td class="td-info">@Html.DisplayFor(m => m.TotoalAmount)$</td>
+
+
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td class="attr" style="font-weight:bold;">@Html.GetResource("TotalAmount", "Receipt")</td>
+                    <td class="td-info"></td>
+                    <td class="td-info"></td>
+                    <td class="td-info">@Html.DisplayFor(m => m.Amount)$</td>
+
+
+                </tr>
+
+            }
+            <tr> <td colspan="4"><img src="~/Content/en/magenta/Images/horizontal-line.png" style=" height 4px; width 100%;" /></td></tr>
+        </table>
+
+    </div>
+    <table class="GEN ReceiptTable">
+        <tr>
+            <td class="printLogoTd">
+                <a href="javaScript:void(0);" class="printLogo" onclick="printReceipt()" id="adv" alt="Print"></a>
+            </td>
+        </tr>
+    </table>
+}
+

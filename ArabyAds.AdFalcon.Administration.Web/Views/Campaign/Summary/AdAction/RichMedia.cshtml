@@ -1,0 +1,61 @@
+﻿@*@using ArabyAds.Framework.DomainServices*@
+@model  ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeSummaryDto
+@if (Model.AdSubType == ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdSubTypes.ExpandableRichMedia)
+{
+	<div class="data-row info-container last-container">
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("CTAURL")</span>
+			</div>
+			<div class="field-container">
+				<a class="side-text" href="@Model.ActionValue.Value" target="_tab">@Model.ActionValue.Value</a>
+			</div>
+		</div>
+	</div>
+	<div class="data-row info-container last-container">
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("DisplayURL")</span>
+			</div>
+			<div class="field-container">
+				<a class="side-text" href="@Model.ActionValue.Value2" target="_tab">@Model.ActionValue.Value2</a>
+			</div>
+		</div>
+	</div>
+	@Html.Partial("Summary/AdAction/AdActionValueTracker/Tracker")
+}
+
+@if (Model.AdSubType == ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdSubTypes.HTML5RichMedia || Model.AdSubType == ArabyAds.AdFalcon.Domain.Common.Model.Campaign.AdSubTypes.HTML5Interstitial)
+{
+
+
+	{
+		int i = 0;
+
+		if (Model.ClickTags != null)
+		{
+			foreach (var item in Model.ClickTags)
+			{
+			<div class="data-row info-container last-container">
+				<div class="data-row data-container">
+					<div class="label-container">
+						<span class="field-title required-field">
+							
+								@item.VariableName 
+							
+							
+						</span>
+					</div>
+					<div class="field-container">
+						<a class="side-text" href="@item.TrackingUrl" target="_tab">@item.TrackingUrl</a>
+					</div>
+				</div>
+			</div>
+				{
+					i++;
+				}
+			}
+
+		}
+}
+		}

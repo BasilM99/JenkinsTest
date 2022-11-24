@@ -1,0 +1,46 @@
+﻿
+    <h2>@Html.GetResource("Theme", "AppSite")</h2>
+    <div class="section-form-inner-container last-container">
+        <div class="data-row data-container go-center">
+            <div class="f-container data-row">
+                <span class="f-img floating-left"></span><span id="themeSample" class="f-text go-left floating-left">@Html.GetResource("SampleAdText", "AppSite")</span>
+            </div>
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                @Html.GetRadioButton("Theme.IsCustom", "", true, "floating-right only-checkbox")
+            </div>
+            <div class="field-container">
+                @Html.Partial("Autocomplete", @ViewData["Themeauto"])
+            </div>
+            <input id="Theme_Id" name="Theme.Id" type="hidden" />
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                @Html.GetRadioButton("Theme.IsCustom", "", false, "floating-right only-checkbox")
+            </div>
+            <div class="field-container">
+                <div class="ddl-container data-row">
+                    <span class="check-box-text">@Html.GetResource("Custom", "AppSite")</span>
+                </div>
+            </div>
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("Background", "AppSite")</span>
+            </div>
+            <div class="field-container">
+                <input id="Theme_BackgroundColor" name="Theme.BackgroundColor" type="text" class="text-box" />
+                <span class="data-row guid-text go-left">e.g. #0055FF</span>
+            </div>
+        </div>
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("Text", "AppSite")</span>
+            </div>
+            <div class="field-container">
+                <input id="Theme_TextColor" name="Theme.TextColor" type="text" class="text-box" />
+                <span class="data-row guid-text go-left">e.g. #0055FF</span>
+            </div>
+        </div>
+    </div>

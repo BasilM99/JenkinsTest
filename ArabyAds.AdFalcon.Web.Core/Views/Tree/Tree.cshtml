@@ -1,0 +1,178 @@
+﻿@*@model ArabyAds.AdFalcon.Web.Controllers.Model.QueryBuilder.TreeViewMode
+	@{
+		Layout = null;
+	}
+
+
+	<script src="https://cdn.jsdelivr.net/npm/gijgo@1.9.6/js/gijgo.min.js" type="text/javascript"></script>
+	<link href="https://cdn.jsdelivr.net/npm/gijgo@1.9.6/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+	<style>
+		.row {
+			margin: 10px;
+		}
+	</style>
+	<script type="text/javascript">
+		var dataSourceUrl@(Model.Code) = '@Url.Action(Model.ActionName, Model.ControllerName)';
+		var Tree@(Model.Code);
+		$(document).ready(function () {
+
+			Tree@(Model.Code) = $('#' + '@Model.Code' + "Tree").tree({
+				primaryKey: 'Id',
+				uiLibrary: 'bootstrap',
+				dataSource: dataSourceUrl@(Model.Code) + "?type=" + '@Model.Id' + "&factId=" + $("#FactId").val(),
+				checkboxes: true
+			});
+			//$('#btnSave').on('click', function () {
+			//
+			//    var checkedIds = tree.getCheckedNodes();
+			//    //$.ajax({ url: '/Tree/SaveCheckedNodes', data: { checkedIds: checkedIds }, method: 'POST' })
+			//    //    .fail(function () {
+			//    //        alert('Failed to save.');
+			//    //    });
+			//});
+		});
+	</script>
+
+	<div class="container-fluid" style="border-style: ridge;
+		border-width: 2px 2px 1px 1px;width: 280px;height: 525px;" id="@(Model.Code)Div">
+
+		<div class="row" style="max-height: 525px; overflow-y: scroll;" id="@(Model.Code)Row">
+			<div id="@(Model.Code)Tree" style="height: 505px;"></div>
+		</div>
+	</div>
+
+*@
+
+
+
+@model ArabyAds.AdFalcon.Web.Controllers.Model.QueryBuilder.TreeViewMode
+@{
+
+	if (ViewBag.ondblclick == null)
+	{
+		ViewBag.ondblclick = "";
+	}
+
+}
+<script type="text/javascript">
+
+
+    var falg = false;
+	var @(Model.Name)Loaded = false;
+	  var dataSourceUrl@(Model.Code) = '@Url.Action(Model.ActionName, Model.ControllerName)';
+    eval('var @(Model.Name)Items=null;');
+    function checkAll(treeName) {
+
+        var treeObj=jQuery.tree.reference("#"+treeName+"Tree");
+        //treeObj.open_all();
+        jQuery("#"+treeName+"Tree").find('li').each(function () {
+            jQuery.tree.plugins.checkbox.check(this);
+        });
+    }
+	function Reset_@(Model.Name)() {
+		var valuec = "false";
+
+		//if (Radio_IsChecked("#IncludeId"))
+		//	valuec = "true";
+		InitTree('@(Model.Name)', dataSourceUrl@(Model.Code) + "?type=" + '@Model.Id' + "&factId=" + $("#FactId").val() + "&IncludeId=" + valuec, function () {  @(Model.Name)Loaded = true;
+
+
+
+
+
+			var treeObj = $.tree.reference('#@(Model.Name)' + 'Tree');
+			treeObj.open_all();
+
+			
+			setupDimension('@(Model.Name)');
+
+		});
+			//callCheck@(Model.Name)Tree();
+	}
+	$(window).on("load", function () {
+
+		var valuec = "false";
+
+		if (Radio_IsChecked("#IncludeId"))
+			valuec = "true";
+		InitTree('@(Model.Name)', dataSourceUrl@(Model.Code) + "?type=" + '@Model.Id' + "&factId=" + $("#FactId").val() + "&IncludeId=" + valuec , function () {
+
+
+            var id = '@(Model.Name)'+"Tree";
+            var eventName = '@ViewBag.ondblclick';
+            if(eventName!="")
+                $("#"+id).find("li").find("a").attr("ondblclick",  '@ViewBag.ondblclick');
+
+            @(Model.Name)Loaded = true;
+
+
+            if (@Model.IsSelectAll.ToString().ToLower())
+				checkAll('@(Model.Name)'),@(Model.IsSubLevel.ToString().ToLower());
+
+						var treeObj = $.tree.reference('#@(Model.Name)' + 'Tree');
+			treeObj.open_all();
+			
+			setupDimension('@(Model.Name)');
+		});
+
+    });
+
+
+
+    function setSelected@(Model.Name)() {
+
+        @{
+             if (Model.SelectedValues != null)
+             {
+                 foreach (var selectedValue in Model.SelectedValues)
+                 {
+                     if (!string.IsNullOrWhiteSpace(selectedValue.Key))
+                     {
+                          <text>
+
+        match = jQuery("#@(Model.Name)Tree").find("li[id=@selectedValue.Id][key='@selectedValue.Key']");
+
+        match.each(function () {
+
+            jQuery.tree.plugins.checkbox.check(this,false);
+        });
+        </text>
+                     }
+                     else
+                     {
+                          <text>
+
+        match = jQuery("#@(Model.Name)Tree").find('li[id=@selectedValue.Id]');
+        match.each(function () {
+
+            jQuery.tree.plugins.checkbox.check(this,false);
+        });
+        </text>
+                     }
+                 }
+             }
+         }
+
+
+			callCheck@(Model.Name)Tree();
+    }
+
+</script>
+
+@*<div class="search-container data-row">
+		<input id="treeSearch" type="text" class="text-box add-key-word-txtbox" />
+	</div>*@
+@Html.RegisterInternalStyleSheetLink("checkBoxStyle.css")
+@Html.RegisterInternalStyleSheetLinkOverRide("checkBoxStyle_OverRide.css")
+@Html.RegisterInternalStyleSheetLink("checkBoxStyleCustom.css")
+
+
+<div id="autoSuggestWrapper" class="search-container data-row large-auto-complete">
+	<input id="@(Model.Name)treeSearch" type="text" class="text-box" cancelEnter=true />
+	<a href="#" class="search-click"></a>
+</div>
+<div id="@(Model.Name)TreeContainer" class="text-box-like-container">
+	@Html.Hidden(Model.Name, "")
+	<div id="@(Model.Name)Tree" class="go-left" style="height: 230px; overflow:auto;">
+	</div>
+</div>

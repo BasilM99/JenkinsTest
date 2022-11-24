@@ -1,0 +1,9 @@
+﻿@model string
+@using ArabyAds.AdFalcon.Web.Core.Helper;
+<div class="change-reportview-container">
+    <span style="">
+        <a id="@(Model + "AnchorGrid")" class="selected" href="javascript:changeReportViewTab('@Model')">@Html.GetResource("GridView", "Global")</a>
+        &nbsp;|&nbsp;
+        <a id="@(Model + "AnchorChart")" href="javascript:changeReportViewTab('@Model')">@Html.GetResource("ChartView", "Global")</a>
+    </span>
+</div>

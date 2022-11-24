@@ -1,0 +1,385 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("AdCreation", "Titles");
+}
+@using ArabyAds.AdFalcon.Domain.Common.Model.Campaign
+@using ArabyAds.AdFalcon.Web.Controllers.Model.Campaign
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.CreativeViewModel
+<script type="text/javascript" language="javascript">
+    var maxAdTextLength = 40;
+    var isNew =@(Model.AdCreativeDto == null || Model.AdCreativeDto.ID < 1 ? "true" : "false");
+    var isGroupPaused = @(Model.AdCreativeDto.IsAllAdsPaused ? "true" : "false");
+    var PartialBannerMsg = '@Html.GetResource("PartialBannerBR")';
+    var RequiredBannerMsg = '@Html.GetResource("RequiredBannerBR")';
+	var adsMoreThanMinBidDMsg = '@Html.GetResource("MinBidErrMsg")';
+
+	var MinBidErrorLess = '@Html.GetResource("MinBidErrorLess")';
+    var tileImageMissingBRMsg = '@Html.GetResource("TileImageMissingBR")';
+    var minBid = @Model.AdCreativeDto.MinBid;
+    var discountedBidDesc = '@Html.GetResource("DiscountedBidDesc", "Campaign")';
+    var has_discount = @((Model.DiscountDto != null).ToString().ToLower());
+    var discount_value = @(Model.DiscountDto != null ? Model.DiscountDto.Value : 0);
+    var discount_type = @(Model.DiscountDto != null ? Model.DiscountDto.TypeId : 0);
+    var remainingCharactersMsg = ' @Html.GetResource("remainingCharacters", "Campaign") ';
+    var close_text = '@Html.GetResource("Close")';
+    var yes_text = '@Html.GetResource("Yes")';
+    var no_text = '@Html.GetResource("No")';
+    var invalidFormatMessage = '@Html.GetResource("MissingAdTags")';
+    var succcessFormatMessage = '@Html.GetResource("SuccessPrepareTag", "Campaign")';
+	var formatContentUrl = '@Url.Action("IsFormattedAdCreativeContent", "campaign")';
+
+	var impressionDialogUpdate = true;
+    var ishouseadd= false;
+    GlobalAdvertiserId = '@Model.AdvertiserId';
+    GlobalAdvertiserAccountId = '@Model.AdvertiserAccountId';
+    var isBannerAd = '@(Model.AdCreativeDto.AdBannerType != null ? true : false)'
+
+    $(document).ready(function () {
+        if (stringToBoolean(isBannerAd)) {
+            $('#AdvanceSettingdivContainer').show();
+        } else {
+        $('#AdvanceSettingdivContainer').hide();
+        }
+        @if (Model.AdCreativeDto.ID == 0)
+        {
+
+              <text>
+        $('input[type="text"]').not( "#AdCreativeDto_Bid" ).val('');
+        </text>
+        }
+
+        if($("#AdTypeId").val() == 3)
+        {
+            $("#urls").hide();
+        }
+
+        SetSelectedTap("ListMenuAdvertiser");
+
+            @{
+
+                if (!Model.IsAllowedToSaveImpressionTracker)
+
+                {
+                    <text>
+
+                    showNotfy("@Html.GetResource( "ImpressTrackerNotAllowWarnMsg", "Campaign")", "warning", '', toastroptionsWithNoTime)
+            </text>
+
+                        } }
+                });
+
+	
+
+
+</script>
+@using (Html.BeginForm())
+{
+	RouteData routeData = RouteTable.Routes.GetRouteData(new HttpContextWrapper(System.Web.HttpContext.Current));
+	@Html.Hidden("AdTypeId", (int)Model.AdCreativeDto.TypeId);
+	@Html.Hidden("OrientationType", (int)Model.AdCreativeDto.OrientationType);
+	@Html.HiddenFor(x => x.AdCreativeDto.AdActionId);
+	@Html.Hidden("AdBannerTypeId", Model.AdCreativeDto.AdBannerType.HasValue ? (int)Model.AdCreativeDto.AdBannerType : (int?)null);
+	@Html.Hidden("TileImage", Model.AdCreativeDto.TileImageId);
+	@Html.HiddenFor(p => p.AdCreativeDto.IsAdPaused);
+	@Html.HiddenFor(p => p.AdCreativeDto.IsSecureCompliant);
+
+
+	<div id="dialog-form" title="@Html.GetResource("Preview")" style="display: none;">
+		<div class="tablet-bg">
+			<img id="imgPreview" />
+		</div>
+	</div>
+	<div id="statusDialog-form" title="@Html.GetResource("PauseAdConfirmationTitle", "Campaign")" style="display: none; ">
+		<div class="go-left data-row">
+			@Html.GetResource("PauseAdConfirmation", "Campaign")
+		</div>
+	</div>
+	<div class="data-row section-container">
+		<br />
+		<div class="data-row section-container">
+
+
+
+			@Html.Partial("CreativeSlider")
+
+			<div class=" data-row ">
+				<h2>
+					@Html.GetResource("AdCreation", "Titles")
+				</h2>
+                <div class="section-form-container">
+                    <div class="section-form-inner-container info-container">
+                        @if (Model.AdCreativeDto.ID < 1)
+                        {
+                            <div class="data-row data-container">
+                                <div class="label-container">
+                                    <span class="field-title required-field">@Html.GetResource("AdType", "Campaign")</span>
+                                </div>
+                                <div class="field-container">
+                                    <div class="data-row">
+
+                                        @foreach (var item in Model.AdTypes)
+                                        {
+                                            <div class="field-container">
+                                                @Html.GetRadioButton("AdType", item.Text, value: item.Value, Checked: item.Selected, onChange: "adTypeChange")
+                                            </div>
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="data-row data-container">
+                            <div class="label-container">
+                                <span class="field-title required-field">@Html.GetResource("AdName", "Campaign")</span>
+                            </div>
+                            <div class="field-container">
+                                @Html.AdFalconEditorFor(p => p.AdCreativeDto.Name)
+                                @Html.AdFalconValidationMessageFor(p => p.AdCreativeDto.Name)
+                            </div>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.AdCreativeDto.UniqueId) && Model.AdCreativeDto.UniqueId != "0")
+                        {
+                            <div class="data-row info-container last-container">
+                                <div class="data-row data-container">
+                                    <div class="label-container">
+                                        <span class="field-title required-field">@Html.GetResource("UniqueId", "Global") </span>
+                                    </div>
+                                    <div class="field-container">
+                                        <span class="slide-text margin-summary UniqueID-line-height">@Model.AdCreativeDto.UniqueId</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="data-row data-container">
+                            <div class="label-container">
+                                <span id="AdTextSpan" class="field-title campaign-upload required-field">@Html.GetResource("AdText", "Campaign")</span>
+                            </div>
+                            <div class="field-container">
+                                @Html.AdFalconEditorFor(p => p.AdCreativeDto.AdText)@Html.AdFalconValidationMessageFor(p => p.AdCreativeDto.AdText)
+                                <span id="remainingCharactersDesc" class="data-row guid-text go-left"></span>
+                            </div>
+                        </div>
+                        @if (Model.AdCreativeDto.ID < 1)
+                        {
+                            <div class="data-row data-container" id="deviceTypeDiv">
+                                <div class="label-container">
+                                    <span class="field-title required-field">@Html.GetResource("AdBannerType", "Campaign")</span>
+                                </div>
+                                <div class="field-container">
+
+                                    @foreach (var item in Model.AdBannerTypes)
+                                    {
+                                        <div class="field-container" style="width: 95px">
+                                            @Html.GetRadioButton("AdBannerType", item.Text, value: item.Value, Checked: item.Selected, onChange: "adTypeChange")
+                                        </div>
+                                    }
+
+
+
+                                </div>
+                            </div>
+                            <div class="data-row data-container" id="environmentTypeContiner" style="display: none;">
+                                <div class="label-container">
+                                    <span class="field-title required-field">@Html.GetResource("EnvironmentType", "Campaign")</span>
+                                </div>
+                                <div class="field-container">
+
+                                    <div class="field-container">
+
+                                        @foreach (var item in Model.EnvironmentTypes)
+                                        {
+                                            <div class="field-container" style="width: 95px">
+                                                @Html.GetRadioButton("EnvironmentType", item.Text, value: item.Value, Checked: item.Selected, onChange: "environmentTypeChange")
+                                            </div>
+                                        }
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            @Html.Hidden("EnvironmentType", (int)Model.AdCreativeDto.EnvironmentType)
+                            @Html.Hidden("OrientationType", (int)Model.AdCreativeDto.OrientationType)
+                            if (!string.IsNullOrEmpty(Model.AdBannerTypeName))
+                            {
+                                <div class="data-row data-container">
+                                    <div class="label-container">
+                                        <span class="field-title required-field">@Html.GetResource("AdBannerType", "Campaign")</span>
+                                    </div>
+                                    <div class="field-container">
+                                        <span class="side-text">
+                                            @Model.AdBannerTypeName
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                            if (Model.AdCreativeDto.TypeId != AdTypeIds.Text)
+                            {
+                                <div class="data-row data-container">
+                                    <div class="label-container">
+                                        <span class="field-title required-field">@Html.GetResource("EnvironmentType", "Campaign")</span>
+                                    </div>
+                                    <div class="field-container">
+                                        <span class="side-text">
+                                            @Model.EnvironmentTypes.Where(p => p.Value == ((int)Model.AdCreativeDto.EnvironmentType).ToString()).Single().Text
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                        <div class="data-row data-container" id="IsSecureCompliantDiv" style="display:none">
+                            <div class="label-container">
+                                <span class="field-title required-field">@Html.GetResource("Settings", "Commands")</span>
+                            </div>
+                            <div class="field-container">
+                                @* @Html.AdFalconTextBoxFor(m => m.SettingsDto.AppSiteServerSetting.SupportedAdTypes)
+                    @Html.AdFalconValidationMessageFor(p => p.SettingsDto.AppSiteServerSetting.SupportedAdTypes)*@
+                                @Html.GetCheckBox("IsSecureCompliantRich", Html.GetResource("IsSecureCompliant", "Creative"), Model.AdCreativeDto.IsSecureCompliant, onChange: "onIsSecureCompliantChangde")
+
+
+
+
+                            </div>
+                        </div>
+
+                        @Html.Partial("AdAction/" + Model.AdCreativeDto.ViewName)
+                    </div>
+                    <h2>
+                        @Html.GetResource("Creative", "Campaign")
+                    </h2>
+                    <div class="section-form-container">
+                        <div class="section-form-inner-container info-container">
+                            @{
+                                var isShowed = "";
+                                if (Model.TileImageViewModel.TileImages != null)
+                                {
+                                    Model.TileImageViewModel.IsAllowedToSaveImpressionTracker = Model.IsAllowedToSaveImpressionTracker;
+
+                                    <div id="CreativeTextContainer">
+                                        @Html.Partial("Creative/CreativeUnit/CreativeText", Model.TileImageViewModel)
+                                    </div>
+                                }
+                                foreach (var adType in Model.CreativeUnitIds())
+                                {
+                                    if (Model.AdCreativeDto.ID < 1)
+                                    {
+                                        isShowed = "";
+                                        <div id="CreativeUnitContainer_@(adType)" style='display: none'>
+                                            @if (Model.PhoneCreativeUnits.ContainsKey(adType))
+                                            {
+                                                <div name="PhoneBannersCreativeUnitContainer" @Html.Raw(isShowed)>
+                                                    @Html.Partial("Creative/CreativeUnit/GeneralCreative", new CreativeUnitLisViewModel { AdCreativeDto = Model.AdCreativeDto, CreativeUnits = Model.PhoneCreativeUnits[adType], TypeId = (AdTypeIds)adType, IsAllowedToSaveImpressionTracker = Model.IsAllowedToSaveImpressionTracker })
+                                                </div>
+                                                isShowed = "";
+                                            }
+                                            @if (Model.TabletCreativeUnits.ContainsKey(adType))
+                                            {
+                                                <div name="TabletBannersCreativeUnitContainer" @Html.Raw(isShowed)>
+                                                    @Html.Partial("Creative/CreativeUnit/GeneralCreative", new CreativeUnitLisViewModel { AdCreativeDto = Model.AdCreativeDto, CreativeUnits = Model.TabletCreativeUnits[adType], TypeId = (AdTypeIds)adType, IsAllowedToSaveImpressionTracker = Model.IsAllowedToSaveImpressionTracker })
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        if (Model.PhoneCreativeUnits.ContainsKey(adType))
+                                        {
+                                            <div name="PhoneBannersCreativeUnitContainer">
+                                                @Html.Partial("Creative/CreativeUnit/GeneralCreative", new CreativeUnitLisViewModel { AdCreativeDto = Model.AdCreativeDto, CreativeUnits = Model.PhoneCreativeUnits[adType], TypeId = (AdTypeIds)adType, IsAllowedToSaveImpressionTracker = Model.IsAllowedToSaveImpressionTracker })
+                                            </div>
+                                        }
+                                        if (Model.TabletCreativeUnits.ContainsKey(adType))
+                                        {
+                                            <div name="TabletBannersCreativeUnitContainer">
+                                                @Html.Partial("Creative/CreativeUnit/GeneralCreative", new CreativeUnitLisViewModel { AdCreativeDto = Model.AdCreativeDto, CreativeUnits = Model.TabletCreativeUnits[adType], TypeId = (AdTypeIds)adType, IsAllowedToSaveImpressionTracker = Model.IsAllowedToSaveImpressionTracker })
+                                            </div>
+                                        }
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div id="divCreativeVendor">
+                        <h2>
+                            @Html.GetResource("CreativeVendor", "Campaign")
+                        </h2>
+
+                        @Html.HiddenFor(m => m.CreativeVendorId)
+
+                        @Html.Partial("CreativeVendorMultiSelect", Model)
+
+
+                    </div>
+                    @Html.Partial("PartialViews/AdvanceSettingSectionBanner")
+                    <h2>
+                        @Html.GetResource("Settings", "Commands")
+                    </h2>
+                    <div class="section-form-inner-container">
+                        <div class="section-form-inner-container info-container">
+                            <div class="data-row data-container">
+                                <div class="label-container">
+                                    <span class="field-title required-field">@Html.GetResource("Settings", "Commands")</span>
+                                </div>
+                                <div class="field-container">
+
+                                    @Html.GetCheckBox("VerifyTargetingCriteria", Html.GetResource("VerifyTargetingCriteria", "TrackingAd"), Model.AdCreativeDto.VerifyTargetingCriteria)
+                                    @Html.GetCheckBox("UpdateEventsFrequency", Html.GetResource("UpdateEventsFrequency", "TrackingAd"), Model.AdCreativeDto.UpdateEventsFrequency)
+                                    @Html.GetCheckBox("VerifyDailyBudget", Html.GetResource("VerifyDailyBudget", "TrackingAd"), Model.AdCreativeDto.VerifyDailyBudget)
+                                    @Html.GetCheckBox("VerifyCampaignStartAndEndDate", Html.GetResource("VerifyCampaignStartAndEndDate", "TrackingAd"), Model.AdCreativeDto.VerifyCampaignStartAndEndDate)
+                                    @Html.GetCheckBox("UpdateTags", Html.GetResource("UpdateTags", "TrackingAd"), Model.AdCreativeDto.UpdateTags)
+                                    @Html.GetCheckBox("VerifyEventsFrequency", Html.GetResource("VerifyEventsFrequency", "TrackingAd"), Model.AdCreativeDto.VerifyEventsFrequency)
+                                    @Html.GetCheckBox("VerifyPrerequisiteEvents", Html.GetResource("VerifyPrerequisiteEvents", "TrackingAd"), Model.AdCreativeDto.VerifyPrerequisiteEvents)
+                                    @Html.GetCheckBox("ValidateRequestDeviceAndLocationData", Html.GetResource("ValidateRequestDeviceAndLocationData", "TrackingAd"), Model.AdCreativeDto.ValidateRequestDeviceAndLocationData)
+
+
+
+
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h2>
+                        @Html.GetResource("Bid", "Campaign")
+                    </h2>
+                    <div class="section-form-inner-container">
+                        <div class="section-form-inner-container info-container">
+                            <div class="data-row data-container">
+                                <div class="label-container">
+                                    <span class="field-title required-field">@Html.GetResource("MinimalBid", "Campaign")</span>
+                                </div>
+                                <div class="field-container">
+                                    <span class="side-text">@string.Format("{0:F2}", Model.AdCreativeDto.MinBid) $</span>
+                                </div>
+                            </div>
+                            <div class="data-row data-container">
+                                <div class="label-container">
+                                    <span class="field-title required-field campaign-upload">@Html.GetResource("Bid", "Campaign")</span>
+                                </div>
+                                <div class="field-container">
+                                    <span class="small-big-field">@Html.AdFalconTextBox("AdCreativeDto.Bid", Model == null || Model.AdCreativeDto == null ? string.Empty : Model.AdCreativeDto.Bid.ToString("F2"), new { maskType = "decimal", onchange = "onbidchange(this)", onkeypress = "onbidpress(event,this)" })</span>
+                                    <span class="side-text">$</span>
+                                    <span id="bidDiscounted" style="color: #E40685;" class="data-row guid-text go-left iea-go-right">@(!Model.DiscountedBid.HasValue || Model.AdCreativeDto.Bid == Model.DiscountedBid ? string.Empty : "(" + string.Format(Html.GetResource("DiscountedBidDesc", "Campaign"), Model.DiscountedBid.Value.ToString("F2")) + ")")</span>
+                                    @Html.AdFalconValidationMessageFor(p => p.AdCreativeDto.Bid)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+				<div class="section-footer">
+				</div>
+			</div>
+		</div>
+		<div class="data-row button-container">
+			@Html.SubmitButton(@Html.GetResource("Save", "Commands"), "Create", new { @class = "save-button", onclick = "creativeUnitValidate()" })
+
+			<input type="button" value='@Html.GetResource("Close", "Commands")' class="btn" onclick="redirect('@(string.IsNullOrWhiteSpace(Request.QueryString["returnUrl"]) ? Url.Action("Ads", "Campaign", new { id = routeData.Values["id"], adGroupId = routeData.Values["adGroupId"] }) : Request.QueryString["returnUrl"])    ')" />
+		</div>
+	</div>
+}
+
+@Html.Partial("PartialViews/ImpressionTrackerText")

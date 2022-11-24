@@ -1,0 +1,212 @@
+﻿@{
+    int? accountId = new int?();
+
+    if (ViewData["AccountId"] != null)
+    {
+        accountId = (int)ViewData["AccountId"];
+        ViewBag.Title = string.Format("{0} - {1}", ViewData["AccountName"].ToString(), Html.GetResource("AppSitePerformance", "Titles"));
+    }
+    else
+    {
+        ViewBag.Title = Html.GetResource("AppSitePerformance", "Titles");
+    }
+    
+    
+  
+}
+@model ArabyAds.AdFalcon.Web.Controllers.Model.AppSite.Performance.AppOpsAppSitePerformanceViewModel
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+    // Load the Visualization API and the controls package.
+    google.load('visualization', '1.1', { 'packages': ['bar', "corechart"] });
+    var topAppSitesPerformanceSpinner;
+
+    var appSitesChartUrl = '@Url.Action("AppSitesPerformanceChart", "AppOps", new { Id = accountId })';
+    var appsiteBasicInformation = '@Url.Action("ApppSiteBasicInformation","appsite")';
+</script>
+<style>
+    .optWrapper{
+           position:relative !important;
+    }
+</style>
+
+@using (Html.BeginForm())
+{
+    <script language="javascript" type="text/javascript">
+        $(document).ready(function () {
+            SetSelectedTap("ListMenuAdmin");
+        });
+
+
+        function localInitilize() {
+            jQuery('input[data-date="true"]')
+                .daterangepicker({
+                    dateFormat: 'dd-mm-yy',
+                    isRTL: false
+                });
+
+            searchAppSitesPerformance();
+
+            $(".multiselect").SumoSelect({ placeholder: "@Html.GetResource("Select", "Global")" });
+        }
+
+        function appOpsGridDataBinding(args) {
+
+            //args.data = $.extend(args.data,
+            //    {
+            //        FromDate: $('#DateFrom').val(),
+            //        ToDate: $('#DateTo').val(),
+            //        AccountName: $('#AccountName').length > 0 ? $('#AccountName').val() : '',
+            //        AppSiteName: $("#AppSiteName").val(),
+            //        Countries: $("#country").val() == null ? "" : $("#country").val().join(","),
+            //        MetricValue: $("#metric").val()
+            //    });
+        };
+
+        function appOpsGridData() {
+
+            var j = 
+                {
+                    FromDate: $('#DateFrom').val(),
+                    ToDate: $('#DateTo').val(),
+                    AccountName: $('#AccountName').length > 0 ? $('#AccountName').val() : '',
+                    AppSiteName: $("#AppSiteName").val(),
+                    Countries: $("#country").val() == null ? "" : $("#country").val().join(","),
+                    MetricValue: $("#metric").val()
+            };
+            return j;
+        };
+
+    </script>
+
+    <br />
+    <div class="data-row go-center" style="overflow: visible;">
+        <div class="blue-filter-container" style="height: @(accountId.HasValue ? "190px" : "230px");overflow:visible;">
+            <table class="special-content">
+                <tr>
+                    <td style="width: 80px">
+                        <span class="go-bold">@Html.GetResource("From", "Global")</span>
+                    </td>
+                    <td style="width: 110px;">
+                        <input type="text"  readonly="readonly" value="@(Model.DateFrom.HasValue ? Model.DateFrom.Value.ToString(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.MainShortDateFormat) : string.Empty)" data-date="true" name="DateFrom" id="DateFrom"
+                               class="text-box range-date-cntl" />
+                    </td>
+                    <td>
+                        <span class="go-bold">@Html.GetResource("To", "Global")</span>
+                    </td>
+                    <td style="width: 110px;">
+                        <input type="text" readonly="readonly" value="@(Model.DateTo.HasValue ? Model.DateTo.Value.ToString(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.MainShortDateFormat) : string.Empty)" data-date="true" name="DateTo" id="DateTo"
+                               class="text-box range-date-cntl left-range-cntrl" />
+                    </td>
+                    <td style="width: 360px;">&nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="go-bold">@Html.GetResource("Name", "AppSite")</span>
+                    </td>
+                    <td class="go-left" colspan="4">
+                        @Html.AdFalconEditorFor(p => p.AppSiteName)
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="width: 80px">
+                        <span class="go-bold">@Html.GetResource("OrderBy", "Global")</span>
+                    </td>
+                    <td class="small-select" colspan="4">
+                        @Html.DropDownList("metric", Model.MetricsList)
+                    </td>
+                </tr>
+                @if (!accountId.HasValue)
+                {
+                    <tr>
+                        <td>
+                            <span class="go-bold">@Html.GetResource("AccountName", "Global")</span>
+                        </td>
+                        <td class="go-left" colspan="4">
+                            @Html.AdFalconEditorFor(p => p.AccountName)
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td class="">
+                        <span class="go-bold">@Html.GetResource("Country", "Global")</span>
+                    </td>
+                    <td class="go-left" colspan="4">
+                        @Html.ListBox("country", Model.Countries, new { @class = "multiselect" })
+                    </td>
+
+                    <td class="go-right" colspan="5">
+                        <input type="button" onclick="searchAppSitesPerformance();" value='@Html.GetResource("Filter")' class="btn filter-button " />
+                    </td>
+                </tr>
+             
+              
+            </table>
+        </div>
+        <div class="tail">
+        </div>
+    </div>
+    <br />
+   
+    <div id="appSitesResultContainer">
+        <div class="grid-container" id="topAppSitesGrid">
+
+
+            @(Html.Kendo().Grid(Model.Result)
+             .Name("AppSitesGrid")
+             .Columns(columns =>
+             {
+
+                      /*columns.Template(
+                          @<text>
+        <input name="checkedRecords" type="checkbox" value="@item.Id " title="checkedRecords"/>
+        </text>)
+                             .Title("").Width(36).HtmlAttributes(new { style = "text-align:center" })
+                             .ClientTemplate("<input type='checkbox' name='checkedRecords' value='#= Id #' />");*/
+
+
+                      columns.Bound(o => o.Name).ClientTemplate("<div><a  href=\"" + Url.Action("Approval", "AppSite") + "/#= Id#\" onmousemove=\"showGeneralGridToolTip(this,'tooltipContainer#= Id#','loadAppSiteBasicInformation(#= Id#)');\">#= Name#</a> </div><div id=\"tooltipContainer#= Id#\" style=\"display:none\"><img src='" + Url.GetImagePath("ajax-loader.gif") + "' /></div>").Title(Html.GetResource("Name", "AppSite"));
+                      columns.Bound(o => o.AdRequests).Format("{0:#,##0}").Title(Html.GetResource("AdRequests", "AppChart")).Width("120px").HtmlAttributes(new { @class = "go-center" });
+                      columns.Bound(o => o.AdImpress).Format("{0:#,##0}").Title(Html.GetResource("AdImpress", "AppChart")).Width("120px").HtmlAttributes(new { @class = "go-center" });
+                      columns.Bound(o => o.Clicks).Format("{0:#,##0}").Title(Html.GetResource("AdClicks", "AppChart")).Width("120px").HtmlAttributes(new { @class = "go-center" });
+                      columns.Bound(o => o.RevenueText).Title(Html.GetResource("Revenue", "AppChart")).Width("120px").HtmlAttributes(new { @class = "go-center" });
+                      columns.Bound(o => o.FillRateText).Title(Html.GetResource("FillRate", "AppChart")).Width("100px").HtmlAttributes(new { @class = "go-center" }).Sortable(false);
+                      columns.Bound(o => o.CtrText).Title(Html.GetResource("CTR", "AppChart")).Width("75px").HtmlAttributes(new { @class = "go-center" }).Sortable(false);
+                      columns.Bound(o => o.eCPMText).Title(Html.GetResource("eCPM", "AppChart")).Width("70px").HtmlAttributes(new { @class = "go-center" }).Sortable(false); ;
+
+             })
+                 .EnableCustomBinding(true)
+                    .DataSource(dataBinding =>
+                    {
+
+                        dataBinding.Ajax().Read(read => read.Action("AppSitesPerformanceGrid", "AppOps", new { Id = accountId }).Data("appOpsGridData")).PageSize(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.PageSize);
+
+                    })
+                .Events(clientEvents => clientEvents.DataBinding("appOpsGridDataBinding"))
+                .Scrollable(scrolling => scrolling.Enabled(false))
+                .Selectable().Pageable(paging => paging
+
+
+                .Input(false)
+                .Numeric(true)
+                .Info(true)
+                .PreviousNext(true)
+                .Refresh(true)
+
+                .Position(GridPagerPosition.Bottom))
+                .Filterable(filtering => filtering.Enabled(false))
+                .Groupable(grouping => grouping.Enabled(false)))
+            
+        </div>
+
+        <div id="topAppSitesChart" style="display: none;" >
+        </div>
+        @await Html.PartialAsync("PerformanceReportChangeViewTab", "topAppSites")
+        <br />
+    </div>
+    <div id="gridToolTip" class="grid-tool-tip-container" style="display: none; visibility: visible; width: auto; padding: 15px;">
+    </div>
+}
+

@@ -1,0 +1,284 @@
+﻿@using Noqoush.AdFalcon.Domain.Common.Model.Campaign
+@using Noqoush.AdFalcon.Web.Controllers.Model.Core
+@using Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative
+@using Noqoush.AdFalcon.Web.Controllers.Model.Campaign
+@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeSummaryDto
+@*@using Noqoush.Framework.DomainServices*@
+
+
+
+
+
+
+
+        <script>
+
+
+          
+
+                 var VendorIndexItems = parseInt('@( Model.ThirdPartyTrackers!=null ? Model.ThirdPartyTrackers.Count():-1 )');
+            if (VendorIndexItems>0) {
+
+                VendorIndexItems = VendorIndexItems - 1;
+            }
+
+
+     var VendorsItekumsCount = @( Model.ThirdPartyTrackers!=null ? Model.ThirdPartyTrackers.Count():0 );
+
+        </script>
+
+        <style>
+            .invalid-feedback {
+                display: block;
+                /*width: 100%;*/
+                margin-top: .6rem;
+                font-size: 80%;
+                color: #FFF;
+                background: #bd006b;
+                float: left;
+                padding: 2px 5px
+            }
+
+            .field-container > span.field-title > input {
+                font: inherit !important;
+            }
+
+            #ConversionType, #ClickAttribuation, #ViewAttribuation, #CountingTypeAttribuation {
+                font: 400 13.3333px Arial;
+            }
+        </style>
+
+
+
+
+
+
+
+
+
+        <div class="ad-filter-data" id="VendorsShow" style="padding-top:7px;">
+
+
+            <div class="data-row data-container">
+                <div class="label-container" style="min-height:1px;width: 15px;">
+
+
+
+
+
+                </div>
+
+                <div class="field-container">
+
+
+                    <span class="field-title required-field">@Html.GetResource("VendorID", "Global")</span>
+
+
+                </div>
+
+
+
+                <div class="label-container" style="min-height:1px;width:180px;text-align:center">
+
+                    @Html.Partial("MoreInfo", "VendorIDDesc", new ViewDataDictionary { { "Class_Tail", "tail-report" }, { "Style2", "float:none;" } })
+
+
+
+                </div>
+
+
+
+
+                <div class="field-container">
+
+
+                    <span class="field-title required-field">@Html.GetResource("ScriptURL", "Global")</span>
+
+                </div>
+
+
+
+                <div class="label-container" style="min-height:1px;width:230px; text-align:center">
+
+                    @Html.Partial("MoreInfo", "ScriptURLDesc", new ViewDataDictionary { { "Class_Tail", "tail-report" }, { "Style2", "float:none;" } })
+
+
+
+                </div>
+
+
+                <div class="field-container">
+
+
+                    <span class="field-title required-field ">@Html.GetResource("ExecutionErrorTrackerURL", "Global") </span>
+
+
+                </div>
+
+
+                <div class="label-container" style="min-height:1px; width:130px;text-align:center">
+
+                    @Html.Partial("MoreInfo", "ExecutionErrorTrackerURLDesc", new ViewDataDictionary { { "Class_Tail", "tail-report" }, { "Style2", "float:none;" } })
+
+
+                </div>
+
+
+                <div class="field-container">
+
+                    <span class="field-title required-field">@Html.GetResource("URLParameters", "Global")</span>
+
+
+
+
+
+                </div>
+                <div class="label-container" style="min-height:1px; width:10px;text-align:center">
+
+                    @Html.Partial("MoreInfo", "URLParametersDesc", new ViewDataDictionary { { "Class_Tail", "tail-report" }, { "Style2", "float:none;" } })
+
+
+                </div>
+
+            </div>
+
+
+            @{
+
+
+                if (Model.ThirdPartyTrackers != null)
+
+
+                {
+
+
+                    for (int i = 0; i < Model.ThirdPartyTrackers.Count(); i++)
+
+
+                    {
+
+                        <div id='new-vendor-item-@i' indexelem="@i" class="newVen">
+                            <div class='data-row data-container'>
+
+
+
+                                <div class='label-container' style="min-height:1px; width: 15px;"> </div>
+
+
+                                <div class='field-container'>
+
+
+
+
+
+                                    @{
+                                        object itemsToShow = new { maskType = "text", indexVendor = i, @class = "form-control newvend textbox ", @disabled = "", @style = "width: 200px;" };
+                                        <input id='ThirdPartyTrackers_@(i)__VendorID' name='ThirdPartyTrackers[@i].VendorID' type='hidden' value='@Model.ThirdPartyTrackers[i].VendorID'>
+
+
+                                        <div disabled class="form-control newvend textbox " title="@Model.ThirdPartyTrackers[i].VendorID" style="cursor:unset; height:28px;width: 200px;overflow:hidden;text-overflow:ellipsis">@Model.ThirdPartyTrackers[i].VendorID</div>
+                                    }
+
+
+
+                                </div>
+
+
+                                <div class='label-container' style="min-height:1px; width: 40px;"> </div>
+                                <div class='field-container'>
+
+
+
+
+
+                                    @{
+                                        object itemsToShow1 = new { maskType = "text", indexVendor = i, @class = "form-control newvend textbox ", @disabled = "", @style = "width: 250px;" };
+                                        <input id='ThirdPartyTrackers_@(i)__ScriptURL' name='ThirdPartyTrackers[@i].ScriptURL' type='hidden' value='@Model.ThirdPartyTrackers[i].ScriptURL'>
+
+
+
+                                        <div disabled class="form-control newvend textbox " title="@Model.ThirdPartyTrackers[i].ScriptURL" style="cursor:unset; height:28px;width: 250px;overflow:hidden;text-overflow:ellipsis">@Model.ThirdPartyTrackers[i].ScriptURL</div>
+                                    }
+
+
+
+                                </div>
+
+
+                                <div class='label-container' style="min-height:1px;width:46px;">
+                                </div>
+
+
+                                <div class='field-container'>
+
+
+
+
+                                    @{
+                                        object itemsToShow2 = new { maskType = "text", indexPixel = i, @class = "form-control width-lg textbox", @disabled = "", @style = "width: 250px !important;" };
+                                        <input id='ThirdPartyTrackers_@(i)__ExecutionErrorTrackerURL' name='ThirdPartyTrackers[@i].ExecutionErrorTrackerURL' type='hidden' value='@Model.ThirdPartyTrackers[i].ExecutionErrorTrackerURL'>
+
+
+
+                                        <div disabled class="form-control newvend textbox " title="@Model.ThirdPartyTrackers[i].ExecutionErrorTrackerURL" style="cursor:unset; height:28px;overflow:hidden;text-overflow:ellipsis;width: 250px;">@Model.ThirdPartyTrackers[i].ExecutionErrorTrackerURL</div>
+                                    }
+
+
+                                </div>
+
+                                <div class='label-container' style="min-height:1px;width:35px;">
+                                </div>
+
+
+                                <div class='field-container'>
+
+
+
+
+                                    @{
+
+
+                                        object itemsToShow3 = new { maskType = "text", indexPixel = i, @class = "form-control width-lg textbox", @disabled = "", @style = "width: 200px !important;" };
+
+                                        <input id='ThirdPartyTrackers_@(i)__ParametersURL' name='ThirdPartyTrackers[@i].ParametersURL' type='hidden' value='@Model.ThirdPartyTrackers[i].ParametersURL'>
+
+
+                                        <div disabled class="form-control newvend textbox " title="@Model.ThirdPartyTrackers[i].ParametersURL" style="cursor:unset; height:28px; width: 250px;overflow:hidden;text-overflow:ellipsis">@Model.ThirdPartyTrackers[i].ParametersURL</div>
+
+
+                                    }
+
+
+
+                                </div>
+
+
+                             
+
+                            </div>
+
+
+
+                            @Html.HiddenFor(x => Model.ThirdPartyTrackers[i].IsDeleted)
+                            @Html.HiddenFor(x => Model.ThirdPartyTrackers[i].ID)
+                            @Html.HiddenFor(x => Model.ThirdPartyTrackers[i].IsNotChanged)
+
+                        </div>
+
+                    }
+
+
+                }
+
+
+            }
+
+       
+
+        </div>
+
+
+
+
+
+

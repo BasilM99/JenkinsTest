@@ -1,0 +1,18 @@
+﻿@model ArabyAds.AdFalcon.Services.Interfaces.DTOs.AppSite.BasicAppSiteInformation
+
+<div name="tableBasicInformation">
+    <table>
+        <tr>
+            <td><b>@Html.GetResource("URL", "AppSite"):<b></td>
+            <td><a href="@Model.AppsiteUrl" target="_blank" >@Model.AppsiteUrl</a></td>
+        </tr>
+        <tr>
+            <td><b>@Html.GetResource("AccountName", "Global"):</b></td>
+            <td>@Model.AccountName</td>
+        </tr>
+        <tr>
+            <td><b>@Html.GetResource("email", "Global"):</b></td>
+            <td><a href='mailto:@Model.EmailAddress'>@Model.EmailAddress</a></td>
+        </tr>
+    </table>
+</div>

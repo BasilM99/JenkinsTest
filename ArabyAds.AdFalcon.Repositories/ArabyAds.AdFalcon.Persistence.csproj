@@ -1,0 +1,59 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <IncludeSymbols>true</IncludeSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <Target Name="PostPackNugetDeploy" AfterTargets="Pack">
+    <Message Importance="High" Text=" deleting %userprofile%\.nuget\packages\$(PackageId)\$(PackageVersion)" />
+    <Exec Command="rmdir /S /Q %userprofile%\.nuget\packages\$(PackageId)\$(PackageVersion)" />
+    <Exec Command="dotnet nuget locals http-cache -c" />
+    <Exec Command="dotnet nuget push &quot;$(OutputPath)..\$(PackageId).$(PackageVersion).symbols.nupkg&quot; -s &quot;Local NuGet Server&quot;" />
+  </Target>
+
+  <ItemGroup>
+    <Compile Remove="AdFalconUserInfo.cs" />
+    <Compile Remove="Mappings\Account\AccountAdPermissionsMappings.cs" />
+    <Compile Remove="Mappings\Account\AccountPartyDefineMapping.cs" />
+    <Compile Remove="Mappings\Account\Fund\AccountFundTransHistoryPgwMapping.cs" />
+    <Compile Remove="Mappings\Account\PaymentMapping.cs" />
+    <Compile Remove="Mappings\Account\PaymenttypeMapping.cs" />
+    <Compile Remove="Mappings\Campaign\AdGroupEventMapping.cs" />
+    <Compile Remove="Mappings\Campaign\CampaignReportRecipientMapping.cs" />
+    <Compile Remove="Mappings\Campaign\CampaignReportSchedulerMapping.cs" />
+    <Compile Remove="Mappings\Campaign\NativeAdIconSizeFormatMapping.cs" />
+    <Compile Remove="Mappings\Campaign\NativeAdIconSizeMapping.cs" />
+    <Compile Remove="Mappings\Campaign\NativeAdImageSizeMapping.cs" />
+    <Compile Remove="Mappings\Core\AdPermissionsMappings.cs" />
+    <Compile Remove="Mappings\Core\AdPositionMapping.cs" />
+    <Compile Remove="Mappings\Core\BannersizeMapping.cs" />
+    <Compile Remove="Mappings\Core\ContextualPartnerMapping.cs" />
+    <Compile Remove="Mappings\Core\SystemBankAccountMapping.cs" />
+    <Compile Remove="Mappings\Core\SystemPayPalAccountMapping.cs" />
+    <Compile Remove="Repositories\Core\AdPositionRepository.cs" />
+    <Compile Remove="Repositories\Core\ICityRepository.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="app.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="6.0.1" />
+    <PackageReference Include="ArabyAds.Framework.Persistence" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ArabyAds.AdFalcon.Domain\ArabyAds.AdFalcon.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

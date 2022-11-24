@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+
+  <components>
+
+    <component id="CallContext"
+               service="ArabyAds.Framework.ICallContext,ArabyAds.Framework"
+               type="ArabyAds.Framework.ThreadCallContext,ArabyAds.Framework"
+               lifestyle="transient">
+    </component>
+    <component id="RepositoryImpl"
+                service="ArabyAds.Framework.Persistence.RepositoryImplBase`2,ArabyAds.Framework"
+                type="ArabyAds.Framework.Persistence.NHibernate.NHRepository`2,ArabyAds.Framework.Persistence"
+                lifestyle="transient">
+    </component>
+  </components>
+
+</configuration>

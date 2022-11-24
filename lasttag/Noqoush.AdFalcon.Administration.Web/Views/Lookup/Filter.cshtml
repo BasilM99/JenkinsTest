@@ -1,0 +1,21 @@
+﻿@model Noqoush.AdFalcon.Administration.Web.Controllers.Model.Lookup.ListViewModel
+
+<div class="data-row go-center">
+    <div class="blue-filter-container">
+        <table class="special-content">
+            <tr>
+                <td>
+                    <span class="go-bold">@Html.GetResource("Name", "Lookup")</span>
+                </td>
+                <td style="width: 110px;">
+                    @Html.AdFalconTextBoxFor(m=>m.Name)
+                </td>
+                <td>
+                    <input type="button" onclick="generateLookupGrid()"  value='@Html.GetResource("Filter")' class="btn filter-button " />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="tail">
+    </div>
+</div>

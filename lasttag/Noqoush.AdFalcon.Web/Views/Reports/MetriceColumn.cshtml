@@ -1,0 +1,193 @@
+﻿@{
+    Layout = null;
+}
+@model Noqoush.AdFalcon.Web.Controllers.Model.Report.ColumnViewModel
+
+<script>
+    SelectableColumns += parseInt('@Model.SelectableColumns');
+
+</script>
+
+@{
+    <div class="data-row yellow-box" style="display:none;" id="ColumnsWarnMessages">
+
+        <div class="data-row">
+            <span class="msg-img"></span><span>
+                @Html.GetResource("SelectConfirmation", "Columns")
+            </span>
+        </div>
+
+    </div>
+    <div class="col-md-12 push-metrices" >
+
+        <div class="row">
+
+            <div class="data-row data-container container" id="ColumnsDivd">
+                <div class="container" id="metriceColumnsDataDiv">
+                    @if (Request.QueryString["reportType"].ToLower() == "ad")
+                    {
+                    <div class="row">
+
+
+                        @{
+
+
+                            var columnstAdvertiser = Model.Columns.Where(x => x.GroupKey == "StandardAdvertiser").ToList(); ;
+                        }
+                        <div class="col-3 col-md-2" style="width: 14.03%;" >
+                            <div class="field-container">
+                                <span class="field-title required-field">@Html.GetResource("Standard", "Global")</span>
+
+                                @foreach (Noqoush.AdFalcon.Domain.Common.Model.Core.metriceColumnDto Column in columnstAdvertiser)
+                                {
+                                    <div class="check-box-container" style="@(Column.Hide?"display:none":"")" id="Div_@Column.AppFieldName">
+                                        @Html.GetCheckBox("CheckmetriceColumn" + Column.Id.ToString(), Html.GetResource(Column.HeaderResourceKey, Column.HeaderResourceSet), Column.IsSelected, "ChangedColumnsMetric", Column.AppFieldName)
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+
+                        @{
+
+
+                            var columnstRTB = Model.Columns.Where(x => x.GroupKey == "RTBAdvertiser").ToList(); ;
+                        }
+                        @if (columnstRTB != null && columnstRTB.Count > 0)
+                        {
+                            <div class="col-3 col-md-2" style="width: 14.35%;" >
+                                <div class="field-container">
+                                    <span class="field-title required-field">@Html.GetResource("RTBGroup", "Report")</span>
+
+                                    @foreach (Noqoush.AdFalcon.Domain.Common.Model.Core.metriceColumnDto Column in columnstRTB)
+                                    {
+                                        <div class="check-box-container" style="@(Column.Hide?"display:none":"")" id="Div_@Column.AppFieldName">
+                                            @Html.GetCheckBox("CheckmetriceColumn" + Column.Id.ToString(), Html.GetResource(Column.HeaderResourceKey, Column.HeaderResourceSet), Column.IsSelected, "ChangedColumnsMetric", Column.AppFieldName)
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        @{
+
+
+                            var columnstVideoAdvertiser = Model.Columns.Where(x => x.GroupKey == "VideoAdvertiser").ToList(); ;
+                        }
+                        <div class="col-3 col-md-2"  style="width: 15.9%;">
+                            <div class="field-container">
+                                <span class="field-title required-field">@Html.GetResource("Video", "Global")</span>
+
+
+                                @foreach (Noqoush.AdFalcon.Domain.Common.Model.Core.metriceColumnDto Column in columnstVideoAdvertiser)
+                                {
+                                    <div class="check-box-container" style="@(Column.Hide?"display:none":"")" id="Div_@Column.AppFieldName">
+                                        @Html.GetCheckBox("CheckmetriceColumn" + Column.Id.ToString(), Html.GetResource(Column.HeaderResourceKey, Column.HeaderResourceSet), Column.IsSelected, "ChangedColumnsMetric", Column.AppFieldName)
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        @{
+
+
+                            var columnstPrimaryConversionsAdvertiser = Model.Columns.Where(x => x.GroupKey == "PrimaryConversions").ToList(); ;
+                        }
+                        <div class="col-3 col-md-2"  style="width: 19.55%;">
+                            <div class="field-container">
+                                <span class="field-title required-field">@Html.GetResource("PrimaryConversionsTitle", "Report")</span>
+
+
+                                @foreach (Noqoush.AdFalcon.Domain.Common.Model.Core.metriceColumnDto Column in columnstPrimaryConversionsAdvertiser)
+                                {
+                                    <div class="check-box-container" style="@(Column.Hide?"display:none":"")" id="Div_@Column.AppFieldName">
+                                        @Html.GetCheckBox("CheckmetriceColumn" + Column.Id.ToString(), Html.GetResource(Column.HeaderResourceKey, Column.HeaderResourceSet), Column.IsSelected, "ChangedColumnsMetric", Column.AppFieldName)
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        @{
+
+
+                            var columnstOtherConversionsAdvertiser = Model.Columns.Where(x => x.GroupKey == "OtherConversions").ToList(); ;
+                        }
+                        <div class="col-3 col-md-2"  style="width: 18.74%;">
+                            <div class="field-container">
+                                <span class="field-title required-field">@Html.GetResource("OtherConversionsTitle", "Report")</span>
+
+
+                                @foreach (Noqoush.AdFalcon.Domain.Common.Model.Core.metriceColumnDto Column in columnstOtherConversionsAdvertiser)
+                                {
+                                    <div class="check-box-container" style="@(Column.Hide?"display:none":"")" id="Div_@Column.AppFieldName">
+                                        @Html.GetCheckBox("CheckmetriceColumn" + Column.Id.ToString(), Html.GetResource(Column.HeaderResourceKey, Column.HeaderResourceSet), Column.IsSelected, "ChangedColumnsMetric", Column.AppFieldName)
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        @{
+
+
+                            var columnstAppInstallAdvertiser = Model.Columns.Where(x => x.GroupKey == "AppInstallAdvertiser").ToList(); ;
+                        }
+                        <div class="col-3 col-md-2"  style="width: 15.74%;">
+                            <div class="field-container">
+                                <span class="field-title required-field">@Html.GetResource("Other", "Global")</span>
+
+
+                                @foreach (Noqoush.AdFalcon.Domain.Common.Model.Core.metriceColumnDto Column in columnstAppInstallAdvertiser)
+                                {
+                                    <div class="check-box-container" style="@(Column.Hide?"display:none":"")" id="Div_@Column.AppFieldName">
+                                        @Html.GetCheckBox("CheckmetriceColumn" + Column.Id.ToString(), Html.GetResource(Column.HeaderResourceKey, Column.HeaderResourceSet), Column.IsSelected, "ChangedColumnsMetric", Column.AppFieldName)
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                                }
+                                else
+                                {
+
+                                    <div class="row">
+
+
+                                        @{
+
+
+                                            var columnstStandardPublisher = Model.Columns.Where(x => x.GroupKey == "StandardPublisher").ToList();
+                                        }
+                                        <div class="col-3 col-md-2"  >
+                                            <div class="field-container">
+                                                <span class="field-title required-field">@Html.GetResource("Standard", "Global")</span>
+
+
+                                                @foreach (Noqoush.AdFalcon.Domain.Common.Model.Core.metriceColumnDto Column in columnstStandardPublisher)
+                                                {
+                                                    <div class="check-box-container" style="@(Column.Hide?"display:none":"")" id="Div_@Column.AppFieldName">
+                                                        @Html.GetCheckBox("CheckmetriceColumn" + Column.Id.ToString(), Html.GetResource(Column.HeaderResourceKey, Column.HeaderResourceSet), Column.IsSelected, "ChangedColumnsMetric", Column.AppFieldName)
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+
+
+
+
+                                    </div>
+                                            }
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+}
+
+
+

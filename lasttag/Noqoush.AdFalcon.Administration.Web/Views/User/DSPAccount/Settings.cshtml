@@ -1,0 +1,205 @@
+﻿@{
+
+    ViewBag.Title = Html.GetResource("ADMAccountSettings", "Global");
+}
+
+<script language="javascript" type="text/javascript">
+    var cityId = '@Model.Setting.StateId';
+
+
+    $(document).ready(function () {
+
+        UpdateCities("True");
+       
+        $('#AccountSettingsForm').on('submit', function () {
+            
+            collectEmails();
+        });
+    });
+
+  
+
+    var GetCitiesByCountryUrl = '@Url.Action("GetCitiesByCountry", "User")';
+
+    function UpdateCities(first) {
+        $('#Setting_StateId').empty();
+
+        if ($("#Setting_CountryId").val() != "-1") {
+            $.ajax(
+               {
+                   url: GetCitiesByCountryUrl + "?countryId=" + $("#Setting_CountryId").val(),
+                   cache: false,
+                   success: function (data) {
+                       if (data.result.length > 0) {
+                           $(data.result).map(function () {
+                               $('#Setting_StateId').append($('<option>', {
+                                   value: this.Value,
+                                   text: this.Text
+                               }));
+                           })
+                           $("#CitiesDiv").show();
+                           if (typeof (first) != "undefined" && first == "True") {
+                               $('#Setting_StateId').val(cityId);
+
+                           }
+
+                       } else {
+                           $("#CitiesDiv").hide();
+                           $('#Setting_StateId').val("0");
+                       }
+                   },
+                   error: function (error) {
+                       $("#CitiesDiv").hide();
+                       $('#Setting_StateId').val("0");
+                   }
+               });
+        } else {
+
+            $("#CitiesDiv").hide();
+            $('#Setting_StateId').val("0");
+        }
+
+    }
+
+    function collectEmails() {
+        
+        var emails = "";
+
+        var emailsTextBoxs = $("input[name='RecipientEmails'] , input[name='ClickEmails']");
+
+        for (var i = 0; i < emailsTextBoxs.length ; i++) {
+            var item = emailsTextBoxs.eq(i);
+            emails += $(item).val() + ",";
+        }
+        $("#RecipientsString").val(emails);
+
+    }
+
+</script>
+@model Noqoush.AdFalcon.Web.Controllers.Model.AccountManagement.DSPAccountSettingsModel
+@using (Html.BeginForm("ADMAccountSettings", "user", FormMethod.Post, new { id = "AccountSettingsForm", name = "AccountSettingsForm" }))
+{
+    @Html.HiddenFor(m => m.Setting.ID);
+    @Html.HiddenFor(m => m.RecipientsString);
+
+
+    <div class="data-row section-container">
+        <br />
+        <div class="data-row section-container">
+
+
+            <h2>@Html.GetResource("General")</h2>
+
+            <div class="section-form-container">
+                <div class="section-form-inner-container">
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("Name", "Business")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.AdFalconEditorFor(p => p.Setting.BusinessName)
+                            <span style="display: inline-block; margin-left: 29px; margin-right: 29px;">@Html.AdFalconValidationMessageFor(p => p.Setting.BusinessName)</span>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+            </div>
+
+            <h2>@Html.GetResource("Contact", "Billing")</h2>
+            <div class="section-form-container">
+                <div class="section-form-inner-container">
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("Name")</span>
+
+                        </div>
+                        <div class="field-container">
+                            @Html.AdFalconEditorFor(p => p.Setting.BillingContactName)
+                            <span style="display: inline-block; margin-left: 29px; margin-right: 29px;">@Html.AdFalconValidationMessageFor(p => p.Setting.BillingContactName)</span>
+                        </div>
+                    </div>
+                    <div class="data-row data-container">
+                        @Html.Partial("Email", Model.Recipients)
+                    </div>
+
+
+                </div>
+            </div>
+
+            <h2>@Html.GetResource("Address", "Billing")</h2>
+            <div class="section-form-container">
+                <div class="section-form-inner-container">
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("Name")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.AdFalconEditorFor(p => p.Setting.BillToAddressPersonName)
+                            <span style="display: inline-block; margin-left: 29px; margin-right: 29px;">@Html.AdFalconValidationMessageFor(p => p.Setting.BillToAddressPersonName)</span>
+                        </div>
+                    </div>
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("LineOne")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.AdFalconEditorFor(p => p.Setting.BillToAddress1)
+                            <span style="display: inline-block; margin-left: 29px; margin-right: 29px;">@Html.AdFalconValidationMessageFor(p => p.Setting.BillToAddress1)</span>
+                        </div>
+                    </div>
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("LineTwo")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.AdFalconEditorFor(p => p.Setting.BillToAddress2)
+                            <span style="display: inline-block; margin-left: 29px; margin-right: 29px;">@Html.AdFalconValidationMessageFor(p => p.Setting.BillToAddress2)</span>
+                        </div>
+                    </div>
+
+
+
+                    <div class="data-row data-container">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("Country")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.DropDownListFor(p => p.Setting.CountryId, Model.Countries, new { onchange = "UpdateCities()" })
+                            @Html.ValidationMessageFor(p => p.Setting.CountryId)
+                        </div>
+                    </div>
+
+                    <div class="data-row data-container" id="CitiesDiv" style="display:none">
+                        <div class="label-container">
+                            <span class="field-title required-field">@Html.GetResource("City", "Register")</span>
+                        </div>
+                        <div class="field-container">
+                            @Html.DropDownListFor(p => p.Setting.StateId, Model.Cities)
+                            @Html.ValidationMessageFor(p => p.Setting.StateId)
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+
+
+            <div class="section-footer">
+            </div>
+        </div>
+
+        <div class="data-row button-container">
+            @Html.SubmitButton(@Html.GetResource("Save", "Commands"), "Create", new { @class = "primary-btn", onclick = "customDealValidate();" })
+        </div>
+    </div>
+
+
+
+}
+
+

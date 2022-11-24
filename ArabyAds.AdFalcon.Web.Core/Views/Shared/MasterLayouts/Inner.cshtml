@@ -1,0 +1,22 @@
+@{
+    Layout = "~/Views/Shared/MasterLayouts/Main.cshtml";
+}
+<!-- Body Start -->
+<div class="body-container">
+    <div class="center-piece">
+        <div class="data-row page-form-container">
+            <h1 id="MainHeader">
+                <span class="trimed-span" style="width: 800px!important;" title="@ViewBag.Title">
+                    @ViewBag.Title
+                </span>
+            </h1>
+
+            <div class="data-row page-body">
+ @await Html.PartialAsync("CommonMessages")                
+                <div class="data-row section-container">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

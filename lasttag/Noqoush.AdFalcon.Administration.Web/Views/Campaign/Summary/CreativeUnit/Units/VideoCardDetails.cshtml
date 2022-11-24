@@ -1,0 +1,115 @@
+﻿@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeSummaryDto
+
+@using Noqoush.AdFalcon.Domain.Common.Model.Campaign
+@*@using Noqoush.Framework.DomainServices*@
+
+@{
+
+
+}
+@*<br>
+<div class="data-row data-container" style="font-weight: bold;">
+    @Html.GetResource("VideoEndCard", "Campaign") :
+</div>*@
+<div class="data-row info-container last-container ">
+
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("AutoClose"):</span>
+        </div>
+        <div class="field-container">
+
+            <span class="side-text margin-summary">
+                @Html.GetCheckBox("EnableAutoClose_check", Html.GetResource("AutoClose"), Model.EnableAutoClose, "", "", true)
+            </span>
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("InstreamVideoDuration"):</span>
+        </div>
+        <div class="field-container">
+            <span class="side-text margin-summary"> @Model.AutoCloseWaitInSeconds</span>
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("AdType", "Campaign"):</span>
+        </div>
+        <div class="field-container">
+            <span class="side-text margin-summary"> @Model.CardType.ToText()</span>
+        </div>
+    </div>
+    @if (@Model.CardType== VideoEndCardType.Dynamic)
+    {
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("IsFluid"):</span>
+        </div>
+
+
+        <span class="side-text margin-summary">
+            @Html.GetCheckBox("VideoEndCardFluid_check", Html.GetResource("IsFluid"), Model.VideoEndCardFluid, "", "", true)
+        </span>
+    </div>
+
+    }
+
+
+
+    @{
+        if (Model.AdActionValueVideoEndCard != null && Model.AdActionValueVideoEndCard.Trackers != null && Model.AdActionValueVideoEndCard.Trackers.Count() > 0)
+        {
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("EndCardTrackingURL", "Video"):</span>
+                </div>
+                <div class="field-container">
+                    @Html.Partial("Summary/AdAction/AdActionValueTracker/VideoEndCardTracker", Model)
+
+
+                </div>
+            </div>
+        }
+    }
+
+    @{
+        if (Model.AdActionValueVideoEndCard != null && Model.AdActionValueVideoEndCard.Trackers != null && Model.AdActionValueVideoEndCard.Trackers.Count() > 0 && !string.IsNullOrEmpty(Model.AdActionValueVideoEndCard.Value))
+        {
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("CTAURL"):</span>
+                </div>
+
+                <div class="field-container">
+                    <div class="field-container">
+                        <span class="side-text margin-summary"> @Model.AdActionValueVideoEndCard.Value</span>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+    @{
+
+        if (Model.VideoEndCardAdImages.Count() > 0)
+        {
+            <div class="data-row info-container last-container">
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">@Html.GetResource("Creative", "Campaign"):</span>
+                    </div>
+                </div>
+            </div>
+
+            foreach (var adCreativeUnitDto in Model.VideoEndCardAdImages.OrderByDescending(p => p.CreativeUnit.Width * p.CreativeUnit.Height))
+            {
+                @Html.Partial("Summary/CreativeUnit/Units/BannerUnit", adCreativeUnitDto)
+            }
+
+        }
+
+
+    }
+
+</div>

@@ -1,0 +1,77 @@
+﻿@model  Noqoush.AdFalcon.Web.Controllers.Model.Campaign.CreativeViewModel
+<script type="text/javascript" language="javascript">
+    //jQuery(document).ready(function () {
+    //    //  $('#AdCreativeDto_AdActionValue_Value2').change(ValidateAdAction).addClass('required');
+    //    $('#AdCreativeDto_AdActionValue_Value').change(ValidateAdAction).addClass('required');
+    //});
+    //function ValidateAdAction() {
+    //    var returnvalue = true;
+
+    //    //check if display url is empty
+    //    var val2 = $('#AdCreativeDto_AdActionValue_Value').val();
+    //    if ((val2 == null) || $.trim(val2) == '') {
+    //        $('#displayURLRequiredMsg').show();
+    //        returnvalue = false;
+    //    } else {
+    //        $('#displayURLRequiredMsg').hide();
+    //    }
+    //    //check if  url is valid
+    //    var temp = ValidateUrl($('#AdCreativeDto_AdActionValue_Value'));
+    //    //  var temp1 = ValidateUrl($('#AdCreativeDto_AdActionValue_Value2'), 'displayURLErrorMsg2');
+
+    //    return returnvalue && temp;// && temp1;
+    //};
+    //var validateRM_AdAction = ValidateAdAction;
+
+</script>
+
+@*<div class="data-row data-container">
+    <div class="label-container">
+        <span class="field-title required-field">@Html.GetResource("CTAURL")</span>
+    </div>
+
+    <div class="field-container">
+        @Html.AdFalconEditorFor(p => p.AdCreativeDto.AdActionValue.Value, new { @class = "url" })
+        @Html.AdFalconValidationMessageFor(p => p.AdCreativeDto.AdActionValue.Value)
+
+        <span id="displayURLErrorMsg" class="validation-arrow field-validation-error"
+              style="display: none;"><span class="">@Html.GetResource("UrlMsg")</span></span>
+        </div>
+    </div>*@
+<div class="data-row data-container">
+    <h2>
+        @*Instream Video Tracker*@
+        @Html.GetResource("InsteamVideoTracker", "Campaign")
+    </h2>
+</div>
+<div class="section-form-inner-container info-container">
+    @{ if (Model.InStreamVideos != null)
+        {
+
+            //foreach (Noqoush.AdFalcon.Web.Controllers.Model.Campaign.CreativeUnitViewModel creativeUnit in Model.InStreamVideos)
+            //{
+            var creativeUnit = Model.InStreamVideos.FirstOrDefault();
+              creativeUnit.IsAllowedToSaveImpressionTracker = Model.IsAllowedToSaveImpressionTracker;
+            foreach (var item in creativeUnit.ImpressionTrackerRedirectList)
+            {
+                       item.IsAllowedToSaveImpressionTracker = creativeUnit.IsAllowedToSaveImpressionTracker;
+                <div class="data-row data-container">
+                    <div class="label-container">
+                        <span class="field-title required-field">
+
+                        </span>
+                    </div>
+                    <div class="field-container">
+                        @Html.Partial("AdAction/AdActionValueTracker/InstreamVideoTracker", item)
+
+                    </div>
+                </div>
+            }
+            //}
+
+        }
+
+    }
+
+
+</div>

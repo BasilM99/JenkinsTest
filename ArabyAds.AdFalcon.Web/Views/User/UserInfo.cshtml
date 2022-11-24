@@ -1,0 +1,316 @@
+﻿@using Noqoush.AdFalcon.Web.Controllers.Model;
+<script type="text/javascript">
+    @if (Noqoush.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage == "ar")
+    {
+   <text>
+
+    $(document).ready(function () {
+        var phone = document.getElementById('Phone').value;
+        if (phone[0] == '+') {
+            document.getElementById('Phone').value = phone.replace('+', '') + '+';
+        }
+    });
+    </text>
+    }
+
+
+</script>
+
+@{
+      var OriginalAccountIdVar = 0;
+    if (Noqoush.Framework.OperationContext.Current.CurrentPrincipal.Identity.IsAuthenticated)
+    {
+
+        {
+             OriginalAccountIdVar = Noqoush.Framework.OperationContext.Current.UserInfo<Noqoush.AdFalcon.Common.UserInfo.AdFalconUserInfo>().AccountId.Value;
+        }
+    }
+}
+@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Account.UserDto
+@{
+
+
+	Layout = "";
+	SelectListItem optionalItem = new SelectListItem();
+	optionalItem.Value = "";
+	optionalItem.Text = Html.GetResource("Select");
+	Noqoush.AdFalcon.Services.Interfaces.Services.ILanguageService languageService = Noqoush.Framework.IoC.Instance.Resolve<Noqoush.AdFalcon.Services.Interfaces.Services.ILanguageService>();
+
+	List<SelectListItem> languagesList = new List<SelectListItem>();
+	languagesList.Add(optionalItem);
+
+	Noqoush.AdFalcon.Services.Interfaces.Services.ICountryService countryService = Noqoush.Framework.IoC.Instance.Resolve<Noqoush.AdFalcon.Services.Interfaces.Services.ICountryService>();
+	List<SelectListItem> countriesList = new List<SelectListItem>();
+	countriesList.Add(optionalItem);
+
+	int countryId, languageId;
+	countryId = languageId = 0;
+
+	if (Model != null)
+	{
+		/* var country = countriesList.Where(p => p.Value == Model.Country.ToString()).SingleOrDefault();
+
+		if (country != null)
+		{
+			countryId = int.Parse(country.Value);
+		}
+
+		var language = languagesList.Where(p => p.Value == Model.Language.ToString()).SingleOrDefault();
+
+		if (language != null)
+		{
+			languageId = int.Parse(language.Value);
+		}*/
+		countryId = Model.Country;
+		languageId = Model.Language;
+	}
+
+	List<Noqoush.AdFalcon.Services.Interfaces.DTOs.Core.LanguageDto> languagesDtos = languageService.GetAll().Where(M => M.ForPortal == true).ToList();
+	foreach (var item in languagesDtos)
+	{
+		var selectItem = new SelectListItem();
+		selectItem.Value = item.ID.ToString();
+		selectItem.Text = item.Name.ToString();
+
+		if (languageId == item.ID)
+		{
+			selectItem.Selected = true;
+		}
+		languagesList.Add(selectItem);
+	}
+
+
+	List<Noqoush.AdFalcon.Services.Interfaces.DTOs.Core.CountryDto> countriesDtos = countryService.GetAll().ToList().OrderBy(p => p.Name.Value)
+.ToList();
+	foreach (var item in countriesDtos)
+	{
+		var selectItem = new SelectListItem();
+		selectItem.Value = item.ID.ToString();
+		selectItem.Text = item.Name.ToString();
+
+		if (countryId == item.ID)
+		{
+			selectItem.Selected = true;
+		}
+
+		countriesList.Add(selectItem);
+	}
+
+
+	string status = ViewData["status"].ToString();
+
+}
+<h2>
+	@Html.GetResource("AccountInformation", "Register")
+</h2>
+<div class="section-form-container">
+	<input name="Id" id="Id" type="hidden" value="0" />
+	@*<input name="buyerId" id="buyerId" type="hidden" value="" />*@
+
+
+	<div class="section-form-inner-container">
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("email", "Global")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconEditorFor(p => p.EmailAddress)
+				@Html.AdFalconValidationMessageFor(p => p.EmailAddress)
+			</div>
+		</div>
+        @if (OriginalAccountIdVar>0)
+        {
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title required-field">AccountID</span>
+			</div>
+			<div class="field-container">
+				<span class="slide-text UniqueID-line-height">
+					@OriginalAccountIdVar
+				</span>
+			</div>
+		</div>
+        }
+		@if (status != "edit")
+		{
+			<div class="data-row data-container">
+				<div class="label-container">
+					<span class="field-title required-field">@Html.GetResource("Password", "Global")</span>
+				</div>
+				<div class="field-container">
+					@Html.AdFalconPasswordFor(p => p.Password)
+					@Html.AdFalconValidationMessageFor(p => p.Password)
+				</div>
+			</div>
+			<div class="data-row data-container">
+				<div class="label-container">
+					<span class="field-title required-field">@Html.GetResource("ConfirmPassword", "Global")</span>
+				</div>
+				<div class="field-container">
+					@Html.AdFalconPasswordFor(p => p.ConfirmPassword)
+					@Html.AdFalconValidationMessageFor(p => p.ConfirmPassword)
+				</div>
+			</div>
+		}
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("FirstName", "Register")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconEditorFor(p => p.FirstName)
+				@Html.AdFalconValidationMessageFor(p => p.FirstName)
+			</div>
+		</div>
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("LastName", "Register")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconEditorFor(p => p.LastName)
+				@Html.AdFalconValidationMessageFor(p => p.LastName)
+			</div>
+		</div>
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title">@Html.GetResource("Phone", "Register")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconTextBoxFor(p => p.Phone, new { maskType = "phone" })
+				@Html.AdFalconValidationMessageFor(p => p.Phone)
+			</div>
+		</div>
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title">@Html.GetResource("Company", "Global")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconEditorFor(p => p.Company)
+				@Html.AdFalconValidationMessageFor(p => p.Company)
+			</div>
+		</div>
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title">@Html.GetResource("Address1", "Register")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconEditorFor(p => p.Address1)
+				@Html.AdFalconValidationMessageFor(p => p.Address1)
+			</div>
+		</div>
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title">@Html.GetResource("Address2", "Register")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconEditorFor(p => p.Address2)
+				@Html.AdFalconValidationMessageFor(p => p.Address2)
+			</div>
+		</div>
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("Country", "Global")</span>
+			</div>
+			<div class="field-container">
+				@Html.DropDownList("Country", countriesList.ToList())
+				@Html.AdFalconValidationMessageFor(p => p.Country)
+			</div>
+		</div>
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title">@Html.GetResource("State", "Register")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconEditorFor(p => p.State)
+				@Html.AdFalconValidationMessageFor(p => p.State)
+			</div>
+		</div>
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title">@Html.GetResource("City", "Register")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconEditorFor(p => p.City)
+				@Html.AdFalconValidationMessageFor(p => p.City)
+			</div>
+		</div>
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title">@Html.GetResource("Postal", "Register")</span>
+			</div>
+			<div class="field-container">
+				@Html.AdFalconEditorFor(p => p.Postal)
+				@Html.AdFalconValidationMessageFor(p => p.Postal)
+			</div>
+		</div>
+
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title required-field">@Html.GetResource("Language", "Register")</span>
+			</div>
+			<div class="field-container">
+				@Html.DropDownList("Language", languagesList.ToList())
+				@Html.AdFalconValidationMessageFor(p => p.Language)
+			</div>
+		</div>
+		<div class="data-row data-container">
+			<div class="label-container">
+				<span class="field-title required-field">&nbsp;</span>
+			</div>
+			<div class="field-container">
+				<div class="ddl-container data-row">
+					@Html.GetCheckBox("IsAllowNotifications", Html.GetResource("IsAllowNotifications", "Register"), (ViewData.Model != null ? ViewData.Model.IsAllowNotifications : true))
+				</div>
+			</div>
+		</div>
+
+		@if (ViewData["requestCode"] == null && ViewData["AcceptTermsANdCondition"] != null)
+		{
+			<div class="data-row data-container">
+				<div class="label-container">
+					<span class="field-title required-field">&nbsp;&nbsp;</span>
+				</div>
+				<div class="field-container">
+					<div class="ddl-container data-row">
+						@Html.GetCheckBox("acceptTerms", Html.GetResource("AcceptTerms", "Register").Replace("[pub]", Url.GetPublicPageUrl("pubterms.html", "en").ToString()).Replace("[adv]", Url.GetPublicPageUrl("terms.html", "en").ToString()), (bool)(ViewData["AcceptTermsANdCondition"]), "activateButton")
+					</div>
+				</div>
+			</div>
+		}
+
+		else if (ViewData["AcceptTermsANdCondition"] != null)
+
+		{
+
+			<div class="data-row data-container">
+				<div class="label-container">
+					<span class="field-title required-field">&nbsp;&nbsp;</span>
+				</div>
+				<div class="field-container">
+					<div class="ddl-container data-row">
+						@Html.GetCheckBox("acceptTerms", Html.GetResource("DSPAcceptTerms", "Register").Replace("[adv]", Url.GetPublicPageUrl("terms.html", "en").ToString()), (bool)(ViewData["AcceptTermsANdCondition"]), "activateButton")
+					</div>
+				</div>
+			</div>
+
+		}
+		else
+
+		{
+
+
+			<div class="data-row data-container" style="display:none">
+				<div class="label-container">
+					<span class="field-title required-field">&nbsp;&nbsp;</span>
+				</div>
+				<div class="field-container">
+					<div class="ddl-container data-row">
+						@Html.GetCheckBox("acceptTerms", Html.GetResource("DSPAcceptTerms", "Register").Replace("[adv]", Url.GetPublicPageUrl("terms.html", "en").ToString()), (bool)(true), "activateButton")
+					</div>
+				</div>
+			</div>
+
+		}
+	</div>
+</div>
+<div class="section-footer"></div>
+

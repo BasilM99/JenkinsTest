@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("AdCreative", "ThanksTitle");
+}
+@model ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeSummaryDto
+           
+<div class="section-form-container">
+@Html.Partial("Summary/CampaignSummary", Model.Campaign)
+@Html.Partial("Summary/AdGroupSummary", Model.Group)
+@Html.Partial("Summary/AdSummary", Model)
+</div>
+
+<div class="section-footer">
+</div>
+<div class="data-row go-center">
+    <input type="button" value="@Html.GetResource("AddNewAds", "Commands")" class="primary-btn" onclick="redirect('@(Url.Action("Creative", "HouseAd", new { id = Model.Campaign.ID, adGroupId = Model.Group.ID,returnurl=Request.QueryString["returnUrl"]}))')"/>
+    <input type="button" value="@Html.GetResource("Close", "Commands")" class="btn" onclick="redirect('@(string.IsNullOrWhiteSpace(Request.QueryString["returnUrl"]) ? Url.Action("Ads", "HouseAd", new { id = Model.Campaign.ID, adGroupId = Model.Group.ID }) : Request.QueryString["returnUrl"])')"/>
+</div>
+

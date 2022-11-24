@@ -1,0 +1,98 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Action
+@{
+    Layout = null;
+
+}
+
+<script type="text/javascript">
+
+    var ElemnetID@(Model.Code) = "";
+    var Type@(Model.Code) = '@Model.Code';
+    var CreativeFormatsUrl@(Model.Code) = '@Url.Action(Model.ActionName, Model.ControllerName)';
+    var selectElemnt@(Model.Code);
+    $(document).ready(function () {
+        ElemnetID@(Model.Code) = "#" + "PartyDto_" + Type@(Model.Code) + "List";
+        selectElemnt@(Model.Code) = $(ElemnetID@(Model.Code));
+        $(ElemnetID@(Model.Code)).select2({
+            tags: true,
+            multiple: true,
+            tokenSeparators: [',', ' '],
+
+            ajax: {
+                url: CreativeFormatsUrl@(Model.Code),
+                dataType: "json",
+                type: "GET",
+                data: function (params) {
+
+                    var queryParameters = {
+                        q: params.term
+                    }
+                    return queryParameters;
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                text: item.Name.Value,
+                                id: item.ID
+                            }
+                        })
+                    };
+                }
+
+            }
+
+        });
+        var valuesBefore = [];
+        selectElemnt@(Model.Code).on("select2:selecting", function (e) {
+            
+            $("#" + Type@(Model.Code) + "P").find("span.select2-selection").attr("style", "width: 200px;height:50px; overflow:auto;");
+
+            valuesBefore = selectElemnt@(Model.Code).val();
+        });
+
+        CustomInitSelect2@(Model.Code)();
+    });
+
+
+    function CustomInitSelect2@(Model.Code)() {
+
+        $.ajax({
+            type: 'GET',
+            url: CreativeFormatsUrl@(Model.Code) + "?q=",
+            dataType: 'json'
+        }).then(function (data) {
+
+
+            var dataF = $.map(data, function (item) {
+                return {
+                    text: item.Name.Value,
+                    id: item.ID
+                }
+            });
+            
+            selectElemnt@(Model.Code).select2({
+                data: dataF
+            });
+
+            
+
+            if (typeof (ListOf@(Model.Code)) != "undefined") {
+                
+                fillselect2multipe(ListOf@(Model.Code), "#PartyDto_" + Type@(Model.Code) + "List");
+            }
+        });
+
+    }
+
+
+</script>
+
+
+<div id="@(Model.Code)Div">
+    <div id="@(Model.Code)P">
+        <select id="PartyDto_@(Model.Code)List" name="PartyDto.@(Model.Code)List" class="js-example-theme-multiple js-states form-control select2-hidden-accessible multiselect2jq" style="width: 200px;" multiple="" tabindex="-1" aria-hidden="true"></select>
+    </div>
+</div>
+
+

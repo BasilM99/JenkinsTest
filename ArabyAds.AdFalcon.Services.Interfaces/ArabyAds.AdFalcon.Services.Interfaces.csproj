@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <IncludeSymbols>true</IncludeSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+ 
+  <Target Name="PostPackNugetDeploy" AfterTargets="Pack">
+    <Message Importance="High" Text=" deleting %userprofile%\.nuget\packages\$(PackageId)\$(PackageVersion)" />
+    <Exec Command="rmdir /S /Q %userprofile%\.nuget\packages\$(PackageId)\$(PackageVersion)" />
+    <Exec Command="dotnet nuget locals http-cache -c" />
+    <Exec Command="dotnet nuget push &quot;$(OutputPath)..\$(PackageId).$(PackageVersion).symbols.nupkg&quot; -s &quot;Local NuGet Server&quot;" />
+  </Target>
+ 
+  <ItemGroup>
+    <Compile Remove="DTOs\Account\BankAcccountDto.cs" />
+    <Compile Remove="DTOs\Campaign\AdGroupSummaryDto.cs" />
+    <Compile Remove="DTOs\Campaign\CampaignSummaryDto.cs" />
+    <Compile Remove="DTOs\Campaign\CostModelDto.cs" />
+    <Compile Remove="DTOs\Campaign\Creative\CreativeUnitFormatDto.cs" />
+    <Compile Remove="DTOs\Campaign\Creative\NativeAdIconSizeDto.cs" />
+    <Compile Remove="DTOs\Campaign\Creative\NativeAdImageSizeDto.cs" />
+    <Compile Remove="DTOs\Campaign\Creative\NativeAdSizeDto.cs" />
+    <Compile Remove="DTOs\Campaign\Creative\NativeAdSizeFormatDto.cs" />
+    <Compile Remove="DTOs\ImpersonatedAccountInfo.cs" />
+    <Compile Remove="Environment.cs" />
+    <Compile Remove="FormatHelper.cs" />
+    <Compile Remove="Services\Campaign\IAdGroupStatusService.cs" />
+    <Compile Remove="Services\Campaign\ICampaignStatusService.cs" />
+    <Compile Remove="Services\Core\ISystemBankAccountService.cs" />
+    <Compile Remove="Services\Core\ISystemPayPalAccountService.cs" />
+  </ItemGroup>
+ 
+  <ItemGroup>
+    <None Remove="app.config" />
+    <None Remove="Web.config" />
+    <None Remove="Web.Debug.config" />
+    <None Remove="Web.Release.config" />
+  </ItemGroup>
+ 
+  <ItemGroup>
+    <PackageReference Include="ArabyAds.Framework" Version="1.0.0" />
+  </ItemGroup>
+ 
+  <ItemGroup>
+    <ProjectReference Include="..\ArabyAds.AdFalcon.Common\ArabyAds.AdFalcon.Common.csproj" />
+    <ProjectReference Include="..\ArabyAds.AdFalcon.Domain.Common\ArabyAds.AdFalcon.Domain.Common.csproj" />
+  </ItemGroup>
+
+</Project>

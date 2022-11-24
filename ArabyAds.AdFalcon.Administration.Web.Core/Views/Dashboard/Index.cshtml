@@ -1,0 +1,25 @@
+﻿@{
+    @*if (ViewData["chartType"].ToString().ToLower() == "ad")
+        {
+            ViewBag.Title = Html.GetResource("AdvertiserDashboard", "Titles");
+        }
+        else if (ViewData["chartType"].ToString().ToLower() == "deal")
+        {
+            ViewBag.Title = Html.GetResource("DealMonitoringDashBoard", "PMPDeal");
+        }
+        else if (ViewData["chartType"].ToString().ToLower() == "lmpressionlog")
+        {
+            ViewBag.Title = Html.GetResource("audiencesMonitoring", "audiences");
+
+        }
+        else
+        {
+            ViewBag.Title = Html.GetResource("PublisherDashboard", "Titles");
+        }*@
+    Layout = "~/Views/Shared/MasterLayouts/InnerReact.cshtml";
+}
+
+
+<div id="APP-Root">
+</div>
+<script src="~/ClientReactJs/Dashboard.js.gz" asp-append-version="true"></script>

@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <IncludeSymbols>true</IncludeSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Configuration.cs" />
+    <Compile Remove="Model\Account\Discount\Discount.cs" />
+    <Compile Remove="Model\Account\Fund.cs" />
+    <Compile Remove="Model\Account\ObjectTypes.cs" />
+    <Compile Remove="Model\Campaign\CampaignBidConfig.cs" />
+    <Compile Remove="Model\Campaign\Targeting\AdPositionTargeting.cs" />
+    <Compile Remove="Model\Core\AdPosition.cs" />
+    <Compile Remove="Model\Core\CostItem.cs" />
+    <Compile Remove="Model\Core\EntityBase.cs" />
+    <Compile Remove="Model\Core\LocationInfo.cs" />
+    <Compile Remove="Model\QueryBuilder\Enums.cs" />
+    <Compile Remove="Repositories\AppSite\AppSiteCriteria.cs" />
+    <Compile Remove="Repositories\Campaign\IVideoDeliveryMethodsRepository.cs" />
+    <Compile Remove="Repositories\Core\IAdPositionRepository.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="HtmlAgilityPack" Version="1.11.40" />
+	  <PackageReference Include="SharpZipLib" Version="1.3.3" />
+	  <PackageReference Include="WebHDFS.Client" Version="2.0.0" />
+    <PackageReference Include="ArabyAds.AdFalcon.EventDTOs" Version="1.0.0" />
+   
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ArabyAds.AdFalcon.Common\ArabyAds.AdFalcon.Common.csproj" />
+    <ProjectReference Include="..\ArabyAds.AdFalcon.Domain.Common\ArabyAds.AdFalcon.Domain.Common.csproj" />
+    <ProjectReference Include="..\ArabyAds.AdFalcon.Domain.Exceptions\ArabyAds.AdFalcon.Exceptions.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostPackNugetDeploy" AfterTargets="Pack">
+    <Message Importance="High" Text=" deleting %userprofile%\.nuget\packages\$(PackageId)\$(PackageVersion)" />
+    <Exec Command="rmdir /S /Q %userprofile%\.nuget\packages\$(PackageId)\$(PackageVersion)" />
+    <Exec Command="dotnet nuget locals http-cache -c" />
+    <Exec Command="dotnet nuget push &quot;$(OutputPath)..\$(PackageId).$(PackageVersion).symbols.nupkg&quot; -s &quot;Local NuGet Server&quot;" />
+  </Target>
+
+</Project>

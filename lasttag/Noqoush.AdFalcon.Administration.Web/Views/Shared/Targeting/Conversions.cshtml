@@ -1,0 +1,3145 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.Campaign.TargetingViewModel
+
+
+@*@using Noqoush.Framework.DomainServices*@
+
+
+@{
+
+
+	bool CountFirstConversionOnlyValue = false;
+
+
+	bool CountConversionEveryValue = false;
+
+
+	bool CountAllConversionsValue = false;
+
+
+	switch (Model.ConversionSetting)
+
+
+	{
+
+
+		case Noqoush.AdFalcon.Domain.Common.Model.Campaign.ConversionSetting.CountingFirst:
+
+
+			CountFirstConversionOnlyValue = true;
+
+
+			break;
+
+
+		case Noqoush.AdFalcon.Domain.Common.Model.Campaign.ConversionSetting.CountingEvery:
+
+
+			CountConversionEveryValue = true;
+
+
+			break;
+
+
+		case Noqoush.AdFalcon.Domain.Common.Model.Campaign.ConversionSetting.CountingAll:
+
+
+			CountAllConversionsValue = true;
+
+
+			break;
+
+
+	}
+
+
+	var selectItems = Enum.GetValues(typeof(Noqoush.AdFalcon.Domain.Common.Model.Campaign.ConversionType)).Cast<Noqoush.AdFalcon.Domain.Common.Model.Campaign.ConversionType>().Select(p => new SelectListItem() { Text = p.ToText(), Value = ((int)p).ToString() }).ToList();
+
+
+	selectItems.RemoveAt(0);
+
+	if (Model != null)
+	{
+		foreach (var selectItem in selectItems)
+		{
+			if (selectItem.Value == ((int)Model.ConversionType).ToString())
+			{
+				selectItem.Selected = true;
+
+
+			}
+		}
+	}
+
+
+	var CountingTypeAttribuationselectItems = Enum.GetValues(typeof(Noqoush.AdFalcon.Domain.Common.Model.Campaign.CountingTypeAttribuation)).Cast<Noqoush.AdFalcon.Domain.Common.Model.Campaign.CountingTypeAttribuation>().Select(p => new SelectListItem() { Text = p.ToText(), Value = ((int)p).ToString() }).ToList();
+
+
+	CountingTypeAttribuationselectItems.RemoveAt(0);
+
+	if (Model != null)
+	{
+		foreach (var selectItem in CountingTypeAttribuationselectItems)
+		{
+			if (selectItem.Value == ((int)Model.CountingTypeAttribuation).ToString())
+			{
+				selectItem.Selected = true;
+
+
+			}
+		}
+	}
+
+
+}
+
+
+<div class="section-form-inner-container info-container tab-pane fade" tabsection="26" id="ConversionsAndEventsSection"
+	 style="display:none;">
+
+
+
+
+
+
+
+
+	<script>
+
+
+        var AdvaudieceListUrl = '@Url.Action("GetSegmentsList", "Campaign")';
+
+
+        var PixelListUrl = '@Url.Action("GetPixelsList", "Campaign")';
+
+
+        var ConversionIndexItems = parseInt('@Model.ConversionIndexItems');
+
+
+        var AdEventIndexItems = parseInt('@Model.AdEventIndexItems');
+
+        var CountConversionEveryMessageText = "@Html.GetResource("CountConversionEveryMessage", "Targeting")";
+
+        var ViewAttributionWindowMessageText = "@Html.GetResource("ViewAttributionWindowMessage", "Targeting")";
+
+        var PrimaryValidationWindowMessageText = "@Html.GetResource("PrimaryConversionMessage", "Targeting")";
+		  var PrimaryValidationWindowMessageOneText = "@Html.GetResource("PrimaryConversionMessageOne", "Targeting")";
+        var AdEventItemsCount = @Model.AdEventItems.Count() ;
+        var ConversionsItekumsCount = @Model.ConversionItems.Count() ;
+
+              function AddEventAudience(name = "", code = "", SegmentString = "", SegmentId = "" , IndexEvents) {
+
+                                    //  IndexEvents = IndexEvents + 1;
+
+				  var afterappend = "<div  indexelem='{{id}}' id='AdEventsAudienceTaggingItem_" + IndexEvents + "' class='data-row data-container newAdEvents'><div class='label-container' style='min-height:1px;width: 100px;'></div><div class='field-container'><span class='field-title required-field'><input class='form-control newevent' id='disabledInput' type='text' value='{{EventTuken}}' disabled='' style='width: 150px;'></span></div><div class='label-container label-container-sm' style='min-height:1px;width: 161px;'></div><div class='field-container'><span class='field-title required-field'><input class='form-control width-lg' id='disabledInput' type='text' value='{{AudienceListsTuken}}' disabled=''></span></div><div class='field-container'><img name='iconImage' onclick='ShowConfirmationDialogForDeleteEvent(\"{{EventTuken}}\",\"AdEventsAudienceTaggingItem_" + IndexEvents + "\"," + IndexEvents + ")' class='minusicon' id='del-ad-taggingBtn' alt='Remove Ad Events Audience Tagging' title='Remove Ad Events Audience Tagging'></div><div class='field-container'><img name='iconImage' onclick='showHideAdEventsAdd(this)' style='display:none' class='plusicon addIconForConv' id='' alt='' title=''></div>";
+
+
+                                   afterappend = afterappend.replace(/{{EventTuken}}/g, name );
+
+
+                           afterappend = afterappend.replace(/{{AudienceListsTuken}}/g, SegmentString );
+
+				  afterappend = afterappend.replace(/{{id}}/g, IndexEvents);
+
+
+
+                var SegmentHeddin = '<input data-val="true"  id="AdEventItems_{{id}}__SegmentsId" name="AdEventItems[{{id}}].SegmentsId" type="hidden" value="{{value}}">'
+
+
+                                   SegmentHeddin = SegmentHeddin.replace(/{{id}}/g, IndexEvents);
+
+
+                                   SegmentHeddin = SegmentHeddin.replace(/{{value}}/g, SegmentId );
+
+
+
+
+                var CodeHeddin = '<input data-val="true"  id="AdEventItems_{{id}}__Code" name="AdEventItems[{{id}}].Code" type="hidden" value="{{value}}">'
+
+
+                                   CodeHeddin = CodeHeddin.replace(/{{id}}/g, IndexEvents);
+
+
+                                   CodeHeddin = CodeHeddin.replace(/{{value}}/g, code  );
+
+
+
+
+                                    var DelHeddin = '<input data-val="true"  id="AdEventItems_{{id}}__IsDeleted" name="AdEventItems[{{id}}].IsDeleted" type="hidden" value="{{value}}">'
+
+
+                                   DelHeddin = DelHeddin.replace(/{{id}}/g, IndexEvents);
+
+
+				  DelHeddin = DelHeddin.replace(/{{value}}/g, "False");
+
+
+
+
+                                    $("div#ad-tagging").before(afterappend + SegmentHeddin + CodeHeddin + DelHeddin+"</div>");
+
+				  $("#ad-tagging").hide();
+				  CalculateAdEventAddIcon();
+                  ClearAdEventsAudienceFields();
+                  AudiencelistDllPlaceholderStleSet();
+
+                 }
+
+
+        function AddConversion(name = "", code = "", PixelString = "", PixelId = "", revenue, primaryCheckBox, IndexConversions) {
+
+
+
+
+                         //IndexConversions = IndexConversions + 1;
+
+                         var uncheck = "uncheck";
+
+                         var falseVal = "false";
+
+                         if (primaryCheckBox) {
+
+                                   uncheck = "checked";
+
+                                   falseVal = "true"
+
+                         }
+
+
+
+            var conversion = "<div indexelem='{{id}}' id='new-conversion-item_" + IndexConversions + "' class='newConv' ><div  class='data-row data-container'><div class='label-container' style='min-height:1px;width: 100px;'></div><div class='field-container'><span class='field-title required-field'><input id='ConversionItems_{{id}}__Name' name='ConversionItems[{{id}}].Name'    type='hidden' value='{{EventTuken}}'  />      <input class='form-control newevent' id='ConversionItems_{{id}}__Name' name='ConversionItems[{{id}}].Name'    type='text' value='{{EventTuken}}' disabled='' style='width: 150px;'></span></div><div class='label-container label-container-sm' style='min-height:1px;width: 35px;'></div><div class='field-container'><span class='field-title required-field'><input class='form-control width-lg' id='disabledInput' type='text' value='{{PixelListsTuken}}' disabled='' style='width: 295px !important;'></span></div><div class='label-container'style='min-height:1px;width: 50px;'></div><div class='field-container' ><span class='small-big-field'><input  id='ConversionItems_{{id}}__Revenue' name='ConversionItems[{{id}}].Revenue' type='hidden' value='{{hdnRevenue}}'  />  <input class='form-control' id='ConversionItems_{{id}}__Revenue' name='ConversionItems[{{id}}].Revenue' type='text' value='{{revenue}}'   disabled='' style='width: 100px;'></span></div><div class='label-container label-container-sm' style='width: 30px;'><span class='side-text' >$</span></div><div class='field-container' style='width: 40px;'><div class='check-box-container' indexelem='{{id}}' onclick='ShowConfirmationDialogForChangePrimray(this)' id ='' ><span class='check-box-{{uncheckVal}}' id='chbspan'><input class='check-box'  id='Primary' name='Primary' {{uncheckVal}}={{uncheckVal}} type='checkbox' value='{{falseVal}}'><input id='ConversionItems_{{id}}__IsPrimary' name='ConversionItems[{{id}}].IsPrimary'    type='hidden' value='{{falseVal}}'></span><span class='check-box-text'></div></div><div class='field-container'><img name='iconImage' onclick='ShowConfirmationDialogForDeleteConversion(\"{{EventTuken}}\",\"new-conversion-item_" + IndexConversions + "\"," + IndexConversions +")' class='minusicon' id='del-ad-taggingBtn' alt='Remove Conversion Item' title='Remove Conversion Item'></div><div class='field-container'><img name='iconImage' onclick='showHideConversionsAdd(this)'  style='display:none' class='plusicon addIconForConv' id='' alt='' title=''></div></div>";
+
+
+
+
+
+
+
+                @*var afterappend = "<div id='new-action-item' class='data-row data-container'><div class='label-container'><span class='field-title required-field'>@Html.GetResource("Event", "Global")</span></div><div class='field-container'><span class='field-title required-field'><input class='form-control' id='disabledInput' type='text' placeholder='{{EventTuken}}' disabled=''></span></div><div class='label-container label-container-sm'><span class='field-title required-field'>@Html.GetResource("AudienceList", "Global")</span></div><div class='field-container'><span class='field-title required-field'><input class='form-control width-lg' id='disabledInput' type='text' placeholder='{{AudienceListsTuken}}' disabled=''></span></div><div class='field-container'><img name='iconImage' onclick='removeAdItem()' class='minusicon' id='del-ad-taggingBtn' alt='Remove Ad Events Audience Tagging' title='Remove Ad Events Audience Tagging'></div><div class='field-container'><img name='iconImage' onclick='' class='plusicon' id='' alt='' title=''></div></div>";*@
+
+
+            conversion = conversion.replace(/{{EventTuken}}/g, name);
+
+
+            conversion = conversion.replace(/{{PixelListsTuken}}/g, PixelString );
+			//conversion = conversion.replace(/{{id}}/g, IndexConversions);
+            dotIndex = revenue.indexOf('.');
+            //if (dotIndex != -1) {
+            //    dotIndex = + 2;
+            //    revenue = revenue.substring(dotIndex, revenue.length) + " $";
+            //} else { revenue = revenue + " $";}
+            conversion = conversion.replace(/{{hdnRevenue}}/g, revenue);
+            revenue = revenue;
+            conversion = conversion.replace(/{{revenue}}/g, revenue);
+
+            conversion = conversion.replace(/{{uncheckVal}}/g, uncheck);
+
+
+            conversion = conversion.replace(/{{falseVal}}/g, falseVal);
+
+
+
+
+
+
+                 conversion = conversion.replace(/{{id}}/g, IndexConversions);
+
+
+			var PixelHeddin = `<input data-val="true"  id="ConversionItems_{{id}}__PixelsId" pixelValue="pixelValue" name="ConversionItems[{{id}}].PixelsId" type="hidden" value="{{value}}">`
+
+
+                         PixelHeddin = PixelHeddin.replace(/{{id}}/g, IndexConversions);
+
+
+                         PixelHeddin = PixelHeddin.replace(/{{value}}/g, PixelId);
+
+
+
+
+                                  var CodeHeddin = `<input data-val="true"  id="ConversionItems_{{id}}__Code" name="ConversionItems[{{id}}].Code" type="hidden" value="{{value}}">`
+
+
+                         CodeHeddin = CodeHeddin.replace(/{{id}}/g, IndexConversions);
+
+
+                         CodeHeddin = CodeHeddin.replace(/{{value}}/g, code);
+
+                         var DelHeddin = '<input data-val="true"  id="ConversionItems_{{id}}__IsDeleted" name="ConversionItems[{{id}}].IsDeleted" type="hidden" value="{{value}}">'
+
+
+			DelHeddin = DelHeddin.replace(/{{id}}/g, IndexConversions);
+
+
+			DelHeddin = DelHeddin.replace(/{{value}}/g, "False");
+
+
+			$("div#conversions").before(conversion + PixelHeddin + CodeHeddin + DelHeddin  /* *//*+ "</div>"*/);
+			$("#conversions").hide();
+			CalculateCnversionAddIcon();
+            ClearConversionFields();
+
+        }
+		var AdEventsNamesIdsListData = [];
+		var conversionEventsNamesIdsListData = [];
+        $(document).ready(function () {
+
+
+            //$('.js-example-basic-single').select2();
+
+
+
+            var AdEventsNamesIdsList = @Html.Raw(Json.Encode(Model.AdEvents));
+
+
+             AdEventsNamesIdsListData = $.map(AdEventsNamesIdsList.Items, function (obj1) {
+
+
+
+
+                return {
+
+
+                    id : obj1.Code,
+
+
+                    text : obj1.Name
+
+
+                };
+
+
+            });
+
+
+
+
+            var conversionEventsNamesIdsList = @Html.Raw(Json.Encode(Model.ConversionEvents));
+
+
+             conversionEventsNamesIdsListData = $.map(conversionEventsNamesIdsList.Items, function(obj1) {
+
+
+                    return {
+
+                        id: obj1.Code,
+
+
+                        text: obj1.Description
+
+
+                    };
+
+
+                });
+
+
+
+
+            $("#ad-taggingBtn").click(function () {
+
+
+				if (!AddAdEventsItemValidation()) {
+					if (!CheckEventUniquenessValidation()) {
+
+				        fieldResult = true;
+
+                        var errorMessage = "@Html.GetResource("EventAlreadyAddedMessage", "Targeting")"
+
+						showNotfy(errorMessage, "warning", '', toastroptionsWithTime);
+
+
+
+						var TargetingEventListDllElement = $("#TargetingEventListDll").select2('data');
+						var uniqueCode = '';
+						var uniquename = '';
+						if (TargetingEventListDllElement != null && TargetingEventListDllElement.length > 0) {
+							var uniqueCode = TargetingEventListDllElement[0].id;
+
+							var uniquename = TargetingEventListDllElement[0].text;
+
+						}
+
+
+						var id = $(".newAdEvents").find("[value='" + uniqueCode + "']").parent().attr("id");
+						var indexelem = $(".newAdEvents").find("[value='" + uniqueCode + "']").parent().attr("indexelem");
+
+
+						ShowConfirmationDialogForUpdateEvent(uniquename, id, indexelem);
+						return;
+
+			        }
+
+
+					doEventsAdd();
+
+                }
+
+
+            });
+
+            $("#cancel-ad-taggingBtn").click(function () {
+                showHideAdEventsAdd();
+                ClearAdEventsAudienceFields();
+                $("#ad-tagging").hide();
+                $(".newAdEvents").last().find(".addIconForConv").show();
+
+            });
+
+
+
+
+
+
+
+
+
+
+            @*$("#ad-taggingBtn").click(function () {
+
+
+                var afterappend = "<div id='new-action-item' class='data-row data-container'><div class='label-container'><span class='field-title required-field'>@Html.GetResource("Event", "Global")</span></div><div class='field-container'><span class='field-title required-field'><input class='form-control' id='disabledInput' type='text' placeholder='Audience List Capture...' disabled=''></span></div><div class='label-container label-container-sm'><span class='field-title required-field'>@Html.GetResource("AudienceList", "Global")</span></div><div class='field-container'><span class='field-title required-field'><input class='form-control width-lg' id='disabledInput' type='text' placeholder='Audience List Capture...' disabled=''></span></div><div class='field-container'><img name='iconImage' onclick='removeAdItem()' class='minusicon' id='del-ad-taggingBtn' alt='Remove Ad Events Audience Tagging' title='Remove Ad Events Audience Tagging'></div><div class='field-container'><img name='iconImage' onclick='' class='plusicon' id='' alt='' title=''></div></div>";
+
+
+                $("div#ad-tagging").after(afterappend);
+
+
+            });*@
+
+
+
+
+            $("#conversionsBtn").click(function () {
+
+
+                if (!AddConversionItemValidation()) {
+
+					//var conversion = "<div id='new-conversion-item' class='data-row data-container'><div class='label-container'><span class='field-title required-field'>Conversion</span></div><div class='field-container'><span class='field-title required-field'><input class='form-control' id='disabledInput' type='text' placeholder='Conversion List Capture...' disabled=''></span></div><div class='label-container label-container-sm'><span class='field-title required-field'>Pixels</span></div><div class='field-container'><span class='field-title required-field'><input class='form-control width-lg' id='disabledInput' type='text' placeholder='Pixels List Capture...' disabled=''></span></div></div><div class='data-row row-container'><div class='label-container'><span class='field-title required-field'>Revenue</span></div><div class='field-container'><span class='small-big-field'><input class='form-control' id='disabledInput' type='text' placeholder='Revnu Capture...' disabled=''></span></div><div class='label-container label-container-sm'><span class='field-title required-field'>&nbsp;</div><div class='field-container' style='width:360px'><div class='check-box-container' onclick='checkBox(this)' id ='' disabled><span class='check-box-uncheck' id='chbspan'><input class='check-box' customvalue='' data-val='true' data-val-required='The Primary field is required.' id='Primary' name='Primary' type='checkbox' value='true'><input name='Primary' type='hidden' value='false'></span><span class='check-box-text'>Primary</span></div></div><div class='field-container'><img name='iconImage' onclick='removeConversionItem()' class='minusicon' id='del-ad-taggingBtn' alt='Remove Conversion Item' title='Remove Conversion Item'></div><div class='field-container'><img name='iconImage' onclick='' class='plusicon' id='' alt='' title=''></div></div>";
+					if (!CheckConversionUniquenessValidation()) {
+
+				        fieldResult = true;
+
+                        var errorMessage = "@Html.GetResource("ConversionAlreadyAddedMessage", "Targeting")"
+
+						showNotfy(errorMessage, "warning", '', toastroptionsWithTime);
+
+						var TargetingEventListDllElement = $("#TargetingConversionsListDll").select2('data');
+
+						var uniqueCode = '';
+						var uniquename = '';
+						if (TargetingEventListDllElement != null && TargetingEventListDllElement.length > 0) {
+							var uniqueCode = TargetingEventListDllElement[0].id;
+
+							var uniquename = TargetingEventListDllElement[0].text;
+
+						}
+
+
+						var id=$(".newConv").find("[value='" + uniqueCode + "']").parent().attr("id");
+						var indexelem = $(".newConv").find("[value='" + uniqueCode + "']").parent().attr("indexelem");
+						ShowConfirmationDialogForUpdateConversion(uniquename, id, indexelem);
+						return;
+
+
+			        }
+
+
+					doConversionAdd();
+
+                }
+
+
+            });
+
+            $("#cancel-conversionsBtn").click(function () {
+
+                showHideConversionsAdd();
+                ClearConversionFields();
+
+                $("#conversions").hide();
+                $(".newConv").last().find(".addIconForConv").show();
+
+            });
+
+
+
+            $('.testcheck').click(function () {
+
+
+                if ($(this).attr('id') == 'watch-me') {
+
+
+                    $('#show-me').show('slow');
+
+
+                }
+
+
+                else {
+
+
+                    $('#show-me').hide('slow');
+
+
+                }
+
+
+            });
+
+
+
+
+            ShowCountConversionEveryTimeStamp(false);
+
+
+
+
+
+
+
+
+            $("#TargetingEventListDll").select2({
+
+
+
+
+                placeholder: "@Html.GetResource("Choose", "Global")",
+
+
+                tags: false,
+
+
+                dropdownParent: $("#TargetingEventListDll").parent(),
+
+
+                multiple: false,
+
+
+
+
+
+                allowClear: true,
+
+
+                closeOnSelect:true,
+
+				minimumResultsForSearch: Infinity,
+                data: AdEventsNamesIdsListData
+
+
+
+
+            });
+
+
+
+
+
+
+
+
+            $("#TargetingConversionsListDll").select2({
+
+
+
+
+                placeholder: "@Html.GetResource("Choose", "Global")",
+
+
+                tags: true,
+
+
+                dropdownParent: $("#TargetingConversionsListDll").parent(),
+
+
+                multiple: false,
+
+
+                tokenSeparators: [',', ' '],
+
+
+                allowClear: true,
+
+
+                closeOnSelect:true,
+
+				minimumResultsForSearch: Infinity,
+                data: conversionEventsNamesIdsListData
+
+
+
+
+            });
+
+
+
+
+
+
+
+
+            $("#TargetingAudienceListDll").select2({
+
+
+
+
+                placeholder: "@Html.GetResource("SelectAudienceListRequired", "Advertiser")",
+
+
+                tags: false,
+
+
+                dropdownParent: $("#TargetingAudienceListDll").parent(),
+
+
+                multiple: true,
+
+
+                tokenSeparators: [',', ' '],
+
+
+                allowClear: true,
+
+
+                closeOnSelect:true,
+
+
+                ajax: {
+
+
+                    delay:250,
+
+
+                    url: AdvaudieceListUrl,
+
+
+                    dataType: "json",
+
+
+                    type: "GET",
+
+
+
+
+                    data: function (params) {
+
+
+
+
+                        var queryParameters = {
+
+
+                            q: params.term,
+
+
+
+
+                            AdvAccId: GlobalAdvertiserAccountId
+
+
+                        }
+
+
+                        return queryParameters;
+
+
+                    },
+
+
+                    processResults: function (data) {
+
+
+                        return {
+
+
+                            results: $.map(data, function (item) {
+
+
+                                return {
+
+
+                                    text: item.en,
+
+
+                                    id: item.ID
+
+
+                                }
+
+
+                            })
+
+
+                        };
+
+
+                    }
+
+
+
+
+
+
+
+
+
+
+
+
+                }
+
+
+
+
+            });
+
+
+
+
+
+
+
+
+
+
+
+
+            $("#TargetingPixelListDll").select2({
+
+
+
+
+                placeholder: "@Html.GetResource("SelectPixel", "Targeting")",
+
+
+                tags: false,
+
+
+                dropdownParent: $("#TargetingPixelListDll").parent(),
+
+
+                multiple: true,
+
+
+                tokenSeparators: [',', ' '],
+
+
+                allowClear: true,
+
+
+                closeOnSelect:true,
+
+
+                ajax: {
+
+
+                    delay:250,
+
+
+                    url: PixelListUrl,
+
+
+                    dataType: "json",
+
+
+                    type: "GET",
+
+
+
+
+                    data: function (params) {
+
+
+
+
+                        var queryParameters = {
+
+
+                            q: params.term,
+
+
+
+
+                            AdvAccId: GlobalAdvertiserAccountId
+
+
+                        }
+
+
+                        return queryParameters;
+
+
+                    },
+
+
+                    processResults: function (data) {
+						var resultdata = [];
+						var allPixelAdded = [];
+						$(".newConv").find("[pixelValue='pixelValue']").each(function () {
+							var valuesPixel = $(this).val();
+
+							var valuesPixelArr = valuesPixel.split(',')
+							var resultcheck = false;
+
+							allPixelAdded=	allPixelAdded.concat( valuesPixelArr);
+
+
+
+
+
+						});
+
+
+						if (data.length > 0) {
+							for (var i = 0; i < data.length; i++) {
+
+								var totalCheck = false;
+								//for (var c = 0; c < allPixelAdded.length; c++) {
+
+								totalCheck=	allPixelAdded.includes(data[i].Id + "")
+								//}
+
+
+
+								if (!totalCheck) { resultdata.push(data[i]); }
+							}
+						}
+
+                        return {
+
+
+							results: $.map(resultdata, function (item) {
+
+
+                                return {
+
+
+                                                                            text: item.Name,
+
+
+                                                                            id: item.Id
+
+
+                                }
+
+
+                            })
+
+
+                        };
+
+
+                    }
+
+
+
+
+
+
+
+
+
+
+
+
+                }
+
+
+
+
+            });
+
+            $("#TargetingEventListDll").on("change", ShowHideAdTaggingBtn);
+            $("#TargetingAudienceListDll").on("change", ShowHideAdTaggingBtn);
+            $("#TargetingAudienceListDll").on("select2:open",  AudiencelistDllPlaceholderStle);
+
+
+            $("#TargetingConversionsListDll").on("change", ShowHideConversionsBtn);
+            $("#TargetingPixelListDll").on("change", ShowHideConversionsBtn);
+
+            $('#ConversionType').on('change', ShowHideConversionTypeInputs)
+
+			ConversionSettingChanged();
+			showHideAdEventsAdd();
+			showHideConversionsAdd();
+			ClearConversionFields();
+            ClearAdEventsAudienceFields();
+            ShowHideConversionTypeInputs();
+            ShowHideCancelBut();
+            AudiencelistDllPlaceholderStleSet();
+        });
+			function FilterAudinceListEvent() {
+
+			var arr = [];
+			for (var i = 0; i < AdEventsNamesIdsListData.length; i++) {
+
+				if (!($(".newAdEvents").find(".newevent:input[value='" + AdEventsNamesIdsListData[i].text + "']").length > 0)) {
+
+					arr.push(AdEventsNamesIdsListData[i]);
+				}
+
+			}
+			$("#TargetingEventListDll").select2("destroy").empty();
+			//$("#TargetingEventListDll").select2({ data: arr });
+
+
+			      $("#TargetingEventListDll").select2({
+
+
+
+
+                placeholder: "@Html.GetResource("Choose", "Global")",
+
+
+                tags: false,
+
+
+                dropdownParent: $("#TargetingEventListDll").parent(),
+
+
+                multiple: false,
+
+
+
+
+
+                allowClear: true,
+
+
+                closeOnSelect:true,
+
+				minimumResultsForSearch: Infinity,
+                data: arr
+
+
+
+
+            });
+
+
+		}
+
+		function FilterConversionEvent() {
+			var arr = [];
+
+			for (var i = 0; i < conversionEventsNamesIdsListData.length; i++) {
+
+
+				if (!($(".newConv").find(".newevent:input[value='" + conversionEventsNamesIdsListData[i].text + "']").length > 0)) {
+
+					arr.push(conversionEventsNamesIdsListData[i]);
+				}
+			}
+			//	$("#TargetingConversionsListDll")
+			$("#TargetingConversionsListDll").select2("destroy").empty();
+			//$("#TargetingConversionsListDll").select2({ data: arr });
+
+
+			$("#TargetingConversionsListDll").select2({
+
+
+
+
+                placeholder: "@Html.GetResource("Choose", "Global")",
+
+
+                tags: true,
+
+
+                dropdownParent: $("#TargetingConversionsListDll").parent(),
+
+
+                multiple: false,
+
+
+                tokenSeparators: [',', ' '],
+
+
+                allowClear: true,
+
+
+                closeOnSelect:true,
+
+				minimumResultsForSearch: Infinity,
+				data: arr
+
+
+
+
+            });
+
+
+
+
+		}
+		function doEventsAdd() {
+
+
+
+
+
+			var TargetingEventListDllElement = $("#TargetingEventListDll").select2('data');
+
+
+			var TargetingAudienceListDllElement = $("#TargetingAudienceListDll").select2('data');
+
+            if (TargetingEventListDllElement.length == 0 || TargetingAudienceListDllElement.length == 0 )
+                return;
+
+			var name = TargetingEventListDllElement[0].text;
+
+
+			var code = TargetingEventListDllElement[0].id;
+
+
+
+
+			var SegmentString = $.map(TargetingAudienceListDllElement,
+
+				function (obj) {
+
+
+					return obj.text;
+
+
+				})
+
+
+			SegmentStrin = SegmentString.join();
+
+
+
+
+			var SegmentId = $.map(TargetingAudienceListDllElement,
+
+				function (obj) {
+
+
+					return obj.id;
+
+
+				})
+
+
+			SegmentId = SegmentId.join();
+
+
+
+
+
+
+
+
+
+
+
+
+			@*var afterappend = "<div id='new-action-item' class='data-row data-container'><div class='label-container'><span class='field-title required-field'>@Html.GetResource("Event", "Global")</span></div><div class='field-container'><span class='field-title required-field'><input class='form-control' id='disabledInput' type='text' placeholder='{{EventTuken}}' disabled=''></span></div><div class='label-container label-container-sm'><span class='field-title required-field'>@Html.GetResource("AudienceList", "Global")</span></div><div class='field-container'><span class='field-title required-field'><input class='form-control width-lg' id='disabledInput' type='text' placeholder='{{AudienceListsTuken}}' disabled=''></span></div><div class='field-container'><img name='iconImage' onclick='removeAdItem()' class='minusicon' id='del-ad-taggingBtn' alt='Remove Ad Events Audience Tagging' title='Remove Ad Events Audience Tagging'></div><div class='field-container'><img name='iconImage' onclick='' class='plusicon' id='' alt='' title=''></div></div>";
+
+
+			afterappend = afterappend.replace("{{EventTuken}}", name);
+
+
+			afterappend = afterappend.replace("{{AudienceListsTuken}}", SegmentString);
+
+
+
+
+			var SegmentHeddin = `<input data-val="true"  id="AdEventItems_{{id}}__SegmentsId" name="AdEventItems{{id}}.SegmentsId" type="hidden" value="{{value}}">`
+
+
+			SegmentHeddin.replace("{{id}}", SegmentId);
+
+
+			SegmentHeddin.replace("{{value}}", SegmentString);
+
+
+
+
+			var CodeHeddin = `<input data-val="true"  id="AdEventItems_{{id}}__Code" name="AdEventItems{{id}}.Code" type="hidden" value="{{value}}">`
+
+
+			CodeHeddin.replace("{{id}}", code);
+
+
+			CodeHeddin.replace("{{value}}", name);
+
+
+
+
+			$("div#ad-tagging").after(afterappend + SegmentHeddin + CodeHeddin);*@
+
+
+            AdEventItemsCount = AdEventItemsCount + 1;
+            AdEventIndexItems = AdEventIndexItems + 1;
+            ShowHideCancelBut();
+
+
+			AddEventAudience(name, code, SegmentStrin, SegmentId, AdEventIndexItems);
+
+
+            var AdEventsItem = $(".newAdEvents").last().find(".addIconForConv");
+            showHideAdEventsAdd(AdEventsItem);
+		}
+
+		function doConversionAdd() {
+
+
+			var TargetingEventListDllElement = $("#TargetingConversionsListDll").select2('data');
+
+
+			var TargetingAudienceListDllElement = $("#TargetingPixelListDll").select2('data');
+
+
+            if (TargetingEventListDllElement.length == 0 || TargetingAudienceListDllElement.length == 0 )
+                return;
+
+			var name = TargetingEventListDllElement[0].text;
+
+
+			var code = TargetingEventListDllElement[0].id;
+
+
+
+
+			var PixelString = $.map(TargetingAudienceListDllElement, function (obj) {
+
+
+				return obj.text;
+
+
+			})
+
+
+			PixelString = PixelString.join();
+
+
+
+
+
+			var PixelId = $.map(TargetingAudienceListDllElement, function (obj) {
+
+
+				return obj.id;
+
+
+			})
+
+
+			PixelId = PixelId.join();
+
+
+
+
+			var revenuetx = $("#RevenueTxt").val();
+
+
+			if (revenuetx == null || revenuetx == undefined || revenuetx == "") {
+
+				revenuetx = "0.0";
+
+			}
+
+
+			var isPrimary = false;
+
+			if ($("#PrimaryConv").is('[checked]')) {
+
+
+				isPrimary = true;
+
+			}
+
+
+
+            ConversionIndexItems = ConversionIndexItems + 1;
+            ConversionsItekumsCount = ConversionsItekumsCount + 1;
+
+            ShowHideCancelBut();
+
+            AddConversion(name, code, PixelString, PixelId, revenuetx, isPrimary, ConversionIndexItems);
+
+            var AddConversionItem = $(".newConv").last().find(".addIconForConv");
+            showHideConversionsAdd(AddConversionItem);
+		}
+
+        function removeAdItem(Id,indexI) {
+
+                         $("#" + Id).hide();
+
+                         $("#" + Id).removeClass("newAdEvents");
+
+			$("#" + Id).find("#AdEventItems_" + indexI + "__IsDeleted").val("True");
+            AdEventItemsCount = AdEventItemsCount - 1;
+            ShowHideCancelBut();
+            CalculateAdEventAddIcon();
+            AudiencelistDllPlaceholderStleSet();
+            ClearAdEventsAudienceFields();
+        };
+
+
+       function removeConversionItem(Id, indexI) {
+
+                         $("#" + Id).hide();
+
+                         $("#" + Id).removeClass("newConv");
+
+
+           $("#" + Id).find("#ConversionItems_" + indexI + "__IsDeleted").val("True");
+           ConversionsItekumsCount = ConversionsItekumsCount - 1;
+           ShowHideCancelBut();
+           CalculateCnversionAddIcon();
+           ClearConversionFields();
+
+        };
+
+
+
+		function ShowConfirmationDialogForDeleteEvent(nameVar, Id, indexI) {
+
+			var name = "@Html.GetResource( "Event", "Global")" + " " +nameVar;
+
+			var ConfirmationPMP = "@Html.GetResource( "Delete", "Confirmation")";
+
+
+			if (name.length > 30)
+				name = name.substring(0, 30) + "..";
+
+			$("#ConfirmationDialog").dialog({
+
+				open: function () {
+					$(this).html(ConfirmationPMP.format(" " + name));
+
+				},
+				showCloseButton: false,
+
+				buttons: [
+					{
+						text: yesbtn,
+						click: function () {
+
+							removeAdItem(Id, indexI);
+							$(this).dialog("close");
+
+						}
+					},
+					{
+						text: nobtn,
+						click: function () {
+							$(this).dialog('close');
+
+						}
+					},
+
+				]
+			});
+
+			$("#ConfirmationDialog").dialog("open");
+			return false;
+		}
+
+			function ShowConfirmationDialogForDeleteConversion(nameVar, Id, indexI) {
+
+			var name = "@Html.GetResource("Conversion", "Targeting")" +" "+nameVar;
+
+			var ConfirmationPMP = "@Html.GetResource( "Delete", "Confirmation")";
+
+
+			if (name.length > 30)
+				name = name.substring(0, 30) + "..";
+
+			$("#ConfirmationDialog").dialog({
+
+				open: function () {
+					$(this).html(ConfirmationPMP.format(" " + name));
+
+				},
+				showCloseButton: false,
+
+				buttons: [
+					{
+						text: yesbtn,
+						click: function () {
+
+							removeConversionItem(Id, indexI);
+							$(this).dialog("close");
+
+						}
+					},
+					{
+						text: nobtn,
+						click: function () {
+							$(this).dialog('close');
+
+						}
+					},
+
+				]
+			});
+
+			$("#ConfirmationDialog").dialog("open");
+			return false;
+		}
+
+
+
+
+			function ShowConfirmationDialogForUpdateEvent(nameVar, Id, indexI) {
+
+			var name = "@Html.GetResource( "Event", "Global")" + " " +nameVar;
+
+				var ConfirmationPMP = "Are you sure you want to Update Added{0} ?";
+
+
+			if (name.length > 30)
+				name = name.substring(0, 30) + "..";
+
+			$("#ConfirmationDialog").dialog({
+
+				open: function () {
+					$(this).html(ConfirmationPMP.format(" " + name));
+
+				},
+				showCloseButton: false,
+
+				buttons: [
+					{
+						text: yesbtn,
+						click: function () {
+
+							removeAdItem(Id, indexI);
+
+							doEventsAdd();
+							$(this).dialog("close");
+
+						}
+					},
+					{
+						text: nobtn,
+						click: function () {
+							ClearAdEventsAudienceFields();
+							$(this).dialog('close');
+
+						}
+					},
+
+				]
+			});
+
+			$("#ConfirmationDialog").dialog("open");
+			return false;
+		}
+
+			function ShowConfirmationDialogForUpdateConversion(nameVar, Id, indexI) {
+
+			var name = "@Html.GetResource("Conversion", "Targeting")" +" "+nameVar;
+
+			var ConfirmationPMP = "Are you sure you want to Update Added{0} ?";
+
+
+			if (name.length > 30)
+				name = name.substring(0, 30) + "..";
+
+			$("#ConfirmationDialog").dialog({
+
+				open: function () {
+					$(this).html(ConfirmationPMP.format(" " + name));
+
+				},
+				showCloseButton: false,
+
+				buttons: [
+					{
+						text: yesbtn,
+						click: function () {
+
+							removeConversionItem(Id, indexI);
+							doConversionAdd();
+							$(this).dialog("close");
+
+						}
+					},
+					{
+						text: nobtn,
+						click: function () {
+							ClearConversionFields();
+							$(this).dialog('close');
+
+						}
+					},
+
+				]
+			});
+
+			$("#ConfirmationDialog").dialog("open");
+			return false;
+		}
+
+        function ShowConfirmationDialogForChangePrimray(elem) {
+
+            var ConfirmationPMP = "Are you sure you want to change the primary conversion?";
+
+            var checked = $(elem).find('#Primary , #PrimaryConv').attr("checked");
+
+			if (typeof (checked) == "undefined" || checked != "checked") {
+				checkBox(elem);
+				$("#ConversionItems_" + $(elem).attr("indexelem") + "__IsPrimary").val(true);
+				$("#ConversionItems_" + $(elem).attr("indexelem") + "__IsNotChanged").val(false);
+				if (ConversionsItekumsCount != 0 && CheckAnyCheckedPrimary()) {
+					$("#ConfirmationDialog").dialog({
+
+						open: function () {
+							$(this).html(ConfirmationPMP.format(" " + name));
+
+						},
+						showCloseButton: false,
+
+						buttons: [
+							{
+								text: yesbtn,
+								click: function () {
+
+									UnCheckAllElseThis(elem);
+
+									//doEventsAdd();
+									$(this).dialog("close");
+
+								}
+							},
+							{
+								text: nobtn,
+								click: function () {
+									CustomUnCheck(elem);
+									$(this).dialog('close');
+
+								}
+							},
+
+						],
+						close: function (e) { if (typeof (e.currentTarget) != "undefined") CustomUnCheck(elem); else UnCheckAllElseThis(elem); }
+					});
+
+					$("#ConfirmationDialog").dialog("open");
+					return false;
+				}
+			}
+			else {
+				//$(elem).find("input[type='hidden']").val(true);
+
+				
+				UnCheckAllElseThis(elem);
+
+
+			}
+
+
+
+
+		}
+
+
+        function ConversionSettingChanged() {
+
+
+            if (Radio_IsChecked('#CountFirstConversionOnly')) {
+
+
+                //$('#CountConversionEvery').val(false);
+
+
+                //$('#CountAllConversions').val(false);
+
+				Radio_uncheck('CountConversionEvery');
+				Radio_uncheck('CountAllConversions');
+                ShowCountConversionEveryTimeStamp(false);
+				$('.CountConversionEveryMessageText').hide();
+
+            } else if (Radio_IsChecked('#CountConversionEvery')) {
+
+
+                //$('#CountFirstConversionOnly').val(false);
+
+
+                //$('#CountAllConversions').val(false);
+
+				Radio_uncheck('CountFirstConversionOnly');
+				Radio_uncheck('CountAllConversions');
+				ShowCountConversionEveryTimeStamp(true);
+				CountConversionEveryValidation();
+
+
+            } else if (Radio_IsChecked('#CountAllConversions')) {
+
+
+				//$('#CountConversionEvery').val(false);
+
+				Radio_uncheck('CountConversionEvery');
+
+               // $('#CountFirstConversionOnly').val(false);
+
+				Radio_uncheck('CountFirstConversionOnly');
+                ShowCountConversionEveryTimeStamp(false);
+				$('.CountConversionEveryMessageText').hide();
+
+            }
+
+
+        }
+
+
+
+
+        function ShowCountConversionEveryTimeStamp(flag) {
+
+
+            if (flag == true)
+
+
+                $('#CountConversionEveryTimeStamp').show();
+
+
+            else
+
+
+                $('#CountConversionEveryTimeStamp').hide();
+
+
+        }
+
+
+        function AddConversionItemValidation(flag) {
+
+
+            var TargetingConversionsListDllElement = $("#TargetingConversionsListDll").select2('data');
+
+            var TargetingPixelListDllElement = $("#TargetingPixelListDll").select2('data');
+
+            var fieldResultConversions = false;
+            var fieldResultPixels = false;
+            var fieldResultPixelUniq = true;
+            var fieldResultPimaryUniq = true;
+
+            var errorMessageConversions = "@Html.GetResource("ConversionsRequiredMessage", "Targeting")";
+            var errorMessagePixels = "@Html.GetResource("PixelListRequiredMessage", "Targeting")";
+            var errorMessagePixelUniq = "@Html.GetResource("PixelAlreadyAddedMessage", "Targeting")";
+            var errorMessagePimaryUniq = "@Html.GetResource("PrimaryConversionMessage", "Targeting")";
+
+            /// validations valuse
+            if (TargetingConversionsListDllElement.length > 0) {
+                fieldResultConversions = true;
+            }
+
+
+            if (TargetingPixelListDllElement.length > 0 ) {
+                fieldResultPixels = true;
+            }
+
+            if (!CheckPixelUniqValidation()) {
+
+                fieldResultPixelUniq = false;
+
+
+                var firstExistOption = TargetingPixelListDllElement[0].text;
+                errorMessagePixelUniq = errorMessagePixelUniq + "\n " + firstExistOption + ".";
+            }
+			countPrimary = CheckIsPimaryUniqValidation();
+			isPrimary = false;
+			if ($("#PrimaryConv").is('[checked]')) {
+				isPrimary = true;
+			}
+
+			if (countPrimary != -1 && countPrimary >= 1 && isPrimary) {
+                fieldResultPimaryUniq = false;
+            }
+
+            ///function scenarios
+
+            if (flag == 1) {
+
+                if (fieldResultConversions && fieldResultPixels && fieldResultPixelUniq && fieldResultPimaryUniq)
+                    return false;
+
+                else {
+                    return true;
+                }
+
+            }
+            if (flag == 2) {
+                if (fieldResultConversions && fieldResultPixels)
+                    return false;
+                else if (!fieldResultConversions && !fieldResultPixels ) {
+                    return false;
+                }
+                else {
+                    if (!fieldResultConversions)
+                        showNotfy(errorMessageConversions, "error", '', toastroptionsWithTime);
+                    if (!fieldResultPixels)
+                        showNotfy(errorMessagePixels, "error", '', toastroptionsWithTime);
+
+                    return true;
+                }
+            }
+            else {
+                if (!fieldResultConversions && !fieldResultPixels && fieldResultPixelUniq && fieldResultPimaryUniq) {
+                    return false;
+                }
+                else if (fieldResultConversions && fieldResultPixels && fieldResultPixelUniq && fieldResultPimaryUniq) {
+                    return false;
+                }
+                else {
+                        if (!fieldResultConversions)
+                            showNotfy(errorMessageConversions, "error", '', toastroptionsWithTime);
+                        if (!fieldResultPixels)
+                            showNotfy(errorMessagePixels, "error", '', toastroptionsWithTime);
+                        if (!fieldResultPixelUniq)
+                            showNotfy(errorMessagePixelUniq, "error", '', toastroptionsWithTime);
+                        if (!fieldResultPimaryUniq)
+                            showNotfy(errorMessagePimaryUniq, "error", '', toastroptionsWithTime);
+                        return true;
+                     }
+            }
+
+            //if (!fieldResultConversions && !fieldResultPixels && fieldResultPixelUniq && fieldResultPimaryUniq)
+            //    return false;
+            //else if(fieldResultConversions && fieldResultPixels && fieldResultPixelUniq && fieldResultPimaryUniq)
+            //    return false;
+            //else if (fieldResultConversions && fieldResultPixels && !fieldResultPixelUniq && !fieldResultPimaryUniq)
+            //    return true;
+        }
+
+
+        function AddAdEventsItemValidation(flag) {
+
+
+
+
+
+            var TargetingAudienceListDllElement = $("#TargetingAudienceListDll").select2('data');
+
+
+            var fieldResultEvent = false;
+            var fieldResultAudienceList = false;
+            var errorMessageEvent = "@Html.GetResource("EventRequiredMessage", "Targeting")";
+            var errorMessageAudienceList = "@Html.GetResource("AudienceListRequiredMessage", "Targeting")";
+			var TargetingEventListDllElement = $("#TargetingEventListDll").select2('data');
+            if (TargetingEventListDllElement.length > 0) {
+                fieldResultEvent = true;
+            }
+
+
+            if (TargetingAudienceListDllElement.length > 0) {
+                fieldResultAudienceList = true;
+            }
+
+            if (flag == 2) {
+
+                if (fieldResultEvent && fieldResultAudienceList)
+                    return false;
+                else if (!fieldResultEvent && !fieldResultAudienceList) {
+                    return false;
+                }
+                else {
+                    if (!fieldResultEvent)
+                        showNotfy(errorMessageEvent, "error", '', toastroptionsWithTime);
+                    if (!fieldResultAudienceList)
+                        showNotfy(errorMessageAudienceList, "error", '', toastroptionsWithTime)
+                    return true;
+                }
+            }
+
+            else if (flag == 1) {
+                if (fieldResultEvent && fieldResultAudienceList)
+                    return false;
+                else
+                    return true;
+            }
+			else {
+
+                if (!fieldResultEvent)
+                    showNotfy(errorMessageEvent, "error", '', toastroptionsWithTime);
+                if (!fieldResultAudienceList)
+                    showNotfy(errorMessageAudienceList, "error", '', toastroptionsWithTime)
+            }
+
+
+            if (fieldResultEvent && fieldResultAudienceList )
+                return false;
+            else
+                return true;
+
+        }
+
+
+        function ClearAdEventsAudienceFields() {
+
+            $("#TargetingAudienceListDll").val(null).trigger("change");
+
+            $("#TargetingEventListDll").val(null).trigger("change");
+
+        }
+
+
+        function ClearConversionFields() {
+
+            $("#TargetingConversionsListDll").val(null).trigger("change");
+
+            $("#TargetingPixelListDll").val(null).trigger("change");
+
+            $("#RevenueTxt").val("");
+
+            //$("#PrimaryConv").val("");
+
+            uncheck("PrimaryConv");
+        }
+
+
+        function CheckEventUniquenessValidation() {
+
+            var TargetingEventListDllElement = $("#TargetingEventListDll").select2('data');
+
+            if (TargetingEventListDllElement != null && TargetingEventListDllElement.length > 0) {
+                var uniqueCode = TargetingEventListDllElement[0].id;
+
+
+                if ($(".newAdEvents").find("[value='" + uniqueCode + "']").length > 0)
+                    return false;
+            }
+
+            return true;
+
+
+        }
+
+        function CheckConversionUniquenessValidation() {
+
+            var TargetingEventListDllElement = $("#TargetingConversionsListDll").select2('data');
+
+            if (TargetingEventListDllElement != null && TargetingEventListDllElement.length > 0) {
+                var uniqueCode = TargetingEventListDllElement[0].id;
+
+
+                if ($(".newConv").find("[value='" + uniqueCode + "']").length > 0)
+                    return false;
+            }
+
+            return true;
+
+
+        }
+
+
+        function CheckPixelUniqValidation() {
+
+
+            var TargetingAudienceListDllElement = $("#TargetingPixelListDll").select2('data');
+
+            if (TargetingAudienceListDllElement != null && TargetingAudienceListDllElement.length > 0) {
+                var PixelId = $.map(TargetingAudienceListDllElement,
+                    function(obj) {
+
+
+                        return obj.id;
+
+
+                    });
+
+                if ($(".newConv").find("[pixelValue='pixelValue']").length > 0) {
+                    //return false;
+
+                    var resultcheck = false;
+                    $(".newConv").find("[pixelValue='pixelValue']").each(function() {
+                        var valuesPixel = $(this).val();
+                        var valuesPixelArr = valuesPixel.split(',')
+                        for (var i = 0; i < PixelId.length; i++) {
+
+                            resultcheck = valuesPixelArr.includes(PixelId[i]);
+                            if (resultcheck)
+                                return false;
+
+                        }
+
+                    });
+                    if (resultcheck)
+                        return false;
+                }
+            }
+
+            return true;
+
+
+        }
+
+        function CheckIsPimaryUniqValidation() {
+
+
+            var resultcheck = 0;
+            if ($(".newConv").find("input[type='checkbox']").length > 0) {
+                //return false;
+
+                $(".newConv").find("input[type='checkbox']").each(function() {
+					var checkedValue = $(this).is('input[checked]')
+
+					//debugger;
+                    if (checkedValue) {
+
+                        resultcheck = resultcheck + 1;
+                    }
+
+                });
+
+            } else {
+                resultcheck = -1;
+
+            }
+
+
+            return resultcheck;
+        }
+
+        function ViewAttributionWindowValidation() {
+            var resultfromBoth = false;
+            var data = $('#ViewAttribuation').val();
+
+            var data2 = $('#ClickAttribuation').val();
+            if (!(data > 0 && data <= 30) || !(data2 > 0 && data2 <= 30)) {
+                $('#ViewAttributionWindowMessage').show();
+                resultfromBoth = true;
+            }
+
+
+            if ((data2 > 0 && data2 <= 30) && (data > 0 && data <= 30)) {
+                $('#ViewAttributionWindowMessage').hide();
+                resultfromBoth = true;
+            }
+            if (!resultfromBoth) {
+
+                $('#ViewAttributionWindowMessage').hide();
+            }
+
+        }
+
+
+        $("#RevenueTxt").bind("change",
+            function() {
+                var data = $("#RevenueTxt").val() + " $";
+                $("#RevenueTxt").val(data);
+            });
+
+        function CountConversionEveryValidation() {
+            var data = $('#CountingAttribuation').val();
+
+            if (data < 0) {
+                $('#CountConversionEveryMessage').show();
+            } else {
+                $('#CountConversionEveryMessage').hide();
+            }
+        }
+
+
+        function showHideAdEventsAdd(elem) {
+
+
+            if (AdEventIndexItems == -1) {
+
+                $("#ad-tagging").show();
+                //return;
+            }
+
+            if (elem) {
+
+                $(elem).hide();
+                $("#ad-tagging").show();
+            }
+            if (AdEventIndexItems == -1) {
+
+                return;
+            }
+            if (elem) {
+                return;
+            }
+            CalculateAdEventAddIcon();
+        }
+
+
+        function showHideConversionsAdd(elem) {
+
+
+            if (ConversionIndexItems == -1) {
+
+                $("#conversions").show();
+                //return;
+            }
+
+            if (elem) {
+
+                $(elem).hide();
+                $("#conversions").show();
+            }
+            if (ConversionIndexItems == -1) {
+
+                return;
+            }
+            if (elem) {
+                return;
+            }
+            CalculateCnversionAddIcon();
+        }
+
+        function CalculateAdEventAddIcon() {
+
+            $(".newAdEvents").find(".addIconForConv").hide();
+            if (!($("#ad-tagging").is(':visible')))
+                $(".newAdEvents").last().find(".addIconForConv").show();
+            if ($(".newAdEvents").last().length == 0) {
+                $("#ad-tagging").show();
+			}
+			FilterAudinceListEvent();
+
+        }
+
+        function CalculateCnversionAddIcon() {
+
+            $(".newConv").find(".addIconForConv").hide();
+            if (!($("#conversions").is(':visible')))
+            $(".newConv").last().find(".addIconForConv").show();
+
+            if ($(".newConv").last().length == 0) {
+                $("#conversions").show();
+			}
+			FilterConversionEvent();
+        }
+
+        function ShowHideAdTaggingBtn(flag) {
+            if (!flag)
+                return;
+            if (!AddAdEventsItemValidation(1)) {
+                $("#ad-taggingBtn").show();
+                if (AdEventItemsCount > 0)
+                $("#cancel-ad-taggingBtn").show();
+            } else {
+                $("#ad-taggingBtn").hide();
+                $("#cancel-ad-taggingBtn").hide();
+            }
+        }
+
+
+        function ShowHideConversionsBtn(flag) {
+            if (!flag)
+                return;
+            if (!AddConversionItemValidation(1)) {
+                $("#conversionsBtn").show();
+                if (ConversionsItekumsCount > 0)
+                $("#cancel-conversionsBtn").show();
+            } else {
+                $("#conversionsBtn").hide();
+                $("#cancel-conversionsBtn").hide();
+            }
+        }
+
+
+        function ShowHideConversionTypeInputs() {
+
+            var ConversionTypeValue = $('#ConversionType').val();
+            var ViewAttribuationValue = $('#ViewAttribuation').val();
+            var ClickAttribuation = $('#ClickAttribuation').val();
+
+            if (ConversionTypeValue == 1) {
+               // $('.click-showhide').show();
+				$('.view-showhide').hide();
+                if (ViewAttribuationValue == "" || !(ViewAttribuationValue > 0 && ViewAttribuationValue <= 30))
+                    $('#ViewAttribuation').val("14");
+            } else if (ConversionTypeValue == 2) {
+				$('.view-showhide').show();
+				//$('.click-showhide').show();
+                if (ClickAttribuation == "" || !(ClickAttribuation > 0 && ClickAttribuation <= 30))
+                    $('#ClickAttribuation').val("14");
+            }
+            ViewAttributionWindowValidation();
+        }
+
+        function EventsConversionsSaveWhenSubmit() {
+            var funcResult = true;
+            var flag = 0;
+			if ($('#ad-tagging').is(":visible")) {
+
+
+                if (AdEventItemsCount == 0)
+                    flag = 2;
+                else
+					flag = 0;
+				var fieldResultEvent = false;
+				var TargetingEventListDllElement = $("#TargetingEventListDll").select2('data');
+				if (TargetingEventListDllElement.length > 0) {
+					fieldResultEvent = true;
+				}
+
+				if (!fieldResultEvent) {
+					flag = 2;
+				}
+
+                if (!AddAdEventsItemValidation(flag)) {
+                    if (!CheckEventUniquenessValidation()) {
+
+                        fieldResult = true;
+
+                        var errorMessage = "@Html.GetResource("EventAlreadyAddedMessage", "Targeting")"
+
+                        showNotfy(errorMessage, "warning", '', toastroptionsWithTime);
+
+
+
+                        var TargetingEventListDllElement = $("#TargetingEventListDll").select2('data');
+                        var uniqueCode = '';
+                        var uniquename = '';
+                        if (TargetingEventListDllElement != null && TargetingEventListDllElement.length > 0) {
+                            var uniqueCode = TargetingEventListDllElement[0].id;
+
+                            var uniquename = TargetingEventListDllElement[0].text;
+
+                        }
+
+
+                        var id = $(".newAdEvents").find("[value='" + uniqueCode + "']").parent().attr("id");
+                        var indexelem = $(".newAdEvents").find("[value='" + uniqueCode + "']").parent().attr("indexelem");
+
+
+                        ShowConfirmationDialogForUpdateEvent(uniquename, id, indexelem);
+                        //return false;
+
+                    }
+
+
+                    doEventsAdd();
+
+                } else {
+                    funcResult = false;
+                }
+            }
+            if ($('#conversions').is(":visible")) {
+                if (ConversionsItekumsCount == 0)
+                    flag = 2;
+                else
+                    flag = 0;
+
+                if (!AddConversionItemValidation(flag)) {
+
+                    //var conversion = "<div id='new-conversion-item' class='data-row data-container'><div class='label-container'><span class='field-title required-field'>Conversion</span></div><div class='field-container'><span class='field-title required-field'><input class='form-control' id='disabledInput' type='text' placeholder='Conversion List Capture...' disabled=''></span></div><div class='label-container label-container-sm'><span class='field-title required-field'>Pixels</span></div><div class='field-container'><span class='field-title required-field'><input class='form-control width-lg' id='disabledInput' type='text' placeholder='Pixels List Capture...' disabled=''></span></div></div><div class='data-row row-container'><div class='label-container'><span class='field-title required-field'>Revenue</span></div><div class='field-container'><span class='small-big-field'><input class='form-control' id='disabledInput' type='text' placeholder='Revnu Capture...' disabled=''></span></div><div class='label-container label-container-sm'><span class='field-title required-field'>&nbsp;</div><div class='field-container' style='width:360px'><div class='check-box-container' onclick='checkBox(this)' id ='' disabled><span class='check-box-uncheck' id='chbspan'><input class='check-box' customvalue='' data-val='true' data-val-required='The Primary field is required.' id='Primary' name='Primary' type='checkbox' value='true'><input name='Primary' type='hidden' value='false'></span><span class='check-box-text'>Primary</span></div></div><div class='field-container'><img name='iconImage' onclick='removeConversionItem()' class='minusicon' id='del-ad-taggingBtn' alt='Remove Conversion Item' title='Remove Conversion Item'></div><div class='field-container'><img name='iconImage' onclick='' class='plusicon' id='' alt='' title=''></div></div>";
+                    if (!CheckConversionUniquenessValidation()) {
+
+                        fieldResult = true;
+
+                        var errorMessage = "@Html.GetResource("ConversionAlreadyAddedMessage", "Targeting")"
+
+                        showNotfy(errorMessage, "warning", '', toastroptionsWithTime);
+
+                        var TargetingEventListDllElement = $("#TargetingConversionsListDll").select2('data');
+
+                        var uniqueCode = '';
+                        var uniquename = '';
+                        if (TargetingEventListDllElement != null && TargetingEventListDllElement.length > 0) {
+                            var uniqueCode = TargetingEventListDllElement[0].id;
+
+                            var uniquename = TargetingEventListDllElement[0].text;
+
+                        }
+
+
+                        var id = $(".newConv").find("[value='" + uniqueCode + "']").parent().attr("id");
+                        var indexelem = $(".newConv").find("[value='" + uniqueCode + "']").parent().attr("indexelem");
+
+                        ShowConfirmationDialogForUpdateConversion(uniquename, id, indexelem);
+                        //return false;
+
+
+
+                    }
+
+					doConversionAdd();
+					returnerrorFee = true;
+
+					countPrimary = CheckIsPimaryUniqValidation();
+
+					if (countPrimary != -1 && (countPrimary >= 1) && $("#PrimaryConv").is('[checked]')) {
+
+						returnerrorFee = false;
+					}
+
+					if (countPrimary == 0  ) {
+
+						showErrorMessage(PrimaryValidationWindowMessageOneText, true);
+						returnerrorFee = true;
+						funcResult = false;
+					}
+					if (!returnerrorFee) {
+						showErrorMessage(PrimaryValidationWindowMessageText, true);
+						funcResult = false;
+					}
+
+
+                } else {
+                    funcResult = false;
+                }
+            }
+            return funcResult;
+        }
+
+        function ShowHideCancelBut() {
+            if (AdEventItemsCount <= 0)
+                $('#cancel-ad-taggingBtn').hide()
+            //else
+            //    $('#cancel-ad-taggingBtn').show();
+
+            if (ConversionsItekumsCount <= 0)
+                $('#cancel-conversionsBtn').hide()
+            //else
+            //    $('#cancel-conversionsBtn').show();
+
+        }
+
+        function collapseConversionSetting() {
+            $("#ConversionsSettings").toggle();
+
+            var headerElement = $("#ConversionSetting .header");
+
+            if (headerElement.hasClass("close")) {
+                headerElement.removeClass("close");
+                headerElement.addClass("open");
+            } else {
+                headerElement.addClass("close");
+                headerElement.removeClass("open");
+            }
+        }
+
+        function AudiencelistDllPlaceholderStle() {
+
+            $('#ad-tagging>div>div:nth-child(4)>span>span>span.selection>span>ul>li>input').css("width", "unset  !important;" );
+        }
+        function AudiencelistDllPlaceholderStleSet() {
+
+            document.querySelector("#ad-tagging > div > div:nth-child(4) > span > span > span.selection > span > ul > li > input").style.width = "200px";
+        }
+
+        function UnCheckAllElseThis(e) {
+
+            //select all primary checkbox elements in array
+            var chkPrimary = document.querySelectorAll('.newConv .check-box-container , #conversions .check-box-container ');
+
+            //uncheck all checkbox elements thrue forEach
+            chkPrimary.forEach(function (elem, elements) {
+
+                CustomUnCheck(elem);
+                //set the value of the selected hidden field that are inside checkbox div to false
+				$(elem).find("input[type='hidden']").val(false);
+				$("#ConversionItems_" + $(elem).attr("indexelem") + "__IsPrimary").val(false);
+				$("#ConversionItems_" + $(elem).attr("indexelem") + "__IsNotChanged").val(false);
+            });
+
+            //set the value of the triggerd checkbox to checked and the hidden field to true
+            $(e).find('#Primary , #PrimaryConv').attr("checked", "checked");
+            $(e).find('#Primary , #PrimaryConv').parent().attr("class", "check-box-checked");
+			$(e).find("input[type='hidden']").val(true);
+			$("#ConversionItems_" + $(e).attr("indexelem") + "__IsPrimary").val(true);
+			$("#ConversionItems_" + $(e).attr("indexelem") + "__IsNotChanged").val(false);
+		
+			
+        }
+
+        function CustomUnCheck(elem){
+            $(elem).find('#Primary , #PrimaryConv').removeAttr("checked");
+            $(elem).find('#Primary , #PrimaryConv').parent().attr("class", "check-box-uncheck");
+        }
+
+        function CheckAnyCheckedPrimary() {
+            var checkedPrimary = $('.newConv .check-box-container , #conversions .check-box-container ');
+            var flag = false;
+            let a = 0;
+
+            checkedPrimary.map(function (b, item) {
+                var checked = $(item).find('#Primary , #PrimaryConv').attr("checked");
+                if (!(typeof (checked) == "undefined" || checked != "checked")) {
+                    flag = true;
+                    a++;
+                }
+            });
+
+            if(a > 1)
+                return true;
+            else
+                return false;
+
+        }
+
+	</script>
+
+	<style>
+		.invalid-feedback {
+			display: block;
+			/*width: 100%;*/
+			margin-top: .6rem;
+			font-size: 80%;
+			color: #FFF;
+			background: #bd006b;
+			float: left;
+			padding: 2px 5px
+		}
+
+		.field-container > span.field-title > input {
+			font: inherit !important;
+		}
+
+		#ConversionType, #ClickAttribuation, #ViewAttribuation, #CountingTypeAttribuation {
+			font: 400 13.3333px Arial;
+		}
+
+		#ConversionSetting {
+			font-weight: lighter;
+		}
+	</style>
+
+
+
+	<div class="conversion-setting ad-filter-text go-left floating-left">
+
+
+		<h3>@Html.GetResource("AdEventsAudienceTagging", "Targeting")</h3>
+
+
+	</div>
+
+
+	<div class="ad-filter-data" id="ad-taggingShow">
+
+
+		<div class="data-row data-container">
+
+
+			<div class="label-container" style="min-height:1px; width: 140px;">
+
+
+
+
+			</div>
+
+
+			<div class="field-container">
+
+
+
+				<span class="field-title required-field">@Html.GetResource("Event", "Global")</span>
+
+
+			</div>
+
+
+			<div class="label-container label-container-sm" style="min-height:1px; width: 300px;">
+
+
+
+
+
+			</div>
+
+
+			<div class="field-container">
+
+				<span class="field-title required-field">@Html.GetResource("AudienceListCapture", "Targeting")</span>
+
+
+
+
+			</div>
+
+
+		</div>
+
+
+	</div>
+
+	@{
+
+
+		if (Model.AdEventItems != null)
+
+
+		{
+
+
+			for (int i = 0; i < Model.AdEventItems.Count(); i++)
+
+
+			{
+
+
+				<div class='data-row data-container newAdEvents' indexelem='@i' id="AdEventsAudienceTaggingItem_@i">
+
+
+					<div class='label-container' style="min-height:1px;width: 100px;">
+
+
+
+
+
+					</div>
+
+
+					<div class='field-container'>
+
+
+						<span class='field-title required-field'>
+
+
+							@{
+
+
+								object itemsToShow = new { @class = "form-control newevent", indexEvent = i, @disabled = "", @style = "width: 150px;" };
+
+
+								@Html.TextBoxFor(x => Model.AdEventItems[i].Name, itemsToShow)
+
+
+							}
+
+
+							@*<input class='form-control' id='disabledInput' type='text' placeholder='Audience List Capture...' disabled=''>*@
+
+
+						</span>
+
+
+					</div>
+
+
+					<div class='label-container label-container-sm' style="min-height:1px;width: 161px;">
+
+
+
+
+
+					</div>
+
+
+					<div class='field-container'>
+
+
+						<span class='field-title required-field'>
+
+
+							@{
+
+
+								object itemsToShow2 = new { @class = "form-control width-lg", indexEvent = i, @disabled = "" };
+
+
+								@Html.TextBoxFor(x => Model.AdEventItems[i].SegmentString, itemsToShow2)
+
+
+							}
+
+
+							@*<input class='form-control width-lg' id='disabledInput' type='text' placeholder='Audience List Capture...' disabled=''>*@
+
+
+						</span>
+
+
+					</div>
+
+
+					<div class='field-container'>
+
+
+						<img name='iconImage' onclick='ShowConfirmationDialogForDeleteEvent("@Model.AdEventItems[i].Name","AdEventsAudienceTaggingItem_@i",@i)' class='minusicon' id='del-ad-taggingBtn' alt='Remove Ad Events Audience Tagging' title='Remove Ad Events Audience Tagging'>
+
+
+					</div>
+
+
+					<div class='field-container'>
+
+
+						<img name='iconImage' onclick='showHideAdEventsAdd(this)' style="display:none" class='plusicon addIconForConv' id='' alt='' title=''>
+
+
+					</div>
+
+
+
+
+					@Html.HiddenFor(x => Model.AdEventItems[i].Code)
+					@Html.HiddenFor(x => Model.AdEventItems[i].SegmentsId)
+
+					@Html.HiddenFor(x => Model.AdEventItems[i].IsDeleted)
+					@Html.HiddenFor(x => Model.AdEventItems[i].IsNotChanged)
+
+
+
+
+
+				</div>
+
+
+
+
+			}
+
+
+		}
+
+
+	}
+	<div class="ad-filter-data" id="ad-tagging" style="display:none">
+
+
+		<div class="data-row data-container">
+
+
+			<div class="label-container" style="min-height:1px;width: 100px;">
+
+
+
+
+			</div>
+
+
+			<div class="field-container">
+
+
+				<span class="cost-model-container">
+
+
+
+
+					<select id="TargetingEventListDll" name="TargetingEventListDll" class="js-example-basic-single"></select>
+
+
+				</span>
+
+
+			</div>
+
+
+			<div class="label-container label-container-sm" style="min-height:1px;width: 161px;">
+
+
+
+
+
+			</div>
+
+
+			<div class="field-container">
+
+
+				<span class="cost-model-container">
+
+
+
+
+					<select id="TargetingAudienceListDll" name="TargetingAudienceListDll" class="js-example-basic-single width-lg"></select>
+
+
+				</span>
+
+				<div class='field-container'>
+
+
+					<img name='iconImage' class='minusicon' id='cancel-ad-taggingBtn' alt='Cancel Ad Events Audience Tagging' title='Cancel Ad Events Audience Tagging' style="display:none;">
+
+
+				</div>
+				<div class='field-container'>
+
+
+					<img name="iconImage" class="plusicon" id="ad-taggingBtn" style="display:none;" alt="Add Ad Events Audience Tagging" title="Add Ad Events Audience Tagging">
+
+
+				</div>
+
+
+
+			</div>
+
+
+		</div>
+
+
+	</div>
+
+
+
+
+
+
+	<div class="conversions ad-filter-text go-left floating-left">
+
+
+		<h3>@Html.GetResource("Conversions", "Targeting")</h3>
+
+
+	</div>
+
+	<div class="ad-filter-data" id="conversionsShow" style="padding-top:7px;">
+
+
+		<div class="data-row data-container">
+			<div class="label-container" style="min-height:1px;width: 130px;">
+
+
+
+
+
+			</div>
+
+			<div class="field-container">
+
+
+				<span class="field-title required-field">@Html.GetResource("Conversion", "Targeting")</span>
+
+
+			</div>
+
+
+
+			<div class="label-container label-container-sm" style="min-height:1px;width:160px;">
+
+
+
+
+
+			</div>
+
+
+
+
+			<div class="field-container">
+
+
+				<span class="field-title required-field">@Html.GetResource("Pixels", "Targeting")</span>
+
+			</div>
+
+
+
+			<div class="label-container" style="min-height:1px;width:280px;">
+
+
+
+
+
+			</div>
+
+
+			<div class="field-container">
+
+
+				<span class="field-title required-field ">@Html.GetResource("Revenue", "Targeting") </span>
+
+
+			</div>
+
+
+			<div class="label-container label-container-sm" style="min-height:1px; width:55px;">
+
+
+
+			</div>
+
+
+			<div class="field-container" style="width: 50px;">
+
+				<span class="field-title required-field">@Html.GetResource("Primary", "Targeting")</span>
+
+
+
+
+
+			</div>
+
+
+		</div>
+
+
+
+
+	</div>
+
+
+
+	@{
+
+
+		if (Model.ConversionItems != null)
+
+
+		{
+
+
+			for (int i = 0; i < Model.ConversionItems.Count(); i++)
+
+
+			{
+
+				<div id='new-conversion-item-@i' indexelem="@i" class="newConv">
+					<div class='data-row data-container'>
+
+
+
+
+						<div class='label-container' style="min-height:1px; width: 100px;">
+
+
+
+
+
+						</div>
+
+
+						<div class='field-container'>
+
+
+							<span class='field-title required-field'>
+
+
+								@{
+
+
+									object itemsToShow1 = new { maskType = "text", indexConversion = i, @class = "form-control newevent textbox" + Model.ConversionItems[i].Id, @disabled = "", @style = "width: 150px;" };
+
+
+									@Html.TextBoxFor(x => Model.ConversionItems[i].Name, itemsToShow1)
+
+
+
+
+								}
+
+
+								@*<input class='form-control' id='disabledInput' type='text' disabled=''>*@
+
+
+							</span>
+
+
+						</div>
+
+
+						<div class='label-container label-container-sm' style="min-height:1px;width:35px;">
+
+
+
+
+
+						</div>
+
+
+						<div class='field-container'>
+
+
+							<span class='field-title required-field'>
+
+
+								@{
+
+
+									object itemsToShow2 = new { maskType = "text", indexPixel = i, @class = "form-control width-lg  textbox" + Model.ConversionItems[i].PixelsId, @disabled = "", @style = "width: 295px !important;" };
+
+
+									@Html.TextBoxFor(x => Model.ConversionItems[i].PixelString, itemsToShow2)
+
+
+
+
+								}
+
+
+								@*<input class='form-control width-lg' id='disabledInput' type='text' placeholder='Pixels List Capture...' disabled=''>*@
+
+
+							</span>
+
+
+						</div>
+
+
+
+
+
+						<div class='label-container' style="min-height:1px;width:50px;">
+
+
+
+
+
+						</div>
+
+
+						<div class='field-container'>
+
+
+							<span class='small-big-field'>
+
+
+
+
+								<input id='ConversionItems_@(i)__Revenue' name='ConversionItems[@i].Revenue' type='hidden' value='@Model.ConversionItems[i].Revenue'>
+								<input class='form-control' id='ConversionItems_@(i)__Revenue' name='ConversionItems[@i].Revenue' type='text' value='@Model.ConversionItems[i].Revenue.ToString("F3")' disabled='' style="width:100px;">
+
+
+
+
+								@*<input class='form-control' id='disabledInput' type='text' placeholder='Revenue Capture...' disabled=''>*@
+
+
+							</span>
+
+
+						</div>
+
+
+						<div class='label-container label-container-sm' style="min-height:1px;width:30px;">
+
+
+							<span class="side-text">$</span>
+
+
+						</div>
+
+
+						<div class='field-container' style="min-height:1px;width:40px;">
+
+
+							@*<div class='check-box-container' onclick='checkBox(this)' id='' disabled>
+
+
+									<span class='check-box-uncheck' id='chbspan'>
+
+
+										<input class='check-box' customvalue='' data-val='true' data-val-required='The Primary field is required.' id='Primary' name='Primary' type='checkbox' value='true'><input name='Primary' type='hidden' value='false'>
+
+
+									</span>
+
+
+									<span class='check-box-text'>Primary</span>
+
+
+								</div>*@
+
+							@*@Html.GetCheckBox("ConversionItems[" + i + "].IsPrimary", "Primary", Model.ConversionItems[i].IsPrimary, disabled: true)*@
+
+							@{
+
+								var uncheckVal = "uncheck";
+
+								var falseVal = "false";
+
+								if (Model.ConversionItems[i].IsPrimary)
+								{
+
+									uncheckVal = "checked";
+
+									falseVal = "true";
+
+								}
+							}
+
+							<div class='check-box-container'  indexelem="@i"  onclick='ShowConfirmationDialogForChangePrimray(this)' id=''>
+								<span class='check-box-@uncheckVal' id='chbspan'>
+									<input class='check-box' id='Primary' name='Primary' @uncheckVal='@(uncheckVal)' type='checkbox' value='@falseVal'>
+									<input id='ConversionItems_@(i)__IsPrimary' name='ConversionItems[@i].IsPrimary' type='hidden' value='@falseVal'>
+								</span><span class='check-box-text'></span>
+							</div>
+
+
+
+						</div>
+
+
+						@if (Model.ConversionItems[i].IsCustom)
+						{
+							<div class='field-container'>
+
+
+								<img name='iconImage' onclick='ShowConfirmationDialogForDeleteConversion("@Model.ConversionItems[i].Name","new-conversion-item-@i",@i)' class='minusicon' id='del-ad-taggingBtn' alt='Remove Conversion Item' title='Remove Conversion Item'>
+
+
+							</div>
+						}
+
+
+						<div class='field-container'>
+
+
+							<img name='iconImage' onclick='showHideConversionsAdd(this)' style="display:none" class='plusicon addIconForConv' id='' alt='' title=''>
+
+
+						</div>
+
+
+					</div>
+
+
+					@Html.HiddenFor(x => Model.ConversionItems[i].PixelsId, new { pixelValue = "pixelValue" })
+
+
+					@Html.HiddenFor(x => Model.ConversionItems[i].Code)
+
+					@Html.HiddenFor(x => Model.ConversionItems[i].IsDeleted)
+
+					@Html.HiddenFor(x => Model.ConversionItems[i].IsNotChanged)
+				</div>
+
+			}
+
+
+		}
+
+
+	}
+
+
+
+
+	<div class="ad-filter-data" id="conversions" style="display:none;">
+
+
+		<div class="data-row data-container">
+			<div class="label-container" style="min-height:1px;width: 100px;">
+
+
+
+
+
+			</div>
+
+			<div class="field-container">
+
+
+				<span class="cost-model-container">
+
+
+
+
+					<select id="TargetingConversionsListDll" name="TargetingConversionsListDll" class="js-example-basic-single" style="width: 150px;"></select>
+
+
+				</span>
+
+
+			</div>
+
+
+
+			<div class="label-container label-container-sm" style="min-height:1px;width:35px;">
+
+
+
+
+
+			</div>
+
+
+
+
+			<div class="field-container">
+
+
+				<span class="cost-model-container">
+
+
+					<select id="TargetingPixelListDll" name="TargetingPixelListDll" class="js-example-basic-single width-lg " style="width:295px;"></select>
+
+
+				</span>
+
+
+			</div>
+
+
+
+			<div class="label-container" style="min-height:1px;width:50px;">
+
+
+
+
+
+			</div>
+
+
+			<div class="field-container">
+
+
+				<span class="small-big-field">
+
+					@Html.AdFalconTextBox("RevenueTxt", string.Empty, new { maskType = "decimal", onkeypress = "onbidpress(event,this); ", @style = "margin-right:11px;width:100px !important;" })
+
+					@*<input class="text-box" id="RevenueTxt" data-val="true" type="text" value="">*@
+
+
+				</span>
+
+
+			</div>
+
+
+			<div class="label-container label-container-sm" style="min-height:1px;width:30px;">
+
+				<span class="side-text">$</span>
+
+			</div>
+
+
+			<div class="field-container" style="min-height:1px;width: 40px;">
+
+
+				<div class="check-box-container" onclick="ShowConfirmationDialogForChangePrimray(this)" id="PrimaryConvContainer">
+
+
+					<span class="check-box-uncheck" id="chbspan">
+
+
+						<input class="check-box" customvalue="" id="PrimaryConv" name="PrimaryConv" type="checkbox" value="false">
+
+
+						<input name="Primary" type="hidden" value="false">
+
+
+					</span>
+
+
+					<span class="check-box-text"></span>
+
+
+				</div>
+
+
+			</div>
+
+			<div class='field-container'>
+
+
+				<img name='iconImage' class='minusicon' id='cancel-conversionsBtn' alt='Cancel Add conversion Audience Tagging' title='Cancel Add conversion Audience Tagging' style="display:none;">
+
+
+			</div>
+			<div class="field-container ">
+
+
+				<img name="iconImage" onclick="" class="plusicon" id="conversionsBtn" alt="Add Conversion" title="Add Conversion">
+
+
+			</div>
+
+
+		</div>
+
+
+	</div>
+
+
+
+
+
+	<div class="margin-conversion-setting ConversionSetting" id="ConversionSetting">
+		<div class="conversion-setting ad-filter-text go-left floating-left header open" onclick="collapseConversionSetting()">
+
+
+			<p style="font-size:16px;">@Html.GetResource("ConversionSetting", "Targeting")</p>
+
+
+		</div>
+
+		<div id="ConversionsSettings" class="ad-filter-data ">
+			<div class=" container"></div>
+
+			<div class="data-row data-container">
+
+
+				<div class="label-container">
+
+
+					<span class="field-title required-field">@Html.GetResource("Type", "Global")</span>
+
+
+				</div>
+
+
+				<div class="field-container">
+
+
+					<span class="cost-model-container">
+
+
+						@Html.DropDownList("ConversionType", selectItems)
+
+
+					</span>
+
+
+				</div>
+
+
+				<div class="label-container label-container-sm click-showhide" style="width: 135px;">
+
+
+					<span class="field-title required-field">@Html.GetResource("ClickAttributionWindow", "Targeting")</span>
+
+
+				</div>
+
+
+				<div class="field-container click-showhide">
+
+
+					<span class="small-big-field">
+
+
+						<input type="number" id="ClickAttribuation" name="ClickAttribuation" value="@Model.ClickAttribuation" max="30" min="1" onchange="ViewAttributionWindowValidation()" class="text-box" style="width: 45px !important;" />
+
+
+					</span>
+					<div class="label-container label-container-sm" style="width: 31px;">
+
+
+						<span class="field-title required-field" style="float: left;font-size: 10px;">@Html.GetResource("Days", "Time")</span>
+
+
+					</div>
+
+
+				</div>
+
+
+
+
+				<div class="label-container label-container-sm view-showhide" style='width: 135px;display: @(Model.ConversionType==Noqoush.AdFalcon.Domain.Common.Model.Campaign.ConversionType.Click?"none":"block");'>
+
+
+					<span class="field-title required-field">@Html.GetResource("VieAttributionWindow", "Targeting")</span>
+
+
+				</div>
+
+
+				<div class="field-container view-showhide" style="display: @(Model.ConversionType==Noqoush.AdFalcon.Domain.Common.Model.Campaign.ConversionType.Click?"none":"block");">
+
+					<span class="small-big-field">
+
+						<input id="ViewAttribuation" name="ViewAttribuation" type="number" value="@Model.ViewAttribuation" max="30" min="1" onchange="ViewAttributionWindowValidation()" class="text-box" style="width: 45px !important;" />
+
+					</span>
+					<div class="label-container label-container-sm" style="width: 31px;">
+
+
+						<span class="field-title required-field" style="float: left;font-size: 10px;">@Html.GetResource("Days", "Time")</span>
+
+
+					</div>
+					<div id="ViewAttributionWindowMessage" class="invalid-feedback ViewAttributionWindowMessageText" style="display: none;">
+						@Html.GetResource("ViewAttributionWindowMessage", "Targeting")
+					</div>
+
+
+				</div>
+
+
+			</div>
+
+
+			<div class="data-row data-container">
+
+
+				<div class="label-container">
+
+
+					<span class="field-title required-field">@Html.GetResource("CountingMethod", "Targeting")</span>
+
+
+				</div>
+
+
+				<div class="field-container">
+
+
+					<div class="cost-model-container">
+
+
+						<div class="">
+
+
+							<div name="ConvSettingcontainer" class="radio-button-container " onclick="radioBox(this);">
+
+
+								@Html.GetRadioButton("ConversionSetting", Html.GetResource("CountFirstConversionOnly", "Targeting"), CountFirstConversionOnlyValue, "floating-left iea-rbtn-width-b", value: "1", onChange: "ConversionSettingChanged", Id: "CountFirstConversionOnly")
+
+
+							</div>
+
+
+						</div>
+
+
+						<div class="floating-left iea-rbtn-width-a">
+
+
+							<div name="ConvSettingcontainer" class="radio-button-container " onclick="radioBox(this);">
+
+
+								@Html.GetRadioButton("ConversionSetting", Html.GetResource("CountConversionEvery", "Targeting"), CountConversionEveryValue, "floating-left iea-rbtn-width-b", value: "2", onChange: "ConversionSettingChanged", Id: "CountConversionEvery")
+
+
+							</div>
+
+
+						</div>
+
+
+						<div class="floating-left number-minutes-fields" id="CountConversionEveryTimeStamp">
+
+
+							<input id="CountingAttribuation" name="CountingAttribuation" type="number" value="@Model.CountingAttribuation" class="floating-left" title="Please enter number of minutes" onchange="CountConversionEveryValidation()" min="1" max="10" />
+							@*<select>
+
+									<option>@Html.GetResource("Minutes", "Time")</option>
+
+								</select>*@
+
+							@Html.DropDownList("CountingTypeAttribuation", CountingTypeAttribuationselectItems)
+
+							<div id="CountConversionEveryMessage" class="invalid-feedback   CountConversionEveryMessageText" style="display: none;">
+								@Html.GetResource("CountConversionEveryMessage", "Targeting")
+							</div>
+
+
+						</div>
+
+
+						<div class="iea-rbtn-width-a">
+
+
+							<div name="ConvSettingcontainer" class="radio-button-container " onclick="radioBox(this);">
+
+
+								@Html.GetRadioButton("ConversionSetting", Html.GetResource("CountAllConversions", "Targeting"), CountAllConversionsValue, "floating-left iea-rbtn-width-b", value: "3", onChange: "ConversionSettingChanged", Id: "CountAllConversions")
+
+
+
+
+							</div>
+
+
+						</div>
+
+
+					</div>
+
+
+				</div>
+
+
+			</div>
+
+
+		</div>
+
+	</div>
+
+</div>

@@ -1,0 +1,269 @@
+﻿@model Noqoush.AdFalcon.Web.Controllers.Model.Core.RecipientEmailModel
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+    var maxAllowedEmailsNumber = 9;
+    var RecipientEmailsDuplicatedMsg = '@Html.GetResource("DuplicatedEmailMsg")';
+
+    function validateRecipientEmails(inputIdValue, isValidDublicatedRecipientEmailsUrl) {
+
+        var returnValue;
+        var fieldObject;
+        var isDublicatedValidation = true;
+        if (typeof inputIdValue == "string") {
+            fieldObject = $('#' + inputIdValue);
+        } else {
+            fieldObject = $(this);
+        }
+        error_msg_id = fieldObject.attr("id") + '-URLErrorMsg2';
+        dublicatedUrl_Error_msg_id = fieldObject.attr("id") + '-URLErrorMsg3';
+
+        if (isValidDublicatedRecipientEmailsUrl != false) {
+            var isDublicatedClick = validateIsDublicateRecipientEmailsUrl(fieldObject.val());
+            if (isDublicatedClick) {
+                returnValue = false;
+                isDublicatedValidation = false;
+                $('#' + dublicatedUrl_Error_msg_id).show();
+            } else {
+                isDublicatedValidation = true;
+                $('#' + dublicatedUrl_Error_msg_id).hide();
+            }
+        }
+        returnValue = isEmail(fieldObject, error_msg_id);
+        if (!returnValue) {
+            return returnValue;
+        }
+
+
+        return returnValue && isDublicatedValidation;
+    }
+    function validateIsDublicateRecipientEmailsUrl(RecipientEmailsValue) {
+        //
+        var isValidDublicatedRecipientEmailsUrl = false;
+        var count = 0;
+        $('input[name*=RecipientEmails],input[name*=ClickEmails]').each(function () {
+            var str = $(this).val().replace(/\s/g, '');
+            var str1 = RecipientEmailsValue.replace(/\s/g, '');
+            if (str == str1 && str != '') {
+                count++;
+            }
+        });
+        if (count > 1) {//if found more than one
+            // dublicated click Email url
+            isValidDublicatedRecipientEmailsUrl = true;
+        }
+        return isValidDublicatedRecipientEmailsUrl;
+    }
+    function onCopyEmail(originalItem, clonedItem) {
+
+        var textBox = clonedItem.find(":text");
+        var validationSpan = $(clonedItem.find("span[id$='-URLErrorMsg2']")); //$(clonedItem.find("span")[1]);
+        validationSpan.hide();
+        validationSpan.attr("id", textBox.attr("id") + "-URLErrorMsg2");
+
+        var validationSpan2 = $(clonedItem.find("span[id$='-URLErrorMsg3']"));
+        validationSpan2.hide();
+        validationSpan2.attr("id", textBox.attr("id") + "-URLErrorMsg3");
+
+        textBox.change(validateRecipientEmails);
+        textBox.keyup(function () { onUrlTextKeyUp("#" + clonedItem.attr("id"), false); });
+
+        var containerId = originalItem[0].id;// $(originalItem[0].id).last().attr("id");// $("[id^='EmailContainer']").last().attr("id");
+
+        var plusicon = $(clonedItem.find(".plusicon"));
+        plusicon.attr("onclick", "");
+        plusicon.click(function () { cloneRecipientEmails("#" + containerId); });
+
+        clonedItem.find("span.field-title").html("&nbsp;");
+
+    }
+
+    function onUrlTextKeyUp(itemContainer, isShowPlus) {
+        managePlusIcon(itemContainer);
+    }
+
+    function managePlusIcon(itemContainer) {
+
+        var container = GetContainerUrl(itemContainer);
+        var containers = container.parent().find("[id^='EmailContainer']");// $(containerId);// $("[id^='EmailContainer']");
+        if (containers.length > 0 /*&& containers.length < maxAllowedEmailsNumber*/) {
+            containers.find(".plusicon").hide();
+            if (validateAllRecipientEmails(itemContainer)) {
+                lastUrl.find(".plusicon").show();
+            }
+            else {
+                lastUrl.find(".plusicon").hide();
+            }
+        }
+    }
+
+    function validateAllRecipientEmails(itemContainer) {
+
+
+        var container = GetContainerUrl(itemContainer);
+        var containers = container.parent().find("[id^='EmailContainer']");// $(containerId);// $("[id^='EmailContainer']");
+        if (containers.length > 0) {
+            containers.find(".plusicon").hide();
+            lastUrl = containers.last();
+            lastUrlTextBox = GetContainerUrlTextbox(lastUrl);
+            var validateUrlValue = validateRecipientEmails(lastUrlTextBox.attr('id'));
+            if (validateUrlValue && lastUrlTextBox.val() != '') {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+    function cloneRecipientEmails(_containerIdValue) {
+
+        var container = GetContainerUrl(_containerIdValue);
+        if (validateAllRecipientEmails(_containerIdValue)) {
+            cloneEmailElement(container, onCopyEmail, onRemovedClonedEmail, true, true);
+        }
+    }
+
+    function GetContainerUrlTextbox(container) {
+        var textBoxContent = container.find("input");
+        return textBoxContent;
+    }
+
+    function GetContainerUrl(containerID) {
+
+        var container = $(containerID);
+        if (container == null || container.length == 0) {
+            containerID = "#" + containerID;
+            container = $(containerID);
+        }
+        return container;
+    }
+    function cloneEmailElement(itemToCopyName, cloneCallBackFunction, removeCallBackFunction, igonreClickFunction, ignoreKeyUp) {
+
+        var randonNumber = Math.floor(Math.random() * 1000);
+        var itemToCopy = $(itemToCopyName);
+
+        var parentItem = $(itemToCopy[0]).parent();
+        var clonedItem = itemToCopy.clone(false);
+        var clonedItemId = "EmailContainer" + randonNumber;
+        clonedItem.attr("id", clonedItemId);
+
+        var clonedItemTextBoxId = "clickEmail" + randonNumber;
+        var textBox = clonedItem.find(":text");
+        textBox.attr("id", clonedItemTextBoxId);
+        textBox.val("");
+        textBox.attr("onkeyup", "");
+        textBox.unbind("autocompleteselect");
+        if (null != ignoreKeyUp && undefined != ignoreKeyUp && ignoreKeyUp == true) {
+        } else {
+            textBox.keyup(function () { managePlusIcon(clonedItemId); });
+        }
+        var plusIcon = clonedItem.find(".plusicon");
+        plusIcon.attr("onclick", "");
+        if (null != igonreClickFunction && undefined != igonreClickFunction && igonreClickFunction == true) {
+            //igonre Click Function
+        } else {
+            plusIcon.click(function () { cloneEmailElement("#" + clonedItemId, onCopyTracker); });
+        }
+
+        if (clonedItem.find(".minusicon").length == 0) {
+            var minusIcon = plusIcon.clone(false);
+            minusIcon.removeClass("plusicon").addClass("minusicon");
+            minusIcon.attr("onclick", "");
+            minusIcon.click(function () { removeClonedElement(clonedItemId, removeCallBackFunction); });
+            minusIcon.show();
+            plusIcon.before(minusIcon);
+        } else {
+            var minusIcon = clonedItem.find(".minusicon");
+            minusIcon.attr("onclick", "");
+            minusIcon.click(function () { removeClonedElement(clonedItemId, removeCallBackFunction); });
+        }
+
+        plusIcon.hide();
+
+        clonedItem.appendTo(parentItem);
+        itemToCopy.find("img.plusicon").hide();
+        if (cloneCallBackFunction != undefined && cloneCallBackFunction != null) {
+            cloneCallBackFunction(itemToCopy, clonedItem);
+        }
+    }
+    function onRemovedClonedEmail(itemContainer) {
+
+        managePlusIcon(itemContainer);
+    }
+
+    function SendEmails() {
+
+
+        var allemails = $('input[id^=RecipientEmail],input[id^=clickEmail]');
+        var count = $(allemails).length;
+        var Emails = "";
+        for (var i = 0 ; i < count; i++) {
+            if ($(allemails).eq(i).val() != '' || $(allemails).eq(i).val() != 'undefined')
+                i == count - 1 ? Emails += $(allemails).eq(i).val() : Emails += $(allemails).eq(i).val() + ",";
+        }
+        return Emails;
+    }
+
+</script>
+@if (Model.RecipientEmail != null && Model.RecipientEmail.Count == 0)
+{
+    <div class="data-row data-container" id="EmailContainer1">
+        <div class="label-container">
+            <span class="field-title ">@Html.GetResource("RecipientEmails", "Global")</span>
+        </div>
+        <div class="field-container">
+            <input class="text-box" id="RecipientEmails1" name="RecipientEmails" type="text" value="" onkeyup="managePlusIcon('EmailContainer1');">
+            <img name="iconImage" onclick="cloneRecipientEmails(EmailContainer1) ;" class="plusicon" style="display: none">
+        </div>
+        <span class="validation-arrow field-validation-error" id="RecipientEmails1-URLErrorMsg2"
+              style="display: none;"><span class="">@Html.GetResource("InvalidEmail", "ResourceSet")</span></span>
+            <span class="validation-arrow field-validation-error" id="RecipientEmails1-URLErrorMsg3"
+                  style="display: none;"><span class="">@Html.GetResource("DuplicatedEmailMsg")</span></span>
+
+            </div>
+
+}
+else
+{
+    if (Model.RecipientEmail != null)
+    {
+        int i = 0;
+        int counter = Model.RecipientEmail.Count;
+        foreach (var item in Model.RecipientEmail)
+        {
+            <div class="data-row data-container" id="EmailContainer@(i)">
+                <div class="label-container">
+                    <span class="field-title">
+                        @if (i == 0)
+                        {
+                            @Html.GetResource("RecipientEmails", "Global")
+                        }
+                        else
+                        {
+                            <text>&nbsp;</text>
+                        }
+                    </span>
+                </div>
+                <div class="field-container">
+                    <input class="text-box" id="clickEmail@(i)" name="ClickEmails" type="text" value="@item" onkeyup="managePlusIcon('EmailContainer@(i)');">
+                    @if (i != 0)
+                    {
+                        <img name="iconImage" onclick="removeClonedElement('EmailContainer@(i)');" class="minusicon" style="display: inline;">
+                    }
+                    <img name="iconImage" onclick="cloneRecipientEmails(EmailContainer@(i));" class="plusicon" style="display: @(i + 1 == counter ? "inline" : "none")">
+                </div>
+                <span class="validation-arrow field-validation-error" id="clickEmail@(i)-URLErrorMsg2"
+                      style="display: none;"><span class="">@Html.GetResource("InvalidEmail", "ResourceSet")</span></span>
+
+                    <span class="validation-arrow field-validation-error" id="clickEmail@(i)-URLErrorMsg3"
+                          style="display: none;"><span class="">@Html.GetResource("DuplicatedEmailMsg")</span></span>
+                    </div>
+                    {
+                        i++;
+                    }
+        }
+    }
+}

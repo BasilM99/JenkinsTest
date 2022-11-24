@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <facilities>
+    <facility type="ArabyAds.Framework.CommonComponentsRegisterationFacility, ArabyAds.Framework">
+      <assemblies>
+        <assembly id="RepositorysReportsImplementation" value="ArabyAds.AdFalcon.Persistence.Reports"/>
+        <assembly id="RepositorysImplementation" value="ArabyAds.AdFalcon.Persistence"/>
+        <assembly id="RepositorysGPReportsImplementation" value="ArabyAds.AdFalcon.Persistence.ReportsGP"/>
+        <assembly id="RepositorysInterfaces" value="ArabyAds.AdFalcon.Domain"/>
+        <assembly id="DomainServices" value="ArabyAds.Framework.DomainServices"/>
+      </assemblies>
+      <Mapping>
+         <Map id="Repository" Suffix="Repository" LifeStyle="Singleton"/>
+      </Mapping>
+    </facility>
+    
+    <facility type="ArabyAds.Framework.Grpc.GrpcRegisterationFacility,ArabyAds.Framework.Grpc">
+      <service id="InfrastructurServices" assembly="ArabyAds.Framework" >
+        <!--<interceptors>
+          <add type="ArabyAds.Framework.Grpc.ClientAdapter, ArabyAds.Framework.Grpc" />
+          <add type="ArabyAds.Framework.Grpc.ClientOperationContextPolicy, ArabyAds.Framework.Grpc" />
+        </interceptors>-->
+      </service>
+
+    </facility>
+  </facilities>
+  
+  <components>
+    
+    <component id="HttpContextAccessor"
+        service="Microsoft.AspNetCore.Http.IHttpContextAccessor, Microsoft.AspNetCore.Http.Abstractions"
+      type="Microsoft.AspNetCore.Http.HttpContextAccessor, Microsoft.AspNetCore.Http" lifestyle="singleton" />
+               
+    <component id="ObjectMetaDataManager"
+			 service="ArabyAds.Framework.DomainServices.AuditTrial.ObjectMetaDataManagement.IObjectMetaDataManager,ArabyAds.Framework.DomainServices"
+		 type="ArabyAds.Framework.DomainServices.AuditTrial.ObjectMetaDataManagement.ObjectMetaDataManager,ArabyAds.Framework.DomainServices">
+    </component>
+
+
+    <component id="ConfigurationManager"
+  service="ArabyAds.Framework.ConfigurationSetting.IConfigurationManager,ArabyAds.Framework"
+  type="ArabyAds.Framework.ConfigurationSetting.ConfigurationManager,ArabyAds.Framework"></component>
+    
+    <component id="AccountStatistic"
+                  service="ArabyAds.AdFalcon.Domain.Services.IAccountStatistic,ArabyAds.AdFalcon.Domain"
+                  type="ArabyAds.AdFalcon.Domain.Services.AccountStatistic,ArabyAds.AdFalcon.Domain"
+                  lifestyle="Singleton">
+    </component>
+   
+    <component id="UserInfoStorage"
+  service="ArabyAds.Framework.Storage.IStorage,ArabyAds.Framework"
+type="ArabyAds.Framework.Grpc.Storage.GrpcStorage,ArabyAds.Framework.Grpc"  lifestyle="Singleton">
+    </component>
+    
+    <component id="UserInfoProvider"
+   service="ArabyAds.Framework.UserInfo.IUserInfoProvider,ArabyAds.Framework"
+ type="ArabyAds.AdFalcon.Common.Grpc.UserInfo.AdFalconUserInfoProvider,ArabyAds.AdFalcon.Common.Grpc"  lifestyle="Singleton">
+    </component>
+    
+    <component id="ResourceManager"
+			 service="ArabyAds.Framework.Resources.IResourceManager,ArabyAds.Framework"
+		 type="ArabyAds.Framework.Resources.ResourceManager,ArabyAds.Framework">
+    </component>
+    <component id="SecurityContent"
+     service="ArabyAds.Framework.Security.ISecurityContext,ArabyAds.Framework"
+   type="ArabyAds.Framework.Grpc.Context.GrpcSecurityContext,ArabyAds.Framework.Grpc"  lifestyle="Singleton">
+    </component>
+    <component id="RepositoryImpl"
+         service="ArabyAds.Framework.Persistence.RepositoryImplBase`2,ArabyAds.Framework"
+         type="ArabyAds.Framework.Persistence.NHibernate.NHRepository`2,ArabyAds.Framework.Persistence"
+         lifestyle="Singleton">
+    </component>
+    <component id="FrameworkBehaviorInvoker" service="ArabyAds.Framework.Behaviors.BehaviorInvoker, ArabyAds.Framework"
+     type="ArabyAds.Framework.Behaviors.BehaviorInvoker, ArabyAds.Framework"
+     lifestyle="Singleton" />
+    <component id="PersistenceManager" service="ArabyAds.Framework.Persistence.PersistenceManager,ArabyAds.Framework"
+						 type="ArabyAds.Framework.Persistence.PersistenceManager,ArabyAds.Framework"
+						 lifestyle="Singleton" />
+   
+
+    <component id="CallContext"
+            service="ArabyAds.Framework.ICallContext,ArabyAds.Framework"
+            type="ArabyAds.Framework.Grpc.GrpcCallContext,ArabyAds.Framework.Grpc"
+            lifestyle="Singleton">
+    </component>
+    <component id="BidManager"
+            service="ArabyAds.AdFalcon.Domain.Services.IBidManager,ArabyAds.AdFalcon.Domain"
+            type="ArabyAds.AdFalcon.Domain.Services.BidManager,ArabyAds.AdFalcon.Domain"
+            lifestyle="Singleton">
+    </component>
+
+
+    <component id="EventBroker"
+            service="ArabyAds.Framework.EventBroker.IEventBroker,ArabyAds.Framework"
+            type="ArabyAds.Framework.EventBroker.EventBroker,ArabyAds.Framework"
+            lifestyle="Singleton">
+    </component>
+    <component id="EventBrokerProvider"
+               service="ArabyAds.Framework.EventBroker.Provider.IEventBrokerProvider,ArabyAds.Framework"
+               type="ArabyAds.Framework.EventBroker.Provider.DBEventBrokerProvider,ArabyAds.Framework"
+               lifestyle="Singleton">
+    </component>
+    <component id="MailSender"
+            service="ArabyAds.Framework.Utilities.EmailsSender.IMailSender,ArabyAds.Framework"
+           		type="ArabyAds.Framework.Utilities.EmailsSender.MailSender,ArabyAds.Framework"  lifestyle="Singleton" >
+    </component>
+    <!--<component id="EventBrokerHandler"
+        service="ArabyAds.Framework.DomainServices.EventBroker.IEventBrokerHandler,ArabyAds.Framework.DomainServices"
+          type="ArabyAds.AdFalcon.Services.Utility.EventBrokerHandler,ArabyAds.AdFalcon.Services"  lifestyle="transient" >
+    </component>-->
+    <component id="AppFabric"
+         service="ArabyAds.Framework.Caching.ICacheProviderFactory,ArabyAds.Framework"
+         type="ArabyAds.Framework.Caching.MemoryCaching.MemoryCacheProviderFactory,ArabyAds.Framework"
+         lifestyle="Singleton">
+
+    </component>
+    <component id="Redis"
+     service="ArabyAds.Framework.Caching.ICacheProviderFactory,ArabyAds.Framework"
+     type="ArabyAds.Framework.Caching.RedisCache.RedisCacheProviderFactory,ArabyAds.Framework"
+     lifestyle="Singleton">
+
+    </component>
+    <component id="EventStateRepo"
+			 service="ArabyAds.Framework.DistributedEventBroker.PubSub.Subscription.IStateRepository, ArabyAds.Framework.DistributedEventBroker.PubSub"
+			 type=" ArabyAds.Framework.DistributedEventBroker.PubSub.Subscription.RedisStateRepository, ArabyAds.Framework.DistributedEventBroker.PubSub"
+			 lifestyle="singleton">
+    </component>
+
+
+    <component id="MemoryCache"
+ service="ArabyAds.Framework.Caching.ICacheProviderFactory,ArabyAds.Framework"
+ type="ArabyAds.Framework.Caching.MemoryCaching.MemoryCacheProviderFactory,ArabyAds.Framework"
+ lifestyle="Singleton">
+
+    </component>
+
+    <!--
+    <component id="AdServerCachingService"
+            type="ArabyAds.AdFalcon.Server.Integration.Services.IEntityUpdatesBroadcasterService,ArabyAds.AdFalcon.Server.Integration.Services"
+            wcfEndpointConfiguration="AdServerCachingService">
+    </component>
+
+    <component id="UserOptService"
+        type="ArabyAds.AdFalcon.Server.Integration.Services.IUserOptService,ArabyAds.AdFalcon.Server.Integration.Services"
+        wcfEndpointConfiguration="UserOptService">
+    </component>
+
+    -->
+  
+    <component id="SFTPProvider"
+        service="ArabyAds.Framework.CDN.ICDNProvider,ArabyAds.Framework"
+        type="ArabyAds.Framework.CDN.SFtpProvider,ArabyAds.Framework"
+        lifestyle="Singleton">
+
+    </component>
+	  <component id="ObjectStorageProvider"
+	service="ArabyAds.Framework.CDN.ICDNProvider,ArabyAds.Framework"
+	type="ArabyAds.Framework.CDN.ObjectStorageProvider,ArabyAds.Framework"
+	lifestyle="Singleton">
+
+	  </component>
+  </components>
+</configuration>

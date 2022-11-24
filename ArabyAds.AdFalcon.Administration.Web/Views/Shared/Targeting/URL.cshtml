@@ -1,0 +1,184 @@
+﻿@model List<ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.URLTargetingView>
+
+
+    <div class="ad-filter-text go-left floating-left">
+        @Html.Raw(Html.GetResource("UrlTargetingDesc", "Campaign"))
+    </div>
+    <div class="go-left ">
+
+        <a class="primary-btn" href="javascript:void(0)" onclick="addToMVCGrid('UrlGrid')">@Html.GetResource("Add", "Keywords")</a>
+        <br />
+    </div>
+    <div>
+        <div class="ad-filter-data go-left floating-left" style="width: 50%;padding-top:20px">
+
+            @(Html.Telerik().Grid(Model).Name("UrlGrid").NoRecordsTemplate("&nbsp;").HtmlAttributes(new { style = "overflow:visible" })
+                                                  .DataKeys(keys => keys.Add(p => p.ID))
+                                                  .DataBinding(dataBinding =>
+                                                  {
+                                                      dataBinding.Ajax().Update("UrlTargetingActions", "Campaign", new { actionname = "update" });
+                                                      dataBinding.Ajax().Insert("UrlTargetingActions", "Campaign", new { actionname = "insert" });
+                                                      // dataBinding.Ajax().Delete("UrlTargetingActions", "Campaign", new { actionname = "delete" });
+                                                      dataBinding.Ajax().Select("UrlTargetingActions", "Campaign");
+                                                  })
+                                                  //.ToolBar(commands => commands.Position(GridToolBarPosition.Top).Insert().ButtonType(GridButtonType.Image))
+                                                  .EnableCustomBinding(true)
+                                                  .Columns(columns =>
+                                                  {
+                                                      columns.Bound(o => o.URL).EditorTemplateName("URL").Title(Html.GetResource("URL")).HtmlAttributes(new { style = "text-align:center" });
+                                                      columns.Template(@<text>
+                <div id='DeleteButton' style='display:block'><a class='t-button t-button-icon t-button-bare' onclick='deleteURLTargeting(this);'><span class='t-icon t-delete'></span></a></div>
+                                                    </text>)
+        .ClientTemplate("<div id='DeleteButton' style='display:block' ><a class='t-button t-button-icon t-button-bare' type='button' onclick='deleteURLTargeting(this);'><span class='t-icon t-delete'></span></button></div>").Width("35px");
+
+                                                      })
+                                                   .Sortable(sorting => sorting.Enabled(false))
+                                                   .Editable(editing => editing.Mode(GridEditMode.InCell).DisplayDeleteConfirmation(false))
+                                                   .Scrollable(scrolling => scrolling.Enabled(false))
+                                                                                                           .Footer(false).ClientEvents(events => { events.OnError("error_handler"); events.OnSave("save_handler"); events.OnLoad("databound_handler"); })
+            )
+            <script type="text/javascript">
+                var yesbtn = "@Html.GetResource("Yes", "Global")";
+                var nobtn = "@Html.GetResource("No", "Global")";
+                var ConfriamtionBoxTitle = "@Html.GetResource("Confirm")";
+                var close = "@Html.GetResource("Close","Commands")";
+                var urlResource = "@Html.GetResource("URL", "Global")";
+
+                var ConfirmationDeleteMassage = "@Html.GetResource("Delete", "Confirmation")";
+
+
+                function error_handler(e) {
+                    if (e.errors) {
+                        var message = "Errors:\n";
+                        $.each(e.errors, function (key, value) {
+                            if ('errors' in value) {
+                                $.each(value.errors, function () {
+                                    message += this + "\n";
+                                });
+                            }
+                        });
+                        // alert(message);
+                    }
+                }
+
+                function save_handler(e) {
+                    var url = e.values.URL;
+                    url = url.replace(/\s/g, '');
+                    e.values.URL = url;
+                    $(e.form).find("input").val(url);
+
+                    if (!/^(https?):\/\//i.test(url)) {
+                        url = 'http://' + url; // set both the value
+
+                    }
+                    if (!isMatchUrlExpression(url)) {
+                        e.preventDefault();
+                    }
+                    else {
+
+                        if (e.dataItem.URL == url.trim()) {
+                            return;
+                        }
+
+
+
+                        if (checkDublicatedURLTargeting(url)) {
+
+                            //  showErrorMessage(Duplicated, false);
+
+                            $("#GeneralDialogText").text(AlreadyAddedMsg + " URL:" + url);
+                            $("#resultGeneralDialog").dialog("open");
+
+                            e.preventDefault();
+
+                        }
+
+                        else {
+                            e.values.URL = url;
+                            $(e.form).find("input").val(url);
+                            // e.dataItem.URL = url;
+
+
+
+                            updateUrlInfo();
+                        }
+                    }
+                }
+
+
+                function checkDublicatedURLTargeting(keyword) {
+                    var grid = $("#UrlGrid").data("tGrid");
+
+                    if (grid == null)
+                        return false;
+
+                    for (var i = 0; i < grid.changeLog.inserted.length; i++)
+                        if (typeof (grid.changeLog.inserted[i]) != "undefined") {
+                            if (grid.changeLog.inserted[i].URL == keyword.trim()) {
+                                return true;
+                            }
+                        }
+
+                    array = $("#UrlGrid tbody tr");
+                    for (var i = 0; i < array.length; i++) {
+
+                        dataItem = grid.dataItem(array[i]);
+                        if (dataItem != undefined) {
+                            if (dataItem.URL == keyword.trim()) {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+
+                }
+                function deleteURLTargeting(elem) {
+                    jQuery('<div id = "URlDeleteConf" title="' + ConfriamtionBoxTitle + '"></div>').dialog({
+
+                        open: function (event, ui) {
+                            $(this).html(ConfirmationDeleteMassage.format(urlResource));
+                        },
+                        close: function () {
+                            $(this).remove();
+                        },
+                        resizable: false,
+                        draggable: false,
+                        showCloseButton: false,
+
+                        modal: true,
+                        buttons: [
+                        {
+                            text: yesbtn,
+                            click: function () {
+
+                                var grid = $("#UrlGrid").data("tGrid");
+                                var tr = $(elem).parents('tr');
+                                // delete the row
+                                grid.deleteRow(tr);
+                                updateUrlInfo();
+
+                                $(this).dialog("close");
+
+                            }
+                        },
+                        {
+                            text: nobtn,
+                            click: function () {
+                                $(this).dialog('close');
+                            }
+                        }
+
+                        ]
+                    });
+
+                }
+
+                function databound_handler() {
+                    updateUrlInfo(true);
+                }
+            </script>
+        </div>
+
+    </div>
+

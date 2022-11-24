@@ -1,0 +1,115 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.CreativeViewModel
+<div id="AdvanceSettingdivContainer">
+    <h2>
+        <div class="grid-title-container floating-left">
+            <span class="trimed-span">@Html.GetResource("ThirdpartyHeader", "Campaign")</span>
+        </div>
+       @* <div class="grid-cogwheel-container floating-right go-right">
+            <a name="iconImage" onclick="ShowAdvanceSetting()" id="adv" class="maximize" style="display: inline; margin-right: 5px; margin-top: 10px;"></a>
+        </div>
+           *@
+    </h2>
+    <div class="section-form-inner-container" id="AdvanceSettingdiv" style="display:none;">
+        <div class="section-form-inner-container info-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field"> @Html.GetResource("ScriptBannerCreative", "Creative")</span>
+                </div>
+                <div class="field-container">
+                    <textarea class="text-box valid" style="width:590px" cols="20" id="ScriptBannerCreative" name="ScriptBannerCreative" readonly="readonly" rows="10">@Html.Raw(ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ScriptBannerCreative)</textarea>
+
+                    <img name="iconImage" onclick="CopyScriptBannerCreative();" title="@Html.GetResource("Copy_1", "Commands")" class="copyicon" style="display: inline;">
+                    @*<input class="save-button" name="Create1" onclick="openFirstDialog();" type="button" value="First Dialog" style="width: 150px;">*@
+                </div>
+
+            </div>
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("EditScriptBannerCreative", "Creative")</span>
+                </div>
+                <div class="field-container">
+                    <textarea class="text-box valid" style="width:590px" cols="20" id="AdCreativeDto_WrapperContent" name="AdCreativeDto.WrapperContent" rows="10" onchange="checkThirdPartyTagScriptPractices()" onkeypress="checkThirdPartyTagScriptPractices()">@Html.Raw(Model.AdCreativeDto.WrapperContent)</textarea>
+                    @Html.Partial("MoreInfo", "ThirdPartyTagScriptDesc", new ViewDataDictionary { { "Class_Tail", "tail-report" }, { "Style2", "float:none;" } })
+                    <span class="validation-arrow field-validation-error errorURLClickTags" id="ThirdPartyTagScriptDesc-errorDiv" style="display:none;">
+                        <span class=""></span>
+                    </span>
+                    @*@Html.TextAreaFor(x => x.AdCreativeDto.WrapperContent)
+                        @*<input class="save-button" name="Create1" onclick="openFirstDialog();" type="button" value="First Dialog" style="width: 150px;">*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    function ShowAdvanceSetting() {
+
+        if (!$("#AdvanceSettingdiv").is(":visible")) {
+            $("#adv").attr("class", "minimize");
+
+
+            $("#AdvanceSettingdiv").show();
+
+        } else {
+            $("#adv").attr("class", "maximize");
+
+            $("#AdvanceSettingdiv").hide();
+
+        }
+
+    }
+    let practicesArray = ["{MRAID_INCLUDE_TAG}","{PLACEMENT_TYPE}","{ACTIONURL}","{FALLBACKURL}","{CLICK_URL}","{CLICKTRACKERURL}","{IMPTRACKERURL}","{IMPRESSION_URL}","{BANNERWIDTH}","{BANNERHEIGHT}","{BANNERURL}","{MRAID_DISABLE}","{HTTPPROT}"]
+    jQuery(document).ready(function () {
+           $("#AdvanceSettingdiv").show();
+    });
+
+    function checkThirdPartyTagScriptPractices() {
+        let textToCheck = $('#AdCreativeDto_WrapperContent').val();
+        let ThirdPartyTagScriptMsg = "@Html.GetResource("ThirdPartyTagScriptMsg", "Global")";
+        let textToDisplayMsg = "";
+        textToDisplayMsg = ThirdPartyTagScriptMsg;
+
+
+           textToCheck = textToCheck.trim();
+
+
+        if (textToCheck != "") {
+            for (var i = 0; i < practicesArray.length; i++) {
+                if (textToCheck.includes(practicesArray[i])) {
+                    $('#ThirdPartyTagScriptDesc-errorDiv').hide();
+                    continue;
+                }
+                else {
+                    textToDisplayMsg = textToDisplayMsg.replace("{{missed}}", practicesArray[i]);
+                    $('#ThirdPartyTagScriptDesc-errorDiv > span')[0].textContent = textToDisplayMsg;
+                    $('#ThirdPartyTagScriptDesc-errorDiv').show();
+
+                    break;
+                }
+            }
+        }
+        else {
+             $('#ThirdPartyTagScriptDesc-errorDiv').hide();
+
+        }
+
+    }
+
+    function CopyScriptBannerCreative() {
+
+        var copyTextarea = $('#ScriptBannerCreative');
+        //
+        copyTextarea.focus();
+        copyTextarea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+    }
+
+</script>

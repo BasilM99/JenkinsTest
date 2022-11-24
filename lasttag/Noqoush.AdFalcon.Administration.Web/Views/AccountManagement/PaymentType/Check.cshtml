@@ -1,0 +1,28 @@
+﻿@model Noqoush.AdFalcon.Administration.Web.Controllers.Model.Account.AddPaymentViewModel
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("BeneficiaryName", "AddPayment")</span>
+        </div>
+        <div class="field-container">
+            @Html.AdFalconEditorFor(p => p.PaymentDto.BeneficiaryName)
+            @Html.AdFalconValidationMessageFor(p => p.PaymentDto.BeneficiaryName)
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("CheckNo", "AddPayment")</span>
+        </div>
+        <div class="field-container">
+            @Html.AdFalconEditorFor(p => p.PaymentDto.CheckNo)
+            @Html.AdFalconValidationMessageFor(p => p.PaymentDto.CheckNo)
+        </div>
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field">@Html.GetResource("DueDate", "AddPayment")</span>
+        </div>
+        <div class="field-container">
+            @Html.AdFalconTextBoxFor(p => p.PaymentDto.DueDate, new { @readonly = "readonly" },Model != null && Model.PaymentDto != null && Model.PaymentDto.DueDate.HasValue ? Model.PaymentDto.DueDate.Value.ToString(Noqoush.AdFalcon.Web.Controllers.Utilities.Config.ShortDateFormat) : "")
+        </div>
+        @Html.AdFalconValidationMessageFor(p => p.PaymentDto.DueDate)
+    </div>

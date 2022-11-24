@@ -1,0 +1,71 @@
+﻿@model ArabyAds.AdFalcon.Administration.Web.Controllers.Model.Lookup.LookupViewModel
+@{
+    if (ViewContext.FormContext == null)
+    {
+        ViewContext.FormContext = new FormContext();
+    }
+}
+<script type="text/javascript" language="javascript">
+    var saveURL = '@Url.Action(Model.ActionName, new { id = Model.LookupType })';
+    var Confirmation = "@Html.GetResource("savedSuccessfully", "Global")";
+    // var datate = ;
+    var text = Confirmation.format("@Html.GetResource("PageDispalyName", "Global")");
+    function callSave(fomrid) {
+        
+        if (typeof (fomrid) == "undefined" || fomrid == "") {
+            fomrid = "form";
+        }
+        else {
+
+            fomrid = "#"+fomrid;
+        }
+        if ($(fomrid).last().validate().form() & (typeof (validateForm) == "undefined" || validateForm())) {
+
+            var data = $(fomrid).serialize();
+            
+            $.ajax({
+                type: 'POST',
+                url: saveURL,
+                cache: false,
+                data: data,
+                success: function (data) {
+                    
+
+                    if ((typeof (closeLookupDialog) != "undefined") && (closeLookupDialog != null) && (typeof (data.Result) == "undefined")) {
+
+                        closeLookupDialog();
+                        showSuccessfullyMessage(text, false);
+                        return;
+                    }
+                    if (data.Result) {
+
+                        closeLookupDialog();
+                        showSuccessfullyMessage(data.Message, false);
+                    } else {
+
+
+                        $("#generalMessage span").text(data.Message);
+                        $("#generalMessage").dialog("open");
+                    }
+
+                },
+                error: function (data) {
+                    $("#generalMessage span").text(data.responseText);
+                    $("#generalMessage").dialog("open");
+                }
+            });
+        }
+    }
+
+
+</script>
+<div class="section-form-inner-container">
+    @Html.HiddenFor(p => p.LookupType)
+    @Html.HiddenFor(p => p.LookupDto.ID)
+    @if (Model.ViewName != "Advertiser")
+    { @Html.EditorFor(p => p.LookupDto.Name, "LocalizedString")}
+    @if (Model != null && !string.IsNullOrWhiteSpace(Model.ViewName))
+    {
+        @await Html.PartialAsync(Model.ViewName)
+    }
+</div>

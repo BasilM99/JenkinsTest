@@ -1,0 +1,25 @@
+﻿@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeUnitDto
+<div class="data-row info-container last-container">
+    <div class="data-row data-container">
+        <div class="label-container">
+            <span class="field-title required-field reverse-link">@(Model.Name)</span>
+        </div>
+        <div class="field-container">
+            @Model.Content
+        </div>
+    </div>
+</div>
+@if (!string.IsNullOrEmpty(Model.UniqueId))
+{
+    <div class="data-row info-container last-container">
+        <div class="data-row data-container">
+
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("UniqueId", "Global") </span>
+            </div>
+            <div class="field-container">
+                <span class="slide-text margin-summary UniqueID-line-height">@Model.UniqueId</span>
+            </div>
+        </div>
+    </div>
+}

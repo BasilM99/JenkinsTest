@@ -1,0 +1,52 @@
+﻿@model  Noqoush.AdFalcon.Services.Interfaces.DTOs.Campaign.Creative.AdCreativeSummaryDto
+
+
+<div class="floating-left" style="width: 515px">
+    <div class="data-row info-container last-container">
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("AppURL")</span>
+            </div>
+            <div class="field-container">
+                <a class="side-text" href="@Model.ActionValue.Value" target="_tab">@Model.ActionValue.Value</a>
+            </div>
+        </div>
+    </div>
+@if (Model.TypeId == Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.TrackingAd)
+    {
+    <div class="data-row info-container last-container">
+        <div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("ClickTrackerUrl", "TrackingAd")</span>
+            </div>
+            <div class="label-container label-containerAd">
+                <a class="side-text" style="word-break: break-all;text-align:left" href="@Model.ClickTrackerUrl" target="_tab">@Model.ClickTrackerUrl</a>
+            </div>
+        </div>
+    </div>
+} 
+</div>
+@if (Model.TypeId == Noqoush.AdFalcon.Domain.Common.Model.Campaign.AdTypeIds.TrackingAd)
+{
+    <div class="floating-left" style="width:365px">
+        <div class="data-row info-container">
+            <div class="data-row data-container">
+                <div class="label-container">
+                    <span class="field-title required-field">@Html.GetResource("AppMarketingPartnerName", "TrackingAd")</span>
+                </div>
+                <div class="field-container">
+                    <span class="side-text margin-summary" >@Model.AppMarketingPartnerName</span>
+                </div>
+            </div>
+
+
+        </div>
+        </div>
+        
+}
+
+
+
+
+
+

@@ -1,0 +1,109 @@
+﻿@model ArabyAds.AdFalcon.Web.Controllers.Model.Campaign.CampaignBidConfigModel
+@using ArabyAds.AdFalcon.Web.Core.Helper;
+
+
+@Html.Hidden("CampaignId", Model.CampaignId)
+@Html.Hidden("UpdatedCampaignBidConfiges-Dialog", "")
+
+@Html.Hidden("DeletedCampaignBidConfigs-Dialog", "")
+@Html.Hidden("InserteCampaignBidConfigs-Dialog", "")
+
+
+
+<div id="gridDivAppSiteBidConfig" class="floating-left grid-containe" style="width: 100%;">
+    <div class="data-row">
+        <div class="go-left data-row">
+            @Html.GetResource("BidConfigsDescription", "Campaign")
+        </div>
+    </div>
+
+    <div class="data-row red-box" style="display:none; " id="divErrorMessagesForBidConfigsDialog">
+        <div class="data-row"><span class="msg-img"></span><span>@Html.GetResource("MinBidErrMsg")</span></div>
+    </div>
+    <div class="data-row " style="padding: 15px;">
+        @(Html.Kendo().Grid(Model.CampaignBidConfigList).Name("CampaignBidConfigs").NoRecords(p=>p.Template("&nbsp;")).HtmlAttributes(new { width = "800px" })
+        //.DataKeys(p => p.Add(o => o.ID))
+        .EnableCustomBinding(true)
+       // .Editable(ed => ed.Mode(GridEditMode.InCell).DisplayDeleteConfirmation(false))
+        //.DefaultDataItem(new ArabyAds.AdFalcon.Services.Interfaces.DTOs.Campaign.CampaignBidConfigDto()))
+
+        .Columns(columns =>
+        {
+            columns.Bound(o => o.CampaingName).HtmlAttributes(new { @class = "trimed-info2" }).Hidden(ViewBag.showAppSitePricingModel);
+            columns.Bound(o => o.AdGrouptName).HtmlAttributes(new { @class = "trimed-info2" });
+            columns.Bound(o => o.AdGroupPricingModel).Width("100px");
+            columns.Bound(o => o.AppsiteName).HtmlAttributes(new { @class = "trimed-info2" }).Title(Html.GetResource("AppSites", "CampaignBidConfig")).Hidden(!ViewBag.showAppSitePricingModel);
+
+
+            columns.Bound(o => o.ID).Hidden();
+            columns.Bound(o => o.AdGroupId).Hidden();
+            columns.Bound(o => o.Appsite.ID).Hidden();
+            columns.Bound(o => o.AccountId).Hidden();
+            columns.Bound(o => o.AppsitePricingModelId).Hidden();
+            columns.Bound(o => o.AppsitePricingModelString).Width("100px").Title(string.Format("{0} {1}", Html.GetResource("AppSites", "CampaignBidConfig"), Html.GetResource("CostModel", "Global"))).Hidden(!ViewBag.showAppSitePricingModel);
+            columns.Bound(o => o.MinBid).Title(Html.GetResource("MaxBidConfig", "BidConfig")).Width("70px").HtmlAttributes(new { id = "MinBid" });
+            columns.Bound(o => o.Bid).ClientTemplate("<input  maskType='decimal'  Id='Bid' onchange='CampaignBidConfigs_BidValue_Changed(this);'      onfocus='onBid_select(this);'     onkeypress = 'onbidpress(event,this)'     type ='text' value='#=Bid#' name='Bid' />" + "<span  class='field-validation-error' style='display: none;'><span>" + Html.GetResource("CurrencyMsg", "ResourceSet") + "</span></span>").Title(Html.GetResource("Bid", "Campaign"))
+            .HtmlAttributes(new { style = "width:50px!important;" });
+
+        }).Events(e => e.DataBound("CampaignBidConfigs_OnDataBound"))
+                                                         .DataSource(dataBinding =>
+                                                         {
+                                                             // dataBinding.Server().Select("GetCampaignBidConfigs", "AppSite", new { ajax = true });
+                                                             dataBinding.Ajax().Read("GetCampaignBidConfigs", "AppSite").Model(model =>
+                                                             {
+                                                                 model.Id(d => d.ID);
+
+                                                                 model.Field(m => m.AccountId).Editable(false);
+                                                                 model.Field(m => m.Appsite.Name).Editable(false);
+                                                                 model.Field(m => m.AdGroupId).Editable(false);
+                                                                 model.Field(m => m.AppsitePricingModelId).Editable(false);
+                                                                 model.Field(m => m.AppsitePricingModelString).Editable(false); ;
+                                                                 model.Field(m => m.MinBid).Editable(false);
+                                                                 model.Field(m => m.Bid).Editable(false);
+                                                                 // model.Field(m => m.AccountName).Editable(false);
+                                                                 // model.Field(m => m.Include).Editable(false);
+                                                                 // model.Field(m => m.SubPublisherMarketId).Editable(false);
+                                                             }).AutoSync(false);
+
+                                                         })
+                                                         .Scrollable(scrolling => scrolling.Enabled(false)).EnableCustomBinding(true))
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+        $("#CampaignBidConfigDialog").dialog({
+
+            resizable: false,
+            draggable:false,
+            //height: 500,
+            width: 900,
+            modal: true,
+            autoOpen: false,
+            title: '@Html.GetResource("CampaignBidConfig", "Titles")',
+
+        });
+        $("#CampaignBidConfigs .t-status .t-icon.t-refresh").attr("style", "display:none");
+
+    });
+
+    function CampaignBidConfigs_OnDataBound(sender, args) {
+
+        var grid = $("#CampaignBidConfigs").data("kendoGrid");
+        array = $("#CampaignBidConfigs tbody tr");
+        for (var i = 0; i < array.length; i++) {
+            dataItem = grid.dataItem(array[i]);
+            if (dataItem != undefined) {
+                if (dataItem.Bid != "") {
+                    $(array[i]).find("#Bid")[0].value = parseBidValue(dataItem.Bid);
+                }
+
+
+            }
+        }
+    }
+
+</script>

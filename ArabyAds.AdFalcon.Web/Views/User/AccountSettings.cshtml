@@ -1,0 +1,95 @@
+﻿@{
+    ViewBag.Title = Html.GetResource("AccountSettings", "Titles");
+}
+@using Noqoush.AdFalcon.Domain.Common.Model.Account.Discount
+@using Noqoush.AdFalcon.Web.Controllers.Utilities
+@model Noqoush.AdFalcon.Services.Interfaces.DTOs.Account.Discount.AccountSettingDto
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(p => p.AccountId)
+<h2>
+	@Html.GetResource("Billing", "Global")
+</h2>
+
+
+    <div class="section-form-container">
+		<div class="section-form-inner-container">
+		
+
+		
+			@if ((Noqoush.Framework.OperationContext.Current.UserInfo
+<Noqoush.AdFalcon.Common.UserInfo.AdFalconUserInfo>
+().AccountRole== (int)Noqoush.AdFalcon.Domain.Common.Model.Account.AccountRole.DSP))
+			{
+				<div class="data-row data-container">
+
+					<div class="label-container required-field">
+						<span class="field-title required-field ">@Html.GetResource("AgencyCommission", "Global")</span>
+
+					</div>
+					
+
+                    <div class="field-container">
+                        @*<div class="radio-button-container floating-left iea-rbtn-width-a">
+                            @Html.GetRadioButton("AgencyCommission", Html.GetResource("FixedCPM", "Global"), (int)Model.AgencyCommission == 1, "", onChange: "OnChangeAgencyCommissionChanged", value: "1", Id: "AgencyCommissionRadio")
+                        </div>
+                        <div class="radio-button-container floating-left iea-rbtn-width-a">
+                            @Html.GetRadioButton("AgencyCommission", Html.GetResource("NetCostMargin", "Global"), (int)Model.AgencyCommission == 2, "", onChange: "OnChangeAgencyCommissionChanged",  value: "2", Id: "AgencyCommissionRadio")
+                        </div>
+                        <div class="radio-button-container floating-left iea-rbtn-width-a">
+                            @Html.GetRadioButton("AgencyCommission", Html.GetResource("BillableCostMargin", "Global"), (int)Model.AgencyCommission == 3, "", onChange: "OnChangeAgencyCommissionChanged", value: "3", Id: "AgencyCommissionRadio")
+                        </div>
+                        <div class="radio-button-container floating-left">
+                            @Html.GetRadioButton("AgencyCommission", @Html.GetResource("GrossCostMargin", "Global"), (int)Model.AgencyCommission == 4, "", onChange: "OnChangeAgencyCommissionChanged", value: "4", Id: "AgencyCommissionRadio")
+                        </div>*@
+                        @{
+							var isunCPMSelected = (int)Model.AgencyCommission == 0 ? "selected" : "";
+							var isFixedCPMSelected = (int)Model.AgencyCommission == 1 ? "selected" : "";
+							var isNetCostMarginSelected = (int)Model.AgencyCommission == 2 ? "selected" : "";
+							var isBillableCostMarginSelected = (int)Model.AgencyCommission == 3? "selected" : "";
+							var isGrossCostMarginSelected = (int)Model.AgencyCommission == 4 ? "selected" : "";
+                        }
+                        <select id="selectAgencyCommission" name="AgencyCommission" onchange="OnChangeAgencyCommissionChanged()">
+                            <option value="0" @isunCPMSelected>@Html.GetResource("Select", "Global")</option>
+                            <option value="1" @isFixedCPMSelected>@Html.GetResource("FixedCPM", "Global")</option>
+                            <option value="2" @isNetCostMarginSelected>@Html.GetResource("NetCostMargin", "Global")</option>
+                            <option value="3" @isBillableCostMarginSelected>@Html.GetResource("BillableCostMargin", "Global")</option>
+                            <option value="4" @isGrossCostMarginSelected>@Html.GetResource("GrossCostMargin", "Global")</option>
+                        </select>
+
+                    </div>
+				</div>
+
+
+
+				<div class="data-row data-container" id="AgencyCommissionValueSec" style="display:@((int)Model.AgencyCommission!=0 ? "block" : "none")">
+					<div class="label-container required-field">
+						<span class="field-title ">@Html.GetResource("AgencyCommissionValue", "Global")</span>
+					</div>
+					<div class="field-container">
+						<span class="small-big-field">
+							@Html.AdFalconTextBox("AgencyCommissionValue", Model.AgencyCommissionValue.ToString("F2"), new { maskType = "decimal", @onkeypress = "OnKeyPressCommissionValue(event,this)", @onchange = "OnChangeCommissionValue(this)" })
+						</span><span class="side-text" id="textForAgencyCommissionValue">@((int)Model.AgencyCommission == 1 ?'$':'%')</span>
+						<span id="AgencyCommissionValueErorMassege" class="validation-arrow field-validation-error errorEnteredFees"
+							  style="display: none;margin-left:15px;"><span class="">@Html.GetResource("RequiredMessage", "ResourceSet")</span></span>
+
+
+						</div>
+				</div>
+			}
+		
+		</div>
+        <br />
+    </div>
+    <div class="section-footer">
+    </div>
+    <div class="data-row button-container">
+        <input type="submit" name="Settings" value='@Html.GetResource("Save", "Commands")' class="primary-btn" />
+    </div>
+}
+<script>
+    function changeSelect() {
+        var a = $("#selectAnas").val();
+        alert(a);
+    }
+</script>

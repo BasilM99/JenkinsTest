@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+<PropertyGroup>
+  <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+<ItemGroup>
+  <ProjectReference Include="..\ArabyAds.AdFalcon.Common.Web\ArabyAds.AdFalcon.Common.Web.csproj" />
+  <ProjectReference Include="..\ArabyAds.AdFalcon.Common\ArabyAds.AdFalcon.Common.csproj" />
+  <ProjectReference Include="..\ArabyAds.AdFalcon.Domain.Common\ArabyAds.AdFalcon.Domain.Common.csproj" />
+  <ProjectReference Include="..\ArabyAds.AdFalcon.Domain.Exceptions\ArabyAds.AdFalcon.Exceptions.csproj" />
+  <ProjectReference Include="..\ArabyAds.AdFalcon.Services.Interfaces\ArabyAds.AdFalcon.Services.Interfaces.csproj" />
+  <ProjectReference Include="..\ArabyAds.AdFalcon.Web.Controllers.Core\ArabyAds.AdFalcon.Web.Controllers.Core.csproj" />
+</ItemGroup>
+	<ItemGroup>  <Compile Remove="Controllers\HouseAdController.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="ArabyAds.Framework" Version="1.0.0" />
+	  <PackageReference Include="ArabyAds.Framework.Grpc" Version="1.0.0" />
+	  <PackageReference Include="ArabyAds.Framework.Web" Version="1.0.0" />
+	</ItemGroup>
+</Project>

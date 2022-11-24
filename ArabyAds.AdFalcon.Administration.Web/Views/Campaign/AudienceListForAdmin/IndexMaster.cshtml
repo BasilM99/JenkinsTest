@@ -1,0 +1,995 @@
+﻿@{
+    Layout = "~/Views/Shared/MasterLayouts/Inner.cshtml";
+}
+<script language="javascript">
+
+	  GlobalAdvertiserId = '@Model.AdvertiserId';
+	GlobalAdvertiserAccountId = '@Model.AdvertiserAccountId';
+    var result = false;
+    var ischecked = false;
+    var yesbtn = "@Html.GetResource("Yes", "Global")";
+    var nobtn = "@Html.GetResource("No", "Global")";
+    var ConfriamtionBoxTitle = "@Html.GetResource("Confirm")";
+    var close = "@Html.GetResource("Close","Commands")";
+	var rename = "@Html.GetResource("Rename", "Commands")";
+
+    var AdvertiserRequired = "@Html.GetResource("AdvertiserRequired", "Advertiser")";
+    var NameRequired = "@Html.GetResource("RequiredName")";
+    var SelectCountry = "@Html.GetResource("SelectCountry")";
+    var enterLookalikePercentage = "@Html.GetResource("enterLookalikePercentage")";
+    var enterSeedAudienceListCode = "@Html.GetResource("enterSeedAudienceListCode")";
+	var AudienceListIdSelected = '0';
+
+	var CSVUploadURL = '@Url.Action("SaveForCSV", "Document", new { AudienceListId = 0,DeviceTypeId = 0 })';
+
+     var ContentListItemsRequired = "@Html.GetResource("ContentMasterListsValidation")";
+    var ContentListItemsOutOfRange = "@Html.GetResource("ContentListItemsOutOfRange")";
+    var InvalidContent = "@Html.GetResource("InvalidContentOfMasterItems")";
+
+    var selectedName = "";
+    var selectednumber = 0;
+    var text;
+    var direction = "left";
+
+
+     function FixCountriesLimit() {
+        Select2LimitSelection("CountriesList", 1);
+
+    }
+
+
+
+
+    function FixCountriesTree() {
+
+        var datas = $("#CountriesList").select2("data");
+        var indexsesDeleted = [];
+        var indexsesParent = [];
+        var ParentFiltered = [];
+        var newValues = [];
+
+        var IdToBeRemoved = [];
+        if (datas) {
+            var values = $("#CountriesList").val();
+            for (var i = 0; i < datas.length; i++) {
+                if (datas[i].parentId > 0) {
+                    var indextoBeRemoved = values.indexOf(datas[i].parentId);
+                    if (indextoBeRemoved >= 0) {
+                        if (!(indexsesParent.indexOf(datas[i].parentId) >= 0))
+                            indexsesParent.push(datas[i].parentId);
+                    }
+
+
+                }
+            }
+
+            for (var i = 0; i < datas.length; i++) {
+
+                var indextoBeRemoved = Countries_ValuesBefore.indexOf(datas[i].parentId);
+                if (indextoBeRemoved >= 0) {
+                    if (!(ParentFiltered.indexOf(datas[i].parentId) >= 0))
+                        ParentFiltered.push(datas[i].parentId);
+                }
+
+
+
+            }
+
+            for (var i = 0; i < ParentFiltered.length; i++) {
+                var indextoBeRemoved = values.indexOf(ParentFiltered[i]);
+                if (indextoBeRemoved >= 0) {
+                    if (!(indexsesDeleted.indexOf(indextoBeRemoved) >= 0))
+                        indexsesDeleted.push(indextoBeRemoved);
+                    IdToBeRemoved.push(values[indextoBeRemoved]);
+                }
+
+            }
+
+            for (var i = 0; i < datas.length; i++) {
+                if (datas[i].parentId > 0 && indexsesParent.indexOf(datas[i].parentId) >= 0 && !(IdToBeRemoved.indexOf(datas[i].parentId) >= 0)) {
+
+                    var indextoBeRemoved = values.indexOf(datas[i].id);
+                    if (indextoBeRemoved >= 0) {
+                        if (!(indexsesDeleted.indexOf(indextoBeRemoved) >= 0))
+                            indexsesDeleted.push(indextoBeRemoved);
+
+                        IdToBeRemoved.push(values[indextoBeRemoved]);
+                    }
+                }
+
+            }
+            if (indexsesDeleted) {
+                for (var i = 0; i < values.length; i++) {
+                    var indextoBeRemoved = indexsesDeleted.indexOf(i);
+                    if (!(indextoBeRemoved >= 0)) {
+                        newValues.push(values[i]);
+                    }
+
+                }
+                $("#CountriesList").val(newValues).change();
+
+            }
+
+        }
+    }
+
+
+
+
+    function CollectData() {
+        var obj = new Object();
+        obj.Operators = $("#OperatorsList").val() != null ? $("#OperatorsList").val().toString() : "";
+        obj.Countries = $("#CountriesList").val() != null ? $("#CountriesList").val().toString() :"";
+        obj.AdSizes = $("#PMPTargetingSaveDto_AdSizes").val()!=null ? $("#PMPTargetingSaveDto_AdSizes").val().toString() : "";
+        obj.Platforms = $("#PlatformsList").val() != null ? $("#PlatformsList").val().toString():"";
+        obj.AppSites = $("#AppSitesList").val() != null ? $("#AppSitesList").val().toString():"";
+        obj.AgeGroup= $("#AgeGroupId").val();
+        obj.DeviceTypeId = getCheckRadioValue($("input[name='DeviceTypes']"));
+		obj.GenderType = getCheckRadioValue($("input[name='Gender']"));
+		obj.EnvironmentType = getCheckRadioValue($("input[name='EnvironmentType']"));
+        obj.languages = $("#LanguagesList").val()!=null ? $("#LanguagesList").val().toString():"";
+        obj.AdFormats = AdFormats.join();
+        obj.Type = GetType();
+        obj.IsRun = isRun;
+        return JSON.stringify(obj);
+
+    }
+
+
+
+
+
+    jQuery(document).ready(function () {
+
+        jQuery('input[data-date="true"]')
+            .daterangepicker({
+                dateFormat: '@ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.ClientShortDateFormat'
+                , onChange: generateCampaignGrid(),
+            });
+
+        SetSelectedTap("ListMenuAdvertiser");
+
+		$("#addAdvertiserAccountEventDialog").dialog({
+			autoOpen: false,
+            width: 655,
+            height: 485,
+			modal: true,
+			resizable: false,
+			draggable: false,
+			open: function(){
+				clearErrorMessage("party-divErrorMessages");
+				countcallAdv = 0;
+			},
+			//position: { my: "center top", at: "center top"},
+            buttons: [{
+
+                text: '@Html.GetResource("Save", "Commands")',
+                "class": 'primary-btn',
+
+                click: function () {
+                    SaveAdvertiser();
+                }
+            }
+            ]
+		});
+        $("#uploaderAdvertiserAudienceListEventDialog").dialog({
+            autoOpen: false,
+            width: 350,
+            height: 300,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            open: function(){
+                clearErrorMessage("party-divErrorMessages");
+                countcallAdv = 0;
+                Radio_uncheck('AppTypeAnd');
+                Radio_uncheck('AppTypeIOS');
+
+                Radio_check('AppTypeAnd');
+            }
+        });
+
+    });
+
+
+    function checked() {
+		$('.grid-container input').each(function () {
+
+            if ($(this).is(':checked')) {
+
+                var name = $(this).eq(0).parent().parent().find(".grid-title-container.floating-left").children().text().trim();
+
+                if (name.length > 30)
+                    name = name.substring(0, 30) + "..";
+                ischecked = true;
+                @{
+                    if (ArabyAds.AdFalcon.Web.Controllers.Utilities.Config.CurrentLanguage=="ar")
+                    {
+
+                        <text>
+
+                selectedName += "<span style='float:" + direction + ";'>" + name + "-</span><br>";
+
+                </text>
+
+                    }else
+                    {
+                        <text>
+                selectedName += "<span style='float:" + direction + ";'>" + "-" + name + "</span><br>";
+                </text>
+                    }
+
+                }
+            }
+        });
+        return ischecked;
+    }
+
+    function popup(sender, SelectConfirmation, Confirmation) {
+
+        selectedName = "";
+        selectednumber = 0;
+        if (checked()) {
+            if (!result) {
+
+
+                jQuery('<div id ="ConfirmationDialog" style="min-width: 200px;" title="' + ConfriamtionBoxTitle + '"></div>').dialog({
+
+                    open: function () {
+                        text = Confirmation.format($("#MainHeader span").html().trim()) + " <br><br> <div style='float: " + direction + ";'>" + selectedName + "</div>";
+                        $(this).html(text);
+
+                    },
+                    close: function () {
+                        $(this).remove();
+                    },
+                    resizable: false,
+                    draggable: false,
+                    width: "450px",
+                    showCloseButton: false,
+                    buttons: [
+                 {
+                     text: yesbtn,
+                     click: function () {
+                         $(this).dialog("close");
+                         result = true;
+                         $(sender).click();
+                     }
+                 },
+                 {
+                     text: nobtn,
+                     click: function () {
+                         $(this).dialog('close');
+                         result = false;
+                     }
+                 }
+                    ],
+                    modal: true,
+
+                });
+
+
+
+            }
+        } else {
+            jQuery('<div id = "NoCampaignsareSelected"></div>').dialog({
+
+                open: function (event, ui) {
+                    $(this).html(SelectConfirmation);
+                },
+                close: function () {
+                    result = false;
+
+                    $(this).remove();
+                },
+                resizable: false,
+                draggable: false,
+                modal: true,
+            });
+
+        }
+        ischecked = false;
+        return result;
+    }
+
+
+    var advertiseraccId = '@(Html.ViewContext.RouteData.Values["Id"]!=null&& Html.ViewContext.RouteData.Values["Id"].ToString()!="" ?Html.ViewContext.RouteData.Values["Id"]:0)';
+
+    var gridItemId = 0;
+    var ok_text = '@Html.GetResource("Ok", "Commands")';
+    var service_url = null;
+	var service_callback = null;
+		var EditMasterAppSiteItem = "@Html.GetResource("EditAudienceList", "Global")";
+
+    var UploadDevices = "@Html.GetResource("UploadDevices", "AudienceList")";
+	var AddNewMasterAppSiteItem = "@Html.GetResource("AddNewAudienceList", "Global")";
+      function callService(item, callback) {
+
+        gridToolTip.hide();
+        $('[name="valueRequiredErrorMsg"]').hide();
+        $('[name="MaxValueErrorMsg"]').hide();
+
+        $('[name="clone_name"]').val(jQuery(item).attr("item_extra_info"))
+        service_url = jQuery(item).attr("href2");
+        service_callback = callback;
+		if (jQuery(item).attr("type") == '@ArabyAds.AdFalcon.Web.Controllers.Model.AjaxType.rename') {
+
+			EditAdvertiser(jQuery(item).attr("item_extra_info"), jQuery(item).attr("valitem"), jQuery(item).attr("item_extra_info3") , jQuery(item).attr("item_extra_info4") ,  jQuery(item).attr("item_extra_info5"));
+			return;
+        }
+        else if (jQuery(item).attr("type") == '@ArabyAds.AdFalcon.Web.Controllers.Model.AjaxType.clone') {
+            //EditTrackingPixelTags(jQuery(item).attr("item_extra_info"));
+
+		 AudienceListIdSelected=	jQuery(item).attr("valitem");
+			AudienceListUploader(jQuery(item).attr("item_extra_info"), jQuery(item).attr("valitem"));
+            return;
+        } else {
+            $('#ui-dialog-title-new-name-dialog-form').text('@Html.GetResource("Clone", "Commands")');
+            $('#ui-dialog-title-dialog-form').text('@Html.GetResource("Clone", "Commands")');
+            $('#new-name-dialog-form').dialog('option', 'title', '@Html.GetResource("Clone", "Commands")');
+
+        }
+       $('#new-name-dialog-form').dialog('open');
+    }
+    function old_callService(item, callback) {
+        gridToolTip.hide();
+        var url = jQuery(item).attr("href2");
+
+    }
+    function localInitilize() {
+
+        jQuery("#dialog-form").dialog({
+            autoOpen: false,
+            // height: 150,
+            width: 400,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            close: function () {
+            }
+        });
+
+
+        jQuery("#new-name-dialog-form").dialog({
+            autoOpen: false,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            buttons:
+                   [{
+
+                       text: '@Html.GetResource("Save")',
+                       click: function () {
+                           var new_name = $('[name="clone_name"]').val();
+                           if (!hasValue(new_name)) {
+                               $('[name="valueRequiredErrorMsg"]').show();
+                               return;
+                           }
+                           else {
+                               if (new_name.length > 255) {
+                                   $('[name="MaxValueErrorMsg"]').show();
+                                   return;
+                               }
+                           }
+                           var url = service_url + '?name=' + encodeURIComponent(new_name);
+                           if (service_url.indexOf('?') > -1) {
+                               url = service_url + '&name=' + encodeURIComponent(new_name);
+                           }
+
+                           jQuery.ajax(
+                                       {
+                                           dataType: "json",
+                                           contentType: 'application/json; charset=utf-8',
+                                           type: "POST",
+                                           //data: prams,
+                                           url: url,
+                                           success: function (result) {
+                                               jQuery.globalEval(callback);
+                                               jQuery('#dialogText').text(error.responseText);
+                                               jQuery('#dialog-form').dialog('open');
+                                           },
+                                           error: function (error) {
+                                               if (error.status == "200") {
+                                                   jQuery.globalEval(service_callback);
+                                               }
+                                               jQuery('#dialogText').text(error.responseText);
+                                               jQuery('#dialog-form').dialog('open');
+                                           }
+                                       });
+                           jQuery(this).dialog("close");
+                       },
+                       "class": 'primary-btn',
+
+                   }]
+
+        });
+    };
+    function refreshCampaignGrid() {
+        RefrashGrid('Grid');
+    }
+    function generateCampaignGrid() {
+        var grid = $("#Grid").data("tGrid");
+
+        if (typeof (grid) != "undefined") {
+            grid.rebind();
+
+        }
+    };
+    function AccountAdvertisersGridDataBinding(args) {
+
+        args.data = $.extend(args.data,
+            {
+                FromDate: $('#FromDate').val(),
+                ToDate: $('#ToDate').val(),
+				Name: $('#Name').val(),
+				showArchived: typeof ($("#showArchived").attr("checked")) != "undefined" && $("#showArchived").attr("checked") == "checked"
+            });
+
+    };
+    function AccountAdvertisersGridDataBound(e) {
+
+        var grid = $("#Grid").data("tGrid");
+        //if not first page and the no data then try load first page
+        if ((grid.data.length == 0) && (grid.currentPage > 1)) {
+            e.preventDefault();
+            grid.pageTo(1);
+        }
+
+
+
+    };
+
+    function showfilter() {
+
+        if ($("#advfilterCamp").hasClass('maximize')) {
+
+            $("#advfilterCamp").attr("class", "minimize AdvanceFilterIcon");
+        }
+        else {
+
+            $("#advfilterCamp").attr("class", "maximize AdvanceFilterIcon");
+		}
+
+    }
+    var GetMasterAppSiteItemUrl = '@Url.Action("GetAudienceList", "Campaign")';
+
+        var GetCountryByIdUrl = '@Url.Action("GetCountryById", "Country")';
+
+
+    
+    function AddAdvertiser() {
+
+		$("#addAdvertiserAccountEventDialog").dialog("open");
+
+		$('#addAdvertiserAccountEventDialog').dialog('option', 'title', AddNewMasterAppSiteItem);
+        clearDialog("addAdvertiserAccountEventDialog");
+
+              $("#CountriesList").trigger({
+					type: 'select2:select',
+					params: {
+						data: []
+					}
+              });
+        $("#CountriesList").select2("val", []);
+
+       // $("#CountriesList").empty().trigger('change');
+
+          $("#CountriesList").val("").trigger("change.select2");
+		//$('input[name=TypeAddId]').val('1');
+		//Radio_uncheck("BlockListTypeAddId");
+		//Radio_uncheck("WhiteListTypeAddId");
+		//Radio_check("WhiteListTypeAddId");
+		//var input = document.getElementById("inputfile");
+		//input.value = '';
+		//if (!/safari/i.test(navigator.userAgent)) {
+		//	input.type = '';
+		//	input.type = 'file';
+		//}
+    }
+	function EditAdvertiser(name, id,seed,pop,percen) {
+
+
+		clearDialog("addAdvertiserAccountEventDialog");
+
+
+		$("#ListId").val(id);
+		$("#CustomName").val(name);
+        	        $("#CountriesList").trigger({
+					type: 'select2:select',
+					params: {
+						data: []
+					}
+				});
+
+
+
+         $("#CountriesList").select2("val", []);
+
+        //$("#CountriesList").empty().trigger('change');
+        $("#CountriesList").val("").trigger("change.select2");
+
+		//Radio_uncheck("BlockListTypeAddId");
+		//Radio_uncheck("WhiteListTypeAddId");
+		//Radio_check("WhiteListTypeAddId");
+		//var input = document.getElementById("inputfile");
+		//input.value = '';
+		//if (!/safari/i.test(navigator.userAgent)) {
+		//	input.type = '';
+		//	input.type = 'file';
+		//}
+		$.ajax({
+			type: 'GET',
+			url: GetMasterAppSiteItemUrl + "?Id=" + $("#ListId").val(),
+			cache: false,
+			success: function (data) {
+
+				//if (data.Type == "1" || data.Type == 1) {
+				//	Radio_uncheck("BlockListTypeAddId");
+				//	Radio_check("WhiteListTypeAddId");
+
+				//}
+				//else {
+				//	Radio_uncheck("WhiteListTypeAddId");
+				//	Radio_check("BlockListTypeAddId");
+
+
+				//}
+
+                        $("#LookalikePercentage").val(data.LookalikePercentage);
+                $("#SeedAudienceListCode").val(data.SeedAudienceListCode);
+
+
+
+
+                       	var arrpush = [];
+        if (typeof (data.PopulationCountryFilter) != "undefined"  &&  data.PopulationCountryFilter &&  data.PopulationCountryFilter.length>0) {
+            $.each(data.PopulationCountryFilter.split(","), function (i, e) {
+                if (e != "Not Set" && e != "" && e != null && e != undefined) {
+                    //if (!/[0-9]+$/.test(e)) {
+                    //    //var newList = $.merge($(nameoflist).select2('data'), [{
+                    //    //    id: e,
+                    //    //    tag: e
+                    //    //}]);
+                    //    //$(nameoflist).select2('data', newList);
+                    //    //$(nameoflist).append('<option value="' + e + '">' + e + '</option>');
+
+                    //    $(nameoflist).select2().val(e).trigger("change");
+                    //}
+                    //else {
+                    //    $(nameoflist).select2().val(e).trigger("change");
+                    //}
+
+                    arrpush.push(e);
+                    //$(nameoflist + " option[value='" + e + "']").prop("selected", true);
+
+                }
+            });
+
+
+
+
+		
+			var arrResult = [];
+
+
+			$.ajax({
+				type: 'GET',
+				url: GetCountryByIdUrl + "?Ids="+data.PopulationCountryFilter,
+            }).then(function (data) {
+                debugger
+				// create the option and append to Select2
+				for (var i = 0; i < data.length;i++) {
+					var option = new Option(data[i].Name.Value, data[i].ID, true, true);
+					var resultData = {
+						text: data[i].Name.Value,
+						id: data[i].ID
+					}
+					        $("#CountriesList").append(option).trigger('change');
+					arrResult.push(resultData);
+					
+				}
+				// manually trigger the `select2:select` event
+                //$("#CountriesList").val(arrResult).trigger("change.select2");
+				        $("#CountriesList").trigger({
+					type: 'select2:select',
+					params: {
+						data: arrResult
+					}
+				});
+			});
+		}
+        
+				$("#ContentListItems").val(data.Description);
+
+				$("#addAdvertiserAccountEventDialog").dialog("open");
+				$('#addAdvertiserAccountEventDialog').dialog('option', 'title', EditMasterAppSiteItem);
+			},
+			error: function (data) {
+				//alert("Somthing went worng please contact the admin");
+				showErrorMessage(data.Message, true, "party-divErrorMessages");
+				countcallAdv = 0;
+			}
+		})
+
+	}
+
+
+    function AdvertisersChanged(event, item) {
+
+
+        if ((typeof (item) != "undefined") && (item != null)) {
+
+            $('[name="AdvertiserId"]').val(item.ID);
+        }
+        else {
+            $('[name="AdvertiserId"]').val('');
+        }
+        clearErrorMessage("party-divErrorMessages");
+
+        $('input[id="CustomName"]').val($('input[id="Advertisers_Name"]').val());
+    }
+    var SaveAdvertiserUrl = '@Url.Action("SaveAudienceListForAdmin", "Campaign")';
+    var countcallAdv = 0;
+
+
+    function SaveAdvertiser() {
+        //debugger;
+		if (countcallAdv > 0) {
+			return;
+
+		}
+		else {
+
+
+			countcallAdv++;
+		}
+
+        //debugger;
+        //if ($('[name="AdvertiserId"]').val() != "") {
+        let errMsg = validation();
+        if (errMsg == "") {
+
+            var value = $('[name="CustomName"]').val().trim().toString().replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/'/g, "&#39;").replace(/"/g, "&#34;");
+
+               // if ($('#ContentListItems').val().trim() != "") {
+					{
+						 {
+							var Type;
+
+							Spinner = getSpinnerType("addAdvertiserAccountEventDialog");
+                            Spinner.showSpinner();
+
+							params = { en: value, Id: $('input[id="ListId"]').val(), AdvertiserId: advertiseraccId, Description: $('#ContentListItems').val() , PopulationCountryFilter: $("#CountriesList").val() != null ? $("#CountriesList").val().toString() :"" , LookalikePercentage: $('#LookalikePercentage').val(), SeedAudienceListCode: $('#SeedAudienceListCode').val() };
+                            params = JSON.stringify(params);
+
+                            $.ajax({
+                                type: 'POST',
+                                url: SaveAdvertiserUrl,
+
+
+                                contentType: 'application/json; charset=utf-8',
+                                dataType: 'json',
+                                data: params,
+                                cache: false,
+                                success: function (data) {
+                                    Spinner.hideSpinner();
+                                    //debugger;
+                                    if (data.status == "success") {
+
+                                        //refreshCampaignGrid();
+
+                                        $("#addAdvertiserAccountEventDialog").dialog("close");
+                                        //setTimeout(function () {
+                                        //    location.reload();
+                                        //}, 125);
+										if ($('input[id="ListId"]').val().length >= 1)
+											refreshCampaignGrid();
+										else
+											generateCampaignGrid();
+
+                                    } else if (data.status == "businessException") {
+                                        showErrorMessage(data.Message, true, "party-divErrorMessages");
+
+                                    } else {
+                                        showErrorMessage(data.Message, true, "party-divErrorMessages");
+
+                                    }
+                                    countcallAdv = 0;
+                                },
+                                error: function (data) {
+                                    //alert("Somthing went worng please contact the admin");
+									Spinner.hideSpinner();
+                                    showErrorMessage(data.Message, true, "party-divErrorMessages");
+                                    countcallAdv = 0;
+                                }
+                            });
+                        }
+
+                    }
+
+                //}
+                //else {
+                //    showErrorMessage(ContentListItemsRequired, true, "party-divErrorMessages");
+                //    countcallAdv = 0;
+                //}
+            } else {
+                showErrorMessage(errMsg, true, "party-divErrorMessages");
+                countcallAdv = 0;
+            }
+		//}
+
+		//else {
+
+
+		//	showErrorMessage(AdvertiserRequired, true, "party-divErrorMessages");
+		//	countcallAdv = 0;
+		//}
+
+    }
+
+    function validation() {
+        let name = $('[name="CustomName"]').val().trim();
+        let PopulationCountry = $('[name="CountriesList"]').val();
+        let LookalikePercentage = $('[name="LookalikePercentage"]').val().trim();
+        let SeedAudienceListCode = $('[name="SeedAudienceListCode"]').val().trim();
+
+
+        let errMessage = "";
+        if ( name == "") {
+            errMessage = NameRequired;
+        }
+
+        if (PopulationCountry == ""){
+            errMessage += " <br> "+SelectCountry;
+        }
+
+        if (LookalikePercentage == ""){
+            errMessage += " <br> "+enterLookalikePercentage;
+        }
+
+        if (SeedAudienceListCode == ""){
+            errMessage += " <br> "+enterSeedAudienceListCode;
+        }
+
+        return errMessage;
+    }
+
+    function AudienceListUploader(name , val) {
+
+        $("#uploaderAdvertiserAudienceListEventDialog").dialog("open");
+
+
+		Radio_uncheck("AppTypeIOS");
+		Radio_check("AppTypeAnd");
+		//+ " For List:" + name
+		$('#uploaderAdvertiserAudienceListEventDialog').dialog('option', 'title', UploadDevices );
+
+		$("#AudienceListName").val(name);
+        $('#warningMessage').text('*@Html.GetResource("AudienceListuploaderwarning", "AudienceList")');
+        $('#warningMessage').addClass("text-danger");
+
+    }
+    function checkInputValue(elem) {
+        elem = $(elem);
+        let currentVal = elem.val();
+        if (parseInt(currentVal) <= 100)
+            elem.val(currentVal);
+        else 
+            elem.val(100);
+    }
+
+
+
+</script>
+@model ArabyAds.AdFalcon.Web.Controllers.Model.Advertiser.AdvertiserAccountListViewModelBase
+@using (Html.BeginForm())
+{
+
+    @RenderSection("subheader")
+    <div id="dialog-form" title="@Html.GetResource("Clone", "Commands")" style="display:none;">
+        <span id="dialogText"></span>
+    </div>
+
+    @*<div style="display:none;" id="new-name-dialog-form" class="small-dialog" title="@Html.GetResource("Clone", "Commands")">
+            <table>
+                <tr>
+                    <td>
+                        <span>@Html.GetResource("Name", "Global")</span>
+                    </td>
+                    <td>
+                        @Html.AdFalconTextBox("clone_name", "")
+                    </td>
+                    <td>
+                        <span name="valueRequiredErrorMsg" class="validation-arrow field-validation-error"
+                              style="display: none;">
+                            <span class="">@(string.Format(Html.GetResource("RequiredMessage", "ResourceSet"), 1, 100))</span>
+                        </span>
+                        <span name="MaxValueErrorMsg" class="validation-arrow field-validation-error"
+                              style="display: none;">
+                            <span class="">@Html.GetResource("GroupNamLengthMsg", "Msgs")</span>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </div>*@
+    <br />
+    <div class="data-row section-container">
+        <div class="data-row">
+            <div class="col-sm-5" style="padding: 0px;">
+
+                @if (Model.TopActions != null)
+                {
+                    Html.RenderPartial("PartialViews/Actions", Model.TopActions);
+                }
+            </div>
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-4 col-sm-push-3">
+
+                <table class="special-content">
+                    <tr>
+                        <td>
+                            <span class="go-bold">@Html.GetResource("From", "Global")</span>
+                        </td>
+                        <td style="width: 110px;">
+                            <input type="text" readonly="readonly" data-date="true" id="FromDate" name="FromDate"
+                                   class="text-box range-date-cntl" />
+                        </td>
+                        <td>
+                            <span class="go-bold">@Html.GetResource("To", "Global")</span>
+                        </td>
+                        <td style="width: 110px;">
+                            <input type="text" readonly="readonly" data-date="true" id="ToDate" name='ToDate'
+                                   class="text-box range-date-cntl left-range-cntrl" onchange="generateCampaignGrid()" />
+                        </td>
+                        <td>
+
+
+                            <div class="field-container dropdown-toggle" data-toggle="collapse" data-target="#CampFilterCollapse" aria-expanded="false" onclick="showfilter()">
+                                &nbsp;&nbsp;<a href="javaScript:void(0);" class="maximize AdvanceFilterIcon" onclick="" style="margin-top:0px" id="advfilterCamp"></a>
+
+                            </div>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+
+
+        <div class="data-row" style="overflow:visible">
+            <div class="col-sm-7 col-sm-push-3 customDealsFilterShiftRight floating-right" style="padding: 0px;">
+                @Html.Partial("AudienceList/AudienceListFilter")
+            </div>
+        </div>
+
+        <div class="grid-container">
+            @RenderSection("Grid2")
+        </div>
+        @if (Model.BelowAction != null)
+        {
+            Html.RenderPartial("PartialViews/Actions", Model.BelowAction);
+        }
+    </div>
+
+    @*<div id="addAdvertiserAccountEventDialog" class="adfalcon-dialog" title="@Html.GetResource("AddNewAdvertiser", "Advertiser")" style="display:none;overflow:visible">*@
+
+<div id="addAdvertiserAccountEventDialog" class="adfalcon-dialog" title="@Html.GetResource("AddNewAudienceList", "Global")" style="display:none;overflow:visible">
+    <div class="data-row red-box" style="display:none" id="party-divErrorMessages">
+        @{
+
+            if (ViewBag.ErrorMessages != null)
+            {
+                foreach (var item in ViewBag.ErrorMessages)
+                {
+                    <div class="data-row">
+                        <span class="msg-img"></span><span>@Html.Raw(item)</span>
+                    </div>
+                }
+            }
+            if (TempData["TempErrorMessages"] != null)
+            {
+                var tempErrorMessages = TempData["TempErrorMessages"] as List<string>;
+                foreach (var item in tempErrorMessages)
+                {
+                    <div class="data-row">
+                        <span class="msg-img"></span><span>@Html.Raw(item)</span>
+                    </div>
+                }
+            }
+        }
+        @if (ViewData.ModelState != null && ViewData.ModelState.Where(p => p.Value.Errors.Count != 0).Count() != 0)
+        {
+
+            foreach (var item in ViewData.ModelState.Where(p => p.Value.Errors.Count != 0))
+            {
+                <div class="data-row">
+                    <span class="msg-img"></span><span>@Html.Raw(item.Value.Errors[0].ErrorMessage)</span>
+                </div>
+            }
+        }
+    </div>
+    <br />
+
+
+    @*<div class="data-row data-container">
+            <div class="label-container">
+                <span class="field-title required-field">@Html.GetResource("Advertiser", "Global")</span>
+            </div>
+            <div class="field-container">
+                <input type="text" id="AdvertiserId" name='AdvertiserId'
+                       style="display:none;" />
+                @{
+                    var AdvertiserAutoComplete = ViewBag.AdvertiserAutoComplete as ArabyAds.AdFalcon.Web.Controllers.Model.AutoComplete;
+                    @Html.Partial("Autocomplete", AdvertiserAutoComplete)
+                    <span class="floating-left">
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                    </span>
+                    @Html.Partial("MoreInfo", "Selectadvertiser", new ViewDataDictionary { { "Class_Tail", "tail-report" }, { "Style2", "width: 380px; float:none;" } })
+
+                }
+
+
+            </div>
+
+        </div>*@
+    <div class="data-row data-container">
+        <div class="label-container2">
+            <span class="field-title required-field">@Html.GetResource("Name", "Global")</span>
+        </div>
+        <div class="field-container">
+            <input type="hidden" name="ListId" id="ListId" />
+            <input type="text" name="CustomName" id="CustomName" maxlength="255" style="width: 150px;" />
+
+        </div>
+
+    </div>
+    <div class="data-row data-container">
+        <div class="label-container2">
+            <span class="field-title required-field">@Html.GetResource("Description", "Campaign")</span>
+        </div>
+        <div class="field-container">
+            @Html.TextArea("ContentListItems", new { @class = "text-box", @style = "width:430px;height:100px;" })
+        </div>
+
+    </div>
+
+    <div class="data-row data-container">
+        <div class="label-container2">
+            <span class="field-title required-field">PopulationCountryFilter</span>
+        </div>
+        <div class="field-container">
+
+            @Html.Partial("Select2Dynamic", Model.Countries)
+        </div>
+    </div>
+
+    <div class="data-row data-container">
+        <div class="label-container2">
+            <span class="field-title required-field">LookalikePercentage</span>
+        </div>
+        <div class="field-container">
+            @Html.AdFalconTextBox("LookalikePercentage", "", new { maskType = "decimal",  max = "100", type="number" ,onchange="checkInputValue(this)",onkeypress = "onbidpress(event,this);" })
+
+        </div>
+    </div>
+
+
+    <div class="data-row data-container">
+        <div class="label-container2">
+            <span class="field-title required-field">SeedAudienceListCode</span>
+        </div>
+        <div class="field-container">
+            @Html.AdFalconTextBox("SeedAudienceListCode", "", new { maskType = "Int" , type="number"})
+
+        </div>
+    </div>
+</div>
+    @Html.Partial("PartialViews/UploadingDivices")
+    if (Model.ToolTips != null)
+    {
+        @Html.Partial("GridToolTop", Model.ToolTips)
+    }
+}

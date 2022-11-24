@@ -1,0 +1,48 @@
+{
+    "applyLabel": "تطبيق",
+    "cancelLabel": "الغاء",
+		  "fromLabel": "من",
+  "toLabel": "الى",
+  
+  		  "fromRangeLabel": "من",
+  "toRangeLabel": "الى",
+  
+    		  "fromDateLabel": "من",
+  "toDateLabel": "الى",
+    "customRangeLabel": "تاريخ معدل",
+	
+    "daysOfWeek": [
+        "Su",
+        "Mo",
+        "Tu",
+        "We",
+        "Th",
+        "Fr",
+        "Sa"
+    ],
+
+
+    "direction": "ltr",
+    "firstDay": 0,
+    "format": "DD-MM-YYYY",
+    "monthNames": [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+    ],
+    "separator": "-",
+    "maxYear": "2118",
+    "minYear": "2918",
+    "maxDate": false,
+    "maxSpan": false,
+    "minDate": false
+}
