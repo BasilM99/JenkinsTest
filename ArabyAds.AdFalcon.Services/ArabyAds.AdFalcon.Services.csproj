@@ -16,14 +16,16 @@
 
 	
 		<ItemGroup>
-			<ProjectReference  Remove="@(Services\AppSiteService.cs)"/>
-			<ProjectReference  Remove="@Services\AppSiteTypeService.cs)"/>
-			<ProjectReference  Remove="@(Services\AudittrialsService.cs)"/>
-			<ProjectReference  Remove="@(Services\Campaign\AdGroupStatusService.cs)"/>
-			<ProjectReference  Remove="@(Services\Core\SystemBankAccountService.cs)"/>
-			<ProjectReference  Remove="@(Services\Core\SystemPayPalAccountService.cs)"/>
-			<ProjectReference  Remove="@(Services\Reports\ReportTestService.cs)"/>
-			<ProjectReference  Remove="@(Utility\EventBrokerHandler.cs)"/>
+			<ItemGroup>
+				<Compile Remove="Services\AppSiteService.cs" />
+				<Compile Remove="Services\AppSiteTypeService.cs" />
+				<Compile Remove="Services\AudittrialsService.cs" />
+				<Compile Remove="Services\Campaign\AdGroupStatusService.cs" />
+				<Compile Remove="Services\Core\SystemBankAccountService.cs" />
+				<Compile Remove="Services\Core\SystemPayPalAccountService.cs" />
+				<Compile Remove="Services\Reports\ReportTestService.cs" />
+				<Compile Remove="Utility\EventBrokerHandler.cs" />
+			</ItemGroup>
 		</ItemGroup>
 		
 	
